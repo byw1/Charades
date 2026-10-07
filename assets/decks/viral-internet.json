@@ -1,0 +1,567 @@
+{
+  "schemaVersion": 1,
+  "id": "dck_55b0838d",
+  "name": "Viral Internet",
+  "description": "Memes, challenges and the videos everyone sent to the group chat.",
+  "author": "Deckhead",
+  "language": "en",
+  "accentColor": "#5B5BFF",
+  "tags": [
+    "memes",
+    "internet"
+  ],
+  "createdAt": "2026-10-07T20:00:00Z",
+  "updatedAt": "2026-10-07T20:00:00Z",
+  "cards": [
+    {
+      "id": "crd_461a94b4",
+      "text": "Rickroll",
+      "note": null,
+      "taboo": [
+        "never gonna give you up",
+        "trick",
+        "link",
+        "Rick Astley"
+      ]
+    },
+    {
+      "id": "crd_db5eacf2",
+      "text": "Distracted boyfriend",
+      "note": null,
+      "taboo": [
+        "meme",
+        "girlfriend",
+        "looking",
+        "stock photo"
+      ]
+    },
+    {
+      "id": "crd_40af2435",
+      "text": "Ice Bucket Challenge",
+      "note": null,
+      "taboo": [
+        "cold water",
+        "ALS",
+        "nominate",
+        "pour"
+      ]
+    },
+    {
+      "id": "crd_8936d997",
+      "text": "Mannequin Challenge",
+      "note": null,
+      "taboo": [
+        "freeze",
+        "still",
+        "video",
+        "pose"
+      ]
+    },
+    {
+      "id": "crd_d61690c2",
+      "text": "Harlem Shake",
+      "note": null,
+      "taboo": [
+        "dance",
+        "helmet",
+        "drop",
+        "chaos"
+      ]
+    },
+    {
+      "id": "crd_63784a96",
+      "text": "Gangnam Style",
+      "note": null,
+      "taboo": [
+        "PSY",
+        "horse dance",
+        "K-pop",
+        "oppa"
+      ]
+    },
+    {
+      "id": "crd_c46c86d4",
+      "text": "Planking",
+      "note": null,
+      "taboo": [
+        "lie down",
+        "flat",
+        "board",
+        "photo"
+      ]
+    },
+    {
+      "id": "crd_06ab2ea4",
+      "text": "Dab",
+      "note": null,
+      "taboo": [
+        "dance move",
+        "arm",
+        "sneeze",
+        "pose"
+      ]
+    },
+    {
+      "id": "crd_65ad635f",
+      "text": "Floss dance",
+      "note": null,
+      "taboo": [
+        "Fortnite",
+        "swing",
+        "arms",
+        "hips"
+      ]
+    },
+    {
+      "id": "crd_08bfa157",
+      "text": "Unboxing video",
+      "note": null,
+      "taboo": [
+        "package",
+        "open",
+        "YouTube",
+        "new"
+      ]
+    },
+    {
+      "id": "crd_3a217409",
+      "text": "ASMR",
+      "note": null,
+      "taboo": [
+        "whisper",
+        "tingles",
+        "sounds",
+        "relax"
+      ]
+    },
+    {
+      "id": "crd_145b8d92",
+      "text": "Mukbang",
+      "note": null,
+      "taboo": [
+        "eating",
+        "video",
+        "lots of food",
+        "Korea"
+      ]
+    },
+    {
+      "id": "crd_2804f05f",
+      "text": "Get ready with me",
+      "note": null,
+      "taboo": [
+        "GRWM",
+        "makeup",
+        "morning",
+        "talk"
+      ]
+    },
+    {
+      "id": "crd_aa71dcc4",
+      "text": "Day in my life",
+      "note": null,
+      "taboo": [
+        "vlog",
+        "routine",
+        "morning",
+        "video"
+      ]
+    },
+    {
+      "id": "crd_ecd54aac",
+      "text": "Doge",
+      "note": null,
+      "taboo": [
+        "Shiba Inu",
+        "dog",
+        "wow",
+        "much"
+      ]
+    },
+    {
+      "id": "crd_1a2d587a",
+      "text": "Grumpy Cat",
+      "note": null,
+      "taboo": [
+        "frown",
+        "angry",
+        "meme",
+        "no"
+      ]
+    },
+    {
+      "id": "crd_7560e458",
+      "text": "Nyan Cat",
+      "note": null,
+      "taboo": [
+        "rainbow",
+        "Pop-Tart",
+        "flying",
+        "song"
+      ]
+    },
+    {
+      "id": "crd_b501ab30",
+      "text": "Chill guy",
+      "note": null,
+      "taboo": [
+        "dog",
+        "sweater",
+        "relaxed",
+        "meme"
+      ]
+    },
+    {
+      "id": "crd_1137930e",
+      "text": "Charlie bit my finger",
+      "note": null,
+      "taboo": [
+        "baby",
+        "brother",
+        "ouch",
+        "British"
+      ]
+    },
+    {
+      "id": "crd_6fb4ec60",
+      "text": "Demure",
+      "note": null,
+      "taboo": [
+        "very mindful",
+        "cutesy",
+        "modest",
+        "TikTok"
+      ]
+    },
+    {
+      "id": "crd_dddccade",
+      "text": "The dress",
+      "note": null,
+      "taboo": [
+        "blue and black",
+        "white and gold",
+        "colour",
+        "argument"
+      ]
+    },
+    {
+      "id": "crd_3cb2bd2c",
+      "text": "Yanny or Laurel",
+      "note": null,
+      "taboo": [
+        "audio",
+        "hear",
+        "debate",
+        "name"
+      ]
+    },
+    {
+      "id": "crd_a1ae42fe",
+      "text": "Salt Bae",
+      "note": null,
+      "taboo": [
+        "sprinkle",
+        "steak",
+        "chef",
+        "elbow"
+      ]
+    },
+    {
+      "id": "crd_ca23824f",
+      "text": "This is fine",
+      "note": null,
+      "taboo": [
+        "dog",
+        "fire",
+        "coffee",
+        "room"
+      ]
+    },
+    {
+      "id": "crd_b529ccb2",
+      "text": "Surprised Pikachu",
+      "note": null,
+      "taboo": [
+        "Pokémon",
+        "face",
+        "shocked",
+        "mouth"
+      ]
+    },
+    {
+      "id": "crd_73c28891",
+      "text": "Woman yelling at cat",
+      "note": null,
+      "taboo": [
+        "table",
+        "salad",
+        "meme",
+        "Housewives"
+      ]
+    },
+    {
+      "id": "crd_6722fefe",
+      "text": "Doomscrolling",
+      "note": null,
+      "taboo": [
+        "phone",
+        "news",
+        "endless",
+        "bad"
+      ]
+    },
+    {
+      "id": "crd_477bfaae",
+      "text": "Going live",
+      "note": null,
+      "taboo": [
+        "stream",
+        "broadcast",
+        "real time",
+        "Instagram"
+      ]
+    },
+    {
+      "id": "crd_57445da8",
+      "text": "Hashtag",
+      "note": null,
+      "taboo": [
+        "pound",
+        "symbol",
+        "trending",
+        "#"
+      ]
+    },
+    {
+      "id": "crd_9c461cd3",
+      "text": "Trending sound",
+      "note": null,
+      "taboo": [
+        "TikTok",
+        "audio",
+        "viral",
+        "dance"
+      ]
+    },
+    {
+      "id": "crd_fd8cad97",
+      "text": "Duet",
+      "note": null,
+      "taboo": [
+        "TikTok",
+        "side by side",
+        "reply",
+        "video"
+      ]
+    },
+    {
+      "id": "crd_945dfbfe",
+      "text": "Influencer",
+      "note": null,
+      "taboo": [
+        "sponsor",
+        "followers",
+        "brand",
+        "content"
+      ]
+    },
+    {
+      "id": "crd_b8f7097b",
+      "text": "Clickbait",
+      "note": null,
+      "taboo": [
+        "thumbnail",
+        "title",
+        "YouTube",
+        "misleading"
+      ]
+    },
+    {
+      "id": "crd_d56326a0",
+      "text": "Photo dump",
+      "note": null,
+      "taboo": [
+        "carousel",
+        "Instagram",
+        "random",
+        "pictures"
+      ]
+    },
+    {
+      "id": "crd_dc9e975d",
+      "text": "Snap streak",
+      "note": null,
+      "taboo": [
+        "fire emoji",
+        "days",
+        "Snapchat",
+        "keep"
+      ]
+    },
+    {
+      "id": "crd_9ffb36c8",
+      "text": "Blue tick",
+      "note": null,
+      "taboo": [
+        "verified",
+        "check mark",
+        "Twitter",
+        "account"
+      ]
+    },
+    {
+      "id": "crd_936b9654",
+      "text": "Read receipts",
+      "note": null,
+      "taboo": [
+        "seen",
+        "message",
+        "texts",
+        "ignored"
+      ]
+    },
+    {
+      "id": "crd_8240e2e7",
+      "text": "Copypasta",
+      "note": null,
+      "taboo": [
+        "copy",
+        "paste",
+        "text",
+        "repeat"
+      ]
+    },
+    {
+      "id": "crd_6ce08b71",
+      "text": "Speedrun",
+      "note": null,
+      "taboo": [
+        "fast",
+        "game",
+        "world record",
+        "glitch"
+      ]
+    },
+    {
+      "id": "crd_3bc54032",
+      "text": "Reaction video",
+      "note": null,
+      "taboo": [
+        "watch",
+        "face",
+        "react",
+        "YouTube"
+      ]
+    },
+    {
+      "id": "crd_c9a97ff2",
+      "text": "Stonks",
+      "note": null,
+      "taboo": [
+        "stocks",
+        "meme",
+        "man",
+        "chart"
+      ]
+    },
+    {
+      "id": "crd_ebb47182",
+      "text": "Bernie mittens",
+      "note": null,
+      "taboo": [
+        "inauguration",
+        "chair",
+        "gloves",
+        "sitting"
+      ]
+    },
+    {
+      "id": "crd_246574b3",
+      "text": "Hide the Pain Harold",
+      "note": null,
+      "taboo": [
+        "old man",
+        "smile",
+        "stock photo",
+        "meme"
+      ]
+    },
+    {
+      "id": "crd_dbfe248e",
+      "text": "Success Kid",
+      "note": null,
+      "taboo": [
+        "fist",
+        "beach",
+        "baby",
+        "sand"
+      ]
+    },
+    {
+      "id": "crd_0c2ff7be",
+      "text": "Among Us",
+      "note": null,
+      "taboo": [
+        "sus",
+        "crewmate",
+        "impostor",
+        "game"
+      ]
+    },
+    {
+      "id": "crd_ca966ae4",
+      "text": "Wordle",
+      "note": null,
+      "taboo": [
+        "five letters",
+        "green",
+        "yellow",
+        "daily"
+      ]
+    },
+    {
+      "id": "crd_625f5b6f",
+      "text": "Bottle flip",
+      "note": null,
+      "taboo": [
+        "water",
+        "land",
+        "table",
+        "toss"
+      ]
+    },
+    {
+      "id": "crd_8225df2a",
+      "text": "Hot Ones",
+      "note": null,
+      "taboo": [
+        "wings",
+        "spicy",
+        "interview",
+        "sauce"
+      ]
+    },
+    {
+      "id": "crd_28e53ee0",
+      "text": "Ok boomer",
+      "note": null,
+      "taboo": [
+        "old",
+        "dismiss",
+        "Gen Z",
+        "generation"
+      ]
+    },
+    {
+      "id": "crd_30abf3bd",
+      "text": "Moo Deng",
+      "note": null,
+      "taboo": [
+        "baby hippo",
+        "Thailand",
+        "bite",
+        "zoo"
+      ]
+    }
+  ]
+}

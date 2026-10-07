@@ -1,0 +1,567 @@
+{
+  "schemaVersion": 1,
+  "id": "dck_3135ed82",
+  "name": "2010s Throwback",
+  "description": "Silly Bandz, Club Penguin and Vine. Your childhood, now a party game.",
+  "author": "Deckhead",
+  "language": "en",
+  "accentColor": "#E040FB",
+  "tags": [
+    "nostalgia",
+    "internet"
+  ],
+  "createdAt": "2026-10-07T20:00:00Z",
+  "updatedAt": "2026-10-07T20:00:00Z",
+  "cards": [
+    {
+      "id": "crd_6258f539",
+      "text": "Vine",
+      "note": null,
+      "taboo": [
+        "six seconds",
+        "loop",
+        "app",
+        "Twitter"
+      ]
+    },
+    {
+      "id": "crd_e7ab7915",
+      "text": "Fidget spinner",
+      "note": null,
+      "taboo": [
+        "spin",
+        "toy",
+        "bearings",
+        "hand"
+      ]
+    },
+    {
+      "id": "crd_24bb45dd",
+      "text": "Silly Bandz",
+      "note": null,
+      "taboo": [
+        "bracelets",
+        "shapes",
+        "rubber",
+        "wrist"
+      ]
+    },
+    {
+      "id": "crd_f7256aa0",
+      "text": "Hoverboard",
+      "note": null,
+      "taboo": [
+        "self-balancing",
+        "wheels",
+        "ride",
+        "fire"
+      ]
+    },
+    {
+      "id": "crd_5aef75e3",
+      "text": "Selfie stick",
+      "note": null,
+      "taboo": [
+        "pole",
+        "phone",
+        "photo",
+        "tourists"
+      ]
+    },
+    {
+      "id": "crd_f6e9413f",
+      "text": "iPod Nano",
+      "note": null,
+      "taboo": [
+        "Apple",
+        "music",
+        "tiny",
+        "click wheel"
+      ]
+    },
+    {
+      "id": "crd_05eca92b",
+      "text": "Club Penguin",
+      "note": null,
+      "taboo": [
+        "igloo",
+        "puffle",
+        "Disney",
+        "waddle"
+      ]
+    },
+    {
+      "id": "crd_a457c150",
+      "text": "Webkinz",
+      "note": null,
+      "taboo": [
+        "plush",
+        "code",
+        "online",
+        "pets"
+      ]
+    },
+    {
+      "id": "crd_442c553f",
+      "text": "Tumblr",
+      "note": null,
+      "taboo": [
+        "blog",
+        "reblog",
+        "aesthetic",
+        "GIFs"
+      ]
+    },
+    {
+      "id": "crd_e569261c",
+      "text": "Musical.ly",
+      "note": null,
+      "taboo": [
+        "lip sync",
+        "TikTok",
+        "app",
+        "videos"
+      ]
+    },
+    {
+      "id": "crd_0d3f0451",
+      "text": "Instagram filters",
+      "note": null,
+      "taboo": [
+        "Valencia",
+        "photo",
+        "edit",
+        "vintage"
+      ]
+    },
+    {
+      "id": "crd_4c3b1436",
+      "text": "Snapchat dog filter",
+      "note": null,
+      "taboo": [
+        "tongue",
+        "ears",
+        "face",
+        "puppy"
+      ]
+    },
+    {
+      "id": "crd_bc7cc271",
+      "text": "Minions",
+      "note": null,
+      "taboo": [
+        "yellow",
+        "Despicable Me",
+        "banana",
+        "goggles"
+      ]
+    },
+    {
+      "id": "crd_80baafef",
+      "text": "The Hunger Games",
+      "note": null,
+      "taboo": [
+        "Katniss",
+        "District 12",
+        "mockingjay",
+        "arena"
+      ]
+    },
+    {
+      "id": "crd_35ab4d57",
+      "text": "Twilight",
+      "note": null,
+      "taboo": [
+        "vampire",
+        "Edward",
+        "Bella",
+        "sparkle"
+      ]
+    },
+    {
+      "id": "crd_ebc19f36",
+      "text": "Divergent",
+      "note": null,
+      "taboo": [
+        "factions",
+        "Tris",
+        "Dauntless",
+        "books"
+      ]
+    },
+    {
+      "id": "crd_52edccaa",
+      "text": "Glee",
+      "note": null,
+      "taboo": [
+        "show choir",
+        "slushie",
+        "Don't Stop Believin'",
+        "Ohio"
+      ]
+    },
+    {
+      "id": "crd_70a4fe7d",
+      "text": "Game of Thrones",
+      "note": null,
+      "taboo": [
+        "Westeros",
+        "dragons",
+        "Jon Snow",
+        "winter is coming"
+      ]
+    },
+    {
+      "id": "crd_98b2e265",
+      "text": "Stranger Things",
+      "note": null,
+      "taboo": [
+        "Upside Down",
+        "Eleven",
+        "Hawkins",
+        "Demogorgon"
+      ]
+    },
+    {
+      "id": "crd_60475905",
+      "text": "Beanie Boos",
+      "note": null,
+      "taboo": [
+        "big eyes",
+        "plush",
+        "Ty",
+        "glitter"
+      ]
+    },
+    {
+      "id": "crd_77c3b4cd",
+      "text": "YOLO",
+      "note": null,
+      "taboo": [
+        "you only live once",
+        "Drake",
+        "motto",
+        "life"
+      ]
+    },
+    {
+      "id": "crd_6bbfbd1a",
+      "text": "Swag",
+      "note": null,
+      "taboo": [
+        "cool",
+        "style",
+        "Bieber",
+        "swagger"
+      ]
+    },
+    {
+      "id": "crd_2f9de00b",
+      "text": "Duck face",
+      "note": null,
+      "taboo": [
+        "pout",
+        "lips",
+        "selfie",
+        "pose"
+      ]
+    },
+    {
+      "id": "crd_1736b14e",
+      "text": "Mayan apocalypse",
+      "note": null,
+      "taboo": [
+        "2012",
+        "end of the world",
+        "calendar",
+        "December"
+      ]
+    },
+    {
+      "id": "crd_e380dec8",
+      "text": "On fleek",
+      "note": null,
+      "taboo": [
+        "eyebrows",
+        "perfect",
+        "on point",
+        "2014"
+      ]
+    },
+    {
+      "id": "crd_adb981b2",
+      "text": "Call Me Maybe",
+      "note": null,
+      "taboo": [
+        "Carly Rae Jepsen",
+        "here’s my number",
+        "crazy",
+        "song"
+      ]
+    },
+    {
+      "id": "crd_f26a27c9",
+      "text": "Happy",
+      "note": null,
+      "taboo": [
+        "Pharrell",
+        "clap along",
+        "hat",
+        "song"
+      ]
+    },
+    {
+      "id": "crd_17e8c4c3",
+      "text": "Despacito",
+      "note": null,
+      "taboo": [
+        "Luis Fonsi",
+        "Spanish",
+        "Justin Bieber",
+        "slowly"
+      ]
+    },
+    {
+      "id": "crd_ae340b10",
+      "text": "What Does the Fox Say?",
+      "note": null,
+      "taboo": [
+        "Ylvis",
+        "Norwegian",
+        "ring-ding-ding",
+        "song"
+      ]
+    },
+    {
+      "id": "crd_3d9278f7",
+      "text": "Rebecca Black",
+      "note": null,
+      "taboo": [
+        "Friday",
+        "weekend",
+        "front seat",
+        "YouTube"
+      ]
+    },
+    {
+      "id": "crd_ffc16d9a",
+      "text": "Google Glass",
+      "note": null,
+      "taboo": [
+        "smart glasses",
+        "camera",
+        "wearable",
+        "flop"
+      ]
+    },
+    {
+      "id": "crd_b4afe7d4",
+      "text": "Temple Run",
+      "note": null,
+      "taboo": [
+        "running",
+        "app",
+        "monkeys",
+        "swipe"
+      ]
+    },
+    {
+      "id": "crd_bc1fbb57",
+      "text": "Fruit Ninja",
+      "note": null,
+      "taboo": [
+        "slice",
+        "swipe",
+        "app",
+        "watermelon"
+      ]
+    },
+    {
+      "id": "crd_defd71c7",
+      "text": "Doodle Jump",
+      "note": null,
+      "taboo": [
+        "app",
+        "jumping",
+        "platforms",
+        "green creature"
+      ]
+    },
+    {
+      "id": "crd_5a86f71b",
+      "text": "Draw Something",
+      "note": null,
+      "taboo": [
+        "drawing app",
+        "guess",
+        "words",
+        "friends"
+      ]
+    },
+    {
+      "id": "crd_177880a0",
+      "text": "Words With Friends",
+      "note": null,
+      "taboo": [
+        "Scrabble",
+        "app",
+        "letters",
+        "play"
+      ]
+    },
+    {
+      "id": "crd_7697a403",
+      "text": "FarmVille",
+      "note": null,
+      "taboo": [
+        "Facebook",
+        "crops",
+        "farming",
+        "Zynga"
+      ]
+    },
+    {
+      "id": "crd_aa200a9a",
+      "text": "Dubstep",
+      "note": null,
+      "taboo": [
+        "drop",
+        "Skrillex",
+        "wub",
+        "bass"
+      ]
+    },
+    {
+      "id": "crd_428ddfbd",
+      "text": "Bae",
+      "note": null,
+      "taboo": [
+        "babe",
+        "before anyone else",
+        "partner",
+        "darling"
+      ]
+    },
+    {
+      "id": "crd_7ec16fa3",
+      "text": "Turn Down for What",
+      "note": null,
+      "taboo": [
+        "Lil Jon",
+        "DJ Snake",
+        "party",
+        "song"
+      ]
+    },
+    {
+      "id": "crd_cf2e4cc3",
+      "text": "Wii Sports",
+      "note": null,
+      "taboo": [
+        "bowling",
+        "tennis",
+        "Nintendo",
+        "remote"
+      ]
+    },
+    {
+      "id": "crd_5703d819",
+      "text": "Guitar Hero",
+      "note": null,
+      "taboo": [
+        "plastic",
+        "rhythm",
+        "notes",
+        "Rock Band"
+      ]
+    },
+    {
+      "id": "crd_25667d02",
+      "text": "Just Dance",
+      "note": null,
+      "taboo": [
+        "video game",
+        "moves",
+        "score",
+        "Ubisoft"
+      ]
+    },
+    {
+      "id": "crd_325bfd87",
+      "text": "Kinect",
+      "note": null,
+      "taboo": [
+        "Xbox",
+        "motion",
+        "camera",
+        "body"
+      ]
+    },
+    {
+      "id": "crd_7dc75560",
+      "text": "Scene hair",
+      "note": null,
+      "taboo": [
+        "emo",
+        "side fringe",
+        "straightened",
+        "coloured"
+      ]
+    },
+    {
+      "id": "crd_c170591c",
+      "text": "Skinny jeans",
+      "note": null,
+      "taboo": [
+        "tight",
+        "denim",
+        "legs",
+        "trousers"
+      ]
+    },
+    {
+      "id": "crd_709774b6",
+      "text": "Rainbow Loom",
+      "note": null,
+      "taboo": [
+        "bracelets",
+        "rubber bands",
+        "hook",
+        "craft"
+      ]
+    },
+    {
+      "id": "crd_5da7ad3b",
+      "text": "Shopkins",
+      "note": null,
+      "taboo": [
+        "tiny",
+        "toys",
+        "collect",
+        "shopping"
+      ]
+    },
+    {
+      "id": "crd_7d3e8dca",
+      "text": "Squishies",
+      "note": null,
+      "taboo": [
+        "squeeze",
+        "slow rising",
+        "foam",
+        "toy"
+      ]
+    },
+    {
+      "id": "crd_90e0b1ed",
+      "text": "Slime",
+      "note": null,
+      "taboo": [
+        "glue",
+        "borax",
+        "gooey",
+        "DIY"
+      ]
+    }
+  ]
+}

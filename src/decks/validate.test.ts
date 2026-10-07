@@ -283,3 +283,61 @@ describe('error reporting', () => {
     }
   });
 });
+
+describe('Taboo words', () => {
+  it('keeps a card’s Taboo words, trimmed and without repeats', () => {
+    const cards = validDeck().cards.map((c, i) =>
+      i === 0 ? { ...c, taboo: [' dinosaur ', 'island', 'Island', ''] } : c,
+    );
+    const { deck } = expectOk(validateDeck(validDeck({ cards })));
+    expect(deck.cards[0]!.taboo).toEqual(['dinosaur', 'island']);
+  });
+
+  it('leaves the field off a card that has none, so old decks read as before', () => {
+    const cards = validDeck().cards.map((c, i) => (i === 0 ? { ...c, taboo: [] } : c));
+    const { deck } = expectOk(validateDeck(validDeck({ cards })));
+    expect(deck.cards[0]).not.toHaveProperty('taboo');
+    expect(deck.cards[1]).not.toHaveProperty('taboo');
+  });
+
+  it('rejects more than five', () => {
+    const cards = validDeck().cards.map((c, i) => (i === 0 ? { ...c, taboo: ['a', 'b', 'c', 'd', 'e', 'f'] } : c));
+    const { errors } = expectFail(validateDeck(validDeck({ cards })));
+    expect(errors[0]!.path).toBe('cards[0].taboo');
+  });
+
+  it('rejects something that is not a list of words', () => {
+    const cards = validDeck().cards.map((c, i) => (i === 0 ? { ...c, taboo: 'dinosaur' } : c));
+    expectFail(validateDeck(validDeck({ cards })));
+  });
+});
+
+describe('photo cards', () => {
+  const jpeg = 'data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQABAAD/2wBDAP==';
+
+  it('keeps a photo carried as a data URI', () => {
+    const cards = validDeck().cards.map((c, i) => (i === 0 ? { ...c, image: jpeg } : c));
+    const { deck } = expectOk(validateDeck(validDeck({ cards })));
+    expect(deck.cards[0]!.image).toBe(jpeg);
+    expect(deck.cards[1]).not.toHaveProperty('image');
+  });
+
+  it('refuses a web address, which would mean fetching something', () => {
+    const cards = validDeck().cards.map((c, i) => (i === 0 ? { ...c, image: 'https://example.com/a.jpg' } : c));
+    const { errors } = expectFail(validateDeck(validDeck({ cards })));
+    expect(errors[0]!.path).toBe('cards[0].image');
+  });
+
+  it('refuses anything that is not a picture', () => {
+    const cards = validDeck().cards.map((c, i) =>
+      i === 0 ? { ...c, image: 'data:text/html;base64,PHNjcmlwdD4=' } : c,
+    );
+    expectFail(validateDeck(validDeck({ cards })));
+  });
+
+  it('refuses a photo too large to be one the app resized', () => {
+    const huge = `data:image/jpeg;base64,${'A'.repeat(700_000)}`;
+    const cards = validDeck().cards.map((c, i) => (i === 0 ? { ...c, image: huge } : c));
+    expectFail(validateDeck(validDeck({ cards })));
+  });
+});

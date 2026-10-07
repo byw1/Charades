@@ -1,3 +1,5 @@
+import { bundledDeckDocuments } from '@/decks/bundled';
+import { isEmojiCard } from '@/decks/types';
 import { fitCardText, measureCard, wrap } from './fitText';
 
 /** An iPhone 15 in landscape, less the card's padding and timer bar. */
@@ -33,6 +35,12 @@ describe('measureCard', () => {
 
   it('treats an emoji as roughly square', () => {
     expect(measureCard('🎬')).toBeGreaterThan(1);
+  });
+
+  it('measures a joined or coloured emoji as the one emoji it draws', () => {
+    expect(measureCard('🧙‍♂️')).toBeCloseTo(measureCard('🎬'));
+    expect(measureCard('❄️')).toBeCloseTo(measureCard('🎬'));
+    expect(measureCard('👍🏽')).toBeCloseTo(measureCard('🎬'));
   });
 });
 
@@ -83,5 +91,34 @@ describe('fitCardText', () => {
   it('falls back to the minimum for something that cannot fit', () => {
     const fit = fitCardText('x'.repeat(400), 100, 50);
     expect(fit.fontSize).toBe(24);
+  });
+});
+
+describe('bundled cards', () => {
+  type Doc = { name: string; cards: { text: string; taboo?: string[] }[] };
+  const cards = (bundledDeckDocuments as Doc[]).flatMap((deck) => deck.cards.map((card) => ({ deck: deck.name, ...card })));
+
+  // The smallest phone in landscape, an iPhone SE, less the card's padding.
+  const SE_W = 667 - 96;
+  const SE_H = 375 - 112;
+
+  it('fits every card on the smallest phone at a size readable across a room', () => {
+    for (const card of cards) {
+      // Emoji cards give a third of the height to the answer underneath.
+      const h = isEmojiCard(card) ? SE_H * 0.66 : SE_H;
+      const fit = fitCardText(card.text, SE_W, h);
+      for (const line of fit.lines) {
+        expect(measureCard(line) * fit.fontSize).toBeLessThanOrEqual(SE_W);
+      }
+      expect({ card: card.text, size: fit.fontSize >= 40 }).toEqual({ card: card.text, size: true });
+    }
+  });
+
+  it('still fits a Taboo card in the top half, above its forbidden words', () => {
+    for (const card of cards.filter((c) => c.taboo)) {
+      const fit = fitCardText(card.text, SE_W, SE_H * 0.5);
+      expect(fit.lines.length * fit.lineHeight).toBeLessThanOrEqual(SE_H * 0.5 + fit.lines.length);
+      expect({ card: card.text, size: fit.fontSize >= 32 }).toEqual({ card: card.text, size: true });
+    }
   });
 });

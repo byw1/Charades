@@ -1,0 +1,567 @@
+{
+  "schemaVersion": 1,
+  "id": "dck_188b4d21",
+  "name": "Reality TV",
+  "description": "Villas, tribes, bake-offs and reunions. Somebody in the room has watched all of these.",
+  "author": "Deckhead",
+  "language": "en",
+  "accentColor": "#FF3D8B",
+  "tags": [
+    "tv",
+    "pop culture"
+  ],
+  "createdAt": "2026-10-07T20:00:00Z",
+  "updatedAt": "2026-10-07T20:00:00Z",
+  "cards": [
+    {
+      "id": "crd_9c6513d3",
+      "text": "Survivor",
+      "note": null,
+      "taboo": [
+        "island",
+        "tribe",
+        "vote",
+        "torch"
+      ]
+    },
+    {
+      "id": "crd_0e7d0454",
+      "text": "Big Brother",
+      "note": null,
+      "taboo": [
+        "house",
+        "evict",
+        "cameras",
+        "houseguests"
+      ]
+    },
+    {
+      "id": "crd_676307fe",
+      "text": "The Bachelor",
+      "note": null,
+      "taboo": [
+        "rose",
+        "dating",
+        "proposal",
+        "final"
+      ]
+    },
+    {
+      "id": "crd_986bb0eb",
+      "text": "Love Island",
+      "note": null,
+      "taboo": [
+        "villa",
+        "couples",
+        "islanders",
+        "recoupling"
+      ]
+    },
+    {
+      "id": "crd_88e966ed",
+      "text": "Keeping Up with the Kardashians",
+      "note": null,
+      "taboo": [
+        "Kim",
+        "Kris",
+        "family",
+        "E!"
+      ]
+    },
+    {
+      "id": "crd_6b0f9937",
+      "text": "The Great British Bake Off",
+      "note": null,
+      "taboo": [
+        "tent",
+        "baking",
+        "Paul Hollywood",
+        "handshake"
+      ]
+    },
+    {
+      "id": "crd_6b5ea266",
+      "text": "Shark Tank",
+      "note": null,
+      "taboo": [
+        "investors",
+        "pitch",
+        "deal",
+        "business"
+      ]
+    },
+    {
+      "id": "crd_6d08dc8a",
+      "text": "American Idol",
+      "note": null,
+      "taboo": [
+        "singing",
+        "audition",
+        "judges",
+        "Simon"
+      ]
+    },
+    {
+      "id": "crd_d6bffa39",
+      "text": "The Voice",
+      "note": null,
+      "taboo": [
+        "spinning chairs",
+        "coaches",
+        "blind audition",
+        "singing"
+      ]
+    },
+    {
+      "id": "crd_e0c45509",
+      "text": "Jersey Shore",
+      "note": null,
+      "taboo": [
+        "Snooki",
+        "gym tan laundry",
+        "beach",
+        "the Situation"
+      ]
+    },
+    {
+      "id": "crd_9c599ef3",
+      "text": "Selling Sunset",
+      "note": null,
+      "taboo": [
+        "real estate",
+        "LA",
+        "houses",
+        "Netflix"
+      ]
+    },
+    {
+      "id": "crd_543fead9",
+      "text": "Love Is Blind",
+      "note": null,
+      "taboo": [
+        "pods",
+        "engaged",
+        "Netflix",
+        "dating"
+      ]
+    },
+    {
+      "id": "crd_8efe79fb",
+      "text": "RuPaul's Drag Race",
+      "note": null,
+      "taboo": [
+        "queens",
+        "lip sync",
+        "sashay",
+        "wigs"
+      ]
+    },
+    {
+      "id": "crd_e04fcb45",
+      "text": "Queer Eye",
+      "note": null,
+      "taboo": [
+        "Fab Five",
+        "makeover",
+        "Netflix",
+        "Jonathan"
+      ]
+    },
+    {
+      "id": "crd_06f46502",
+      "text": "Below Deck",
+      "note": null,
+      "taboo": [
+        "yacht",
+        "crew",
+        "captain",
+        "charter"
+      ]
+    },
+    {
+      "id": "crd_577a3d12",
+      "text": "The Real Housewives",
+      "note": null,
+      "taboo": [
+        "Bravo",
+        "reunion",
+        "drama",
+        "wives"
+      ]
+    },
+    {
+      "id": "crd_c6f22f79",
+      "text": "Hell's Kitchen",
+      "note": null,
+      "taboo": [
+        "Gordon Ramsay",
+        "chefs",
+        "raw",
+        "shouting"
+      ]
+    },
+    {
+      "id": "crd_2f9501a5",
+      "text": "MasterChef",
+      "note": null,
+      "taboo": [
+        "cooking",
+        "judges",
+        "apron",
+        "mystery box"
+      ]
+    },
+    {
+      "id": "crd_b164467d",
+      "text": "Nailed It!",
+      "note": null,
+      "taboo": [
+        "baking fails",
+        "cake",
+        "funny",
+        "Netflix"
+      ]
+    },
+    {
+      "id": "crd_5cc63bab",
+      "text": "Chopped",
+      "note": null,
+      "taboo": [
+        "basket",
+        "mystery ingredients",
+        "chef",
+        "judges"
+      ]
+    },
+    {
+      "id": "crd_43715af9",
+      "text": "The Amazing Race",
+      "note": null,
+      "taboo": [
+        "teams",
+        "pit stop",
+        "travel",
+        "world"
+      ]
+    },
+    {
+      "id": "crd_361c002c",
+      "text": "America's Got Talent",
+      "note": null,
+      "taboo": [
+        "acts",
+        "golden buzzer",
+        "judges",
+        "Simon"
+      ]
+    },
+    {
+      "id": "crd_3b1d70b6",
+      "text": "The Masked Singer",
+      "note": null,
+      "taboo": [
+        "costume",
+        "mask",
+        "guess",
+        "celebrity"
+      ]
+    },
+    {
+      "id": "crd_8ed201a9",
+      "text": "Dance Moms",
+      "note": null,
+      "taboo": [
+        "Abby Lee",
+        "pyramid",
+        "competition",
+        "mothers"
+      ]
+    },
+    {
+      "id": "crd_89802674",
+      "text": "Married at First Sight",
+      "note": null,
+      "taboo": [
+        "strangers",
+        "wedding",
+        "experts",
+        "marriage"
+      ]
+    },
+    {
+      "id": "crd_e38e3230",
+      "text": "The Traitors",
+      "note": null,
+      "taboo": [
+        "castle",
+        "faithfuls",
+        "banished",
+        "round table"
+      ]
+    },
+    {
+      "id": "crd_f803bffd",
+      "text": "Squid Game: The Challenge",
+      "note": null,
+      "taboo": [
+        "players",
+        "money",
+        "green light",
+        "Netflix"
+      ]
+    },
+    {
+      "id": "crd_c3543e19",
+      "text": "Beast Games",
+      "note": null,
+      "taboo": [
+        "MrBeast",
+        "contestants",
+        "prize",
+        "Amazon"
+      ]
+    },
+    {
+      "id": "crd_0346ddb9",
+      "text": "Physical: 100",
+      "note": null,
+      "taboo": [
+        "fitness",
+        "Korea",
+        "torso",
+        "strongest"
+      ]
+    },
+    {
+      "id": "crd_8807c80f",
+      "text": "Wipeout",
+      "note": null,
+      "taboo": [
+        "obstacles",
+        "big balls",
+        "fall",
+        "water"
+      ]
+    },
+    {
+      "id": "crd_590daca3",
+      "text": "American Ninja Warrior",
+      "note": null,
+      "taboo": [
+        "obstacle course",
+        "warped wall",
+        "climbing",
+        "buzzer"
+      ]
+    },
+    {
+      "id": "crd_d3b7a700",
+      "text": "Fear Factor",
+      "note": null,
+      "taboo": [
+        "eat bugs",
+        "stunts",
+        "scary",
+        "dare"
+      ]
+    },
+    {
+      "id": "crd_0786001e",
+      "text": "Cake Boss",
+      "note": null,
+      "taboo": [
+        "Buddy",
+        "bakery",
+        "Hoboken",
+        "TLC"
+      ]
+    },
+    {
+      "id": "crd_7b3634df",
+      "text": "Say Yes to the Dress",
+      "note": null,
+      "taboo": [
+        "wedding",
+        "bride",
+        "gown",
+        "shop"
+      ]
+    },
+    {
+      "id": "crd_86b791a4",
+      "text": "Toddlers & Tiaras",
+      "note": null,
+      "taboo": [
+        "pageant",
+        "kids",
+        "crowns",
+        "glitz"
+      ]
+    },
+    {
+      "id": "crd_31cf9a60",
+      "text": "MTV Cribs",
+      "note": null,
+      "taboo": [
+        "house tour",
+        "celebrity",
+        "fridge",
+        "mansion"
+      ]
+    },
+    {
+      "id": "crd_52ba17d5",
+      "text": "Pawn Stars",
+      "note": null,
+      "taboo": [
+        "shop",
+        "sell",
+        "Las Vegas",
+        "Rick"
+      ]
+    },
+    {
+      "id": "crd_a1283f1e",
+      "text": "Storage Wars",
+      "note": null,
+      "taboo": [
+        "auction",
+        "units",
+        "bid",
+        "lockers"
+      ]
+    },
+    {
+      "id": "crd_80a68106",
+      "text": "Fixer Upper",
+      "note": null,
+      "taboo": [
+        "Chip",
+        "Joanna",
+        "renovate",
+        "Waco"
+      ]
+    },
+    {
+      "id": "crd_cfb4098d",
+      "text": "Catfish",
+      "note": null,
+      "taboo": [
+        "fake profile",
+        "online",
+        "Nev",
+        "meet"
+      ]
+    },
+    {
+      "id": "crd_cf5504b9",
+      "text": "The Circle",
+      "note": null,
+      "taboo": [
+        "screens",
+        "apartments",
+        "influencer",
+        "messaging"
+      ]
+    },
+    {
+      "id": "crd_bd0437d2",
+      "text": "Is It Cake?",
+      "note": null,
+      "taboo": [
+        "realistic",
+        "cut",
+        "knife",
+        "illusion"
+      ]
+    },
+    {
+      "id": "crd_7031c3c6",
+      "text": "Undercover Boss",
+      "note": null,
+      "taboo": [
+        "disguise",
+        "CEO",
+        "employees",
+        "company"
+      ]
+    },
+    {
+      "id": "crd_d557f069",
+      "text": "Confessional",
+      "note": null,
+      "taboo": [
+        "camera",
+        "interview",
+        "alone",
+        "talk"
+      ]
+    },
+    {
+      "id": "crd_c7ec0c95",
+      "text": "Villain edit",
+      "note": null,
+      "taboo": [
+        "bad guy",
+        "producers",
+        "mean",
+        "editing"
+      ]
+    },
+    {
+      "id": "crd_0c688b10",
+      "text": "Reunion episode",
+      "note": null,
+      "taboo": [
+        "everyone",
+        "back",
+        "drama",
+        "host"
+      ]
+    },
+    {
+      "id": "crd_cb1221c9",
+      "text": "Elimination",
+      "note": null,
+      "taboo": [
+        "voted off",
+        "out",
+        "leave",
+        "goodbye"
+      ]
+    },
+    {
+      "id": "crd_48a1e3bc",
+      "text": "Plot twist",
+      "note": null,
+      "taboo": [
+        "surprise",
+        "unexpected",
+        "turn",
+        "shock"
+      ]
+    },
+    {
+      "id": "crd_d5e18fb2",
+      "text": "Tribal council",
+      "note": null,
+      "taboo": [
+        "Survivor",
+        "vote",
+        "torch",
+        "Jeff Probst"
+      ]
+    },
+    {
+      "id": "crd_ad08364f",
+      "text": "Cliffhanger",
+      "note": null,
+      "taboo": [
+        "ending",
+        "next week",
+        "suspense",
+        "episode"
+      ]
+    }
+  ]
+}

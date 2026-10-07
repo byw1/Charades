@@ -26,21 +26,30 @@ type DeckRow = {
 
 type SummaryRow = Omit<DeckRow, 'schemaVersion' | 'language'> & { cardCount: number };
 
-type CardRow = { id: string; text: string; note: string | null };
+type CardRow = { id: string; text: string; note: string | null; taboo: string | null; image: string | null };
 
 /**
- * Tags are stored as a JSON array in a text column. They are only ever read and
+ * Tags and Taboo words are stored as a JSON array in a text column. They are only ever read and
  * written whole, never queried across, so a join table would buy nothing. A
  * corrupt value degrades to no tags rather than failing the read — losing a
  * label is recoverable, losing the deck is not.
  */
-function parseTags(raw: string): string[] {
+function parseStringList(raw: string): string[] {
   try {
     const parsed: unknown = JSON.parse(raw);
     return Array.isArray(parsed) ? parsed.filter((t): t is string => typeof t === 'string') : [];
   } catch {
     return [];
   }
+}
+
+/** A card row back into a card, leaving out the optional fields it lacks. */
+function toCard(row: CardRow): Card {
+  const card: Card = { id: row.id, text: row.text, note: row.note };
+  const taboo = row.taboo ? parseStringList(row.taboo) : [];
+  if (taboo.length > 0) card.taboo = taboo;
+  if (row.image) card.image = row.image;
+  return card;
 }
 
 function toSummary(row: SummaryRow): DeckSummary {
@@ -50,7 +59,7 @@ function toSummary(row: SummaryRow): DeckSummary {
     description: row.description,
     author: row.author,
     accentColor: row.accentColor,
-    tags: parseTags(row.tags),
+    tags: parseStringList(row.tags),
     source: row.source,
     cardCount: row.cardCount,
     updatedAt: row.updatedAt,
@@ -104,7 +113,7 @@ export async function getDeck(db: Sql, deckId: string): Promise<StoredDeck | nul
   if (!row) return null;
 
   const cards = await db.getAllAsync<CardRow>(
-    'SELECT id, text, note FROM cards WHERE deckId = ? ORDER BY position',
+    'SELECT id, text, note, taboo, image FROM cards WHERE deckId = ? ORDER BY position',
     [deckId],
   );
 
@@ -116,11 +125,11 @@ export async function getDeck(db: Sql, deckId: string): Promise<StoredDeck | nul
     author: row.author,
     language: row.language,
     accentColor: row.accentColor,
-    tags: parseTags(row.tags),
+    tags: parseStringList(row.tags),
     source: row.source,
     createdAt: row.createdAt,
     updatedAt: row.updatedAt,
-    cards: cards.map((c): Card => ({ id: c.id, text: c.text, note: c.note })),
+    cards: cards.map(toCard),
   };
 }
 
@@ -180,8 +189,16 @@ export async function upsertDeck(db: Sql, deck: Deck, source: DeckSource): Promi
 
     for (const [position, card] of deck.cards.entries()) {
       await db.runAsync(
-        'INSERT INTO cards (id, deckId, text, note, position) VALUES (?, ?, ?, ?, ?)',
-        [card.id, deck.id, card.text, card.note, position] satisfies SqlValue[],
+        'INSERT INTO cards (id, deckId, text, note, taboo, image, position) VALUES (?, ?, ?, ?, ?, ?, ?)',
+        [
+          card.id,
+          deck.id,
+          card.text,
+          card.note,
+          card.taboo && card.taboo.length > 0 ? JSON.stringify(card.taboo) : null,
+          card.image ?? null,
+          position,
+        ] satisfies SqlValue[],
       );
     }
   });

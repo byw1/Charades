@@ -161,7 +161,11 @@ export default function RoundPlayScreen() {
     <View style={styles.screen}>
       <View style={[styles.card, { backgroundColor: accent }]}>
         <TimerBar fraction={fraction} warning={warning} />
-        {card ? <CardFace text={card.text} accentColor={accent} /> : <View style={styles.blank} />}
+        {card ? (
+          <CardFace text={card.text} accentColor={accent} note={card.note} image={card.image} />
+        ) : (
+          <View style={styles.blank} />
+        )}
       </View>
 
       {/* For the room, not the holder: how the round is going. */}

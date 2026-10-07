@@ -1,6 +1,6 @@
 import type { SQLiteDatabase } from 'expo-sqlite';
 import { create } from 'zustand';
-import { createPool, type PoolCard } from '@/game/cardDrawer';
+import { createPool, type PoolCard, type PoolSourceDeck } from '@/game/cardDrawer';
 import * as round from '@/game/round';
 import type { RoundState } from '@/game/round';
 import * as session from '@/game/session';
@@ -19,12 +19,7 @@ import { saveSession } from '@/storage/sessionRepo';
  * into seenCardIds, so they return to the pool with no rollback needed.
  */
 
-export type PlayableDeck = {
-  id: string;
-  name: string;
-  accentColor: string;
-  cards: readonly { id: string; text: string; note: string | null }[];
-};
+export type PlayableDeck = PoolSourceDeck & { name: string };
 
 export type SessionStore = {
   session: Session | null;

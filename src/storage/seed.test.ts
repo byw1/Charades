@@ -11,8 +11,8 @@ import { createTestDriver, type TestDriver } from './testDriver';
  * is not trusted because it happens to live in the repo.
  */
 describe('bundled deck content', () => {
-  it('ships five decks', () => {
-    expect(bundledDeckDocuments).toHaveLength(5);
+  it('ships fourteen decks', () => {
+    expect(bundledDeckDocuments).toHaveLength(14);
   });
 
   it.each(bundledDeckDocuments.map((d, i) => [i, d] as const))(

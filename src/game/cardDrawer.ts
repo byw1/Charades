@@ -19,6 +19,15 @@ export type PoolCard = {
   note: string | null;
   /** Carried on the card so the round screen does not have to look up the deck. */
   accentColor: string;
+  taboo?: readonly string[];
+  image?: string;
+};
+
+/** The parts of a deck the pool is built from. */
+export type PoolSourceDeck = {
+  id: string;
+  accentColor: string;
+  cards: readonly { id: string; text: string; note: string | null; taboo?: readonly string[]; image?: string }[];
 };
 
 export type DrawerState = {
@@ -54,19 +63,22 @@ export const emptyDrawerState: DrawerState = { seen: [], reshuffleCount: 0 };
  * not "blend them", and interleaving makes the card colours flicker.
  */
 export function buildPool(
-  decks: readonly { id: string; accentColor: string; cards: readonly { id: string; text: string; note: string | null }[] }[],
+  decks: readonly PoolSourceDeck[],
   options: { shuffleAcrossDecks: boolean; random: Random },
 ): PoolCard[] {
   const byDeck = decks.map((deck) =>
-    deck.cards.map(
-      (card): PoolCard => ({
+    deck.cards.map((card): PoolCard => {
+      const pooled: PoolCard = {
         deckId: deck.id,
         cardId: card.id,
         text: card.text,
         note: card.note,
         accentColor: deck.accentColor,
-      }),
-    ),
+      };
+      if (card.taboo && card.taboo.length > 0) pooled.taboo = card.taboo;
+      if (card.image) pooled.image = card.image;
+      return pooled;
+    }),
   );
 
   if (options.shuffleAcrossDecks) {
@@ -114,7 +126,7 @@ export function remainingInPool(pool: readonly PoolCard[], state: DrawerState): 
 
 /** Convenience for a single round with no session around it. */
 export function createPool(
-  decks: readonly { id: string; accentColor: string; cards: readonly { id: string; text: string; note: string | null }[] }[],
+  decks: readonly PoolSourceDeck[],
   options: { shuffleAcrossDecks?: boolean; seed: number },
 ): PoolCard[] {
   return buildPool(decks, {

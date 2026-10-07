@@ -11,257 +11,557 @@
     "easy"
   ],
   "createdAt": "2026-07-26T18:00:00Z",
-  "updatedAt": "2026-10-07T18:00:00Z",
+  "updatedAt": "2026-10-07T20:00:00Z",
   "cards": [
     {
       "id": "crd_e438c3f2",
       "text": "Pizza",
-      "note": null
+      "note": null,
+      "taboo": [
+        "cheese",
+        "slice",
+        "Italian",
+        "pepperoni"
+      ]
     },
     {
       "id": "crd_71c3f47a",
       "text": "Spaghetti",
-      "note": null
+      "note": null,
+      "taboo": [
+        "pasta",
+        "Italian",
+        "meatballs",
+        "long"
+      ]
     },
     {
       "id": "crd_9d92384c",
       "text": "Avocado",
-      "note": null
+      "note": null,
+      "taboo": [
+        "green",
+        "toast",
+        "guacamole",
+        "stone"
+      ]
     },
     {
       "id": "crd_e546f2da",
       "text": "Pancakes",
-      "note": null
+      "note": null,
+      "taboo": [
+        "flip",
+        "syrup",
+        "breakfast",
+        "stack"
+      ]
     },
     {
       "id": "crd_8ddeb533",
       "text": "Sushi",
-      "note": null
+      "note": null,
+      "taboo": [
+        "rice",
+        "raw fish",
+        "Japan",
+        "chopsticks"
+      ]
     },
     {
       "id": "crd_ac523ffa",
       "text": "Garlic bread",
-      "note": null
+      "note": null,
+      "taboo": [
+        "Italian",
+        "butter",
+        "side",
+        "vampires"
+      ]
     },
     {
       "id": "crd_e98707cd",
       "text": "Cheeseburger",
-      "note": null
+      "note": null,
+      "taboo": [
+        "beef",
+        "bun",
+        "patty",
+        "McDonald’s"
+      ]
     },
     {
       "id": "crd_cdb156e2",
       "text": "Popcorn",
-      "note": null
+      "note": null,
+      "taboo": [
+        "cinema",
+        "pop",
+        "kernels",
+        "butter"
+      ]
     },
     {
       "id": "crd_f863cc46",
       "text": "Marmite",
-      "note": null
+      "note": null,
+      "taboo": [
+        "love it or hate it",
+        "spread",
+        "toast",
+        "yeast"
+      ]
     },
     {
       "id": "crd_6804a56e",
       "text": "Lasagne",
-      "note": null
+      "note": null,
+      "taboo": [
+        "layers",
+        "pasta",
+        "Garfield",
+        "Italian"
+      ]
     },
     {
       "id": "crd_74015a5b",
       "text": "Fish and chips",
-      "note": null
+      "note": null,
+      "taboo": [
+        "seaside",
+        "British",
+        "batter",
+        "vinegar"
+      ]
     },
     {
       "id": "crd_2633035b",
       "text": "Ice cream",
-      "note": null
+      "note": null,
+      "taboo": [
+        "cone",
+        "cold",
+        "scoop",
+        "vanilla"
+      ]
     },
     {
       "id": "crd_94818016",
       "text": "Guacamole",
-      "note": null
+      "note": null,
+      "taboo": [
+        "avocado",
+        "Mexican",
+        "dip",
+        "green"
+      ]
     },
     {
       "id": "crd_69705982",
       "text": "Croissant",
-      "note": null
+      "note": null,
+      "taboo": [
+        "French",
+        "pastry",
+        "flaky",
+        "breakfast"
+      ]
     },
     {
       "id": "crd_420c217b",
       "text": "Hot sauce",
-      "note": null
+      "note": null,
+      "taboo": [
+        "spicy",
+        "chilli",
+        "burn",
+        "sriracha"
+      ]
     },
     {
       "id": "crd_820050cf",
       "text": "Pineapple",
-      "note": null
+      "note": null,
+      "taboo": [
+        "spiky",
+        "pizza",
+        "tropical",
+        "yellow"
+      ]
     },
     {
       "id": "crd_c2101890",
       "text": "Cereal",
-      "note": null
+      "note": null,
+      "taboo": [
+        "bowl",
+        "milk",
+        "breakfast",
+        "flakes"
+      ]
     },
     {
       "id": "crd_1816e3e0",
       "text": "Doughnut",
-      "note": null
+      "note": null,
+      "taboo": [
+        "ring",
+        "hole",
+        "glazed",
+        "Homer"
+      ]
     },
     {
       "id": "crd_9d9fc291",
       "text": "Olive",
-      "note": null
+      "note": null,
+      "taboo": [
+        "green",
+        "black",
+        "pizza",
+        "Greek"
+      ]
     },
     {
       "id": "crd_7e651cd5",
       "text": "Toastie",
-      "note": null
+      "note": null,
+      "taboo": [
+        "cheese",
+        "sandwich",
+        "toasted",
+        "grill"
+      ]
     },
     {
       "id": "crd_469201e0",
       "text": "Curry",
-      "note": null
+      "note": null,
+      "taboo": [
+        "spicy",
+        "Indian",
+        "rice",
+        "naan"
+      ]
     },
     {
       "id": "crd_3f9a74c0",
       "text": "Bacon sandwich",
-      "note": null
+      "note": null,
+      "taboo": [
+        "pig",
+        "breakfast",
+        "crispy",
+        "bread"
+      ]
     },
     {
       "id": "crd_2a771f8b",
       "text": "Coleslaw",
-      "note": null
+      "note": null,
+      "taboo": [
+        "cabbage",
+        "mayo",
+        "carrot",
+        "side"
+      ]
     },
     {
       "id": "crd_8ff4e88c",
       "text": "Watermelon",
-      "note": null
+      "note": null,
+      "taboo": [
+        "seeds",
+        "green",
+        "red",
+        "summer"
+      ]
     },
     {
       "id": "crd_5201808d",
       "text": "Espresso",
-      "note": null
+      "note": null,
+      "taboo": [
+        "coffee",
+        "shot",
+        "Italian",
+        "strong"
+      ]
     },
     {
       "id": "crd_495a0125",
       "text": "Baked beans",
-      "note": null
+      "note": null,
+      "taboo": [
+        "tin",
+        "toast",
+        "Heinz",
+        "tomato"
+      ]
     },
     {
       "id": "crd_71359166",
       "text": "Chocolate",
-      "note": null
+      "note": null,
+      "taboo": [
+        "cocoa",
+        "bar",
+        "sweet",
+        "brown"
+      ]
     },
     {
       "id": "crd_cb107136",
       "text": "Noodles",
-      "note": null
+      "note": null,
+      "taboo": [
+        "ramen",
+        "slurp",
+        "Asian",
+        "pasta"
+      ]
     },
     {
       "id": "crd_235cc554",
       "text": "Peanut butter",
-      "note": null
+      "note": null,
+      "taboo": [
+        "jelly",
+        "nuts",
+        "spread",
+        "sandwich"
+      ]
     },
     {
       "id": "crd_8a281aa0",
       "text": "Cheesecake",
-      "note": null
+      "note": null,
+      "taboo": [
+        "dessert",
+        "biscuit base",
+        "cream cheese",
+        "New York"
+      ]
     },
     {
       "id": "crd_a621bd07",
       "text": "Roast dinner",
-      "note": null
+      "note": null,
+      "taboo": [
+        "Sunday",
+        "gravy",
+        "potatoes",
+        "chicken"
+      ]
     },
     {
       "id": "crd_50dd7107",
       "text": "Smoothie",
-      "note": null
+      "note": null,
+      "taboo": [
+        "blend",
+        "fruit",
+        "drink",
+        "banana"
+      ]
     },
     {
       "id": "crd_16f37035",
       "text": "Kebab",
-      "note": null
+      "note": null,
+      "taboo": [
+        "skewer",
+        "meat",
+        "doner",
+        "late night"
+      ]
     },
     {
       "id": "crd_7ad0d77b",
       "text": "Porridge",
-      "note": null
+      "note": null,
+      "taboo": [
+        "oats",
+        "Goldilocks",
+        "breakfast",
+        "hot"
+      ]
     },
     {
       "id": "crd_067f6230",
       "text": "Lemonade",
-      "note": null
+      "note": null,
+      "taboo": [
+        "lemons",
+        "fizzy",
+        "sour",
+        "drink"
+      ]
     },
     {
       "id": "crd_226c0ee8",
       "text": "Halloumi",
-      "note": null
+      "note": null,
+      "taboo": [
+        "squeaky",
+        "cheese",
+        "grilled",
+        "Cyprus"
+      ]
     },
     {
       "id": "crd_43678833",
       "text": "Custard",
-      "note": null
+      "note": null,
+      "taboo": [
+        "yellow",
+        "pudding",
+        "eggs",
+        "Bird’s"
+      ]
     },
     {
       "id": "crd_ad064338",
       "text": "Pesto",
-      "note": null
+      "note": null,
+      "taboo": [
+        "basil",
+        "green",
+        "pasta",
+        "pine nuts"
+      ]
     },
     {
       "id": "crd_208d9935",
       "text": "Nachos",
-      "note": null
+      "note": null,
+      "taboo": [
+        "cheese",
+        "chips",
+        "Mexican",
+        "jalapeños"
+      ]
     },
     {
       "id": "crd_fdbb419c",
       "text": "Scrambled eggs",
-      "note": null
+      "note": null,
+      "taboo": [
+        "breakfast",
+        "whisk",
+        "toast",
+        "yellow"
+      ]
     },
     {
       "id": "crd_8fa37ab9",
       "text": "Bubble tea",
-      "note": null
+      "note": null,
+      "taboo": [
+        "boba",
+        "tapioca",
+        "pearls",
+        "straw"
+      ]
     },
     {
       "id": "crd_59816708",
       "text": "Gravy",
-      "note": null
+      "note": null,
+      "taboo": [
+        "brown",
+        "sauce",
+        "roast",
+        "pour"
+      ]
     },
     {
       "id": "crd_7bf8bcad",
       "text": "Mushroom",
-      "note": null
+      "note": null,
+      "taboo": [
+        "fungi",
+        "Mario",
+        "toadstool",
+        "button"
+      ]
     },
     {
       "id": "crd_2d9975da",
       "text": "Waffle",
-      "note": null
+      "note": null,
+      "taboo": [
+        "grid",
+        "syrup",
+        "Belgian",
+        "squares"
+      ]
     },
     {
       "id": "crd_f858918a",
       "text": "Hummus",
-      "note": null
+      "note": null,
+      "taboo": [
+        "chickpeas",
+        "dip",
+        "pitta",
+        "tahini"
+      ]
     },
     {
       "id": "crd_eb9a105b",
       "text": "Fried rice",
-      "note": null
+      "note": null,
+      "taboo": [
+        "Chinese",
+        "egg",
+        "wok",
+        "takeaway"
+      ]
     },
     {
       "id": "crd_3a93b468",
       "text": "Trifle",
-      "note": null
+      "note": null,
+      "taboo": [
+        "layers",
+        "custard",
+        "jelly",
+        "sponge"
+      ]
     },
     {
       "id": "crd_afd1c577",
       "text": "Ketchup",
-      "note": null
+      "note": null,
+      "taboo": [
+        "tomato",
+        "red",
+        "sauce",
+        "chips"
+      ]
     },
     {
       "id": "crd_05b72d31",
       "text": "Pickle",
-      "note": null
+      "note": null,
+      "taboo": [
+        "gherkin",
+        "sour",
+        "jar",
+        "cucumber"
+      ]
     },
     {
       "id": "crd_aa24165e",
       "text": "Full English breakfast",
-      "note": null
+      "note": null,
+      "taboo": [
+        "fry-up",
+        "bacon",
+        "beans",
+        "sausage"
+      ]
     }
   ]
 }

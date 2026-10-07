@@ -1,0 +1,567 @@
+{
+  "schemaVersion": 1,
+  "id": "dck_1fe18086",
+  "name": "Anime & Gaming",
+  "description": "Shonen heroes, Nintendo royalty and the games that ate your weekends.",
+  "author": "Deckhead",
+  "language": "en",
+  "accentColor": "#FF3B47",
+  "tags": [
+    "anime",
+    "games"
+  ],
+  "createdAt": "2026-10-07T20:00:00Z",
+  "updatedAt": "2026-10-07T20:00:00Z",
+  "cards": [
+    {
+      "id": "crd_c077c342",
+      "text": "Pikachu",
+      "note": null,
+      "taboo": [
+        "Pokémon",
+        "yellow",
+        "electric",
+        "Ash"
+      ]
+    },
+    {
+      "id": "crd_257a2b45",
+      "text": "Naruto",
+      "note": null,
+      "taboo": [
+        "ninja",
+        "Hokage",
+        "orange",
+        "Sasuke"
+      ]
+    },
+    {
+      "id": "crd_c2170e27",
+      "text": "Goku",
+      "note": null,
+      "taboo": [
+        "Dragon Ball",
+        "Saiyan",
+        "Kamehameha",
+        "spiky hair"
+      ]
+    },
+    {
+      "id": "crd_be36ed17",
+      "text": "One Piece",
+      "note": null,
+      "taboo": [
+        "Luffy",
+        "pirates",
+        "straw hat",
+        "treasure"
+      ]
+    },
+    {
+      "id": "crd_453c214d",
+      "text": "Attack on Titan",
+      "note": null,
+      "taboo": [
+        "giants",
+        "walls",
+        "Eren",
+        "Survey Corps"
+      ]
+    },
+    {
+      "id": "crd_4d7dd725",
+      "text": "Studio Ghibli",
+      "note": null,
+      "taboo": [
+        "Totoro",
+        "Miyazaki",
+        "Spirited Away",
+        "animation"
+      ]
+    },
+    {
+      "id": "crd_f8580a3c",
+      "text": "My Neighbor Totoro",
+      "note": null,
+      "taboo": [
+        "Ghibli",
+        "forest spirit",
+        "Catbus",
+        "umbrella"
+      ]
+    },
+    {
+      "id": "crd_a09c5e65",
+      "text": "Sailor Moon",
+      "note": null,
+      "taboo": [
+        "magical girl",
+        "Usagi",
+        "tiara",
+        "transformation"
+      ]
+    },
+    {
+      "id": "crd_c36860dd",
+      "text": "Demon Slayer",
+      "note": null,
+      "taboo": [
+        "Tanjiro",
+        "sword",
+        "Nezuko",
+        "breathing"
+      ]
+    },
+    {
+      "id": "crd_6e081351",
+      "text": "Jujutsu Kaisen",
+      "note": null,
+      "taboo": [
+        "Gojo",
+        "curses",
+        "Yuji",
+        "sorcerers"
+      ]
+    },
+    {
+      "id": "crd_6168b610",
+      "text": "Death Note",
+      "note": null,
+      "taboo": [
+        "notebook",
+        "Light",
+        "Ryuk",
+        "Kira"
+      ]
+    },
+    {
+      "id": "crd_7b838e1a",
+      "text": "Spy x Family",
+      "note": null,
+      "taboo": [
+        "Anya",
+        "Loid",
+        "Yor",
+        "telepath"
+      ]
+    },
+    {
+      "id": "crd_c89c7e98",
+      "text": "Minecraft",
+      "note": null,
+      "taboo": [
+        "blocks",
+        "Creeper",
+        "Steve",
+        "crafting"
+      ]
+    },
+    {
+      "id": "crd_b1bae7ae",
+      "text": "Fortnite",
+      "note": null,
+      "taboo": [
+        "battle royale",
+        "Victory Royale",
+        "building",
+        "emotes"
+      ]
+    },
+    {
+      "id": "crd_8c048a31",
+      "text": "Mario Kart",
+      "note": null,
+      "taboo": [
+        "racing",
+        "blue shell",
+        "Rainbow Road",
+        "Nintendo"
+      ]
+    },
+    {
+      "id": "crd_a7446845",
+      "text": "Super Mario",
+      "note": null,
+      "taboo": [
+        "plumber",
+        "Luigi",
+        "Princess Peach",
+        "jump"
+      ]
+    },
+    {
+      "id": "crd_b1557f7c",
+      "text": "The Legend of Zelda",
+      "note": null,
+      "taboo": [
+        "Link",
+        "Hyrule",
+        "sword",
+        "Triforce"
+      ]
+    },
+    {
+      "id": "crd_803a88dd",
+      "text": "Pac-Man",
+      "note": null,
+      "taboo": [
+        "ghosts",
+        "yellow",
+        "dots",
+        "maze"
+      ]
+    },
+    {
+      "id": "crd_e89e8baa",
+      "text": "Tetris",
+      "note": null,
+      "taboo": [
+        "blocks",
+        "falling",
+        "lines",
+        "Russia"
+      ]
+    },
+    {
+      "id": "crd_89a58b8c",
+      "text": "Animal Crossing",
+      "note": null,
+      "taboo": [
+        "island",
+        "Tom Nook",
+        "villagers",
+        "bells"
+      ]
+    },
+    {
+      "id": "crd_1f864227",
+      "text": "Roblox",
+      "note": null,
+      "taboo": [
+        "blocks",
+        "Robux",
+        "avatar",
+        "games"
+      ]
+    },
+    {
+      "id": "crd_e70e2866",
+      "text": "League of Legends",
+      "note": null,
+      "taboo": [
+        "LoL",
+        "champions",
+        "Riot",
+        "lanes"
+      ]
+    },
+    {
+      "id": "crd_d601a838",
+      "text": "Pokémon cards",
+      "note": null,
+      "taboo": [
+        "trading",
+        "Charizard",
+        "holo",
+        "collect"
+      ]
+    },
+    {
+      "id": "crd_480af6e7",
+      "text": "Sonic the Hedgehog",
+      "note": null,
+      "taboo": [
+        "blue",
+        "fast",
+        "rings",
+        "Sega"
+      ]
+    },
+    {
+      "id": "crd_20a8b3a5",
+      "text": "Donkey Kong",
+      "note": null,
+      "taboo": [
+        "gorilla",
+        "barrels",
+        "Nintendo",
+        "bananas"
+      ]
+    },
+    {
+      "id": "crd_082580e3",
+      "text": "Kirby",
+      "note": null,
+      "taboo": [
+        "pink",
+        "puffball",
+        "inhale",
+        "Nintendo"
+      ]
+    },
+    {
+      "id": "crd_57dc167e",
+      "text": "The Sims",
+      "note": null,
+      "taboo": [
+        "build",
+        "Simlish",
+        "life",
+        "plumbob"
+      ]
+    },
+    {
+      "id": "crd_64206214",
+      "text": "Stardew Valley",
+      "note": null,
+      "taboo": [
+        "farming",
+        "crops",
+        "Pelican Town",
+        "cozy"
+      ]
+    },
+    {
+      "id": "crd_cd99ca93",
+      "text": "Fall Guys",
+      "note": null,
+      "taboo": [
+        "jellybean",
+        "obstacles",
+        "crown",
+        "colourful"
+      ]
+    },
+    {
+      "id": "crd_7cb366eb",
+      "text": "Rocket League",
+      "note": null,
+      "taboo": [
+        "cars",
+        "football",
+        "boost",
+        "goal"
+      ]
+    },
+    {
+      "id": "crd_c7a80280",
+      "text": "Candy Crush",
+      "note": null,
+      "taboo": [
+        "match three",
+        "sweets",
+        "phone",
+        "levels"
+      ]
+    },
+    {
+      "id": "crd_00b019cf",
+      "text": "Angry Birds",
+      "note": null,
+      "taboo": [
+        "slingshot",
+        "pigs",
+        "red",
+        "Rovio"
+      ]
+    },
+    {
+      "id": "crd_3aa647f8",
+      "text": "Flappy Bird",
+      "note": null,
+      "taboo": [
+        "pipes",
+        "tap",
+        "wings",
+        "impossible"
+      ]
+    },
+    {
+      "id": "crd_9da94b2d",
+      "text": "Pokémon Go",
+      "note": null,
+      "taboo": [
+        "walk",
+        "catch",
+        "phone",
+        "augmented reality"
+      ]
+    },
+    {
+      "id": "crd_e4476ec2",
+      "text": "Game Boy",
+      "note": null,
+      "taboo": [
+        "Nintendo",
+        "handheld",
+        "cartridge",
+        "grey"
+      ]
+    },
+    {
+      "id": "crd_46b61f84",
+      "text": "Controller",
+      "note": null,
+      "taboo": [
+        "joystick",
+        "buttons",
+        "PlayStation",
+        "hold"
+      ]
+    },
+    {
+      "id": "crd_cdeced33",
+      "text": "Rage quit",
+      "note": null,
+      "taboo": [
+        "angry",
+        "leave",
+        "lose",
+        "game"
+      ]
+    },
+    {
+      "id": "crd_4f3473d5",
+      "text": "Boss fight",
+      "note": null,
+      "taboo": [
+        "final",
+        "enemy",
+        "level",
+        "health bar"
+      ]
+    },
+    {
+      "id": "crd_bdfbc3e1",
+      "text": "Respawn",
+      "note": null,
+      "taboo": [
+        "come back",
+        "again",
+        "checkpoint",
+        "life"
+      ]
+    },
+    {
+      "id": "crd_d1529715",
+      "text": "Cosplay",
+      "note": null,
+      "taboo": [
+        "costume",
+        "dress up",
+        "convention",
+        "character"
+      ]
+    },
+    {
+      "id": "crd_92b1a8f7",
+      "text": "Twitch streamer",
+      "note": null,
+      "taboo": [
+        "live",
+        "chat",
+        "gaming",
+        "subs"
+      ]
+    },
+    {
+      "id": "crd_156a20e6",
+      "text": "Esports",
+      "note": null,
+      "taboo": [
+        "competitive",
+        "tournament",
+        "pro gamers",
+        "arena"
+      ]
+    },
+    {
+      "id": "crd_33789865",
+      "text": "Loot box",
+      "note": null,
+      "taboo": [
+        "random",
+        "prize",
+        "crate",
+        "open"
+      ]
+    },
+    {
+      "id": "crd_ae0dfd3e",
+      "text": "Easter egg",
+      "note": null,
+      "taboo": [
+        "hidden",
+        "secret",
+        "game",
+        "bunny"
+      ]
+    },
+    {
+      "id": "crd_18de1c44",
+      "text": "Lag",
+      "note": null,
+      "taboo": [
+        "slow",
+        "internet",
+        "delay",
+        "ping"
+      ]
+    },
+    {
+      "id": "crd_de7a16d2",
+      "text": "Final Fantasy",
+      "note": null,
+      "taboo": [
+        "RPG",
+        "Cloud",
+        "Square Enix",
+        "Chocobo"
+      ]
+    },
+    {
+      "id": "crd_aad07f97",
+      "text": "Elden Ring",
+      "note": null,
+      "taboo": [
+        "hard",
+        "souls",
+        "open world",
+        "die"
+      ]
+    },
+    {
+      "id": "crd_bcc3c206",
+      "text": "Hello Kitty",
+      "note": null,
+      "taboo": [
+        "Sanrio",
+        "bow",
+        "cat",
+        "Japan"
+      ]
+    },
+    {
+      "id": "crd_16255ab4",
+      "text": "My Hero Academia",
+      "note": null,
+      "taboo": [
+        "Deku",
+        "quirks",
+        "All Might",
+        "heroes"
+      ]
+    },
+    {
+      "id": "crd_8634568f",
+      "text": "Kawaii",
+      "note": null,
+      "taboo": [
+        "cute",
+        "Japanese",
+        "adorable",
+        "pink"
+      ]
+    }
+  ]
+}

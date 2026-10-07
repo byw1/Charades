@@ -46,6 +46,22 @@ describe('deck repository', () => {
   const save = (deck: Deck, source: DeckSource = 'custom') => upsertDeck(db, deck, source);
 
   describe('round trip', () => {
+    it('keeps Taboo words and photos, and leaves them off cards without', async () => {
+      const deck = makeDeck({
+        cards: [
+          { id: makeCardId(), text: 'Jaws', note: null, taboo: ['shark', 'beach'] },
+          { id: makeCardId(), text: 'Our dog', note: null, image: 'data:image/jpeg;base64,AAAA' },
+          { id: makeCardId(), text: 'Plain', note: null },
+        ],
+      });
+      await save(deck);
+
+      const loaded = await getDeck(db, deck.id);
+      expect(loaded?.cards).toEqual(deck.cards);
+      expect(loaded?.cards[2]).not.toHaveProperty('taboo');
+      expect(loaded?.cards[2]).not.toHaveProperty('image');
+    });
+
     it('returns a deck exactly as it went in', async () => {
       const deck = makeDeck();
       await save(deck);

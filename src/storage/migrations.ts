@@ -90,6 +90,21 @@ export const migrations: readonly Migration[] = [
       CREATE INDEX sessions_in_progress ON sessions (completedAt, createdAt DESC);
     `,
   },
+  {
+    version: 3,
+    name: 'taboo words and photo cards',
+    /**
+     * Both nullable, so every existing card is untouched: no Taboo words and no
+     * photo. Taboo words are a JSON array for the same reason tags are — read
+     * and written whole, never queried across. A photo is a JPEG data URI kept
+     * in the row rather than a file on disk, so it cannot be orphaned or lost
+     * when iOS moves the app's container, and a deck export carries it as is.
+     */
+    up: `
+      ALTER TABLE cards ADD COLUMN taboo TEXT;
+      ALTER TABLE cards ADD COLUMN image TEXT;
+    `,
+  },
 ];
 
 /**
