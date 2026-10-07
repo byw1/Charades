@@ -63,6 +63,21 @@ export function Sticker({
 }
 
 /** A round avatar: a colour, a letter, and an optional emoji badge. */
+const FRIEND_TINTS = ['#FF3D8B', '#2EA8FF', '#FFE500', '#9B5CFF', '#00C2B2', '#FF3B47', '#5B5BFF', '#E040FB'];
+
+/**
+ * A person's colour, worked out from their name so the same friend is the
+ * same colour on every screen and every night, with nothing stored.
+ */
+export function tintFor(name: string): string {
+  let hash = 0x811c9dc5;
+  for (const ch of name.trim().toLocaleLowerCase()) {
+    hash ^= ch.codePointAt(0) ?? 0;
+    hash = Math.imul(hash, 0x01000193);
+  }
+  return FRIEND_TINTS[(hash >>> 0) % FRIEND_TINTS.length]!;
+}
+
 export function Avatar({
   name,
   tint,

@@ -2,6 +2,7 @@ import { Redirect, useFocusEffect, useRouter } from 'expo-router';
 import { useCallback, useMemo, useRef, useState } from 'react';
 import { ScrollView, StyleSheet, useWindowDimensions, View } from 'react-native';
 import type { DeckSummary } from '@/decks/types';
+import { friendBoard, topRivalry, type Friend, type Rivalry } from '@/game/friends';
 import { playStats, type PlayStats } from '@/game/stats';
 import { standings } from '@/game/scoring';
 import { isJustPlay, makeJustPlayTeam } from '@/game/teams';
@@ -56,6 +57,7 @@ export default function HomeScreen() {
   const [query, setQuery] = useState('');
   const [saved, setSaved] = useState<Session | null>(null);
   const [stats, setStats] = useState<PlayStats | null>(null);
+  const [friends, setFriends] = useState<{ board: Friend[]; rivalry: Rivalry | null }>({ board: [], rivalry: null });
   const [lensIndex, setLensIndex] = useState(0);
 
   // Everything is reloaded on focus, so coming back from a game, the editor or
@@ -77,6 +79,7 @@ export default function HomeScreen() {
         setAll(decks);
         setSaved(session);
         setStats(playStats(history, new Date()));
+        setFriends({ board: friendBoard(history), rivalry: topRivalry(history) });
       })();
 
       return () => {
@@ -194,6 +197,9 @@ export default function HomeScreen() {
         />
         <MePage
           stats={stats}
+          friends={friends.board}
+          rivalry={friends.rivalry}
+          onWrapped={() => router.push('/wrapped')}
           onSettings={() => router.push('/settings')}
           onRules={() => router.push('/welcome?replay=1')}
           bottomInset={bar}

@@ -1,11 +1,12 @@
 import { ScrollView, StyleSheet, Text as RNText, useWindowDimensions, View } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
+import type { Friend, Rivalry } from '@/game/friends';
 import { badges as badgesFor, type PlayStats } from '@/game/stats';
 import { CircleButton } from '@/ui/CircleButton';
 import { Icon, type IconName } from '@/ui/Icon';
 import { Mascot } from '@/ui/Mascot';
 import { Group, IconBadge, SectionLabel } from '@/ui/Section';
-import { ChatLine } from '@/ui/Social';
+import { Avatar, ChatLine, tintFor } from '@/ui/Social';
 import { StatTile } from '@/ui/StatTile';
 import { Tap } from '@/ui/Tap';
 import { Text } from '@/ui/Text';
@@ -13,6 +14,9 @@ import { color, font, gutter, palette, radius, space } from '@/ui/tokens';
 
 export type MePageProps = {
   stats: PlayStats | null;
+  friends: Friend[];
+  rivalry: Rivalry | null;
+  onWrapped: () => void;
   onSettings: () => void;
   onRules: () => void;
   bottomInset: number;
@@ -22,7 +26,7 @@ export type MePageProps = {
  * You. The streak front and centre, then the numbers, then the badges — the
  * things worth screenshotting — and the settings tucked behind a gear.
  */
-export function MePage({ stats, onSettings, onRules, bottomInset }: MePageProps) {
+export function MePage({ stats, friends, rivalry, onWrapped, onSettings, onRules, bottomInset }: MePageProps) {
   const { width } = useWindowDimensions();
   const insets = useSafeAreaInsets();
   const s = stats ?? { games: 0, rounds: 0, cardsGuessed: 0, bestRound: 0, streak: 0, playedToday: false };
@@ -72,6 +76,59 @@ export function MePage({ stats, onSettings, onRules, bottomInset }: MePageProps)
             <StatTile label="Rounds" value={s.rounds} tint={palette.blue} />
           </View>
         </View>
+
+        {s.games > 0 ? (
+          <Tap onPress={onWrapped} squish={0.97} accessibilityLabel="Your night, wrapped. Make a story to share." contentStyle={styles.wrapped}>
+            <RNText style={styles.wrappedEmoji}>🎁</RNText>
+            <View style={styles.grow}>
+              <Text variant="heading" style={styles.wrappedTitle}>
+                Tonight, wrapped
+              </Text>
+              <Text variant="caption" style={styles.wrappedSub}>
+                MVP, best round, most-passed card. One image to share.
+              </Text>
+            </View>
+            <Icon name="forward" size={18} color={color.ink} weight={3} />
+          </Tap>
+        ) : null}
+
+        {friends.length > 0 ? (
+          <View>
+            <SectionLabel>Friends</SectionLabel>
+            <View style={styles.friends}>
+              {friends.slice(0, 6).map((friend, index) => (
+                <View
+                  key={friend.name}
+                  style={styles.friend}
+                  accessible
+                  accessibilityLabel={`${index + 1}. ${friend.name}: ${friend.wins} wins, ${friend.cardsGuessed} cards guessed, ${friend.games} games`}
+                >
+                  <Text style={styles.rank}>{index + 1}</Text>
+                  <Avatar name={friend.name} tint={tintFor(friend.name)} size={38} badge={index === 0 && friend.wins > 0 ? '👑' : undefined} />
+                  <View style={styles.grow}>
+                    <Text variant="heading" numberOfLines={1}>
+                      {friend.name}
+                    </Text>
+                    <Text variant="caption" tone="muted">
+                      {friend.cardsGuessed} cards · best {friend.bestRound} · {friend.games} {friend.games === 1 ? 'game' : 'games'}
+                    </Text>
+                  </View>
+                  <View style={styles.wins}>
+                    <RNText style={styles.winsNumber}>{friend.wins}</RNText>
+                    <Text variant="caption" tone="muted">
+                      {friend.wins === 1 ? 'win' : 'wins'}
+                    </Text>
+                  </View>
+                </View>
+              ))}
+            </View>
+            {rivalry ? (
+              <ChatLine style={[styles.pad, styles.rivalry]}>
+                {`⚔️ Biggest rivalry: ${rivalry.a} vs ${rivalry.b}, ${rivalry.aWins}–${rivalry.bWins} across ${rivalry.games} games.`}
+              </ChatLine>
+            ) : null}
+          </View>
+        ) : null}
 
         <View>
           <SectionLabel>{`Badges · ${earned} of ${list.length}`}</SectionLabel>
@@ -164,4 +221,30 @@ const styles = StyleSheet.create({
   navRow: { flexDirection: 'row', alignItems: 'center', gap: 12, paddingHorizontal: space.md, paddingVertical: 12 },
   divider: { borderBottomWidth: StyleSheet.hairlineWidth, borderBottomColor: color.line },
   grow: { flex: 1 },
+  wrapped: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: space.md,
+    marginHorizontal: gutter,
+    padding: space.md,
+    borderRadius: radius.lg,
+    backgroundColor: palette.yellow,
+  },
+  wrappedEmoji: { fontSize: 34, lineHeight: 40 },
+  wrappedTitle: { color: color.ink },
+  wrappedSub: { color: color.ink, opacity: 0.75 },
+  friends: { gap: 8, paddingHorizontal: gutter },
+  friend: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 12,
+    paddingHorizontal: space.md - 4,
+    paddingVertical: 10,
+    borderRadius: radius.lg,
+    backgroundColor: color.surface,
+  },
+  rank: { fontFamily: font.heavy, fontSize: 14, lineHeight: 18, color: color.textFaint, width: 16, textAlign: 'center' },
+  wins: { alignItems: 'center', minWidth: 40 },
+  winsNumber: { fontFamily: font.display, fontSize: 26, lineHeight: 30, color: color.text },
+  rivalry: { marginTop: space.md },
 });
