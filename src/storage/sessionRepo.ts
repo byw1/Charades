@@ -76,6 +76,18 @@ export async function listSessionSummaries(db: Sql, limit = 50): Promise<Session
   });
 }
 
+/**
+ * Full sessions, newest first, for lifetime stats. Unreadable rows are skipped
+ * rather than failing the whole list: one bad game should not zero a streak.
+ */
+export async function listSessions(db: Sql, limit = 1000): Promise<Session[]> {
+  const rows = await db.getAllAsync<SessionRow>('SELECT * FROM sessions ORDER BY createdAt DESC LIMIT ?', [limit]);
+  return rows.flatMap((row) => {
+    const session = parseSession(row.data);
+    return session ? [session] : [];
+  });
+}
+
 export async function deleteSession(db: Sql, sessionId: string): Promise<boolean> {
   const result = await db.runAsync('DELETE FROM sessions WHERE id = ?', [sessionId]);
   return result.changes > 0;

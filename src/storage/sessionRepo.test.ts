@@ -9,6 +9,7 @@ import {
   getResumableSession,
   getSession,
   listSessionSummaries,
+  listSessions,
   saveSession,
 } from './sessionRepo';
 import { parseSession } from './sessionSchema';
@@ -206,6 +207,25 @@ describe('session storage', () => {
 
     it('is empty on a fresh database', async () => {
       expect(await listSessionSummaries(db)).toEqual([]);
+    });
+  });
+
+  describe('full history for stats', () => {
+    it('returns whole sessions, rounds included, newest first', async () => {
+      await saveSession(db, played(newSession('ses_old', { createdAt: T0 })));
+      await saveSession(db, newSession('ses_new', { createdAt: T1 }));
+
+      const sessions = await listSessions(db);
+      expect(sessions.map((s) => s.id)).toEqual(['ses_new', 'ses_old']);
+      expect(sessions[1]?.rounds[0]?.results).toHaveLength(2);
+    });
+
+    it('skips a row that cannot be read instead of failing the whole list', async () => {
+      await saveSession(db, newSession('ses_good'));
+      await saveSession(db, newSession('ses_bad'));
+      db.raw.prepare('UPDATE sessions SET data = ? WHERE id = ?').run('nonsense', 'ses_bad');
+
+      expect((await listSessions(db)).map((s) => s.id)).toEqual(['ses_good']);
     });
   });
 
