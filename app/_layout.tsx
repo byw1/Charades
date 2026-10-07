@@ -36,6 +36,7 @@ export default function RootLayout() {
         <Stack.Screen name="welcome" options={{ animation: 'fade', gestureEnabled: false }} />
         <Stack.Screen name="settings" options={{ presentation: 'modal', animation: 'slide_from_bottom' }} />
         <Stack.Screen name="wrapped" options={{ presentation: 'modal', animation: 'slide_from_bottom' }} />
+        <Stack.Screen name="reel" options={{ presentation: 'modal', animation: 'slide_from_bottom' }} />
         <Stack.Screen name="round" options={{ animation: 'fade', gestureEnabled: false }} />
       </Stack>
     </SafeAreaProvider>

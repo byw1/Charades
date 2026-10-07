@@ -1,8 +1,12 @@
+import { Camera } from 'expo-camera';
 import Constants from 'expo-constants';
 import { useRouter } from 'expo-router';
-import { Alert, ScrollView, StyleSheet, View } from 'react-native';
+import { useState } from 'react';
+import { Alert, Linking, ScrollView, StyleSheet, View } from 'react-native';
 import { useHaptics } from '@/hooks/useHaptics';
 import { useSettings, useSettingsStore } from '@/hooks/useSettings';
+import { allowReminders } from '@/media/reminders';
+import { allowVoice, voiceSupported } from '@/media/voice';
 import { Chip } from '@/ui/Chip';
 import { Icon, type IconName } from '@/ui/Icon';
 import { Screen } from '@/ui/Screen';
@@ -29,10 +33,38 @@ export default function SettingsScreen() {
   const set = useSettingsStore((s) => s.set);
   const resetAll = useSettingsStore((s) => s.resetAll);
 
+  const [canListen] = useState(() => voiceSupported());
+
+  const denied = (what: string) =>
+    Alert.alert(`${what} is turned off for Deckhead`, 'You can allow it in the Settings app.', [
+      { text: 'Not now', style: 'cancel' },
+      { text: 'Open Settings', onPress: () => void Linking.openSettings() },
+    ]);
+
+  const toggleReminders = async (on: boolean) => {
+    if (!on) return set('streakReminders', false);
+    if (await allowReminders()) set('streakReminders', true);
+    else denied('Notifications');
+  };
+
+  const toggleVoice = async (on: boolean) => {
+    if (!on) return set('voiceReferee', false);
+    if (await allowVoice()) set('voiceReferee', true);
+    else denied('Speech recognition');
+  };
+
+  const toggleRecording = async (on: boolean) => {
+    if (!on) return set('recordRounds', false);
+    const cameraOk = (await Camera.requestCameraPermissionsAsync()).granted;
+    const micOk = cameraOk && (await Camera.requestMicrophonePermissionsAsync()).granted;
+    if (cameraOk && micOk) set('recordRounds', true);
+    else denied(cameraOk ? 'The microphone' : 'The camera');
+  };
+
   const confirmReset = () => {
     Alert.alert(
       'Reset settings?',
-      'Input, haptics and brightness go back to their defaults. Your decks, games and streak are not touched.',
+      'Your preferences go back to their defaults. Your decks, games, videos and streak are not touched.',
       [
         { text: 'Keep', style: 'cancel' },
         {
@@ -102,6 +134,47 @@ export default function SettingsScreen() {
               last
             />
           </Group>
+        </View>
+
+        <View>
+          <SectionLabel>Extras</SectionLabel>
+          <Group>
+            <SwitchRow
+              icon="camera"
+              tint={palette.pink}
+              title="Film the room"
+              detail="The front camera records each round for a highlight reel. Videos stay on this phone unless you share them."
+              value={settings.recordRounds}
+              onChange={(value) => void toggleRecording(value)}
+            />
+            <SwitchRow
+              icon="bolt"
+              tint={palette.blue}
+              title="Voice referee"
+              detail={
+                canListen
+                  ? 'Listens during a round: says got it when it hears the answer, and busted when it hears a Taboo word. Speech is recognised on this iPhone, never online.'
+                  : 'Needs the installed app on an iPhone that can recognise speech offline. Not available in Expo Go.'
+              }
+              value={settings.voiceReferee && canListen}
+              onChange={(value) => void toggleVoice(value)}
+              disabled={!canListen}
+            />
+            <SwitchRow
+              icon="flame"
+              tint={palette.red}
+              title="Streak reminders"
+              detail="One nudge in the evening when your streak is about to end. Scheduled on this phone; no servers."
+              value={settings.streakReminders}
+              onChange={(value) => void toggleReminders(value)}
+              last
+            />
+          </Group>
+          {settings.voiceReferee && settings.recordRounds && canListen ? (
+            <Text variant="caption" tone="muted" style={styles.note}>
+              With both on, the referee gets the microphone and round videos are silent.
+            </Text>
+          ) : null}
         </View>
 
         <View>

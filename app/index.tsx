@@ -3,6 +3,7 @@ import { useCallback, useMemo, useRef, useState } from 'react';
 import { ScrollView, StyleSheet, useWindowDimensions, View } from 'react-native';
 import type { DeckSummary } from '@/decks/types';
 import { friendBoard, topRivalry, type Friend, type Rivalry } from '@/game/friends';
+import { planStreakReminder } from '@/game/reminders';
 import { playStats, type PlayStats } from '@/game/stats';
 import { standings } from '@/game/scoring';
 import { isJustPlay, makeJustPlayTeam } from '@/game/teams';
@@ -16,6 +17,7 @@ import { useSessionStore } from '@/hooks/useSessionStore';
 import { useSettingsStore } from '@/hooks/useSettings';
 import { useStartGame } from '@/hooks/useStartGame';
 import { getDeck, listDeckSummaries, searchDeckSummaries } from '@/storage/deckRepo';
+import { syncStreakReminder } from '@/media/reminders';
 import { getResumableSession, listSessions } from '@/storage/sessionRepo';
 import { BottomBar, useBottomBarHeight, type BottomTab } from '@/ui/BottomBar';
 import { Tap } from '@/ui/Tap';
@@ -78,7 +80,12 @@ export default function HomeScreen() {
         if (cancelled) return;
         setAll(decks);
         setSaved(session);
-        setStats(playStats(history, new Date()));
+        const now = new Date();
+        const current = playStats(history, now);
+        setStats(current);
+        // Re-planned on every return home, so a game just played moves the
+        // reminder on to tomorrow.
+        void syncStreakReminder(planStreakReminder(current, now), useSettingsStore.getState().streakReminders);
         setFriends({ board: friendBoard(history), rivalry: topRivalry(history) });
       })();
 

@@ -6,6 +6,8 @@ import { color, font } from './tokens';
 
 export type FlashOverlayProps = {
   outcome: Outcome;
+  /** Taboo: the forbidden word that was said. Shows "Busted!" in red. */
+  busted?: string;
 };
 
 const LINES = {
@@ -21,7 +23,7 @@ const LINES = {
  * The word slams in tilted, like a sticker; it is there for anyone who cannot
  * rely on colour alone.
  */
-export function FlashOverlay({ outcome }: FlashOverlayProps) {
+export function FlashOverlay({ outcome, busted }: FlashOverlayProps) {
   const reduced = useReducedMotion();
   const [pop] = useState(() => new Animated.Value(reduced ? 1 : 0));
   const [line] = useState(() => pick(LINES[outcome]));
@@ -34,13 +36,14 @@ export function FlashOverlay({ outcome }: FlashOverlayProps) {
   }, [pop, reduced]);
 
   const correct = outcome === 'correct';
+  const background = correct ? color.correct : busted ? color.danger : color.pass;
 
   return (
     <View
-      style={[styles.overlay, { backgroundColor: correct ? color.correct : color.pass }]}
+      style={[styles.overlay, { backgroundColor: background }]}
       pointerEvents="none"
       accessibilityLiveRegion="assertive"
-      accessibilityLabel={correct ? 'Got it' : 'Pass'}
+      accessibilityLabel={correct ? 'Got it' : busted ? `Busted: ${busted}` : 'Pass'}
     >
       <Animated.View
         style={{
@@ -52,11 +55,16 @@ export function FlashOverlay({ outcome }: FlashOverlayProps) {
         }}
       >
         <Text style={styles.emoji} allowFontScaling={false}>
-          {correct ? '🔥' : '💨'}
+          {correct ? '🔥' : busted ? '🚨' : '💨'}
         </Text>
-        <Text style={styles.label} allowFontScaling={false}>
-          {line}
+        <Text style={[styles.label, busted ? { color: color.bone } : null]} allowFontScaling={false}>
+          {busted ? 'Busted!' : line}
         </Text>
+        {busted ? (
+          <Text style={styles.said} allowFontScaling={false} numberOfLines={1}>
+            Someone said “{busted}”
+          </Text>
+        ) : null}
       </Animated.View>
     </View>
   );
@@ -69,6 +77,7 @@ function pick<T>(items: readonly T[]): T {
 const styles = StyleSheet.create({
   overlay: { ...StyleSheet.absoluteFill, alignItems: 'center', justifyContent: 'center', zIndex: 10 },
   emoji: { fontSize: 64, lineHeight: 76 },
+  said: { fontFamily: font.heavy, fontSize: 26, lineHeight: 32, color: color.bone, textAlign: 'center' },
   label: {
     fontFamily: font.display,
     fontSize: 120,

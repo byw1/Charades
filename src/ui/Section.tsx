@@ -27,14 +27,16 @@ export type SwitchRowProps = {
   value: boolean;
   onChange: (value: boolean) => void;
   last?: boolean;
+  /** Greyed out, for a feature this phone or build cannot offer. */
+  disabled?: boolean;
 };
 
 /** One on/off setting: a coloured icon, a title, a line of why, a switch. */
-export function SwitchRow({ icon, tint, title, detail, value, onChange, last = false }: SwitchRowProps) {
+export function SwitchRow({ icon, tint, title, detail, value, onChange, last = false, disabled = false }: SwitchRowProps) {
   const haptics = useHaptics();
 
   return (
-    <View style={[styles.row, !last && styles.rowDivider]}>
+    <View style={[styles.row, !last && styles.rowDivider, disabled && styles.disabled]}>
       <IconBadge icon={icon} tint={tint} />
       <View style={styles.rowBody}>
         <Text variant="heading">{title}</Text>
@@ -45,6 +47,7 @@ export function SwitchRow({ icon, tint, title, detail, value, onChange, last = f
         ) : null}
       </View>
       <Switch
+        disabled={disabled}
         value={value}
         onValueChange={(next) => {
           onChange(next);
@@ -69,6 +72,7 @@ export function IconBadge({ icon, tint, size = 36 }: { icon: IconName; tint: str
 }
 
 const styles = StyleSheet.create({
+  disabled: { opacity: 0.5 },
   label: { paddingHorizontal: gutter, paddingBottom: space.sm },
   group: {
     marginHorizontal: gutter,
