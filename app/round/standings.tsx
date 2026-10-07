@@ -250,7 +250,10 @@ export default function StandingsScreen() {
               disabled={busy}
               onPress={() => void playAgain()}
             />
-            <Button label="Home" onPress={goHome} />
+            <View style={styles.footerRow}>
+              <Button label="Wrapped" icon="share" onPress={() => router.push('/wrapped')} style={styles.grow} />
+              <Button label="Home" icon="home" onPress={goHome} style={styles.grow} />
+            </View>
           </>
         ) : (
           <>
@@ -318,6 +321,8 @@ const styles = StyleSheet.create({
   rowBody: { flex: 1, gap: 1 },
   score: { fontFamily: font.display, fontSize: 32, lineHeight: 36, color: color.text },
   note: { paddingHorizontal: gutter },
+  footerRow: { flexDirection: 'row', gap: 10 },
+  grow: { flex: 1 },
   hat: {
     flexDirection: 'row',
     alignItems: 'center',
