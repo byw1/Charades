@@ -13,22 +13,28 @@ export type MascotProps = {
   animated?: boolean;
   /** The glyph on the forehead card. A question mark unless something better fits. */
   glyph?: string;
+  /** The head colour. Purple is Dex; anything else is Dex in costume. */
+  tint?: string;
 };
 
-const BODY = palette.purple;
-const BODY_SHADE = palette.purpleShade;
-const FEATURE = color.ink;
-const CHEEK = '#FF8FB1';
+const INK = color.ink;
+const CHEEK = '#FF7FB0';
 
 /**
- * Dex. A round little head with a card stuck to its forehead, which is the
- * whole game explained in one picture.
+ * Dex. A round head with a card stuck to its forehead — the game explained in
+ * one picture — drawn as a sticker: a thick white border, an ink outline, flat
+ * colour. It reads on the dark canvas, on a neon card and at icon size.
  *
- * Dex reacts: excited at a win, sad at a pass streak, sleepy on the pause
- * screen. It bobs and blinks on its own unless the phone asks for reduced
- * motion, in which case it holds still and keeps its expression.
+ * Dex reacts: excited at a win, sad at a bad round, sleepy on the pause screen.
+ * It bobs and blinks on its own unless the phone asks for reduced motion.
  */
-export function Mascot({ mood = 'happy', size = 120, animated = true, glyph = '?' }: MascotProps) {
+export function Mascot({
+  mood = 'happy',
+  size = 120,
+  animated = true,
+  glyph = '?',
+  tint = palette.purple,
+}: MascotProps) {
   const reduced = useReducedMotion();
   const live = animated && !reduced;
 
@@ -41,21 +47,11 @@ export function Mascot({ mood = 'happy', size = 120, animated = true, glyph = '?
       return;
     }
 
-    const speed = mood === 'excited' ? 420 : mood === 'sleepy' ? 1600 : 900;
+    const speed = mood === 'excited' ? 380 : mood === 'sleepy' ? 1600 : 900;
     const loop = Animated.loop(
       Animated.sequence([
-        Animated.timing(bob, {
-          toValue: 1,
-          duration: speed,
-          easing: Easing.inOut(Easing.sin),
-          useNativeDriver: true,
-        }),
-        Animated.timing(bob, {
-          toValue: 0,
-          duration: speed,
-          easing: Easing.inOut(Easing.sin),
-          useNativeDriver: true,
-        }),
+        Animated.timing(bob, { toValue: 1, duration: speed, easing: Easing.inOut(Easing.sin), useNativeDriver: true }),
+        Animated.timing(bob, { toValue: 0, duration: speed, easing: Easing.inOut(Easing.sin), useNativeDriver: true }),
       ]),
     );
     loop.start();
@@ -82,46 +78,42 @@ export function Mascot({ mood = 'happy', size = 120, animated = true, glyph = '?
     return () => clearTimeout(timeout);
   }, [live]);
 
-  const lift = mood === 'excited' ? 10 : 5;
+  const lift = mood === 'excited' ? 9 : 4;
   const translateY = bob.interpolate({ inputRange: [0, 1], outputRange: [0, -lift * (size / 120)] });
-  const scaleY = bob.interpolate({ inputRange: [0, 1], outputRange: [1, 1.02] });
+  const rotate = bob.interpolate({ inputRange: [0, 1], outputRange: ['-2deg', mood === 'excited' ? '4deg' : '2deg'] });
 
   return (
-    <View
-      style={{ width: size, height: size }}
-      accessible
-      accessibilityRole="image"
-      accessibilityLabel="Dex, the Deckhead mascot"
-    >
-      <Animated.View style={{ flex: 1, transform: [{ translateY }, { scaleY }] }}>
+    <View style={{ width: size, height: size }} accessible accessibilityRole="image" accessibilityLabel="Dex, the Deckhead mascot">
+      <Animated.View style={{ flex: 1, transform: [{ translateY }, { rotate }] }}>
         <Svg width={size} height={size} viewBox="0 0 120 120">
-          {/* Feet and ledge, so Dex sits on the same kind of shelf as the buttons. */}
-          <Ellipse cx={44} cy={110} rx={10} ry={6} fill={BODY_SHADE} />
-          <Ellipse cx={76} cy={110} rx={10} ry={6} fill={BODY_SHADE} />
-          <Circle cx={60} cy={72} r={42} fill={BODY_SHADE} />
-          <Circle cx={60} cy={68} r={42} fill={BODY} />
-          <Ellipse cx={30} cy={70} rx={6} ry={11} fill="#FFFFFF" opacity={0.18} />
+          {/* Sticker border: the whole silhouette, fat and white, underneath. */}
+          <G fill="#FFFFFF" stroke="#FFFFFF" strokeWidth={12} strokeLinejoin="round">
+            <Circle cx={60} cy={72} r={40} />
+            <G transform="rotate(-9 60 30)">
+              <Rect x={40} y={5} width={40} height={50} rx={9} />
+            </G>
+          </G>
 
-          {/* The card on the forehead. */}
-          <G transform="rotate(-8 60 32)">
-            <Rect x={39} y={5} width={42} height={54} rx={9} fill={color.brandShade} />
-            <Rect x={39} y={3} width={42} height={54} rx={9} fill="#FFFFFF" stroke={color.line} strokeWidth={1.5} />
-            <Rect x={43.5} y={7.5} width={33} height={45} rx={6} fill={color.brand} />
+          <Circle cx={60} cy={72} r={40} fill={tint} stroke={INK} strokeWidth={4} />
+          <Ellipse cx={38} cy={66} rx={5} ry={10} fill="#FFFFFF" opacity={0.22} />
+
+          <G transform="rotate(-9 60 30)">
+            <Rect x={40} y={5} width={40} height={50} rx={9} fill={palette.yellow} stroke={INK} strokeWidth={4} />
             <SvgText
               x={60}
               y={40}
-              fontSize={glyph.length > 1 ? 18 : 28}
-              fontFamily={font.black}
-              fontWeight="900"
-              fill="#FFFFFF"
+              fontSize={[...glyph].length > 1 ? 18 : /\p{Extended_Pictographic}/u.test(glyph) ? 24 : 30}
+              fontFamily={font.display}
+              fontWeight="800"
+              fill={INK}
               textAnchor="middle"
             >
               {glyph}
             </SvgText>
           </G>
 
-          <Ellipse cx={31} cy={90} rx={6.5} ry={4} fill={CHEEK} opacity={0.85} />
-          <Ellipse cx={89} cy={90} rx={6.5} ry={4} fill={CHEEK} opacity={0.85} />
+          <Ellipse cx={34} cy={90} rx={6} ry={4} fill={CHEEK} />
+          <Ellipse cx={86} cy={90} rx={6} ry={4} fill={CHEEK} />
 
           <Eyes mood={mood} blinking={blinking} />
           <Mouth mood={mood} />
@@ -131,40 +123,26 @@ export function Mascot({ mood = 'happy', size = 120, animated = true, glyph = '?
   );
 }
 
+const line = { stroke: INK, strokeWidth: 4, strokeLinecap: 'round' as const, fill: 'none' };
+
 function Eyes({ mood, blinking }: { mood: MascotMood; blinking: boolean }) {
-  const line = {
-    stroke: FEATURE,
-    strokeWidth: 4,
-    strokeLinecap: 'round' as const,
-    fill: 'none',
-  };
+  if (mood === 'excited') return <Path d="M39 80 Q46 71 53 80 M67 80 Q74 71 81 80" {...line} />;
+  if (mood === 'sleepy' || blinking) return <Path d="M39 78 Q46 84 53 78 M67 78 Q74 84 81 78" {...line} />;
 
-  if (mood === 'excited') {
-    return <Path d="M37 79 Q45 70 53 79 M67 79 Q75 70 83 79" {...line} />;
-  }
-
-  if (mood === 'sleepy' || blinking) {
-    return <Path d="M37 77 Q45 83 53 77 M67 77 Q75 83 83 77" {...line} />;
-  }
-
-  // Where the pupils look, and whether the brows tilt.
-  const look = mood === 'thinking' ? { x: 2, y: -3 } : mood === 'sad' ? { x: 0, y: 3 } : { x: 1, y: 1 };
+  const look = mood === 'thinking' ? { x: 2, y: -3 } : mood === 'sad' ? { x: 0, y: 3 } : { x: 0, y: 0 };
+  const tall = mood === 'wow' ? 10 : 8;
 
   return (
     <G>
-      {mood === 'sad' ? <Path d="M36 64 L52 68 M84 64 L68 68" {...line} strokeWidth={3.5} /> : null}
-
-      <Ellipse cx={45} cy={76} rx={9.5} ry={mood === 'wow' ? 12 : 10.5} fill="#FFFFFF" />
-      <Circle cx={45 + look.x} cy={77 + look.y} r={5.2} fill={FEATURE} />
-      <Circle cx={47 + look.x} cy={74.5 + look.y} r={1.8} fill="#FFFFFF" />
-
+      {mood === 'sad' ? <Path d="M38 65 L52 69 M82 65 L68 69" {...line} strokeWidth={3.5} /> : null}
+      <Ellipse cx={46 + look.x} cy={77 + look.y} rx={6} ry={tall} fill={INK} />
+      <Circle cx={48 + look.x} cy={73 + look.y} r={2} fill="#FFFFFF" />
       {mood === 'wink' ? (
-        <Path d="M67 78 Q75 72 83 78" {...line} />
+        <Path d="M67 78 Q74 72 81 78" {...line} />
       ) : (
         <>
-          <Ellipse cx={75} cy={76} rx={9.5} ry={mood === 'wow' ? 12 : 10.5} fill="#FFFFFF" />
-          <Circle cx={75 + look.x} cy={77 + look.y} r={5.2} fill={FEATURE} />
-          <Circle cx={77 + look.x} cy={74.5 + look.y} r={1.8} fill="#FFFFFF" />
+          <Ellipse cx={74 + look.x} cy={77 + look.y} rx={6} ry={tall} fill={INK} />
+          <Circle cx={76 + look.x} cy={73 + look.y} r={2} fill="#FFFFFF" />
         </>
       )}
     </G>
@@ -172,31 +150,24 @@ function Eyes({ mood, blinking }: { mood: MascotMood; blinking: boolean }) {
 }
 
 function Mouth({ mood }: { mood: MascotMood }) {
-  const line = {
-    stroke: FEATURE,
-    strokeWidth: 4,
-    strokeLinecap: 'round' as const,
-    fill: 'none',
-  };
-
   switch (mood) {
     case 'excited':
       return (
         <G>
-          <Path d="M47 91 Q60 109 73 91 Z" fill={FEATURE} />
-          <Ellipse cx={60} cy={100} rx={6} ry={3.5} fill={CHEEK} />
+          <Path d="M47 92 Q60 110 73 92 Z" fill={INK} stroke={INK} strokeWidth={2} strokeLinejoin="round" />
+          <Ellipse cx={60} cy={101} rx={6} ry={3.5} fill={CHEEK} />
         </G>
       );
     case 'wow':
-      return <Ellipse cx={60} cy={98} rx={5.5} ry={7} fill={FEATURE} />;
+      return <Ellipse cx={60} cy={99} rx={5} ry={6.5} fill={INK} />;
     case 'sad':
-      return <Path d="M50 100 Q60 92 70 100" {...line} />;
+      return <Path d="M50 101 Q60 93 70 101" {...line} />;
     case 'thinking':
-      return <Path d="M52 98 Q58 95 68 97" {...line} />;
+      return <Path d="M52 99 Q58 96 68 98" {...line} />;
     case 'sleepy':
-      return <Ellipse cx={60} cy={97} rx={3.5} ry={4} fill={FEATURE} />;
+      return <Ellipse cx={60} cy={98} rx={3.5} ry={4} fill={INK} />;
     case 'happy':
     case 'wink':
-      return <Path d="M49 92 Q60 103 71 92" {...line} />;
+      return <Path d="M49 93 Q60 104 71 93" {...line} />;
   }
 }

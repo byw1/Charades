@@ -12,15 +12,14 @@ import { getDeck } from '@/storage/deckRepo';
 import { saveSession } from '@/storage/sessionRepo';
 import { Button } from '@/ui/Button';
 import { Confetti } from '@/ui/Confetti';
-import { cardTextOn } from '@/ui/contrast';
 import { EmptyState } from '@/ui/EmptyState';
 import { Mascot } from '@/ui/Mascot';
 import { PopIn } from '@/ui/motion';
 import { Footer, Screen } from '@/ui/Screen';
 import { SectionLabel } from '@/ui/Section';
-import { SpeechBubble } from '@/ui/SpeechBubble';
+import { Avatar, ChatLine } from '@/ui/Social';
 import { Text } from '@/ui/Text';
-import { color, font, radius, space } from '@/ui/tokens';
+import { color, font, gutter, palette, radius, space } from '@/ui/tokens';
 
 /**
  * Where the game stands, between rounds and at the end.
@@ -113,38 +112,34 @@ export default function StandingsScreen() {
 
   const headline = winState.over
     ? solo
-      ? 'Game over!'
+      ? 'GG 🎉'
       : winState.winners.length === 1
-        ? `${winState.winners[0]!.teamName} win!`
-        : 'It’s a tie!'
+        ? `${winState.winners[0]!.teamName} win 👑`
+        : 'It’s a tie 🤝'
     : 'Standings';
 
   const bubble = winState.over
     ? solo
-      ? `${table[0]?.score ?? 0} points together. Again?`
+      ? `${table[0]?.score ?? 0} points between you. Run it back?`
       : winState.winners.length === 1
-        ? 'What a game. Rematch?'
-        : `${winState.winners.map((w) => w.teamName).join(' and ')} are level!`
+        ? 'That was close. Rematch?'
+        : `${winState.winners.map((w) => w.teamName).join(' and ')} are level. Settle it?`
     : turn?.playerName
-      ? `${turn.playerName}, you’re up next!`
-      : `${played} ${played === 1 ? 'round' : 'rounds'} down. Keep going!`;
+      ? `${turn.playerName}, you’re up next.`
+      : `${played} ${played === 1 ? 'round' : 'rounds'} down. Keep it going.`;
 
   return (
     <Screen>
       <ScrollView contentContainerStyle={styles.body}>
         <View style={styles.header}>
-          <PopIn>
-            <Mascot size={winState.over ? 130 : 96} mood={winState.over ? 'excited' : 'happy'} glyph={winState.over ? '★' : '?'} />
+          <PopIn style={styles.sticker}>
+            <Mascot size={winState.over ? 120 : 84} mood={winState.over ? 'excited' : 'happy'} glyph={winState.over ? '★' : '?'} />
           </PopIn>
-          <PopIn delay={100} style={styles.headerCopy}>
-            <Text variant={winState.over ? 'hero' : 'display'} align="center" accessibilityRole="header">
+          <PopIn delay={80} style={styles.headerCopy}>
+            <Text variant="hero" accessibilityRole="header">
               {headline}
             </Text>
-            <SpeechBubble tail="bottom">
-              <Text variant="heading" align="center">
-                {bubble}
-              </Text>
-            </SpeechBubble>
+            <ChatLine>{bubble}</ChatLine>
           </PopIn>
         </View>
 
@@ -157,14 +152,10 @@ export default function StandingsScreen() {
               const winner = winState.over && winState.winners.some((w) => w.teamId === standing.teamId);
 
               return (
-                <PopIn key={standing.teamId} from="rise" delay={180 + index * 70}>
+                <PopIn key={standing.teamId} from="rise" delay={160 + index * 70}>
                   <View style={[styles.row, winner && styles.winnerRow]}>
-                    <Rank place={index + 1} />
-                    <View style={[styles.avatar, { backgroundColor: standing.teamColor }]}>
-                      <Text style={[styles.avatarText, { color: cardTextOn(standing.teamColor) }]}>
-                        {[...standing.teamName][0]?.toUpperCase() ?? '?'}
-                      </Text>
-                    </View>
+                    <Text style={styles.rank}>{index + 1}</Text>
+                    <Avatar name={standing.teamName} tint={standing.teamColor} badge={medal(index, winner)} />
                     <View style={styles.rowBody}>
                       <Text variant="heading" numberOfLines={1}>
                         {standing.teamName}
@@ -174,9 +165,7 @@ export default function StandingsScreen() {
                         {standing.roundsPlayed} {standing.roundsPlayed === 1 ? 'round' : 'rounds'}
                       </Text>
                     </View>
-                    <Text variant="display" style={winner ? styles.winnerScore : null}>
-                      {standing.score}
-                    </Text>
+                    <Text style={[styles.score, winner && { color: color.brand }]}>{standing.score}</Text>
                   </View>
                 </PopIn>
               );
@@ -188,9 +177,14 @@ export default function StandingsScreen() {
           <View style={styles.section}>
             <SectionLabel>{solo ? 'Scores' : 'By player'}</SectionLabel>
             {players.map((player, index) => (
-              <PopIn key={`${player.teamId}/${player.playerName}`} from="rise" delay={240 + index * 60}>
+              <PopIn key={`${player.teamId}/${player.playerName}`} from="rise" delay={220 + index * 60}>
                 <View style={styles.row}>
-                  <Rank place={index + 1} />
+                  <Text style={styles.rank}>{index + 1}</Text>
+                  <Avatar
+                    name={player.playerName}
+                    tint={PLAYER_TINTS[index % PLAYER_TINTS.length] ?? palette.purple}
+                    badge={medal(index, false)}
+                  />
                   <View style={styles.rowBody}>
                     <Text variant="heading" numberOfLines={1}>
                       {player.playerName}
@@ -199,7 +193,7 @@ export default function StandingsScreen() {
                       {player.correct} got · {player.roundsPlayed} {player.roundsPlayed === 1 ? 'round' : 'rounds'}
                     </Text>
                   </View>
-                  <Text variant="title">{player.score}</Text>
+                  <Text style={styles.score}>{player.score}</Text>
                 </View>
               </PopIn>
             ))}
@@ -208,7 +202,7 @@ export default function StandingsScreen() {
 
         {poolExhausted ? (
           <Text variant="caption" tone="muted" align="center" style={styles.note}>
-            The decks ran out and were reshuffled.
+            The decks ran out and got reshuffled.
           </Text>
         ) : null}
       </ScrollView>
@@ -217,19 +211,19 @@ export default function StandingsScreen() {
         {winState.over ? (
           <>
             <Button
-              label={busy ? 'Starting' : 'Play again'}
+              label={busy ? 'Starting…' : 'Run it back'}
               variant="primary"
               size="lg"
               icon="reset"
               disabled={busy}
               onPress={() => void playAgain()}
             />
-            <Button label="Home" icon="home" onPress={goHome} />
+            <Button label="Home" onPress={goHome} />
           </>
         ) : (
           <>
             <Button
-              label={turn?.playerName ? `Next · ${turn.playerName}` : 'Next round'}
+              label={turn?.playerName ? `Next up: ${turn.playerName}` : 'Next round'}
               variant="primary"
               size="lg"
               icon="play"
@@ -245,69 +239,33 @@ export default function StandingsScreen() {
   );
 }
 
-const MEDALS = [
-  { face: color.gold, shade: color.goldShade },
-  { face: color.silver, shade: color.silverShade },
-  { face: color.bronze, shade: color.bronzeShade },
-];
+const PLAYER_TINTS = [palette.pink, palette.blue, palette.yellow, palette.purple, palette.teal, palette.red];
 
-/** First three get a medal; everyone else gets a plain number. */
-function Rank({ place }: { place: number }) {
-  const medal = MEDALS[place - 1];
-
-  if (!medal) {
-    return (
-      <View style={styles.rank}>
-        <Text variant="heading" tone="faint">
-          {place}
-        </Text>
-      </View>
-    );
-  }
-
-  return (
-    <View
-      style={[styles.rank, styles.medal, { backgroundColor: medal.face, borderColor: medal.shade }]}
-      accessibilityLabel={`Place ${place}`}
-    >
-      <Text style={styles.medalText}>{place}</Text>
-    </View>
-  );
+/** The crown goes to the winner; second and third get the medals. */
+function medal(index: number, winner: boolean): string | undefined {
+  if (winner) return '👑';
+  return index === 1 ? '🥈' : index === 2 ? '🥉' : undefined;
 }
 
 const styles = StyleSheet.create({
   body: { paddingBottom: space.lg, gap: space.lg },
-  header: { alignItems: 'center', gap: space.sm, paddingTop: space.lg, paddingHorizontal: space.lg },
-  headerCopy: { alignItems: 'center', gap: space.md },
+  header: { flexDirection: 'row', alignItems: 'center', gap: space.md, paddingTop: space.lg, paddingHorizontal: gutter },
+  sticker: { transform: [{ rotate: '-8deg' }] },
+  headerCopy: { flex: 1, gap: space.md },
   section: { gap: space.sm },
   row: {
     flexDirection: 'row',
     alignItems: 'center',
-    gap: space.md,
-    marginHorizontal: 20,
-    paddingHorizontal: space.md,
-    paddingVertical: space.sm + 4,
+    gap: 12,
+    marginHorizontal: gutter,
+    paddingHorizontal: space.md - 4,
+    paddingVertical: 10,
     borderRadius: radius.lg,
-    borderWidth: 2,
-    borderColor: color.line,
-    backgroundColor: color.background,
+    backgroundColor: color.surface,
   },
-  winnerRow: {
-    borderColor: color.gold,
-    backgroundColor: '#FFFBEA',
-  },
-  winnerScore: { color: color.goldShade },
-  rank: { width: 32, height: 32, alignItems: 'center', justifyContent: 'center' },
-  medal: { borderRadius: 16, borderBottomWidth: 3 },
-  medalText: { fontFamily: font.black, fontSize: 16, lineHeight: 20, color: color.ink },
-  avatar: {
-    width: 44,
-    height: 44,
-    borderRadius: 22,
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-  avatarText: { fontFamily: font.black, fontSize: 20, lineHeight: 26 },
+  winnerRow: { borderWidth: 2, borderColor: color.brand },
+  rank: { fontFamily: font.heavy, fontSize: 14, lineHeight: 18, color: color.textFaint, width: 16, textAlign: 'center' },
   rowBody: { flex: 1, gap: 1 },
-  note: { paddingHorizontal: space.lg },
+  score: { fontFamily: font.display, fontSize: 32, lineHeight: 36, color: color.text },
+  note: { paddingHorizontal: gutter },
 });

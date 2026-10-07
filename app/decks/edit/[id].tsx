@@ -8,16 +8,16 @@ import { useDeckEditor } from '@/hooks/useDeckEditor';
 import { useHaptics } from '@/hooks/useHaptics';
 import { getDeck, upsertDeck } from '@/storage/deckRepo';
 import { Button } from '@/ui/Button';
-import { cardTextOn, darken } from '@/ui/contrast';
+import { cardTextOn } from '@/ui/contrast';
 import { EmptyState } from '@/ui/EmptyState';
 import { Field } from '@/ui/Field';
 import { Icon, type IconName } from '@/ui/Icon';
 import { ProgressBar } from '@/ui/ProgressBar';
-import { Raised } from '@/ui/Raised';
+import { Tap } from '@/ui/Tap';
 import { Footer, Screen } from '@/ui/Screen';
 import { Text } from '@/ui/Text';
 import { TopBar } from '@/ui/TopBar';
-import { color, deckColors, radius, space } from '@/ui/tokens';
+import { color, deckColors, font, gutter, radius, space } from '@/ui/tokens';
 
 export default function DeckEditorScreen() {
   const { id } = useLocalSearchParams<{ id: string }>();
@@ -187,20 +187,17 @@ function Editor({ initial, isNew }: { initial: Deck; isNew: boolean }) {
           ListHeaderComponent={
             <View style={styles.meta}>
               {/* A live preview: this is what the deck will look like. */}
-              <Raised
-                face={draft.accentColor}
-                shade={darken(draft.accentColor)}
-                radius={radius.xl}
-                ledge={6}
-                faceStyle={styles.preview}
-              >
+              <View style={[styles.preview, { backgroundColor: draft.accentColor }]}>
+                <Text style={[styles.previewInitial, { color: onAccent }]} accessible={false}>
+                  {[...(draft.name.trim() || 'Y')][0]?.toUpperCase()}
+                </Text>
                 <Text variant="display" style={{ color: onAccent }} numberOfLines={2}>
                   {draft.name.trim() || 'Your deck'}
                 </Text>
                 <Text variant="label" style={{ color: onAccent, opacity: 0.9 }}>
                   {count} {count === 1 ? 'card' : 'cards'}
                 </Text>
-              </Raised>
+              </View>
 
               <View style={styles.fieldGroup}>
                 <Field
@@ -269,17 +266,14 @@ function Editor({ initial, isNew }: { initial: Deck; isNew: boolean }) {
                   returnKeyType="done"
                   submitBehavior="submit"
                 />
-                <Raised
-                  face={newCard.trim() ? color.correct : color.line}
-                  shade={newCard.trim() ? color.correctShade : color.lineShade}
-                  radius={radius.md}
+                <Tap
                   onPress={commitNewCard}
                   disabled={!newCard.trim()}
                   accessibilityLabel="Add card"
-                  faceStyle={styles.addButton}
+                  contentStyle={[styles.addButton, { backgroundColor: newCard.trim() ? color.brand : color.surface }]}
                 >
-                  <Icon name="plus" size={26} color={newCard.trim() ? color.bone : color.textFaint} weight={3.5} />
-                </Raised>
+                  <Icon name="plus" size={26} color={newCard.trim() ? color.ink : color.textFaint} weight={3.5} />
+                </Tap>
               </View>
 
               <Button label="Paste a whole list" icon="paste" size="sm" onPress={() => setPasting(true)} />
@@ -338,7 +332,7 @@ function Editor({ initial, isNew }: { initial: Deck; isNew: boolean }) {
             </Text>
           ) : null}
           <Button
-            label={saving ? 'Saving' : 'Save deck'}
+            label={saving ? 'Saving…' : 'Save deck'}
             variant="primary"
             size="lg"
             icon="check"
@@ -382,8 +376,17 @@ function SmallIcon({
 const styles = StyleSheet.create({
   fill: { flex: 1 },
   list: { paddingBottom: space.lg, flexGrow: 1 },
-  meta: { gap: space.md, paddingHorizontal: 20, paddingBottom: space.sm },
-  preview: { minHeight: 120, justifyContent: 'flex-end', padding: space.lg, gap: 2 },
+  meta: { gap: space.md, paddingHorizontal: gutter, paddingBottom: space.sm },
+  preview: { minHeight: 140, justifyContent: 'flex-end', padding: space.lg, gap: 2, borderRadius: radius.xl, overflow: 'hidden' },
+  previewInitial: {
+    position: 'absolute',
+    right: -10,
+    top: -30,
+    fontFamily: font.display,
+    fontSize: 200,
+    lineHeight: 220,
+    opacity: 0.16,
+  },
   fieldGroup: { gap: space.sm },
   swatches: { flexDirection: 'row', flexWrap: 'wrap', rowGap: space.sm },
   swatchCell: { width: '25%', alignItems: 'center' },
@@ -405,14 +408,14 @@ const styles = StyleSheet.create({
   progressBar: { flexDirection: 'row' },
   addRow: { flexDirection: 'row', gap: space.sm, alignItems: 'flex-start' },
   grow: { flex: 1 },
-  addButton: { width: 52, height: 52, alignItems: 'center', justifyContent: 'center' },
-  pasteBody: { flex: 1, paddingHorizontal: 20, gap: space.md },
+  addButton: { width: 52, height: 52, borderRadius: 26, alignItems: 'center', justifyContent: 'center' },
+  pasteBody: { flex: 1, paddingHorizontal: gutter, gap: space.md },
   pasteBox: { flex: 1, minHeight: 200 },
   cardRow: {
     flexDirection: 'row',
     alignItems: 'flex-start',
     gap: space.sm,
-    paddingHorizontal: 20,
+    paddingHorizontal: gutter,
     paddingVertical: space.xs,
   },
   cardBody: { flex: 1, gap: 2 },
@@ -426,6 +429,6 @@ const styles = StyleSheet.create({
     borderRadius: radius.sm,
   },
   iconDisabled: { opacity: 0.3 },
-  iconPressed: { backgroundColor: color.backgroundSoft },
+  iconPressed: { backgroundColor: color.surface },
   centre: { flex: 1, alignItems: 'center', justifyContent: 'center' },
 });

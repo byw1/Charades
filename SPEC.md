@@ -218,10 +218,10 @@ Target: someone builds a deck of inside jokes and seven people have it in under 
 
 ## Design direction
 
-> **Superseded.** The app was redesigned in October 2026 — bright, chunky and
-> playful, with a mascot. The physical brief below still holds; the visual
-> answer to it changed. See the Redesign section of
-> [spec/decisions.md](./spec/decisions.md).
+> **Superseded.** The app was redesigned in October 2026 — dark, swipeable and
+> camera-app inspired, for players in high school and college. The physical
+> brief below still holds; the visual answer to it changed. See the
+> Snapchat-style redesign section of [spec/decisions.md](./spec/decisions.md).
 
 The design brief is set by the physical situation: a phone held at arm's length on someone's forehead, read by a group across a dim room, often after drinks. Legibility at distance and in low light beats every other consideration. This is not negotiable, and it should drive the visual identity rather than being a constraint bolted onto a pretty design.
 

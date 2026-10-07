@@ -1,15 +1,16 @@
 import Constants from 'expo-constants';
 import { useRouter } from 'expo-router';
-import { Alert, Pressable, ScrollView, StyleSheet, View } from 'react-native';
+import { Alert, ScrollView, StyleSheet, View } from 'react-native';
 import { useHaptics } from '@/hooks/useHaptics';
 import { useSettings, useSettingsStore } from '@/hooks/useSettings';
 import { Chip } from '@/ui/Chip';
 import { Icon, type IconName } from '@/ui/Icon';
 import { Screen } from '@/ui/Screen';
 import { Group, IconBadge, SectionLabel, SwitchRow } from '@/ui/Section';
+import { Tap } from '@/ui/Tap';
 import { Text } from '@/ui/Text';
 import { TopBar } from '@/ui/TopBar';
-import { color, palette, space } from '@/ui/tokens';
+import { color, gutter, palette, space } from '@/ui/tokens';
 
 /**
  * App settings, as opposed to the per-game settings in the new game flow.
@@ -31,7 +32,7 @@ export default function SettingsScreen() {
   const confirmReset = () => {
     Alert.alert(
       'Reset settings?',
-      'Input, haptics and brightness go back to their defaults. Your decks and games are not touched.',
+      'Input, haptics and brightness go back to their defaults. Your decks, games and streak are not touched.',
       [
         { text: 'Keep', style: 'cancel' },
         {
@@ -48,7 +49,7 @@ export default function SettingsScreen() {
 
   return (
     <Screen>
-      <TopBar leading="back" onLeading={router.back} leadingLabel="Back to home" title="Settings" />
+      <TopBar leading="close" onLeading={router.back} leadingLabel="Close settings" title="Settings" />
 
       <ScrollView contentContainerStyle={styles.body}>
         <View>
@@ -93,9 +94,9 @@ export default function SettingsScreen() {
             />
             <SwitchRow
               icon="sun"
-              tint={palette.yellowShade}
-              title="Boost brightness"
-              detail="Full brightness so the card reads in a dim room."
+              tint={palette.yellow}
+              title="Max brightness"
+              detail="So the card reads in a dark room."
               value={settings.boostBrightness}
               onChange={(value) => set('boostBrightness', value)}
               last
@@ -106,12 +107,7 @@ export default function SettingsScreen() {
         <View>
           <SectionLabel>More</SectionLabel>
           <Group>
-            <NavRow
-              icon="help"
-              tint={palette.blue}
-              title="How to play"
-              onPress={() => router.push('/welcome?replay=1')}
-            />
+            <NavRow icon="help" tint={palette.blue} title="How to play" onPress={() => router.push('/welcome?replay=1')} />
             <NavRow icon="reset" tint={palette.red} title="Reset settings" onPress={confirmReset} last />
           </Group>
         </View>
@@ -121,7 +117,7 @@ export default function SettingsScreen() {
             Deckhead {Constants.expoConfig?.version ?? ''}
           </Text>
           <Text variant="caption" tone="faint" align="center">
-            Works offline. No accounts, no ads, no tracking.{'\n'}Nothing you make ever leaves your phone unless you share it.
+            Works offline. No accounts, no ads, no tracking.{'\n'}Nothing you make leaves your phone unless you share it.
           </Text>
         </View>
       </ScrollView>
@@ -143,33 +139,22 @@ function NavRow({
   last?: boolean;
 }) {
   return (
-    <Pressable
-      onPress={onPress}
-      accessibilityRole="button"
-      style={({ pressed }) => [styles.row, !last && styles.rowDivider, pressed && styles.rowPressed]}
-    >
+    <Tap onPress={onPress} squish={0.98} accessibilityLabel={title} contentStyle={[styles.row, !last && styles.rowDivider]}>
       <IconBadge icon={icon} tint={tint} />
       <Text variant="heading" style={styles.rowTitle}>
         {title}
       </Text>
-      <Icon name="forward" size={20} color={color.textFaint} weight={3} />
-    </Pressable>
+      <Icon name="forward" size={18} color={color.textFaint} weight={3} />
+    </Tap>
   );
 }
 
 const styles = StyleSheet.create({
   body: { paddingTop: space.sm, paddingBottom: space.xl, gap: space.lg },
-  choices: { flexDirection: 'row', gap: space.sm + 4, paddingHorizontal: 20 },
-  note: { paddingHorizontal: 20, paddingTop: space.sm },
-  row: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    gap: space.md,
-    paddingHorizontal: space.md,
-    paddingVertical: space.md - 2,
-  },
-  rowDivider: { borderBottomWidth: 2, borderBottomColor: color.line },
-  rowPressed: { backgroundColor: color.backgroundSoft },
+  choices: { flexDirection: 'row', gap: 10, paddingHorizontal: gutter },
+  note: { paddingHorizontal: gutter, paddingTop: space.sm },
+  row: { flexDirection: 'row', alignItems: 'center', gap: 12, paddingHorizontal: space.md, paddingVertical: 12 },
+  rowDivider: { borderBottomWidth: StyleSheet.hairlineWidth, borderBottomColor: color.line },
   rowTitle: { flex: 1 },
   colophon: { gap: space.xs, paddingHorizontal: space.xl, paddingTop: space.md },
 });

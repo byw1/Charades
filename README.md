@@ -5,7 +5,8 @@ showing a card they can't see. Everyone else shouts clues. The holder guesses.
 Repeat until the timer runs out.
 
 Fully offline. No accounts, no ads, no tracking. Every deck is free from
-install. Hosted by Dex, a little purple head with a card stuck to its forehead.
+install. Swipe between your decks, a one-tap Play screen and your streak. Hosted
+by Dex, a sticker-style head with a card stuck to its forehead.
 
 - [SPEC.md](./SPEC.md) — the product spec. The source of truth.
 - [ROADMAP.md](./ROADMAP.md) — build order and what is deliberately not in v1.
@@ -50,6 +51,7 @@ npm test            # jest
   /decks          Deck schema, validation, import/export
   /storage        Persistence + migrations
   /ui             Components, design tokens, Dex the mascot
+  /home           The three swipeable home pages: Decks, Play, You
   /hooks
 /assets
   /decks          Bundled starter decks as JSON

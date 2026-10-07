@@ -17,12 +17,12 @@ export const MAX_TEAMS = 6;
  * so the green and orange here cannot be confused with the round's flashes.
  */
 export const TEAM_COLORS = [
-  '#E83A3A',
-  '#0F9AE0',
-  '#F5B400',
-  '#8B5CF6',
-  '#2FA84F',
-  '#E67700',
+  '#FF3B47',
+  '#2EA8FF',
+  '#FFE500',
+  '#9B5CFF',
+  '#2EE86F',
+  '#FF6B2C',
 ] as const;
 
 export const DEFAULT_TEAM_NAMES = [

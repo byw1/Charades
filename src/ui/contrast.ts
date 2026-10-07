@@ -85,7 +85,7 @@ export function cardTextOn(background: string): string {
  * bone or ink wins.
  *
  * Worth knowing: because bone and ink sit at opposite ends of the luminance
- * range, this never drops below about 4.13:1 for any colour — the worst case is
+ * range, this never drops below about 4.45:1 for any colour — the worst case is
  * the mid grey where the two options are equally bad, and even that clears AA
  * large text. So a deck accent cannot make its own card text unreadable, and no
  * contrast warning is needed in the deck editor. The real hazard for a

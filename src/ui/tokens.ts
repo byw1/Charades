@@ -1,65 +1,58 @@
 /**
  * Design tokens.
  *
- * Bright, chunky and friendly. A white canvas, saturated colour used with
- * intent, and surfaces that sit on a solid "ledge" of their own darker shade so
- * every button looks like it can be physically pressed. The playful energy
- * comes from colour, shape and motion; the type stays bold and simple so it is
- * still readable across a dim room after a couple of drinks.
+ * Dark, loud and fast. The look borrows its grammar from the camera apps the
+ * people playing this live in: a near-black canvas so content is the only
+ * colour on screen, floating translucent controls, fat pill buttons, and one
+ * electric accent that means "do the thing". Saturated colour is saved for
+ * the cards themselves, which are the whole point.
  *
- * Every saturated colour that carries white text clears 3:1 against white,
- * which is WCAG AA for the large, heavy type it is always paired with.
+ * Deliberately not Snapchat's: no ghost, and a warmer yellow than theirs.
  */
 
 export const palette = {
-  green: '#43A800',
-  greenShade: '#357F00',
-  greenLight: '#D7FFB8',
+  yellow: '#FFE500',
+  yellowDeep: '#E6CE00',
 
-  blue: '#0F9AE0',
-  blueShade: '#0B78B0',
-  blueLight: '#DDF4FF',
+  green: '#2EE86F',
+  greenDeep: '#1FB855',
 
-  orange: '#E67700',
-  orangeShade: '#B35C00',
-  orangeLight: '#FFE8CC',
+  orange: '#FF6B2C',
+  orangeDeep: '#E0541A',
 
-  red: '#E83A3A',
-  redShade: '#B52A2A',
-  redLight: '#FFDFE0',
+  blue: '#2EA8FF',
+  blueDeep: '#1388E0',
 
-  pink: '#F0386B',
-  pinkShade: '#BF2A53',
-  pinkLight: '#FFE0EA',
+  pink: '#FF3D8B',
+  pinkDeep: '#E0226F',
 
-  purple: '#8B5CF6',
-  purpleShade: '#6A40CF',
-  purpleLight: '#EDE5FF',
+  purple: '#9B5CFF',
+  purpleDeep: '#7B3DE6',
 
-  teal: '#0EA5A0',
-  tealShade: '#0A7D79',
+  red: '#FF3B47',
+  redDeep: '#D92632',
 
-  yellow: '#FFC800',
-  yellowShade: '#D9A400',
-  yellowLight: '#FFF5CC',
+  teal: '#00C2B2',
 } as const;
 
 export const color = {
-  /** The canvas. */
-  background: '#FFFFFF',
-  /** A quiet second surface, for wells and inputs at rest. */
-  backgroundSoft: '#F7F7F9',
+  /** The canvas. Not pure black, which smears on OLED as things scroll. */
+  background: '#0A0A0D',
+  /** Cards, rows and inputs. */
+  surface: '#16161B',
+  /** Something sitting on a surface, or a pressed surface. */
+  surfaceRaised: '#202028',
+  /** Hairlines and input borders. */
+  line: '#2A2A33',
 
-  /** Headings and body copy. Softer than black, which reads as harsh on white. */
-  text: '#3C3C4E',
-  /** Secondary copy. */
-  textMuted: '#7A7A8C',
-  /** Placeholders, captions, disabled. */
-  textFaint: '#AFAFBD',
+  /** Translucent controls floating over full-bleed content. */
+  glass: 'rgba(255,255,255,0.12)',
+  glassStrong: 'rgba(255,255,255,0.2)',
+  scrim: 'rgba(0,0,0,0.45)',
 
-  /** Borders on white surfaces, and the ledge under a white button. */
-  line: '#E5E5EC',
-  lineShade: '#D2D2DC',
+  text: '#FFFFFF',
+  textMuted: '#A3A3B0',
+  textFaint: '#6A6A78',
 
   /**
    * The two extremes used to pick readable text on an arbitrary deck colour.
@@ -67,33 +60,25 @@ export const color = {
    * contrast.ts for why that guarantees every deck colour has readable text.
    */
   bone: '#FFFFFF',
-  ink: '#1A1A2E',
+  ink: '#0A0A0D',
 
-  /** The brand, and the mascot's card. */
-  brand: palette.pink,
-  brandShade: palette.pinkShade,
+  /** The one accent. Primary actions, the shutter, the streak. */
+  brand: palette.yellow,
+  brandDeep: palette.yellowDeep,
 
-  /** Full-screen flash on a correct guess, and every "go" action. */
+  /** Full-screen flash on a correct guess. */
   correct: palette.green,
-  correctShade: palette.greenShade,
   /** Full-screen flash on a pass. */
   pass: palette.orange,
-  passShade: palette.orangeShade,
 
-  /** Selection, focus and links. */
+  /** Links, selection, the "send" action. */
   focus: palette.blue,
-  focusLight: palette.blueLight,
-
-  /** Celebration: trophies, first place, the big moments. */
-  gold: palette.yellow,
-  goldShade: palette.yellowShade,
-  silver: '#B9C2CF',
-  silverShade: '#97A2B2',
-  bronze: '#E3A06A',
-  bronzeShade: '#C07F4C',
 
   danger: palette.red,
-  dangerShade: palette.redShade,
+
+  gold: '#FFC93C',
+  silver: '#C9CED8',
+  bronze: '#E3A06A',
 } as const;
 
 /**
@@ -105,38 +90,40 @@ export const color = {
  */
 export const deckColors = [
   palette.pink,
-  palette.blue,
   palette.purple,
+  palette.blue,
   palette.teal,
   palette.red,
-  '#5B5BD6',
-  '#C026D3',
-  '#475569',
+  palette.yellow,
+  '#5B5BFF',
+  '#E040FB',
 ] as const;
 
 /**
- * Nunito: rounded terminals, a generous x-height, and heavy weights that stay
- * friendly rather than shouting. One family for everything keeps the app
- * sounding like one voice; weight does the work of hierarchy.
+ * Two faces. Bricolage Grotesque for anything meant to be shouted — titles,
+ * the card, scores — because it has a voice and it runs narrow, so card text
+ * stays huge. Plus Jakarta Sans for everything you read, because a menu has to
+ * be legible before it is fun.
  */
 export const font = {
-  regular: 'Nunito_700Bold',
-  bold: 'Nunito_800ExtraBold',
-  black: 'Nunito_900Black',
-  /** The card face in a round. */
-  card: 'Nunito_900Black',
+  display: 'BricolageGrotesque_800ExtraBold',
+  card: 'BricolageGrotesque_800ExtraBold',
+  regular: 'PlusJakartaSans_500Medium',
+  medium: 'PlusJakartaSans_600SemiBold',
+  bold: 'PlusJakartaSans_700Bold',
+  heavy: 'PlusJakartaSans_800ExtraBold',
 } as const;
 
 export const type = {
-  hero: { fontFamily: font.black, fontSize: 40, lineHeight: 46, letterSpacing: -0.5 },
-  display: { fontFamily: font.black, fontSize: 32, lineHeight: 38, letterSpacing: -0.4 },
-  title: { fontFamily: font.black, fontSize: 24, lineHeight: 30, letterSpacing: -0.2 },
-  heading: { fontFamily: font.bold, fontSize: 19, lineHeight: 25 },
-  body: { fontFamily: font.regular, fontSize: 17, lineHeight: 24 },
+  hero: { fontFamily: font.display, fontSize: 44, lineHeight: 46, letterSpacing: -1.2 },
+  display: { fontFamily: font.display, fontSize: 32, lineHeight: 36, letterSpacing: -0.8 },
+  title: { fontFamily: font.display, fontSize: 24, lineHeight: 28, letterSpacing: -0.4 },
+  heading: { fontFamily: font.bold, fontSize: 17, lineHeight: 22 },
+  body: { fontFamily: font.regular, fontSize: 16, lineHeight: 22 },
   label: { fontFamily: font.bold, fontSize: 15, lineHeight: 20 },
-  caption: { fontFamily: font.regular, fontSize: 14, lineHeight: 19 },
-  /** Small-caps-style overline: section labels, step counters. */
-  overline: { fontFamily: font.black, fontSize: 13, lineHeight: 17, letterSpacing: 1.1 },
+  caption: { fontFamily: font.regular, fontSize: 13, lineHeight: 18 },
+  /** Chat-style sender labels and section headers. */
+  overline: { fontFamily: font.heavy, fontSize: 12, lineHeight: 16, letterSpacing: 0.8 },
 } as const;
 
 /** Four-point grid. */
@@ -157,8 +144,8 @@ export const radius = {
   pill: 999,
 } as const;
 
-/** How far a pressable surface sits above its ledge. */
-export const ledge = 4;
+/** Side margin for menu screens. */
+export const gutter = 16;
 
 /**
  * Minimum tap target, per Apple's Human Interface Guidelines. Round-screen
@@ -168,7 +155,7 @@ export const minTapTarget = 44;
 
 /**
  * Duration of the full-screen correct/pass flash. Long enough for the word to
- * pop in and be read from across the room, short enough not to slow a round.
+ * land and be read from across the room, short enough not to slow a round.
  */
 export const flashMs = 420;
 

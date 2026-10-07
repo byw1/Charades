@@ -32,7 +32,10 @@ export type IconName =
   | 'help'
   | 'home'
   | 'download'
-  | 'pass';
+  | 'pass'
+  | 'flame'
+  | 'shuffle'
+  | 'bolt';
 
 export type IconProps = {
   name: IconName;
@@ -204,6 +207,17 @@ function shape(name: IconName, s: Stroke, fill: string) {
           <Path d="M9.6 9.4 A2.5 2.5 0 1 1 13.4 11.6 C12.6 12.1 12 12.6 12 13.6 M12 17 V17.1" {...s} />
         </>
       );
+    case 'flame':
+      return (
+        <Path
+          d="M12 21 C8 21 5.5 18.4 5.5 15 C5.5 11.5 8 9.5 9.5 7 C10 9 11 10 12 10.5 C12 7.5 13.5 4.5 16 3 C15.5 6 18.5 9 18.5 14.5 C18.5 18.4 16 21 12 21 Z"
+          {...s}
+        />
+      );
+    case 'shuffle':
+      return <Path d="M4 7 H7 C11 7 13 17 17 17 H20 M4 17 H7 C9 17 10.2 14.5 11 12.5 M13 11.5 C13.8 9.5 15 7 17 7 H20 M17 4 L20 7 L17 10 M17 14 L20 17 L17 20" {...s} />;
+    case 'bolt':
+      return <Path d="M13 3 L5 13.5 H11.5 L10.5 21 L19 10 H12.5 Z" {...s} />;
     case 'home':
       return <Path d="M4 11 L12 4 L20 11 V20 H14.5 V14.5 H9.5 V20 H4 Z" {...s} />;
   }

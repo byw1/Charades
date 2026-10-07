@@ -5,13 +5,13 @@
   "description": "Verbs and situations. Best played with the shouting turned up.",
   "author": "Deckhead",
   "language": "en",
-  "accentColor": "#8B5CF6",
+  "accentColor": "#9B5CFF",
   "tags": [
     "actions",
     "charades"
   ],
   "createdAt": "2026-07-26T18:00:00Z",
-  "updatedAt": "2026-10-07T12:00:00Z",
+  "updatedAt": "2026-10-07T18:00:00Z",
   "cards": [
     {
       "id": "crd_06ce77dd",

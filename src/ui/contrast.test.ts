@@ -110,7 +110,7 @@ describe('bestTextContrastOn', () => {
     // The floor sits at the luminance where bone and ink are equally bad.
     // Many colours share that luminance, so the value is asserted and the
     // specific colour is only reported if this ever regresses.
-    expect({ worst: Number(worst.toFixed(2)), worstColor }).toMatchObject({ worst: 4.13 });
+    expect({ worst: Number(worst.toFixed(2)), worstColor }).toMatchObject({ worst: 4.45 });
     expect(worst).toBeGreaterThan(LARGE_TEXT_CONTRAST_MIN);
   });
 
@@ -121,14 +121,19 @@ describe('bestTextContrastOn', () => {
 });
 
 describe('cardTextOn', () => {
-  it('puts white on every colour a deck can be given in the editor', () => {
+  it('gives every colour a deck can be given readable text', () => {
     for (const accent of deckColors) {
-      expect(cardTextOn(accent)).toBe(color.bone);
+      expect(contrastRatio(accent, cardTextOn(accent))).toBeGreaterThanOrEqual(LARGE_TEXT_CONTRAST_MIN);
     }
   });
 
+  it('keeps white text on the deep colours, where white is the look', () => {
+    expect(cardTextOn('#9B5CFF')).toBe(color.bone);
+    expect(cardTextOn('#FF3D8B')).toBe(color.bone);
+  });
+
   it('falls back to dark text where white cannot be read', () => {
-    expect(cardTextOn('#FFC800')).toBe(color.ink);
+    expect(cardTextOn('#FFE500')).toBe(color.ink);
     expect(cardTextOn('#ffffff')).toBe(color.ink);
   });
 

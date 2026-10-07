@@ -63,7 +63,7 @@ validator keeps the import path auditable and the dependency tree small.
 
 ### Anton for card text
 
-_Superseded by the redesign below: Nunito everywhere._
+_Superseded: Bricolage Grotesque for cards and display, Plus Jakarta Sans for UI._
 
 The spec asks for a heavy condensed grotesque for card text and a separate
 neutral face for UI. Card text uses Anton, which is free under the SIL Open Font
@@ -253,6 +253,10 @@ at start, so a stored session still records what it was actually played with.
 
 ## Redesign
 
+_Superseded by the Snapchat-style redesign below. Kept for the reasoning that
+carried over: text fitting, deck colours avoiding the flash colours, reduced
+motion, and the mascot._
+
 A ground-up visual redesign, asked for by the product owner: bright, clean and
 fun, in the spirit of Duolingo. The game engine, storage, sharing and tilt are
 untouched; everything the player sees is new. This supersedes the spec's
@@ -340,3 +344,93 @@ generated them stay out, per `.gitignore` and TRADEMARK.md.
 Moved to expo 57.0.27 and React Native 0.86.3. 0.86.0 ships a Hermes build
 with a known memory regression, and expo-doctor flagged 22 patch-level
 mismatches against the SDK. The update is patch-only within SDK 57.
+
+## Snapchat-style redesign
+
+The second redesign, asked for by the product owner: model the interface on
+Snapchat rather than Duolingo, for players in high school and college. The
+first redesign read as a learning app — friendly, but the wrong room. The
+engine, storage, sharing and tilt are untouched again.
+
+### Borrow the grammar, not the brand
+
+Dark canvas, full-bleed content, floating circles of glass, fat pill buttons,
+swiping between pages, stories, chat lines with coloured sender labels, streaks.
+Those are conventions this audience reads without thinking. Snapchat's ghost,
+its exact yellow and its name are not borrowed: the accent is a warmer yellow,
+Dex is a different character, and the app icon is black rather than yellow,
+precisely so it never sits on a home screen looking like Snapchat's. That is
+both the trademark line and App Review's copycat rule.
+
+### Home is three pages you swipe between, and it opens on Play
+
+Decks, Play, You — side by side in a paging scroll view with a bar along the
+bottom. It opens on Play the way a camera app opens on the camera, because
+nearly everyone opening a party game wants to start one. A plain horizontal
+pager rather than a tab navigator: no new native dependency, still runs in
+Expo Go, and swiping is the point.
+
+### Play is a camera: decks are lenses, the start button is a shutter
+
+The selected deck fills the screen like a viewfinder. Decks sit in a carousel
+under a fixed shutter ring; swipe to change deck, tap the shutter to play. One
+tap from opening the app to a phone on a forehead, with a "Just play" game on
+the default rules. Teams and rules are one button away, pre-filled with the
+deck you were looking at. "Mix it up" is the first lens: every playable deck
+at once.
+
+Quick play and the full setup flow both go through `useStartGame`, so a game
+started either way is saved, resumed and scored identically.
+
+### Streaks, stats and badges, derived and local
+
+A daily streak, lifetime numbers and a handful of badges on the You page — the
+gamification this audience expects. All of it is computed by `playStats` from
+stored sessions, the same way score is computed from rounds: no counter on disk
+that could drift from the games it claims to count. Days are local calendar
+days, built from date parts so a clock change cannot break a streak; a streak
+survives until the end of the day after the last game, the grace every streak
+counter gives. Nothing is uploaded — there is nowhere to upload it to.
+
+### Stories for how to play
+
+Segments across the top, tap right for next and left for back, auto-advance,
+a caption bar over a full-bleed colour. Under reduced motion the stories wait
+for a tap instead of advancing on their own.
+
+### Dex becomes a sticker
+
+Thick white sticker border, ink outline, flat colour, emoji-simple eyes. The
+cuddly blob suited a learning app; a sticker suits a camera app, and it reads
+on the dark canvas, on a neon card and at icon size.
+
+### Neon colours with black text
+
+Yellow, green, blue, teal and orange all take near-black text; pink, purple and
+red take white. `cardTextOn` already picked whichever clears AA large text, so
+the flashes and cards became black-on-neon without any special case — and the
+contrast test now asserts the stronger property that every deck colour gets
+readable text, rather than that it gets white text.
+
+### Card text is fitted against measured glyph widths
+
+The new display face, Bricolage Grotesque, is narrow on average but uneven:
+"Hummus" is a third wider per letter than "little". An average width truncated
+short words — the ones drawn biggest — so `fitCardText` now measures against a
+table of the face's real advance widths. Verified by rendering all 250 bundled
+cards in the actual font at iPhone 15 and iPhone SE sizes: no overflow, the
+widest line using 94% of the box, the smallest card at 74px.
+
+### Database startup is shared, seeding included
+
+Rendering the new Home exposed a latent race. Opening the database was shared,
+but seeding the bundled decks ran once per `useDatabase` caller, and Home now
+has two callers mounting in the same frame. Two seeds on one connection means
+overlapping transactions and duplicate inserts. Open, migrate and seed are now
+one promise per launch.
+
+### The QR is always dark on white
+
+On a dark theme the code had inherited the canvas colour as its background,
+which would have produced dark modules on a dark background — a code nothing
+can scan. It is now pinned to ink on white, inside a yellow frame.

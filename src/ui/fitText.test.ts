@@ -1,4 +1,4 @@
-import { fitCardText, wrap } from './fitText';
+import { fitCardText, measureCard, wrap } from './fitText';
 
 /** An iPhone 15 in landscape, less the card's padding and timer bar. */
 const W = 852 - 96;
@@ -22,7 +22,31 @@ describe('wrap', () => {
   });
 });
 
+describe('measureCard', () => {
+  it('knows a wide word from a narrow one of the same length', () => {
+    expect(measureCard('Hummus')).toBeGreaterThan(measureCard('little') * 1.2);
+  });
+
+  it('gives an unknown glyph a generous width rather than zero', () => {
+    expect(measureCard('Ж')).toBeGreaterThan(0.5);
+  });
+
+  it('treats an emoji as roughly square', () => {
+    expect(measureCard('🎬')).toBeGreaterThan(1);
+  });
+});
+
 describe('fitCardText', () => {
+  it('fits every short, wide word inside the screen at its chosen size', () => {
+    // The words that broke an average-width estimate: short, so drawn huge,
+    // and made of wide letters.
+    for (const word of ['Doorstop', 'Hummus', 'Gump', 'Nemo', 'Mummy', 'WWE']) {
+      const fit = fitCardText(word, W, H);
+      expect(fit.lines).toHaveLength(1);
+      expect(measureCard(word) * fit.fontSize).toBeLessThanOrEqual(W);
+    }
+  });
+
   it('fills the screen for a short word', () => {
     const fit = fitCardText('Cat', W, H);
     expect(fit.fontSize).toBeGreaterThanOrEqual(150);
@@ -34,7 +58,7 @@ describe('fitCardText', () => {
     expect(fit.lines.length).toBeLessThanOrEqual(3);
     expect(fit.lines.length * fit.lineHeight).toBeLessThanOrEqual(H + fit.lines.length);
     for (const line of fit.lines) {
-      expect([...line].length * fit.fontSize * 0.62).toBeLessThanOrEqual(W);
+      expect(measureCard(line) * fit.fontSize).toBeLessThanOrEqual(W);
     }
   });
 

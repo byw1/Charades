@@ -1,20 +1,15 @@
 import { useRouter } from 'expo-router';
-import { useState } from 'react';
 import { ScrollView, StyleSheet, View } from 'react-native';
-import { makeSessionId } from '@/game/ids';
 import { ROUND_SECONDS_PRESETS, type WinCondition } from '@/game/types';
 import { useDatabase } from '@/hooks/useDatabase';
 import { useNewGameStore } from '@/hooks/useNewGameStore';
-import { useSessionStore } from '@/hooks/useSessionStore';
-import { useSettings } from '@/hooks/useSettings';
-import { getDeck } from '@/storage/deckRepo';
-import { discardOtherUnfinishedSessions, saveSession } from '@/storage/sessionRepo';
+import { useStartGame } from '@/hooks/useStartGame';
 import { Button } from '@/ui/Button';
 import { Chip } from '@/ui/Chip';
 import { Footer, Screen } from '@/ui/Screen';
 import { SectionLabel } from '@/ui/Section';
 import { StepHeader } from '@/ui/StepHeader';
-import { space } from '@/ui/tokens';
+import { gutter, space } from '@/ui/tokens';
 
 const WIN_CONDITIONS: { label: string; emoji: string; value: WinCondition; help: string }[] = [
   { label: 'Rounds', emoji: '🔁', value: { kind: 'rounds', count: 4 }, help: 'Same turns each' },
@@ -38,44 +33,11 @@ export default function NewGameSettingsScreen() {
   const resolvedTeams = useNewGameStore((s) => s.resolvedTeams);
   const resetDraft = useNewGameStore((s) => s.reset);
 
-  const startSession = useSessionStore((s) => s.startSession);
-  const appSettings = useSettings();
-  const [starting, setStarting] = useState(false);
+  const { start, starting } = useStartGame();
 
-  const start = async () => {
-    if (database.status !== 'ready' || starting) return;
-    setStarting(true);
-
-    try {
-      const loaded = await Promise.all(deckIds.map((id) => getDeck(database.db, id)));
-      const decks = loaded.flatMap((deck) =>
-        deck ? [{ id: deck.id, name: deck.name, accentColor: deck.accentColor, cards: deck.cards }] : [],
-      );
-
-      const session = startSession({
-        id: makeSessionId(),
-        decks,
-        teams: resolvedTeams(),
-        // Input mode is a preference about the person holding the phone, not
-        // about this game, so it is set once in app settings. Stamped in here
-        // so the stored session records what it was actually played with.
-        settings: { ...settings, inputMode: appSettings.inputMode },
-        now: new Date().toISOString(),
-        seed: Date.now() >>> 0,
-      });
-
-      // Written before the first round so a crash during play still leaves
-      // something to resume, and any earlier half-played game is abandoned now
-      // rather than lingering to be offered later.
-      await saveSession(database.db, session);
-      await discardOtherUnfinishedSessions(database.db, session.id);
-
-      resetDraft();
-      router.dismissAll();
-      router.replace('/round/intro');
-    } finally {
-      setStarting(false);
-    }
+  const go = async () => {
+    const started = await start({ deckIds, teams: resolvedTeams(), settings });
+    if (started) resetDraft();
   };
 
   return (
@@ -83,8 +45,8 @@ export default function NewGameSettingsScreen() {
       <StepHeader
         step={3}
         of={3}
-        title="Last thing: how do we play?"
-        subtitle="The defaults are great if you just want to go."
+        title="House rules"
+        subtitle="Or just hit start. The defaults are good."
         onClose={() => router.dismissAll()}
         mood="excited"
       />
@@ -184,7 +146,7 @@ export default function NewGameSettingsScreen() {
           size="lg"
           icon="play"
           disabled={starting || database.status !== 'ready'}
-          onPress={() => void start()}
+          onPress={() => void go()}
         />
       </Footer>
     </Screen>
@@ -193,6 +155,6 @@ export default function NewGameSettingsScreen() {
 
 const styles = StyleSheet.create({
   body: { paddingTop: space.xs, paddingBottom: space.xl, gap: space.lg },
-  row: { flexDirection: 'row', gap: space.sm + 2, paddingHorizontal: 20, flexWrap: 'wrap' },
+  row: { flexDirection: 'row', gap: space.sm + 2, paddingHorizontal: gutter, flexWrap: 'wrap' },
   sub: { paddingTop: space.sm + 4 },
 });

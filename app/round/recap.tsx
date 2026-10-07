@@ -5,31 +5,30 @@ import { countOutcomes, scoreRound } from '@/game/scoring';
 import { whoseTurn } from '@/game/session';
 import type { Outcome } from '@/game/types';
 import { useDatabase } from '@/hooks/useDatabase';
-import { useHaptics } from '@/hooks/useHaptics';
 import { useRoundScreenMode } from '@/hooks/useRoundScreenMode';
 import { findPoolCard, useSessionStore } from '@/hooks/useSessionStore';
 import { Button } from '@/ui/Button';
-import { Icon } from '@/ui/Icon';
 import { Mascot, type MascotMood } from '@/ui/Mascot';
 import { PopIn } from '@/ui/motion';
-import { Raised } from '@/ui/Raised';
 import { Screen } from '@/ui/Screen';
 import { StatTile } from '@/ui/StatTile';
+import { Tap } from '@/ui/Tap';
 import { Text } from '@/ui/Text';
-import { color, palette, radius, space } from '@/ui/tokens';
+import { color, font, space } from '@/ui/tokens';
 
 /**
- * Every card from the round, with the result, tappable to override.
+ * Every card from the round, tappable to fix a mis-tap.
  *
+ * Laid out like a message thread's receipts: a filled square for a card you
+ * got, a hollow one for a pass, and how far into the round it happened.
  * Overrides matter because the holder is guessing blind and the group is
- * shouting: a mis-tap is normal, and arguing about it is worse than fixing it.
- * Score is derived from these results, so flipping one here is the whole edit —
- * and nothing is written until Continue, so the edits land in one go.
+ * shouting; arguing about a mis-tap is worse than fixing it. Score is derived
+ * from these results, so flipping one is the whole edit — and nothing is
+ * written until Continue, so the edits land in one go.
  */
 export default function RoundRecapScreen() {
   const router = useRouter();
   const database = useDatabase();
-  const haptics = useHaptics();
 
   const session = useSessionStore((s) => s.session);
   const results = useSessionStore((s) => s.roundState.results);
@@ -50,6 +49,7 @@ export default function RoundRecapScreen() {
   // The round is still open, so whoseTurn points at whoever just played.
   const turn = session ? whoseTurn(session) : null;
   const showTeam = (session?.teams.length ?? 0) > 1;
+  const who = [showTeam ? turn?.team.name : null, turn?.playerName].filter(Boolean).join(' · ');
 
   const { headline, mood } = verdict(correct);
 
@@ -70,49 +70,38 @@ export default function RoundRecapScreen() {
       <View style={styles.panes}>
         <View style={styles.summary}>
           <View style={styles.hero}>
-            <PopIn>
-              <Mascot size={92} mood={mood} />
+            <PopIn style={styles.sticker}>
+              <Mascot size={84} mood={mood} />
             </PopIn>
             <View style={styles.heroCopy}>
-              {showTeam && turn ? (
-                <Text variant="overline" style={{ color: turn.team.color }}>
-                  {turn.team.name.toUpperCase()}
-                  {turn.playerName ? ` · ${turn.playerName.toUpperCase()}` : ''}
-                </Text>
-              ) : turn?.playerName ? (
-                <Text variant="overline" tone="faint">
-                  {turn.playerName.toUpperCase()}
+              {who ? (
+                <Text variant="overline" style={{ color: showTeam && turn ? turn.team.color : color.textMuted }}>
+                  {who.toUpperCase()}
                 </Text>
               ) : null}
               <Text variant="display">{headline}</Text>
             </View>
           </View>
 
-          <PopIn from="rise" delay={120} style={styles.stats}>
-            <StatTile label="Got it" value={correct} tint={color.correct} icon="check" />
-            <StatTile label="Passed" value={passed} tint={color.pass} icon="pass" />
-            <StatTile label="Points" value={score} tint={palette.blue} icon="trophy" />
+          <PopIn from="rise" delay={100} style={styles.stats}>
+            <StatTile label="got it" value={correct} tint={color.correct} />
+            <StatTile label={passed === 1 ? 'pass' : 'passes'} value={passed} tint={color.pass} />
+            <StatTile label="points" value={score} tint={color.brand} />
           </PopIn>
 
           {reshuffled ? (
             <Text variant="caption" tone="muted">
-              The decks ran out and were reshuffled.
+              The decks ran out and got reshuffled.
             </Text>
           ) : null}
 
           <View style={styles.spacer} />
-          <Button
-            label={saving ? 'Saving' : 'Continue'}
-            variant="primary"
-            size="lg"
-            disabled={saving}
-            onPress={() => void done()}
-          />
+          <Button label={saving ? 'Saving…' : 'Continue'} variant="primary" size="lg" disabled={saving} onPress={() => void done()} />
         </View>
 
         <View style={styles.listPane}>
           <Text variant="overline" tone="faint" style={styles.listLabel}>
-            {results.length > 0 ? 'TAP A CARD TO FIX A MIS-TAP' : 'THIS ROUND'}
+            {results.length > 0 ? 'TAP ONE TO FIX A MIS-TAP' : 'THIS ROUND'}
           </Text>
           <FlatList
             data={results}
@@ -121,10 +110,10 @@ export default function RoundRecapScreen() {
             ListEmptyComponent={
               <View style={styles.empty}>
                 <Text variant="heading" align="center">
-                  No cards this round
+                  Nothing this round
                 </Text>
                 <Text variant="caption" tone="muted" align="center">
-                  The timer beat everyone to it. Next time!
+                  The timer beat everyone to it. Next time.
                 </Text>
               </View>
             }
@@ -135,37 +124,27 @@ export default function RoundRecapScreen() {
               const tint = got ? color.correct : color.pass;
 
               return (
-                <Raised
-                  face={color.background}
-                  shade={color.line}
-                  border={color.line}
-                  radius={radius.md}
+                <Tap
                   onPress={() => overrideResult(item.cardId, next)}
-                  onPressIn={() => haptics.select()}
+                  squish={0.98}
                   accessibilityLabel={`${card?.text ?? 'Card'}, ${got ? 'got it' : 'passed'}. Tap to change to ${
                     next === 'correct' ? 'got it' : 'passed'
                   }.`}
-                  style={styles.row}
-                  faceStyle={styles.rowFace}
+                  contentStyle={styles.row}
                 >
-                  <View style={[styles.marker, { backgroundColor: tint }]}>
-                    <Icon name={got ? 'check' : 'pass'} size={18} color={color.bone} weight={3.5} />
-                  </View>
+                  <View style={[styles.receipt, got ? { backgroundColor: tint } : { borderColor: tint, borderWidth: 2.5 }]} />
                   <View style={styles.rowBody}>
                     <Text variant="heading" numberOfLines={1}>
                       {card?.text ?? 'Card'}
                     </Text>
-                    {/* The clue-giver hint. Shown here, never on the card. */}
-                    {card?.note ? (
-                      <Text variant="caption" tone="faint" numberOfLines={1}>
-                        {card.note}
-                      </Text>
-                    ) : null}
+                    <Text style={[styles.status, { color: tint }]}>
+                      {got ? 'Got it' : 'Passed'}
+                      <Text style={styles.time}> · {clock(item.atMs)}</Text>
+                      {/* The clue-giver hint. Shown here, never on the card. */}
+                      {card?.note ? <Text style={styles.time}> · {card.note}</Text> : null}
+                    </Text>
                   </View>
-                  <Text variant="label" style={{ color: tint }}>
-                    {got ? 'GOT IT' : 'PASS'}
-                  </Text>
-                </Raised>
+                </Tap>
               );
             }}
           />
@@ -175,50 +154,35 @@ export default function RoundRecapScreen() {
   );
 }
 
+/** Milliseconds into the round as m:ss. */
+function clock(ms: number): string {
+  const seconds = Math.max(0, Math.floor(ms / 1000));
+  return `${Math.floor(seconds / 60)}:${String(seconds % 60).padStart(2, '0')}`;
+}
+
 function verdict(correct: number): { headline: string; mood: MascotMood } {
-  if (correct >= 8) return { headline: 'On fire!', mood: 'excited' };
-  if (correct >= 5) return { headline: 'Great round!', mood: 'excited' };
-  if (correct >= 2) return { headline: 'Nice one!', mood: 'happy' };
-  if (correct === 1) return { headline: 'Off the mark!', mood: 'wink' };
-  return { headline: 'Tough one', mood: 'sad' };
+  if (correct >= 8) return { headline: 'Unreal 🔥', mood: 'excited' };
+  if (correct >= 5) return { headline: 'Great round', mood: 'excited' };
+  if (correct >= 2) return { headline: 'Nice one', mood: 'happy' };
+  if (correct === 1) return { headline: 'On the board', mood: 'wink' };
+  return { headline: 'Rough one', mood: 'sad' };
 }
 
 const styles = StyleSheet.create({
   panes: { flex: 1, flexDirection: 'row' },
-  summary: {
-    width: '42%',
-    paddingHorizontal: space.lg,
-    paddingTop: space.md,
-    paddingBottom: space.sm,
-    gap: space.md,
-  },
+  summary: { width: '42%', paddingHorizontal: space.lg, paddingTop: space.md, paddingBottom: space.sm, gap: space.md },
   hero: { flexDirection: 'row', alignItems: 'center', gap: space.md },
+  sticker: { transform: [{ rotate: '-6deg' }] },
   heroCopy: { flex: 1, gap: 2 },
   stats: { flexDirection: 'row', gap: space.sm },
   spacer: { flex: 1 },
-  listPane: {
-    flex: 1,
-    borderLeftWidth: 2,
-    borderLeftColor: color.line,
-    backgroundColor: color.backgroundSoft,
-  },
+  listPane: { flex: 1, backgroundColor: color.surface, borderTopLeftRadius: 24, borderBottomLeftRadius: 24 },
   listLabel: { paddingHorizontal: space.lg, paddingTop: space.md, paddingBottom: space.sm },
-  list: { paddingHorizontal: space.lg, paddingBottom: space.lg, flexGrow: 1 },
-  row: { marginBottom: space.sm },
-  rowFace: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    gap: space.md,
-    paddingHorizontal: space.md,
-    paddingVertical: space.sm + 2,
-  },
-  marker: {
-    width: 32,
-    height: 32,
-    borderRadius: 16,
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
+  list: { paddingHorizontal: space.md, paddingBottom: space.lg, flexGrow: 1 },
+  row: { flexDirection: 'row', alignItems: 'center', gap: space.md - 2, paddingHorizontal: space.sm, paddingVertical: 10, borderRadius: 14 },
+  receipt: { width: 16, height: 16, borderRadius: 4 },
   rowBody: { flex: 1, gap: 1 },
+  status: { fontFamily: font.heavy, fontSize: 13, lineHeight: 18 },
+  time: { fontFamily: font.medium, color: color.textMuted },
   empty: { flex: 1, alignItems: 'center', justifyContent: 'center', gap: space.xs, padding: space.lg },
 });

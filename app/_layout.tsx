@@ -7,8 +7,8 @@ import { useAppFonts } from '@/hooks/useAppFonts';
 import { useDeckLinks } from '@/hooks/useDeckLinks';
 import { color } from '@/ui/tokens';
 
-// Held until the typeface is ready, so the first frame anyone sees is the real
-// one rather than a flash of system text.
+// Held until the typefaces are ready, so the first frame anyone sees is the
+// real one rather than a flash of system text.
 void SplashScreen.preventAutoHideAsync().catch(() => undefined);
 
 export default function RootLayout() {
@@ -25,7 +25,7 @@ export default function RootLayout() {
 
   return (
     <SafeAreaProvider>
-      <StatusBar style="dark" />
+      <StatusBar style="light" />
       <Stack
         screenOptions={{
           headerShown: false,
@@ -33,7 +33,9 @@ export default function RootLayout() {
           animation: 'slide_from_right',
         }}
       >
+        <Stack.Screen name="index" options={{ animation: 'fade' }} />
         <Stack.Screen name="welcome" options={{ animation: 'fade', gestureEnabled: false }} />
+        <Stack.Screen name="settings" options={{ presentation: 'modal', animation: 'slide_from_bottom' }} />
         <Stack.Screen name="round" options={{ animation: 'fade', gestureEnabled: false }} />
       </Stack>
     </SafeAreaProvider>

@@ -3,7 +3,7 @@ import { Animated, Easing, StyleSheet, useWindowDimensions, View } from 'react-n
 import { useReducedMotion } from '@/hooks/useReducedMotion';
 import { color, palette } from './tokens';
 
-const COLORS = [palette.pink, palette.blue, palette.yellow, palette.purple, palette.green, palette.orange];
+const COLORS = [palette.yellow, palette.pink, palette.blue, palette.purple, palette.green, palette.orange, '#FFFFFF'];
 
 /**
  * A scattered but repeatable number in [0, 1) for piece i, channel k. Pure, so

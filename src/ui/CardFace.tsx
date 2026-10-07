@@ -1,6 +1,6 @@
 import { StyleSheet, Text, useWindowDimensions, View } from 'react-native';
 import { cardTextOn } from './contrast';
-import { fitCardText } from './fitText';
+import { CARD_LETTER_SPACING, fitCardText } from './fitText';
 import { font } from './tokens';
 
 export type CardFaceProps = {
@@ -17,7 +17,7 @@ const PAD_Y = 56;
  * The card. Not a card-shaped thing on a screen — the whole screen.
  *
  * Full-bleed deck colour, a couple of soft circles for depth, and the word in
- * the heaviest rounded face at the largest size that fits. It is read at arm's
+ * the display face at the largest size that fits. It is read at arm's
  * length across a dim room, so size beats everything.
  *
  * The size is worked out up front by `fitCardText`, which also balances a
@@ -34,7 +34,10 @@ export function CardFace({ text, accentColor }: CardFaceProps) {
       <View style={[styles.blob, styles.blobOne]} pointerEvents="none" />
       <View style={[styles.blob, styles.blobTwo]} pointerEvents="none" />
       <Text
-        style={[styles.text, { color, fontSize: fit.fontSize, lineHeight: fit.lineHeight }]}
+        style={[
+          styles.text,
+          { color, fontSize: fit.fontSize, lineHeight: fit.lineHeight, letterSpacing: fit.fontSize * CARD_LETTER_SPACING },
+        ]}
         numberOfLines={fit.lines.length}
         adjustsFontSizeToFit
         minimumFontScale={0.5}
@@ -66,6 +69,5 @@ const styles = StyleSheet.create({
   text: {
     fontFamily: font.card,
     textAlign: 'center',
-    letterSpacing: -0.5,
   },
 });

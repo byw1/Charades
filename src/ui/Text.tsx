@@ -22,7 +22,7 @@ const tones: Record<Tone, string> = {
   default: color.text,
   muted: color.textMuted,
   faint: color.textFaint,
-  inverse: color.bone,
+  inverse: color.ink,
   brand: color.brand,
   focus: color.focus,
   correct: color.correct,
@@ -34,7 +34,8 @@ const tones: Record<Tone, string> = {
  * screen rather than following the type scale.
  *
  * Dynamic Type stays on, capped so the largest accessibility sizes still fit a
- * chunky button rather than breaking out of it.
+ * pill button rather than breaking out of it. `inverse` is dark text, for the
+ * few light surfaces in a dark app: the yellow button, a white sticker.
  */
 export function Text({ variant = 'body', tone = 'default', align, style, ...rest }: TextProps) {
   return (

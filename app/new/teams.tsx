@@ -11,7 +11,7 @@ import { Footer, Screen } from '@/ui/Screen';
 import { SectionLabel } from '@/ui/Section';
 import { StepHeader } from '@/ui/StepHeader';
 import { Text } from '@/ui/Text';
-import { radius, space } from '@/ui/tokens';
+import { color, font, gutter, radius, space } from '@/ui/tokens';
 
 /**
  * Step two of three: teams, or not.
@@ -40,7 +40,7 @@ export default function NewGameTeamsScreen() {
         step={2}
         of={3}
         title="Who’s playing?"
-        subtitle="Teams are optional. Names help me take turns."
+        subtitle="Teams are optional. Names help me pass the phone round."
         onClose={() => router.dismissAll()}
         mood="wink"
       />
@@ -73,7 +73,7 @@ export default function NewGameTeamsScreen() {
               <View style={styles.pad}>
                 <PlayerList names={soloPlayers} onChange={setSoloPlayers} />
                 <Text variant="caption" tone="muted">
-                  One name per line. I’ll pass the phone round and keep everyone’s score.
+                  One name per line. I’ll rotate who holds the phone and keep everyone’s score.
                 </Text>
               </View>
             </View>
@@ -106,7 +106,7 @@ export default function NewGameTeamsScreen() {
                       maxLength={24}
                       size="heading"
                       style={[styles.teamName, { color: cardTextOn(team.color) }]}
-                      placeholderTextColor="rgba(255,255,255,0.7)"
+                      placeholderTextColor={cardTextOn(team.color) === color.bone ? 'rgba(255,255,255,0.7)' : 'rgba(0,0,0,0.5)'}
                     />
                   </View>
                   <View style={styles.teamBody}>
@@ -127,9 +127,10 @@ export default function NewGameTeamsScreen() {
 
       <Footer>
         <Button
-          label="Continue"
-          variant="primary"
+          label="Next"
+          variant="blue"
           size="lg"
+          icon={ready ? 'forward' : undefined}
           disabled={!ready}
           onPress={() => router.push('/new/settings')}
         />
@@ -167,20 +168,23 @@ function PlayerList({ names, onChange }: { names: string[]; onChange: (names: st
 const styles = StyleSheet.create({
   fill: { flex: 1 },
   body: { paddingTop: space.xs, paddingBottom: space.xl, gap: space.lg },
-  row: { flexDirection: 'row', gap: space.sm + 4, paddingHorizontal: 20 },
+  row: { flexDirection: 'row', gap: 10, paddingHorizontal: gutter },
   section: { gap: space.md },
-  pad: { paddingHorizontal: 20, gap: space.sm },
+  pad: { paddingHorizontal: gutter, gap: space.sm },
   team: {
-    marginHorizontal: 20,
+    marginHorizontal: gutter,
     borderWidth: 2,
     borderRadius: radius.lg,
     overflow: 'hidden',
+    backgroundColor: color.surface,
   },
   teamHeader: { padding: space.sm },
   teamName: {
-    backgroundColor: 'rgba(255,255,255,0.18)',
+    backgroundColor: 'rgba(0,0,0,0.12)',
     borderColor: 'transparent',
+    fontFamily: font.display,
+    fontSize: 22,
   },
   teamBody: { padding: space.sm },
-  players: { minHeight: 104 },
+  players: { minHeight: 104, backgroundColor: color.background, borderColor: color.background },
 });

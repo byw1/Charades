@@ -2,15 +2,34 @@
   "configVersion": 0,
   "apple": {
     "copyright": "2026 William Lawrence",
-    "categories": [["GAMES", "GAMES_FAMILY", "GAMES_WORD"], "ENTERTAINMENT"],
+    "categories": [
+      [
+        "GAMES",
+        "GAMES_FAMILY",
+        "GAMES_WORD"
+      ],
+      "ENTERTAINMENT"
+    ],
     "info": {
       "en-US": {
         "title": "Deckhead",
         "subtitle": "Charades Party Game",
-        "promoText": "Phone on your forehead. Friends shout clues. Every deck free, no ads, no accounts — and make your own decks in seconds.",
-        "description": "Hold the phone to your forehead. A word appears that everyone can see except you. Your friends shout clues, act it out, hum it — anything but say the word — and you guess as many as you can before the timer runs out.\n\nEVERYTHING IS FREE\nEvery deck is included from the moment you install. No ads, no subscriptions, no in-app purchases, no accounts.\n\nMAKE YOUR OWN DECKS\nInside jokes, your friends' names, your office legends. Type a few cards or paste a whole list at once.\n\nSHARE IN SECONDS\nShow a QR code and the whole room has your deck. Or send it as a link or a file — it travels inside the code, so nothing is uploaded anywhere.\n\nCONTROLS YOU CAN TRUST\nTap the top half of the screen if you got it, the bottom half to pass. Huge targets you can hit without looking. Prefer tilting? Turn it on in Settings — it's built to ignore an excited jerk of the phone.\n\nA GAME WITH AN ENDING\nPlay in teams or just play together. Pick a number of rounds, a target score, or play until the cards run out. Deckhead rotates who holds the phone, keeps the score, and lets you fix a mis-tap after every round.\n\nBUILT FOR A ROOM AFTER DARK\nGiant, bold cards that fill the screen. Full-screen flashes everyone can read from across the room. Buzzes that tell the holder what happened without leaking it to the guesser.\n\nPRIVATE BY DESIGN\nDeckhead works completely offline and collects nothing. Your decks and games stay on your phone.",
-        "keywords": ["charades", "party", "game", "forehead", "guess", "friends", "family", "word", "cards", "offline", "teams"],
-        "releaseNotes": "Meet Dex! A brand-new look, a quick how-to-play, tilt controls, and a whole lot more bounce.",
+        "promoText": "Phone on your forehead. Your friends yell clues. One tap to play, every deck free, and streaks to keep alive.",
+        "description": "Hold the phone to your forehead. A word pops up that everyone can see except you. Your friends yell clues, act it out, hum it — anything but say the word — and you get as many as you can before time's up.\n\nONE TAP TO PLAY\nSwipe through decks like lenses and hit the button. You're playing. Want teams and house rules? They're one tap away.\n\nEVERY DECK IS FREE\nNo ads. No subscriptions. No in-app purchases. No account.\n\nMAKE YOUR OWN\nYour friend group's inside jokes. Your teachers. Your dorm. Type a few cards or paste a whole list.\n\nSHARE IN SECONDS\nShow a code and the whole room has your deck. Or send a link or a file — it all travels inside the code, so nothing gets uploaded anywhere.\n\nSTREAKS AND BADGES\nKeep your 🔥 streak alive, chase your best round, and unlock badges as you play.\n\nCONTROLS THAT WORK\nTap the top of the screen if you got it, the bottom to pass. Giant targets you can hit without looking. Prefer tilting? Turn it on — it's built to ignore an excited jerk of the phone.\n\nA GAME WITH AN ENDING\nPlay as one big group or split into teams. Pick a number of rounds, a target score, or play till the cards run out. Fix a mis-tap after every round.\n\nPRIVATE BY DESIGN\nDeckhead works fully offline and collects nothing. Your decks, games and streak stay on your phone.",
+        "keywords": [
+          "charades",
+          "party",
+          "game",
+          "forehead",
+          "guess",
+          "friends",
+          "college",
+          "group",
+          "cards",
+          "offline",
+          "teams"
+        ],
+        "releaseNotes": "A whole new look. Swipe between your decks, Play and You, start a game in one tap, and keep your streak alive.",
         "supportUrl": "https://github.com/byw1/Deckhead/issues",
         "privacyPolicyUrl": "https://github.com/byw1/Deckhead/blob/main/PRIVACY.md"
       }

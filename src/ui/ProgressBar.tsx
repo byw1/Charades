@@ -8,15 +8,11 @@ export type ProgressBarProps = {
   value: number;
   tint?: string;
   height?: number;
-  /** Track colour. Defaults to the light line grey. */
   track?: string;
 };
 
-/**
- * A fat, rounded progress bar with a highlight stripe, like a lesson bar.
- * Springs to its new value rather than jumping.
- */
-export function ProgressBar({ value, tint = color.correct, height = 16, track = color.line }: ProgressBarProps) {
+/** A slim rounded bar that eases to its new value rather than jumping. */
+export function ProgressBar({ value, tint = color.brand, height = 8, track = color.surfaceRaised }: ProgressBarProps) {
   const reduced = useReducedMotion();
   const clamped = Math.min(1, Math.max(0, value));
   const [width] = useState(() => new Animated.Value(clamped));
@@ -27,13 +23,8 @@ export function ProgressBar({ value, tint = color.correct, height = 16, track = 
       return;
     }
     // Width cannot use the native driver; this is a handful of frames on a
-    // screen change, not a per-frame timer.
-    const animation = Animated.spring(width, {
-      toValue: clamped,
-      friction: 8,
-      tension: 90,
-      useNativeDriver: false,
-    });
+    // change, not a per-frame timer.
+    const animation = Animated.spring(width, { toValue: clamped, friction: 9, tension: 80, useNativeDriver: false });
     animation.start();
     return () => animation.stop();
   }, [clamped, reduced, width]);
@@ -47,33 +38,59 @@ export function ProgressBar({ value, tint = color.correct, height = 16, track = 
       <Animated.View
         style={[
           styles.fill,
-          {
-            backgroundColor: tint,
-            width: width.interpolate({ inputRange: [0, 1], outputRange: ['0%', '100%'] }),
-          },
+          { backgroundColor: tint, width: width.interpolate({ inputRange: [0, 1], outputRange: ['0%', '100%'] }) },
         ]}
-      >
-        <View style={[styles.shine, { height: Math.max(3, height * 0.25), top: height * 0.2 }]} />
-      </Animated.View>
+      />
+    </View>
+  );
+}
+
+export type StoryBarProps = {
+  count: number;
+  /** The segment in progress. Earlier ones are full, later ones empty. */
+  index: number;
+  /** How far through the current segment, 0 to 1. */
+  progress?: number | Animated.Value;
+};
+
+/**
+ * Story segments: one thin bar per step, filled up to where you are. Used for
+ * setup steps and the how-to-play, so "how much is left" reads at a glance.
+ */
+export function StoryBar({ count, index, progress = 1 }: StoryBarProps) {
+  return (
+    <View style={styles.story} accessibilityLabel={`Step ${index + 1} of ${count}`} accessible>
+      {Array.from({ length: count }, (_, i) => (
+        <View key={i} style={styles.segment}>
+          {i < index ? <View style={[styles.segmentFill, { width: '100%' }]} /> : null}
+          {i === index ? (
+            typeof progress === 'number' ? (
+              <View style={[styles.segmentFill, { width: `${Math.round(progress * 100)}%` }]} />
+            ) : (
+              <Animated.View
+                style={[
+                  styles.segmentFill,
+                  { width: progress.interpolate({ inputRange: [0, 1], outputRange: ['0%', '100%'] }) },
+                ]}
+              />
+            )
+          ) : null}
+        </View>
+      ))}
     </View>
   );
 }
 
 const styles = StyleSheet.create({
-  track: {
+  track: { flex: 1, borderRadius: radius.pill, overflow: 'hidden' },
+  fill: { height: '100%', borderRadius: radius.pill },
+  story: { flexDirection: 'row', gap: 4, flex: 1 },
+  segment: {
     flex: 1,
-    borderRadius: radius.pill,
+    height: 4,
+    borderRadius: 2,
+    backgroundColor: 'rgba(255,255,255,0.28)',
     overflow: 'hidden',
   },
-  fill: {
-    height: '100%',
-    borderRadius: radius.pill,
-  },
-  shine: {
-    position: 'absolute',
-    left: 8,
-    right: 8,
-    borderRadius: radius.pill,
-    backgroundColor: 'rgba(255,255,255,0.3)',
-  },
+  segmentFill: { height: '100%', backgroundColor: color.bone, borderRadius: 2 },
 });
