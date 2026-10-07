@@ -51,7 +51,7 @@ export const QR_PAYLOAD_LIMIT = 2100;
 export const QR_ERROR_CORRECTION = 'L' as const;
 
 export function encodeDeck(deck: Deck): string {
-  const json = JSON.stringify(deck);
+  const json = JSON.stringify(forSharing(deck));
   const compressed = deflate(utf8Encode(json), { level: 9 });
   return PAYLOAD_PREFIX + encodeBase64Url(compressed);
 }
@@ -121,6 +121,18 @@ export function decodeDeck(payload: string): DecodeResult {
   }
 
   return { ok: true, deck: result.deck, warnings: result.warnings };
+}
+
+/**
+ * The deck as the person receiving it should get it: hidden cards left out,
+ * and no storage marks. Whatever source a card came from, it is theirs now.
+ */
+export function forSharing(deck: Deck): Deck {
+  if (!deck.cards.some((card) => card.mine || card.hidden)) return deck;
+  return {
+    ...deck,
+    cards: deck.cards.filter((card) => !card.hidden).map(({ mine: _mine, hidden: _hidden, ...card }) => card),
+  };
 }
 
 /**

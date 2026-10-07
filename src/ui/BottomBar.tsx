@@ -39,7 +39,8 @@ export function useBottomBarHeight(): number {
 /**
  * The bar along the bottom of the home pages. Swiping between pages is the
  * main way around; this is the map of where you are and a shortcut to jump.
- * Solid black, so it reads the same under every deck colour.
+ * Solid chrome (black, or white in the light theme), so it reads the same
+ * under every deck colour.
  */
 export function BottomBar({ tabs, active, onSelect }: BottomBarProps) {
   const insets = useSafeAreaInsets();
@@ -65,8 +66,8 @@ export function BottomBar({ tabs, active, onSelect }: BottomBarProps) {
             style={styles.tab}
             contentStyle={[styles.tabInner, { height: content }, short && styles.tabInnerShort]}
           >
-            <Icon name={tab.icon} size={24} color={on ? color.text : 'rgba(255,255,255,0.5)'} weight={on ? 3 : 2.5} />
-            <Text style={[styles.label, { color: on ? color.text : 'rgba(255,255,255,0.5)' }]}>{tab.label}</Text>
+            <Icon name={tab.icon} size={24} color={on ? color.text : color.chromeIdle} weight={on ? 3 : 2.5} />
+            <Text style={[styles.label, { color: on ? color.text : color.chromeIdle }]}>{tab.label}</Text>
           </Tap>
         );
       })}
@@ -75,7 +76,7 @@ export function BottomBar({ tabs, active, onSelect }: BottomBarProps) {
 }
 
 const styles = StyleSheet.create({
-  bar: { flexDirection: 'row', backgroundColor: '#000000' },
+  bar: { flexDirection: 'row', backgroundColor: color.chrome, borderTopWidth: StyleSheet.hairlineWidth, borderTopColor: color.line },
   tab: { flex: 1 },
   tabInner: { alignItems: 'center', justifyContent: 'center', gap: 3 },
   tabInnerShort: { flexDirection: 'row', gap: 8 },

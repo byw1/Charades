@@ -7,7 +7,9 @@ import {
   getDeck,
   getDeckSummary,
   listDeckSummaries,
+  saveDeckChanges,
   searchDeckSummaries,
+  setFavorite,
   upsertDeck,
 } from './deckRepo';
 import { migrate } from './migrations';
@@ -341,6 +343,68 @@ describe('deck repository', () => {
 
       await save(makeDeck({ name: '100% Cotton' }));
       expect((await searchDeckSummaries(db, '100%')).map((d) => d.name)).toEqual(['100% Cotton']);
+    });
+  });
+
+  describe('your changes to a free deck', () => {
+    const mineCard = { id: 'crd_mine0001', text: 'Our inside joke', note: null };
+
+    it('hides cards and adds yours, and plays without the hidden ones', async () => {
+      const deck = makeDeck();
+      await save(deck, 'bundled');
+      await saveDeckChanges(db, deck.id, { hidden: [deck.cards[0]!.id], mine: [mineCard] });
+
+      const playing = await getDeck(db, deck.id);
+      expect(playing?.cards.map((c) => c.text)).toEqual(['Second', 'Our inside joke']);
+      expect(playing?.cards[1]).toMatchObject({ mine: true });
+
+      const editing = await getDeck(db, deck.id, { withHidden: true });
+      expect(editing?.cards.find((c) => c.text === 'First')).toMatchObject({ hidden: true });
+
+      expect(await getDeckSummary(db, deck.id)).toMatchObject({ cardCount: 2, mineCount: 1, hiddenCount: 1, sample: 'Second' });
+    });
+
+    it('keeps your changes when an app update rewrites the deck', async () => {
+      const deck = makeDeck();
+      await save(deck, 'bundled');
+      await saveDeckChanges(db, deck.id, { hidden: [deck.cards[0]!.id], mine: [mineCard] });
+
+      // The update fixes a card and adds one; the hidden card is still there.
+      await save(
+        {
+          ...deck,
+          updatedAt: '2027-01-01T00:00:00Z',
+          cards: [deck.cards[0]!, { id: 'crd_new00001', text: 'Brand new', note: null }],
+        },
+        'bundled',
+      );
+
+      const after = await getDeck(db, deck.id);
+      expect(after?.cards.map((c) => c.text)).toEqual(['Brand new', 'Our inside joke']);
+    });
+
+    it('can undo it all', async () => {
+      const deck = makeDeck();
+      await save(deck, 'bundled');
+      await saveDeckChanges(db, deck.id, { hidden: [deck.cards[0]!.id], mine: [mineCard] });
+      await saveDeckChanges(db, deck.id, { hidden: [], mine: [] });
+
+      expect((await getDeck(db, deck.id))?.cards.map((c) => c.text)).toEqual(['First', 'Second']);
+    });
+  });
+
+  describe('favourites', () => {
+    it('stars and unstars a deck, and keeps the star through a rewrite', async () => {
+      const deck = makeDeck();
+      await save(deck, 'bundled');
+      await setFavorite(db, deck.id, true);
+      expect((await getDeckSummary(db, deck.id))?.favorite).toBe(true);
+
+      await save({ ...deck, updatedAt: '2027-01-01T00:00:00Z' }, 'bundled');
+      expect((await getDeckSummary(db, deck.id))?.favorite).toBe(true);
+
+      await setFavorite(db, deck.id, false);
+      expect((await getDeckSummary(db, deck.id))?.favorite).toBe(false);
     });
   });
 

@@ -2,11 +2,18 @@ import { DEFAULTS_VERSION, parseDefaultsVersion, upgradeSettings } from './setti
 
 describe('upgradeSettings', () => {
   it('switches a phone that saved settings before tilt was the default', () => {
-    expect(upgradeSettings({ inputMode: 'tap' as const, haptics: false }, 1)).toEqual({ inputMode: 'tilt', haptics: false });
+    expect(upgradeSettings({ inputMode: 'tap' as const, sound: true, haptics: false }, 1)).toMatchObject({
+      inputMode: 'tilt',
+      haptics: false,
+    });
   });
 
-  it('leaves a phone alone once it has had the upgrade, so choosing tap sticks', () => {
-    expect(upgradeSettings({ inputMode: 'tap' as const }, DEFAULTS_VERSION)).toEqual({ inputMode: 'tap' });
+  it('turns sound effects on once for phones that saved the old dead switch', () => {
+    expect(upgradeSettings({ inputMode: 'swipe' as const, sound: false }, 2)).toEqual({ inputMode: 'swipe', sound: true });
+  });
+
+  it('leaves a phone alone once it has had the upgrades, so choices stick', () => {
+    expect(upgradeSettings({ inputMode: 'tap' as const, sound: false }, DEFAULTS_VERSION)).toEqual({ inputMode: 'tap', sound: false });
   });
 });
 

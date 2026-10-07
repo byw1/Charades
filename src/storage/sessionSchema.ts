@@ -59,7 +59,7 @@ function parseSettings(value: unknown): SessionSettings | null {
   const winCondition = parseWinCondition(value.winCondition);
   if (!winCondition) return null;
 
-  const inputMode = value.inputMode === 'tilt' ? 'tilt' : 'tap';
+  const inputMode = value.inputMode === 'tilt' || value.inputMode === 'swipe' ? value.inputMode : 'tap';
   // Sessions written before game modes existed were all classic, with no
   // twists and no forfeits, which is exactly what the defaults say.
   const mode: GameMode = value.mode === 'taboo' || value.mode === 'threeRounds' ? value.mode : 'classic';

@@ -1,7 +1,7 @@
 /**
  * Design tokens.
  *
- * Dark, loud and fast. The look borrows its grammar from the camera apps the
+ * Loud and fast, dark by default with a light theme for daylight. The look borrows its grammar from the camera apps the
  * people playing this live in: a near-black canvas so content is the only
  * colour on screen, floating translucent controls, fat pill buttons, and one
  * electric accent that means "do the thing". Saturated colour is saved for
@@ -35,7 +35,12 @@ export const palette = {
   teal: '#00C2B2',
 } as const;
 
-export const color = {
+/** Which way the menus are painted. Rounds and deck colours look the same in both. */
+export type Scheme = 'dark' | 'light';
+/** The setting: a fixed scheme, or whatever the phone is set to. */
+export type ThemeChoice = Scheme | 'system';
+
+const dark = {
   /** The canvas. Not pure black, which smears on OLED as things scroll. */
   background: '#0A0A0D',
   /** Cards, rows and inputs. */
@@ -44,6 +49,9 @@ export const color = {
   surfaceRaised: '#202028',
   /** Hairlines and input borders. */
   line: '#2A2A33',
+  /** The tab bar and the frame round the Play viewfinder. */
+  chrome: '#000000',
+  chromeIdle: 'rgba(255,255,255,0.5)',
 
   /** Translucent controls floating over full-bleed content. */
   glass: 'rgba(255,255,255,0.12)',
@@ -63,23 +71,83 @@ export const color = {
   ink: '#0A0A0D',
 
   /** The one accent. Primary actions, the shutter, the streak. */
-  brand: palette.yellow,
-  brandDeep: palette.yellowDeep,
+  brand: palette.yellow as string,
+  brandDeep: palette.yellowDeep as string,
+  /** The accent when it is text on the canvas rather than a fill. */
+  brandText: palette.yellow as string,
 
   /** Full-screen flash on a correct guess. */
-  correct: palette.green,
+  correct: palette.green as string,
   /** Full-screen flash on a pass. */
-  pass: palette.orange,
+  pass: palette.orange as string,
 
   /** Links, selection, the "send" action. */
-  focus: palette.blue,
+  focus: palette.blue as string,
 
-  danger: palette.red,
+  danger: palette.red as string,
 
   gold: '#FFC93C',
   silver: '#C9CED8',
   bronze: '#E3A06A',
-} as const;
+};
+
+export type ColorSet = { [K in keyof typeof dark]: string };
+
+/**
+ * Light: for playing outside in the sun, where a black screen is a mirror.
+ * Same layout, same accent, same deck colours; only the canvas, text and
+ * hairlines flip, and the accent darkens where it is text so it still reads.
+ */
+const light: ColorSet = {
+  ...dark,
+  background: '#F4F3EF',
+  surface: '#FFFFFF',
+  surfaceRaised: '#E9E8E3',
+  line: '#DAD8D1',
+  chrome: '#FFFFFF',
+  chromeIdle: 'rgba(10,10,13,0.45)',
+  glass: 'rgba(10,10,13,0.07)',
+  glassStrong: 'rgba(10,10,13,0.12)',
+  text: '#0A0A0D',
+  textMuted: '#5D5D69',
+  textFaint: '#8C8C97',
+  brandText: '#8F7300',
+  correct: '#12B04A',
+  pass: '#E25512',
+  focus: '#0B84DB',
+  danger: '#E0202C',
+};
+
+export const themes: Record<Scheme, ColorSet> = { dark, light };
+
+/**
+ * The scheme, decided once at launch.
+ *
+ * Styles across the app are built once when their file loads, so the theme has
+ * to be known before any of them are. It is read synchronously from the saved
+ * settings, falling back to the phone's appearance for "system", and changing
+ * it reloads the app (see useSettings). Anywhere without native modules — the
+ * logic tests — gets dark.
+ */
+function launchScheme(): Scheme {
+  try {
+    /* eslint-disable @typescript-eslint/no-require-imports -- read before any style is built */
+    const Storage = (require('expo-sqlite/kv-store') as { default: { getItemSync(key: string): string | null } }).default;
+    const raw = Storage.getItemSync('settings.v1');
+    const choice = raw ? (JSON.parse(raw) as { theme?: unknown }).theme : undefined;
+    if (choice === 'light' || choice === 'dark') return choice;
+    if (choice !== 'system') return 'dark';
+    const { Appearance } = require('react-native') as typeof import('react-native');
+    /* eslint-enable @typescript-eslint/no-require-imports */
+    return Appearance.getColorScheme() === 'light' ? 'light' : 'dark';
+  } catch {
+    return 'dark';
+  }
+}
+
+export const scheme: Scheme = launchScheme();
+
+export const color: ColorSet = themes[scheme];
 
 /**
  * Deck colours offered in the editor and used by the bundled decks.
@@ -159,4 +227,4 @@ export const minTapTarget = 44;
  */
 export const flashMs = 420;
 
-export type ColorToken = keyof typeof color;
+export type ColorToken = keyof ColorSet;

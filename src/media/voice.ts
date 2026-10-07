@@ -39,6 +39,12 @@ function speech(): SpeechModule | null {
 }
 
 /** Whether this phone, in this build, can listen without going online. */
+/**
+ * The voice referee is built but parked as "coming soon" until it has had a
+ * proper run on real phones at real parties. Off everywhere while false.
+ */
+export const VOICE_REFEREE_LAUNCHED = false;
+
 export function voiceSupported(): boolean {
   const module = speech();
   if (!module) return false;

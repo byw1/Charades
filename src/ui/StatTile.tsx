@@ -1,4 +1,5 @@
 import { StyleSheet, View } from 'react-native';
+import { onCanvas } from './contrast';
 import { Text } from './Text';
 import { color, font, radius, space } from './tokens';
 
@@ -13,7 +14,7 @@ export type StatTileProps = {
 export function StatTile({ label, value, tint = color.text, emoji }: StatTileProps) {
   return (
     <View style={styles.tile} accessible accessibilityLabel={`${label}: ${value}`}>
-      <Text style={[styles.value, { color: tint }]} numberOfLines={1} adjustsFontSizeToFit>
+      <Text style={[styles.value, { color: onCanvas(tint) }]} numberOfLines={1} adjustsFontSizeToFit>
         {emoji ? `${emoji} ` : ''}
         {value}
       </Text>

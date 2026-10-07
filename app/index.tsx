@@ -257,7 +257,7 @@ function ResumeBanner({ session, onPress }: { session: Session; onPress: () => v
 }
 
 const styles = StyleSheet.create({
-  screen: { flex: 1, backgroundColor: '#000000' },
+  screen: { flex: 1, backgroundColor: color.chrome },
   bar: { position: 'absolute', left: 0, right: 0, bottom: 0 },
   banner: {
     flexDirection: 'row',

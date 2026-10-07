@@ -4,7 +4,7 @@ import { Animated, Easing, Pressable, StyleSheet, Text as RNText, View } from 'r
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useReducedMotion } from '@/hooks/useReducedMotion';
 import { useLayout } from '@/ui/layout';
-import { useSettingsStore } from '@/hooks/useSettings';
+import { type InputMode, useSettingsStore } from '@/hooks/useSettings';
 import { Button } from '@/ui/Button';
 import { CircleButton } from '@/ui/CircleButton';
 import { Mascot, type MascotMood } from '@/ui/Mascot';
@@ -47,13 +47,20 @@ const STORIES: Story[] = [
 const STORY_COUNT = STORIES.length + 1;
 
 /** The last story teaches whichever controls the phone is set to. */
-const CONTROLS: Record<'tilt' | 'tap', Story> = {
+const CONTROLS: Record<InputMode, Story> = {
   tilt: {
     background: palette.blue,
     caption: 'Tip it down if you got it',
     detail: 'Tip it up to pass. Most cards before time’s up wins.',
     mood: 'excited',
     glyph: '👇',
+  },
+  swipe: {
+    background: palette.blue,
+    caption: 'Swipe up if you got it',
+    detail: 'Swipe down to pass, anywhere on the screen. Most cards before time’s up wins.',
+    mood: 'excited',
+    glyph: '☝️',
   },
   tap: {
     background: palette.blue,

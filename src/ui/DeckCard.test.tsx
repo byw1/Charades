@@ -21,6 +21,9 @@ function summary(overrides: Partial<DeckSummary> = {}): DeckSummary {
     cardCount: 50,
     sample: 'Jurassic Park',
     updatedAt: '2026-07-26T18:00:00Z',
+    favorite: false,
+    mineCount: 0,
+    hiddenCount: 0,
     ...overrides,
   };
 }

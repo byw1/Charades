@@ -8,15 +8,18 @@
  * 2: tilt became the default. Before it, every saved blob said "tap" whether
  *    or not anyone chose it, so it is switched once. Anyone who wants tap back
  *    picks it in Settings and it sticks.
+ * 3: sound effects arrived, on by default. The old "sound" switch never did
+ *    anything and every saved blob says off, so it is switched on once.
  */
 
-export const DEFAULTS_VERSION = 2;
+export const DEFAULTS_VERSION = 3;
 
-type Upgradable = { inputMode: 'tap' | 'tilt' };
+type Upgradable = { inputMode: 'tap' | 'tilt' | 'swipe'; sound: boolean };
 
 export function upgradeSettings<T extends Upgradable>(settings: T, savedVersion: number): T {
   let next = settings;
   if (savedVersion < 2) next = { ...next, inputMode: 'tilt' };
+  if (savedVersion < 3) next = { ...next, sound: true };
   return next;
 }
 

@@ -3,6 +3,7 @@ import { useCallback, useEffect, useRef, useState } from 'react';
 import { AppState, Pressable, StyleSheet, Text, View } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { elapsedMs, remainingMs } from '@/game/round';
+import { swipeOutcome } from '@/game/swipe';
 import { phaseInfo } from '@/game/threeRounds';
 import { twistById } from '@/game/twists';
 import type { Outcome } from '@/game/types';
@@ -13,7 +14,7 @@ import { useSessionStore } from '@/hooks/useSessionStore';
 import { useSettings } from '@/hooks/useSettings';
 import { useTilt } from '@/hooks/useTilt';
 import { useVoiceReferee } from '@/hooks/useVoiceReferee';
-import { voiceSupported } from '@/media/voice';
+import { VOICE_REFEREE_LAUNCHED, voiceSupported } from '@/media/voice';
 import { CardFace } from '@/ui/CardFace';
 import { cardTextOn } from '@/ui/contrast';
 import { FlashOverlay } from '@/ui/FlashOverlay';
@@ -139,7 +140,7 @@ export default function RoundPlayScreen() {
    * answers alongside tap or tilt rather than instead of them, so a missed
    * word can still be scored by hand.
    */
-  const [canListen] = useState(() => settings.voiceReferee && voiceSupported());
+  const [canListen] = useState(() => VOICE_REFEREE_LAUNCHED && settings.voiceReferee && voiceSupported());
   useVoiceReferee({
     enabled: canListen && state.phase === 'running',
     card: state.card,
@@ -163,6 +164,7 @@ export default function RoundPlayScreen() {
     onGesture: onResolve,
   });
   const tilting = tiltChosen && tiltAvailable;
+  const swiping = settings.inputMode === 'swipe';
 
   if (state.phase === 'paused') {
     return (
@@ -235,8 +237,11 @@ export default function RoundPlayScreen() {
         </View>
       ) : null}
 
+      {/* Swipe anywhere: up for got it, down to pass. */}
+      {swiping ? <SwipeLayer onSwipe={onResolve} /> : null}
+
       {/* Half the screen each. The holder is aiming by position, not by sight. */}
-      {tilting ? null : (
+      {tilting || swiping ? null : (
         <View style={styles.hitAreas} pointerEvents="box-none">
           <Pressable
             style={styles.hitArea}
@@ -279,6 +284,41 @@ export default function RoundPlayScreen() {
         </View>
       ) : null}
     </View>
+  );
+}
+
+/**
+ * A full-screen layer that turns a vertical swipe into an answer. The rule for
+ * what counts lives in /src/game/swipe, where it is tested.
+ */
+function SwipeLayer({ onSwipe }: { onSwipe: (outcome: Outcome) => void }) {
+  const start = useRef<{ x: number; y: number; t: number } | null>(null);
+
+  return (
+    <View
+      style={styles.hitAreas}
+      onStartShouldSetResponder={() => true}
+      onResponderGrant={(event) => {
+        const { pageX, pageY, timestamp } = event.nativeEvent;
+        start.current = { x: pageX, y: pageY, t: timestamp };
+      }}
+      onResponderRelease={(event) => {
+        const from = start.current;
+        start.current = null;
+        if (!from) return;
+        const { pageX, pageY, timestamp } = event.nativeEvent;
+        const dy = pageY - from.y;
+        const outcome = swipeOutcome(pageX - from.x, dy, dy / Math.max(1, timestamp - from.t));
+        if (outcome) onSwipe(outcome);
+      }}
+      accessible
+      accessibilityLabel="Swipe up for got it, down to pass"
+      accessibilityActions={[
+        { name: 'increment', label: 'Got it' },
+        { name: 'decrement', label: 'Pass' },
+      ]}
+      onAccessibilityAction={(event) => onSwipe(event.nativeEvent.actionName === 'increment' ? 'correct' : 'pass')}
+    />
   );
 }
 

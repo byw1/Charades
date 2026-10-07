@@ -125,11 +125,12 @@ describe('schema at the latest version', () => {
         'source',
         'createdAt',
         'updatedAt',
-        // The cover emoji arrived in version 4, appended at the end.
+        // The cover emoji arrived in version 4, favourites in 5, each appended.
         'emoji',
+        'favorite',
       ]);
-      // Taboo words and photos arrived in version 3, appended after position.
-      expect(db.columnNames('cards')).toEqual(['id', 'deckId', 'text', 'note', 'position', 'taboo', 'image']);
+      // Taboo words and photos arrived in version 3, your-card marks in 5.
+      expect(db.columnNames('cards')).toEqual(['id', 'deckId', 'text', 'note', 'position', 'taboo', 'image', 'mine', 'hidden']);
     } finally {
       db.close();
     }
@@ -272,7 +273,7 @@ describe('upgrading a device that already has data', () => {
           VALUES ('crd_00000002', 'dck_00000002', 'Fire drill at 3am', 'Room 204', 0);
       `);
 
-      expect(await migrate(db)).toEqual([3, 4]);
+      expect(await migrate(db)).toEqual([3, 4, 5]);
 
       const card = db.raw.prepare('SELECT * FROM cards WHERE deckId = ?').get('dck_00000002');
       expect(card).toMatchObject({ text: 'Fire drill at 3am', note: 'Room 204', taboo: null, image: null });

@@ -3,6 +3,7 @@ import {
   cardTextOn,
   contrastRatio,
   darken,
+  onCanvas,
   LARGE_TEXT_CONTRAST_MIN,
   parseHexColor,
   readableTextOn,
@@ -164,5 +165,19 @@ describe('darken', () => {
 
   it('passes through anything that is not a hex colour', () => {
     expect(darken('red')).toBe('red');
+  });
+});
+
+describe('onCanvas', () => {
+  it('leaves accents alone on the dark canvas', () => {
+    expect(onCanvas('#FFE500', 'dark')).toBe('#FFE500');
+  });
+
+  it('darkens yellow until it reads on the light canvas', () => {
+    expect(contrastRatio(onCanvas('#FFE500', 'light'), '#FFFFFF')).toBeGreaterThanOrEqual(3);
+  });
+
+  it('keeps an accent that already reads on light', () => {
+    expect(onCanvas('#0A0A0D', 'light')).toBe('#0a0a0d');
   });
 });

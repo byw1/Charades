@@ -176,17 +176,19 @@ export function Mascot({
       {/* The head, the face and both sticker borders. */}
       <Svg width={size} height={size} viewBox="0 0 120 120">
         <G fill="#FFFFFF" stroke="#FFFFFF" strokeWidth={12} strokeLinejoin="round">
-          <Circle cx={60} cy={72} r={40} />
+          <Ellipse cx={60} cy={73} rx={42} ry={39} />
           <G transform="rotate(-9 60 30)">
             <Rect x={40} y={5} width={40} height={50} rx={9} />
           </G>
         </G>
 
-        <Circle cx={60} cy={72} r={40} fill={tint} stroke={INK} strokeWidth={4} />
-        <Ellipse cx={38} cy={66} rx={5} ry={10} fill="#FFFFFF" opacity={0.22} />
+        <Ellipse cx={60} cy={73} rx={42} ry={39} fill={tint} stroke={INK} strokeWidth={3.5} />
+        {/* A soft shine, and a lighter belly of colour, so the head looks round. */}
+        <Ellipse cx={60} cy={86} rx={30} ry={20} fill="#FFFFFF" opacity={0.08} />
+        <Ellipse cx={34} cy={60} rx={5} ry={9} fill="#FFFFFF" opacity={0.28} transform="rotate(20 34 60)" />
 
-        <Ellipse cx={34} cy={90} rx={6} ry={4} fill={CHEEK} />
-        <Ellipse cx={86} cy={90} rx={6} ry={4} fill={CHEEK} />
+        <Ellipse cx={30} cy={93} rx={8} ry={5} fill={CHEEK} opacity={0.85} />
+        <Ellipse cx={90} cy={93} rx={8} ry={5} fill={CHEEK} opacity={0.85} />
 
         <Eyes mood={mood} blinking={blinking} look={look} />
         <Mouth mood={mood} />
@@ -272,26 +274,28 @@ function Snooze({ size }: { size: number }) {
 const line = { stroke: INK, strokeWidth: 4, strokeLinecap: 'round' as const, fill: 'none' };
 
 function Eyes({ mood, blinking, look }: { mood: MascotMood; blinking: boolean; look: number }) {
-  if (mood === 'excited') return <Path d="M39 80 Q46 71 53 80 M67 80 Q74 71 81 80" {...line} />;
-  if (mood === 'sleepy' || blinking) return <Path d="M39 78 Q46 84 53 78 M67 78 Q74 84 81 78" {...line} />;
+  // Happy-closed eyes: little upside-down U's.
+  if (mood === 'excited') return <Path d="M37 84 Q44 74 51 84 M69 84 Q76 74 83 84" {...line} />;
+  if (mood === 'sleepy' || blinking) return <Path d="M37 82 Q44 88 51 82 M69 82 Q76 88 83 82" {...line} />;
 
   // Thinking looks up and away; sad looks down; otherwise Dex glances about.
   const at = mood === 'thinking' ? { x: 2, y: -3 } : mood === 'sad' ? { x: 0, y: 3 } : { x: look * 2.5, y: 0 };
-  const tall = mood === 'wow' ? 10 : 8;
+  const tall = mood === 'wow' ? 11 : 9.5;
+
+  const eye = (cx: number) => (
+    <G>
+      <Ellipse cx={cx + at.x} cy={81 + at.y} rx={7.5} ry={tall} fill={INK} />
+      {/* Two sparkles: the big one makes the eye, the small one makes it shine. */}
+      <Circle cx={cx + 2.6 + at.x} cy={76.5 + at.y} r={3} fill="#FFFFFF" />
+      <Circle cx={cx - 2.4 + at.x} cy={85.5 + at.y} r={1.4} fill="#FFFFFF" />
+    </G>
+  );
 
   return (
     <G>
-      {mood === 'sad' ? <Path d="M38 65 L52 69 M82 65 L68 69" {...line} strokeWidth={3.5} /> : null}
-      <Ellipse cx={46 + at.x} cy={77 + at.y} rx={6} ry={tall} fill={INK} />
-      <Circle cx={48 + at.x} cy={73 + at.y} r={2} fill="#FFFFFF" />
-      {mood === 'wink' ? (
-        <Path d="M67 78 Q74 72 81 78" {...line} />
-      ) : (
-        <>
-          <Ellipse cx={74 + at.x} cy={77 + at.y} rx={6} ry={tall} fill={INK} />
-          <Circle cx={76 + at.x} cy={73 + at.y} r={2} fill="#FFFFFF" />
-        </>
-      )}
+      {mood === 'sad' ? <Path d="M35 70 L49 65 M85 70 L71 65" {...line} strokeWidth={3} /> : null}
+      {eye(44)}
+      {mood === 'wink' ? <Path d="M69 82 Q76 75 83 82" {...line} /> : eye(76)}
     </G>
   );
 }
@@ -301,21 +305,22 @@ function Mouth({ mood }: { mood: MascotMood }) {
     case 'excited':
       return (
         <G>
-          <Path d="M47 92 Q60 110 73 92 Z" fill={INK} stroke={INK} strokeWidth={2} strokeLinejoin="round" />
-          <Ellipse cx={60} cy={101} rx={6} ry={3.5} fill={CHEEK} />
+          <Path d="M50 94 Q60 108 70 94 Z" fill={INK} stroke={INK} strokeWidth={2.5} strokeLinejoin="round" />
+          <Ellipse cx={60} cy={101.5} rx={5} ry={3} fill={CHEEK} />
         </G>
       );
     case 'wow':
-      return <Ellipse cx={60} cy={99} rx={5} ry={6.5} fill={INK} />;
+      return <Ellipse cx={60} cy={100} rx={4.5} ry={5.5} fill={INK} />;
     case 'sad':
-      return <Path d="M50 101 Q60 93 70 101" {...line} />;
+      return <Path d="M53 101 Q60 96 67 101" {...line} />;
     case 'thinking':
-      return <Path d="M52 99 Q58 96 68 98" {...line} />;
+      return <Path d="M54 99 Q59 97 66 98" {...line} />;
     case 'sleepy':
-      return <Ellipse cx={60} cy={98} rx={3.5} ry={4} fill={INK} />;
+      return <Ellipse cx={60} cy={98} rx={3} ry={3.5} fill={INK} />;
     case 'happy':
     case 'wink':
-      return <Path d="M49 93 Q60 104 71 93" {...line} />;
+      // A little cat smile.
+      return <Path d="M52 95 Q56 100.5 60 96 Q64 100.5 68 95" {...line} strokeWidth={3.5} />;
   }
 }
 

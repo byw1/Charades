@@ -4,8 +4,9 @@ import { Alert, FlatList, Image, StyleSheet, View } from 'react-native';
 import { duplicateDeck } from '@/decks/edit';
 import { DEFAULT_DECK_EMOJI, isPlayable, MIN_PLAYABLE_CARDS, type StoredDeck } from '@/decks/types';
 import { useDatabase } from '@/hooks/useDatabase';
+import { useHaptics } from '@/hooks/useHaptics';
 import { useNewGameStore } from '@/hooks/useNewGameStore';
-import { deleteDeck, getDeck, upsertDeck } from '@/storage/deckRepo';
+import { deleteDeck, getDeck, getDeckSummary, setFavorite, upsertDeck } from '@/storage/deckRepo';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { Loader } from '@/ui/Loader';
 import { Button } from '@/ui/Button';
@@ -34,9 +35,11 @@ export default function DeckDetailScreen() {
   const resetDraft = useNewGameStore((s) => s.reset);
   const toggleDeck = useNewGameStore((s) => s.toggleDeck);
   const insets = useSafeAreaInsets();
+  const haptics = useHaptics();
   const { short } = useLayout();
   const [state, setState] = useState<LoadState>({ status: 'loading' });
   const [busy, setBusy] = useState(false);
+  const [favorite, setFavoriteState] = useState(false);
 
   // Reloads on focus so returning from the editor shows the saved deck.
   useFocusEffect(
@@ -47,9 +50,10 @@ export default function DeckDetailScreen() {
       const { db } = database;
 
       void (async () => {
-        const deck = await getDeck(db, id);
+        const [deck, summary] = await Promise.all([getDeck(db, id), getDeckSummary(db, id)]);
         if (cancelled) return;
         setState(deck ? { status: 'ready', deck } : { status: 'missing' });
+        setFavoriteState(summary?.favorite ?? false);
       })();
 
       return () => {
@@ -105,6 +109,14 @@ export default function DeckDetailScreen() {
     } finally {
       setBusy(false);
     }
+  };
+
+  const toggleFavorite = async () => {
+    if (database.status !== 'ready') return;
+    const next = !favorite;
+    setFavoriteState(next);
+    haptics.select();
+    await setFavorite(database.db, deck.id, next);
   };
 
   const confirmDelete = () => {
@@ -175,8 +187,17 @@ export default function DeckDetailScreen() {
 
               <View style={styles.row}>
                 <Action icon="share" label="Share" onPress={() => router.push(`/decks/share/${deck.id}`)} />
+                <Action
+                  icon={favorite ? 'heartFilled' : 'heart'}
+                  label={favorite ? 'Favourite' : 'Favourite?'}
+                  tint={favorite ? color.danger : undefined}
+                  onPress={() => void toggleFavorite()}
+                />
                 {bundled ? (
-                  <Action icon="copy" label={busy ? 'Copying' : 'Copy & edit'} onPress={() => void duplicate()} />
+                  <>
+                    <Action icon="edit" label="Edit" onPress={() => router.push(`/decks/edit/${deck.id}`)} />
+                    <Action icon="copy" label={busy ? 'Copying' : 'Copy'} onPress={() => void duplicate()} />
+                  </>
                 ) : (
                   <>
                     <Action icon="edit" label="Edit" onPress={() => router.push(`/decks/edit/${deck.id}`)} />
@@ -188,7 +209,7 @@ export default function DeckDetailScreen() {
 
               {bundled ? (
                 <Text variant="caption" tone="faint" align="center">
-                  Free decks stay as they are so updates never wipe your changes. Copy one to make it yours.
+                  Edit to hide cards or add your own; your changes stay when the app updates this deck. Copy it to change everything.
                 </Text>
               ) : null}
             </View>
@@ -201,7 +222,16 @@ export default function DeckDetailScreen() {
             <Text style={styles.cardIndex}>{index + 1}</Text>
             {item.image ? <Image source={{ uri: item.image }} style={styles.cardPhoto} accessible={false} /> : null}
             <View style={styles.cardBody}>
-              <Text variant="heading">{item.text}</Text>
+              <View style={styles.cardTitle}>
+                <Text variant="heading" style={styles.cardText}>
+                  {item.text}
+                </Text>
+                {item.mine ? (
+                  <View style={styles.yours}>
+                    <Text style={styles.yoursText}>YOURS</Text>
+                  </View>
+                ) : null}
+              </View>
               {/* Notes are a clue-giver hint. They belong here and in the recap,
                   never on the card itself during a round. */}
               {item.note ? (
@@ -233,16 +263,18 @@ function Action({
   label,
   onPress,
   danger = false,
+  tint,
 }: {
   icon: IconName;
   label: string;
   onPress: () => void;
   danger?: boolean;
+  tint?: string;
 }) {
   return (
     <Tap onPress={onPress} accessibilityLabel={label} style={styles.action} contentStyle={styles.actionInner}>
       <View style={styles.actionCircle}>
-        <Icon name={icon} size={22} color={danger ? color.danger : color.text} weight={2.75} />
+        <Icon name={icon} size={22} color={tint ?? (danger ? color.danger : color.text)} weight={2.75} />
       </View>
       <Text variant="caption" style={{ color: danger ? color.danger : color.textMuted }}>
         {label}
@@ -316,5 +348,9 @@ const styles = StyleSheet.create({
   cardIndex: { fontFamily: font.heavy, fontSize: 13, lineHeight: 18, color: color.textFaint, minWidth: 22, textAlign: 'right' },
   cardPhoto: { width: 44, height: 44, borderRadius: 10 },
   cardBody: { flex: 1, gap: 2 },
+  cardTitle: { flexDirection: 'row', alignItems: 'center', gap: space.sm },
+  cardText: { flexShrink: 1 },
+  yours: { backgroundColor: color.brand, borderRadius: radius.pill, paddingHorizontal: 8, paddingVertical: 2 },
+  yoursText: { fontFamily: font.heavy, fontSize: 10, lineHeight: 14, color: color.ink, letterSpacing: 0.6 },
   centre: { flex: 1, alignItems: 'center', justifyContent: 'center' },
 });

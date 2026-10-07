@@ -1,7 +1,9 @@
+import { reloadAppAsync } from 'expo';
 import Storage from 'expo-sqlite/kv-store';
 import { create } from 'zustand';
 import { useShallow } from 'zustand/react/shallow';
 import type { GameMode } from '@/game/types';
+import type { ThemeChoice } from '@/ui/tokens';
 import { DEFAULTS_VERSION, parseDefaultsVersion, upgradeSettings } from './settingsUpgrade';
 
 /**
@@ -19,17 +21,17 @@ import { DEFAULTS_VERSION, parseDefaultsVersion, upgradeSettings } from './setti
 
 export type Settings = {
   haptics: boolean;
-  /**
-   * Off by default, deliberately. A ding for "correct" tells the guesser they
-   * got it before anyone speaks, and it leaks across the room.
-   */
+  /** Sound effects: got it, pass, the countdown, time's up, a win. */
   sound: boolean;
   /**
-   * Tilt is the default: tip the phone down for got it, up to pass, the way
-   * people expect a forehead game to work. Tap is a setting for anyone who
-   * prefers it.
+   * How the holder answers. Tilt is the default: tip the phone down for got
+   * it, up to pass, the way people expect a forehead game to work. Swipe
+   * (up for got it, down to pass, anywhere on the screen) and tap (top half,
+   * bottom half) are there for anyone who prefers them.
    */
-  inputMode: 'tap' | 'tilt';
+  inputMode: InputMode;
+  /** Dark, light for daylight, or whatever the phone is set to. */
+  theme: ThemeChoice;
   boostBrightness: boolean;
   /** Whether the first-launch how-to-play has been seen. */
   onboarded: boolean;
@@ -47,10 +49,15 @@ export type Settings = {
   recordRounds: boolean;
 };
 
+export type InputMode = 'tilt' | 'swipe' | 'tap';
+export const INPUT_MODES: readonly InputMode[] = ['tilt', 'swipe', 'tap'];
+const THEMES: readonly ThemeChoice[] = ['dark', 'light', 'system'];
+
 export const defaultAppSettings: Settings = {
   haptics: true,
-  sound: false,
+  sound: true,
   inputMode: 'tilt',
+  theme: 'dark',
   boostBrightness: true,
   onboarded: false,
   quickMode: 'classic',
@@ -70,7 +77,8 @@ function sanitise(stored: Partial<Record<keyof Settings, unknown>>): Settings {
   }
   const settings = out as Settings;
   if (!['classic', 'taboo', 'threeRounds'].includes(settings.quickMode)) settings.quickMode = 'classic';
-  if (settings.inputMode !== 'tap' && settings.inputMode !== 'tilt') settings.inputMode = defaultAppSettings.inputMode;
+  if (!INPUT_MODES.includes(settings.inputMode)) settings.inputMode = defaultAppSettings.inputMode;
+  if (!THEMES.includes(settings.theme)) settings.theme = defaultAppSettings.theme;
   return settings;
 }
 
@@ -115,6 +123,12 @@ function load(): Settings {
 
 type SettingsStore = Settings & {
   set<K extends keyof Settings>(key: K, value: Settings[K]): void;
+  /**
+   * Every style in the app is built for one theme when it loads, so a new
+   * theme is saved straight away and the app reloads into it. It takes about
+   * a second and nothing is lost: the game, decks and settings are all saved.
+   */
+  setTheme(theme: ThemeChoice): void;
   resetAll(): void;
 };
 
@@ -124,6 +138,17 @@ export const useSettingsStore = create<SettingsStore>((set, get) => ({
   set(key, value) {
     set({ [key]: value } as Pick<Settings, typeof key>);
     persist(get());
+  },
+
+  setTheme(theme) {
+    const next = { ...get(), theme };
+    set({ theme });
+    try {
+      Storage.setItemSync(STORAGE_KEY, JSON.stringify(pick(next)));
+    } catch {
+      return;
+    }
+    void reloadAppAsync('Theme changed').catch(() => undefined);
   },
 
   resetAll() {

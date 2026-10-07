@@ -7,12 +7,11 @@ import {
   KeyboardAvoidingView,
   Platform,
   Pressable,
-  ScrollView,
   StyleSheet,
   View,
 } from 'react-native';
 import { createDeck, parseTabooInput } from '@/decks/edit';
-import { CARD_TEXT_SOFT_CAP, DECK_EMOJI_CHOICES, DEFAULT_DECK_EMOJI, MIN_PLAYABLE_CARDS, type Deck } from '@/decks/types';
+import { CARD_TEXT_SOFT_CAP, DEFAULT_DECK_EMOJI, MIN_PLAYABLE_CARDS, type Deck, type StoredDeck } from '@/decks/types';
 import { useDatabase } from '@/hooks/useDatabase';
 import { useDeckEditor } from '@/hooks/useDeckEditor';
 import { useHaptics } from '@/hooks/useHaptics';
@@ -21,6 +20,8 @@ import { getDeck, upsertDeck } from '@/storage/deckRepo';
 import { Loader } from '@/ui/Loader';
 import { Button } from '@/ui/Button';
 import { cardTextOn } from '@/ui/contrast';
+import { FreeDeckEditor } from '@/editor/FreeDeckEditor';
+import { EmojiPicker } from '@/ui/EmojiPicker';
 import { EmojiSticker } from '@/ui/EmojiSticker';
 import { EmptyState } from '@/ui/EmptyState';
 import { Field } from '@/ui/Field';
@@ -52,7 +53,7 @@ export default function DeckEditorScreen() {
     let cancelled = false;
 
     void (async () => {
-      const deck = await getDeck(database.db, id);
+      const deck = await getDeck(database.db, id, { withHidden: true });
       if (cancelled) return;
       if (deck) setLoaded(deck);
       else setMissing(true);
@@ -81,6 +82,9 @@ export default function DeckEditorScreen() {
     );
   }
 
+  // A free deck is made yours in place: hide its cards, add your own.
+  if ('source' in loaded && loaded.source === 'bundled') return <FreeDeckEditor deck={loaded as StoredDeck} />;
+
   return <Editor initial={loaded} isNew={isNew} />;
 }
 
@@ -96,6 +100,7 @@ function Editor({ initial, isNew }: { initial: Deck; isNew: boolean }) {
   const [saving, setSaving] = useState(false);
   const [tabooOpen, setTabooOpen] = useState<ReadonlySet<string>>(() => new Set());
   const [busyPhoto, setBusyPhoto] = useState(false);
+  const [pickingEmoji, setPickingEmoji] = useState(false);
 
   const { draft } = editor;
 
@@ -247,19 +252,38 @@ function Editor({ initial, isNew }: { initial: Deck; isNew: boolean }) {
           ListHeaderComponent={
             <View style={styles.meta}>
               {/* A live preview: this is what the deck will look like. */}
+              {/* The sticker sits beside the name, never on it, so a long
+                  name wraps or shrinks instead of being covered. Tap the
+                  sticker to change it. */}
               <View style={[styles.preview, { backgroundColor: draft.accentColor }]}>
                 <Text style={styles.previewWatermark} accessible={false} allowFontScaling={false}>
                   {draft.emoji ?? DEFAULT_DECK_EMOJI}
                 </Text>
-                <View style={styles.previewSticker}>
-                  <EmojiSticker emoji={draft.emoji ?? DEFAULT_DECK_EMOJI} size={58} />
+                <Pressable
+                  onPress={() => setPickingEmoji(true)}
+                  accessibilityRole="button"
+                  accessibilityLabel="Change the cover emoji"
+                  style={styles.previewSticker}
+                >
+                  <EmojiSticker emoji={draft.emoji ?? DEFAULT_DECK_EMOJI} size={64} />
+                  <View style={styles.stickerEdit}>
+                    <Icon name="edit" size={12} color={color.ink} weight={3} />
+                  </View>
+                </Pressable>
+                <View style={styles.previewCopy}>
+                  <Text
+                    variant="display"
+                    style={[styles.previewName, { color: onAccent }]}
+                    numberOfLines={2}
+                    adjustsFontSizeToFit
+                    minimumFontScale={0.6}
+                  >
+                    {draft.name.trim() || 'Your deck'}
+                  </Text>
+                  <Text variant="label" style={{ color: onAccent, opacity: 0.9 }}>
+                    {count} {count === 1 ? 'card' : 'cards'}
+                  </Text>
                 </View>
-                <Text variant="display" style={{ color: onAccent }} numberOfLines={2}>
-                  {draft.name.trim() || 'Your deck'}
-                </Text>
-                <Text variant="label" style={{ color: onAccent, opacity: 0.9 }}>
-                  {count} {count === 1 ? 'card' : 'cards'}
-                </Text>
               </View>
 
               <View style={styles.fieldGroup}>
@@ -304,39 +328,23 @@ function Editor({ initial, isNew }: { initial: Deck; isNew: boolean }) {
                 })}
               </View>
 
-              <View style={styles.emojiBlock}>
-                <Text variant="overline" tone="faint">
-                  COVER EMOJI
+              <Tap
+                onPress={() => setPickingEmoji(true)}
+                squish={0.98}
+                accessibilityLabel="Cover emoji. Type one or search."
+                contentStyle={styles.emojiButton}
+              >
+                <Text style={styles.emojiGlyph} allowFontScaling={false}>
+                  {draft.emoji ?? DEFAULT_DECK_EMOJI}
                 </Text>
-                <ScrollView
-                  horizontal
-                  showsHorizontalScrollIndicator={false}
-                  contentContainerStyle={styles.emojis}
-                  keyboardShouldPersistTaps="handled"
-                  accessibilityRole="radiogroup"
-                >
-                  {DECK_EMOJI_CHOICES.map((choice) => {
-                    const selected = (draft.emoji ?? null) === choice;
-                    return (
-                      <Pressable
-                        key={choice}
-                        onPress={() => {
-                          haptics.select();
-                          editor.setEmoji(selected ? null : choice);
-                        }}
-                        accessibilityRole="radio"
-                        accessibilityState={{ selected }}
-                        accessibilityLabel={`Cover emoji ${choice}`}
-                        style={[styles.emojiChoice, selected && { borderColor: draft.accentColor, backgroundColor: color.surfaceRaised }]}
-                      >
-                        <Text style={styles.emojiGlyph} allowFontScaling={false}>
-                          {choice}
-                        </Text>
-                      </Pressable>
-                    );
-                  })}
-                </ScrollView>
-              </View>
+                <View style={styles.grow}>
+                  <Text variant="heading">Cover emoji</Text>
+                  <Text variant="caption" tone="muted">
+                    Type any emoji, or search for one
+                  </Text>
+                </View>
+                <Icon name="forward" size={18} color={color.textFaint} weight={3} />
+              </Tap>
 
               <View style={styles.progress}>
                 <View style={styles.progressText}>
@@ -457,6 +465,17 @@ function Editor({ initial, isNew }: { initial: Deck; isNew: boolean }) {
           }}
         />
 
+        <EmojiPicker
+          visible={pickingEmoji}
+          value={draft.emoji ?? null}
+          tint={draft.accentColor}
+          onPick={(emoji) => {
+            haptics.select();
+            editor.setEmoji(emoji);
+          }}
+          onClose={() => setPickingEmoji(false)}
+        />
+
         <Footer>
           {editor.errors.length > 0 && count > 0 ? (
             <Text variant="caption" tone="pass" align="center">
@@ -544,7 +563,37 @@ const styles = StyleSheet.create({
   fill: { flex: 1 },
   list: { paddingBottom: space.lg, flexGrow: 1 },
   meta: { gap: space.md, paddingHorizontal: gutter, paddingBottom: space.sm },
-  preview: { minHeight: 140, justifyContent: 'flex-end', padding: space.lg, gap: 2, borderRadius: radius.xl, overflow: 'hidden' },
+  preview: {
+    minHeight: 120,
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: space.md,
+    padding: space.lg,
+    borderRadius: radius.xl,
+    overflow: 'hidden',
+  },
+  previewCopy: { flex: 1, gap: 2 },
+  previewName: { flexShrink: 1 },
+  stickerEdit: {
+    position: 'absolute',
+    right: -2,
+    bottom: -2,
+    width: 22,
+    height: 22,
+    borderRadius: 11,
+    backgroundColor: color.bone,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  emojiButton: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: space.md,
+    backgroundColor: color.surface,
+    borderRadius: radius.md,
+    paddingHorizontal: space.md,
+    paddingVertical: space.sm + 2,
+  },
   previewWatermark: {
     position: 'absolute',
     right: -30,
@@ -554,20 +603,8 @@ const styles = StyleSheet.create({
     opacity: 0.2,
     transform: [{ rotate: '-14deg' }],
   },
-  previewSticker: { alignSelf: 'flex-start', marginBottom: space.sm },
-  emojiBlock: { gap: space.sm },
-  emojis: { gap: space.sm, paddingRight: space.md },
-  emojiChoice: {
-    width: 48,
-    height: 48,
-    borderRadius: 24,
-    alignItems: 'center',
-    justifyContent: 'center',
-    borderWidth: 3,
-    borderColor: 'transparent',
-    backgroundColor: color.surface,
-  },
-  emojiGlyph: { fontSize: 24, lineHeight: 30 },
+  previewSticker: { padding: 2 },
+  emojiGlyph: { fontSize: 32, lineHeight: 40 },
   fieldGroup: { gap: space.sm },
   swatches: { flexDirection: 'row', flexWrap: 'wrap', rowGap: space.sm },
   swatchCell: { width: '25%', alignItems: 'center' },

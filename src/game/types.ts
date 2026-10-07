@@ -69,7 +69,7 @@ export type SessionSettings = {
   roundSeconds: number;
   /** 0 or 1. Default 0. */
   passPenalty: number;
-  inputMode: 'tap' | 'tilt';
+  inputMode: 'tap' | 'tilt' | 'swipe';
   winCondition: WinCondition;
   shuffleAcrossDecks: boolean;
   mode: GameMode;

@@ -145,7 +145,9 @@ export default function RoundIntroScreen() {
           <Text style={[styles.hint, { color: ink }, upright && styles.centred]}>
             {settings.inputMode === 'tilt'
               ? 'Tip down if you got it, up to pass'
-              : 'Tap the top if you got it, the bottom to pass'}
+              : settings.inputMode === 'swipe'
+                ? 'Swipe up if you got it, down to pass'
+                : 'Tap the top if you got it, the bottom to pass'}
           </Text>
         </View>
 

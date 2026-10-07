@@ -308,7 +308,7 @@ function ringColor(accent: string): string {
 }
 
 const styles = StyleSheet.create({
-  page: { flex: 1, backgroundColor: '#000000' },
+  page: { flex: 1, backgroundColor: color.chrome },
   frame: {
     flex: 1,
     overflow: 'hidden',

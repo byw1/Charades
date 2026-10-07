@@ -1,4 +1,4 @@
-import { color } from './tokens';
+import { color, scheme, type Scheme } from './tokens';
 
 /**
  * Contrast helpers.
@@ -115,4 +115,26 @@ export function darken(hex: string, amount = 0.22): string {
       .padStart(2, '0');
 
   return `#${mix(rgb.r)}${mix(rgb.g)}${mix(rgb.b)}`;
+}
+
+/**
+ * A bright accent used as text on the menu canvas. On the dark canvas every
+ * accent reads as it is; on the light one yellow and green wash out, so any
+ * accent too light to read is darkened until it does.
+ */
+export function onCanvas(tint: string, on: Scheme = scheme): string {
+  if (on === 'dark') return tint;
+  const rgb = parseHexColor(tint);
+  if (!rgb) return tint;
+  let { r, g, b } = rgb;
+  for (let step = 0; step < 12 && contrastRatio(toHex(r, g, b), '#FFFFFF') < 3; step++) {
+    r *= 0.85;
+    g *= 0.85;
+    b *= 0.85;
+  }
+  return toHex(r, g, b);
+}
+
+function toHex(r: number, g: number, b: number): string {
+  return `#${[r, g, b].map((c) => Math.round(c).toString(16).padStart(2, '0')).join('')}`;
 }

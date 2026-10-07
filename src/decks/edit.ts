@@ -224,7 +224,9 @@ export function duplicateDeck(deck: Deck, now: string, random?: RandomSource): D
     ...deck,
     id: makeDeckId(random),
     name: nextCopyName(deck.name),
-    cards: deck.cards.map((card) => ({ ...card, id: makeCardId(random) })),
+    // A copy is wholly yours: the free-deck marks don't come with it, and
+    // hidden cards stay behind.
+    cards: deck.cards.filter((card) => !card.hidden).map(({ mine: _mine, hidden: _hidden, ...card }) => ({ ...card, id: makeCardId(random) })),
     createdAt: now,
     updatedAt: now,
   };

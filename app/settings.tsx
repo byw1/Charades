@@ -1,12 +1,10 @@
 import { Camera } from 'expo-camera';
 import Constants from 'expo-constants';
 import { useRouter } from 'expo-router';
-import { useState } from 'react';
 import { Alert, Linking, ScrollView, StyleSheet, View } from 'react-native';
 import { useHaptics } from '@/hooks/useHaptics';
-import { useSettings, useSettingsStore } from '@/hooks/useSettings';
+import { type InputMode, useSettings, useSettingsStore } from '@/hooks/useSettings';
 import { allowReminders } from '@/media/reminders';
-import { allowVoice, voiceSupported } from '@/media/voice';
 import { Chip } from '@/ui/Chip';
 import { Icon, type IconName } from '@/ui/Icon';
 import { Screen } from '@/ui/Screen';
@@ -14,7 +12,7 @@ import { Group, IconBadge, SectionLabel, SwitchRow } from '@/ui/Section';
 import { Tap } from '@/ui/Tap';
 import { Text } from '@/ui/Text';
 import { TopBar } from '@/ui/TopBar';
-import { color, gutter, palette, space } from '@/ui/tokens';
+import { color, font, gutter, palette, radius, space, type ThemeChoice } from '@/ui/tokens';
 
 /**
  * App settings, as opposed to the per-game settings in the new game flow.
@@ -22,9 +20,8 @@ import { color, gutter, palette, space } from '@/ui/tokens';
  * These are preferences about the device and the person holding it, so they
  * persist across games rather than being chosen again every time.
  *
- * There is deliberately no sound toggle yet. Nothing in the app plays audio, so
- * the control would be a switch wired to nothing. It lands with the sound it
- * governs; the stored setting already exists in useSettings for that day.
+ * Grouped by what they change: how you answer, how the app looks, what you
+ * hear and feel, and the optional extras.
  */
 export default function SettingsScreen() {
   const router = useRouter();
@@ -33,7 +30,6 @@ export default function SettingsScreen() {
   const set = useSettingsStore((s) => s.set);
   const resetAll = useSettingsStore((s) => s.resetAll);
 
-  const [canListen] = useState(() => voiceSupported());
 
   const denied = (what: string) =>
     Alert.alert(`${what} is turned off for Deckhead`, 'You can allow it in the Settings app.', [
@@ -47,10 +43,13 @@ export default function SettingsScreen() {
     else denied('Notifications');
   };
 
-  const toggleVoice = async (on: boolean) => {
-    if (!on) return set('voiceReferee', false);
-    if (await allowVoice()) set('voiceReferee', true);
-    else denied('Speech recognition');
+  const setTheme = useSettingsStore((s) => s.setTheme);
+  const switchTheme = (next: ThemeChoice) => {
+    if (next === settings.theme) return;
+    Alert.alert('Switch the look?', 'Deckhead restarts for a second to repaint. Your game, decks and settings are all kept.', [
+      { text: 'Not now', style: 'cancel' },
+      { text: 'Switch', onPress: () => setTheme(next) },
+    ]);
   };
 
   const toggleRecording = async (on: boolean) => {
@@ -87,35 +86,55 @@ export default function SettingsScreen() {
         <View>
           <SectionLabel>How you answer</SectionLabel>
           <View style={styles.choices}>
-            <Chip
-              grow
-              emoji="🙃"
-              label="Tilt"
-              detail="Tip down got it, tip up pass"
-              selected={settings.inputMode === 'tilt'}
-              onPress={() => set('inputMode', 'tilt')}
-              accessibilityLabel="Tilt to answer"
-            />
-            <Chip
-              grow
-              emoji="👆"
-              label="Tap"
-              detail="Top half got it, bottom half pass"
-              selected={settings.inputMode === 'tap'}
-              onPress={() => set('inputMode', 'tap')}
-              accessibilityLabel="Tap to answer"
-            />
+            {ANSWER_MODES.map((mode) => (
+              <Chip
+                key={mode.key}
+                grow
+                emoji={mode.emoji}
+                label={mode.label}
+                detail={mode.detail}
+                selected={settings.inputMode === mode.key}
+                onPress={() => set('inputMode', mode.key)}
+                accessibilityLabel={`${mode.label} to answer`}
+              />
+            ))}
           </View>
-          {settings.inputMode === 'tilt' ? (
-            <Text variant="caption" tone="muted" style={styles.note}>
-              Tilt replaces tap for the whole round, so a hand resting on the screen can’t answer for you. If the motion sensor doesn’t respond, tap takes over by itself.
-            </Text>
-          ) : null}
+          <Text variant="caption" tone="muted" style={styles.note}>
+            {ANSWER_MODES.find((mode) => mode.key === settings.inputMode)?.note}
+          </Text>
         </View>
 
         <View>
-          <SectionLabel>During a round</SectionLabel>
+          <SectionLabel>Look</SectionLabel>
+          <View style={styles.choices}>
+            {THEME_CHOICES.map((choice) => (
+              <Chip
+                key={choice.key}
+                grow
+                emoji={choice.emoji}
+                label={choice.label}
+                selected={settings.theme === choice.key}
+                onPress={() => switchTheme(choice.key)}
+                accessibilityLabel={`${choice.label} theme`}
+              />
+            ))}
+          </View>
+          <Text variant="caption" tone="muted" style={styles.note}>
+            Light is easier to see outside in the sun. Switching restarts Deckhead for a second; nothing is lost.
+          </Text>
+        </View>
+
+        <View>
+          <SectionLabel>Sound and feel</SectionLabel>
           <Group>
+            <SwitchRow
+              icon="bolt"
+              tint={palette.orange}
+              title="Sound effects"
+              detail="A ding for got it, a whoosh for a pass, the countdown and the buzzer."
+              value={settings.sound}
+              onChange={(value) => set('sound', value)}
+            />
             <SwitchRow
               icon="phone"
               tint={palette.purple}
@@ -148,33 +167,20 @@ export default function SettingsScreen() {
               onChange={(value) => void toggleRecording(value)}
             />
             <SwitchRow
-              icon="bolt"
-              tint={palette.blue}
-              title="Voice referee"
-              detail={
-                canListen
-                  ? 'Listens during a round: says got it when it hears the answer, and busted when it hears a banned word. Speech is recognised on this iPhone, never online.'
-                  : 'Needs the installed app on an iPhone that can recognise speech offline. Not available in Expo Go.'
-              }
-              value={settings.voiceReferee && canListen}
-              onChange={(value) => void toggleVoice(value)}
-              disabled={!canListen}
-            />
-            <SwitchRow
               icon="flame"
               tint={palette.red}
               title="Streak reminders"
               detail="One nudge in the evening when your streak is about to end. Scheduled on this phone; no servers."
               value={settings.streakReminders}
               onChange={(value) => void toggleReminders(value)}
-              last
+            />
+            <SoonRow
+              icon="bolt"
+              tint={palette.blue}
+              title="Voice referee"
+              detail="Hears the answer and calls it, and catches banned words. On its way."
             />
           </Group>
-          {settings.voiceReferee && settings.recordRounds && canListen ? (
-            <Text variant="caption" tone="muted" style={styles.note}>
-              With both on, the referee gets the microphone and round videos are silent.
-            </Text>
-          ) : null}
         </View>
 
         <View>
@@ -195,6 +201,54 @@ export default function SettingsScreen() {
         </View>
       </ScrollView>
     </Screen>
+  );
+}
+
+const ANSWER_MODES: readonly { key: InputMode; emoji: string; label: string; detail: string; note: string }[] = [
+  {
+    key: 'tilt',
+    emoji: '🙃',
+    label: 'Tilt',
+    detail: 'Tip down got it, up pass',
+    note: 'Tilt replaces tap for the whole round, so a hand resting on the screen can’t answer for you. If the motion sensor doesn’t respond, tap takes over by itself.',
+  },
+  {
+    key: 'swipe',
+    emoji: '☝️',
+    label: 'Swipe',
+    detail: 'Up got it, down pass',
+    note: 'Swipe anywhere on the screen: up for got it, down to pass. No aiming, and a resting hand won’t count.',
+  },
+  {
+    key: 'tap',
+    emoji: '👆',
+    label: 'Tap',
+    detail: 'Top got it, bottom pass',
+    note: 'The top half of the screen is got it, the bottom half is pass.',
+  },
+];
+
+const THEME_CHOICES: readonly { key: ThemeChoice; emoji: string; label: string }[] = [
+  { key: 'dark', emoji: '🌙', label: 'Dark' },
+  { key: 'light', emoji: '☀️', label: 'Light' },
+  { key: 'system', emoji: '📱', label: 'Match phone' },
+];
+
+/** A feature that is on its way: shown so people know, but not switchable. */
+function SoonRow({ icon, tint, title, detail }: { icon: IconName; tint: string; title: string; detail: string }) {
+  return (
+    <View style={styles.row} accessible accessibilityLabel={`${title}, coming soon. ${detail}`}>
+      <IconBadge icon={icon} tint={tint} />
+      <View style={styles.rowTitle}>
+        <Text variant="heading">{title}</Text>
+        <Text variant="caption" tone="muted">
+          {detail}
+        </Text>
+      </View>
+      <View style={styles.soon}>
+        <Text style={styles.soonText}>Coming soon</Text>
+      </View>
+    </View>
   );
 }
 
@@ -229,5 +283,7 @@ const styles = StyleSheet.create({
   row: { flexDirection: 'row', alignItems: 'center', gap: 12, paddingHorizontal: space.md, paddingVertical: 12 },
   rowDivider: { borderBottomWidth: StyleSheet.hairlineWidth, borderBottomColor: color.line },
   rowTitle: { flex: 1 },
+  soon: { backgroundColor: color.surfaceRaised, borderRadius: radius.pill, paddingHorizontal: 10, paddingVertical: 4 },
+  soonText: { fontFamily: font.heavy, fontSize: 11, lineHeight: 14, color: color.textMuted },
   colophon: { gap: space.xs, paddingHorizontal: space.xl, paddingTop: space.md },
 });

@@ -1,14 +1,23 @@
 import { Stack } from 'expo-router';
 import * as SplashScreen from 'expo-splash-screen';
 import { StatusBar } from 'expo-status-bar';
+import { Appearance } from 'react-native';
 import { useEffect } from 'react';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
 import { useAppFonts } from '@/hooks/useAppFonts';
-import { color } from '@/ui/tokens';
+import { color, scheme } from '@/ui/tokens';
 
 // Held until the typefaces are ready, so the first frame anyone sees is the
 // real one rather than a flash of system text.
 void SplashScreen.preventAutoHideAsync().catch(() => undefined);
+
+// Native pieces — the keyboard, alerts, pickers — follow the app's theme
+// rather than the phone's.
+try {
+  Appearance.setColorScheme(scheme);
+} catch {
+  // Older platforms without the override keep the phone's appearance.
+}
 
 export default function RootLayout() {
   const fontsReady = useAppFonts();
@@ -24,7 +33,7 @@ export default function RootLayout() {
 
   return (
     <SafeAreaProvider>
-      <StatusBar style="light" />
+      <StatusBar style={scheme === 'light' ? 'dark' : 'light'} />
       <Stack
         screenOptions={{
           headerShown: false,

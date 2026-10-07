@@ -29,6 +29,13 @@ export type Card = {
    * photo is far bigger than a code can hold.
    */
   image?: string;
+  /**
+   * Storage-only marks for a free deck you have changed: a card you added
+   * (`mine`), or one of its cards you hid (`hidden`). Never part of a deck
+   * file: sharing and validation leave them out.
+   */
+  mine?: boolean;
+  hidden?: boolean;
 };
 
 export type Deck = {
@@ -75,16 +82,15 @@ export type DeckSummary = {
   /** The first card's text, as a peek at what is inside. */
   sample: string | null;
   updatedAt: string;
+  /** Starred, so it comes first. */
+  favorite: boolean;
+  /** On a free deck: how many cards you added and how many you hid. */
+  mineCount: number;
+  hiddenCount: number;
 };
 
 /** Shown for a deck that has not picked an emoji. */
 export const DEFAULT_DECK_EMOJI = '🃏';
-
-/** The cover emoji offered in the editor. Any emoji imports fine; these are quick picks. */
-export const DECK_EMOJI_CHOICES = [
-  '🃏', '🎉', '🔥', '😂', '💅', '🎓', '🍕', '🍿', '🎬', '🎤', '🎮', '🏀', '⚽', '🐶', '🦄', '👻',
-  '🤡', '👽', '🌮', '🧋', '🏠', '✈️', '🏖️', '🎄', '🎃', '❤️', '💀', '🧠', '🚀', '🌈', '👯', '✨',
-] as const;
 
 /** Longest emoji string a deck may carry: room for a joined emoji or two. */
 export const MAX_DECK_EMOJI_LENGTH = 16;

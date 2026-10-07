@@ -23,7 +23,7 @@ const tones: Record<Tone, string> = {
   muted: color.textMuted,
   faint: color.textFaint,
   inverse: color.ink,
-  brand: color.brand,
+  brand: color.brandText,
   focus: color.focus,
   correct: color.correct,
   pass: color.pass,
