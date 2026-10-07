@@ -1,16 +1,20 @@
-import { Stack, useFocusEffect, useLocalSearchParams, useRouter } from 'expo-router';
+import { useFocusEffect, useLocalSearchParams, useRouter } from 'expo-router';
 import { useCallback, useState } from 'react';
-import { ActivityIndicator, Alert, FlatList, Pressable, StyleSheet, View } from 'react-native';
+import { ActivityIndicator, Alert, FlatList, StyleSheet, View } from 'react-native';
 import { duplicateDeck } from '@/decks/edit';
 import { isPlayable, MIN_PLAYABLE_CARDS, type StoredDeck } from '@/decks/types';
 import { useDatabase } from '@/hooks/useDatabase';
-import { useHaptics } from '@/hooks/useHaptics';
+import { useNewGameStore } from '@/hooks/useNewGameStore';
 import { deleteDeck, getDeck, upsertDeck } from '@/storage/deckRepo';
 import { Button } from '@/ui/Button';
-import { readableTextOn } from '@/ui/contrast';
+import { cardTextOn, darken } from '@/ui/contrast';
 import { EmptyState } from '@/ui/EmptyState';
+import { PopIn } from '@/ui/motion';
+import { Raised } from '@/ui/Raised';
 import { Screen } from '@/ui/Screen';
+import { SectionLabel } from '@/ui/Section';
 import { Text } from '@/ui/Text';
+import { TopBar } from '@/ui/TopBar';
 import { color, radius, space } from '@/ui/tokens';
 
 type LoadState =
@@ -22,7 +26,8 @@ export default function DeckDetailScreen() {
   const { id } = useLocalSearchParams<{ id: string }>();
   const router = useRouter();
   const database = useDatabase();
-  const haptics = useHaptics();
+  const resetDraft = useNewGameStore((s) => s.reset);
+  const toggleDeck = useNewGameStore((s) => s.toggleDeck);
   const [state, setState] = useState<LoadState>({ status: 'loading' });
   const [busy, setBusy] = useState(false);
 
@@ -46,12 +51,14 @@ export default function DeckDetailScreen() {
     }, [database, id]),
   );
 
+  const top = <TopBar leading="back" onLeading={router.back} leadingLabel="Back to decks" />;
+
   if (state.status === 'loading') {
     return (
       <Screen>
-        <BackBar onPress={router.back} />
+        {top}
         <View style={styles.centre}>
-          <ActivityIndicator color={color.brand} />
+          <ActivityIndicator color={color.brand} size="large" />
         </View>
       </Screen>
     );
@@ -60,19 +67,22 @@ export default function DeckDetailScreen() {
   if (state.status === 'missing') {
     return (
       <Screen>
-        <BackBar onPress={router.back} />
-        <EmptyState
-          title="That deck is gone"
-          body="It may have been deleted. Head back to the deck list to pick another."
-        />
+        {top}
+        <EmptyState title="That deck is gone" body="It may have been deleted. Head back and pick another." mood="sad" />
       </Screen>
     );
   }
 
   const { deck } = state;
-  const accentText = readableTextOn(deck.accentColor);
+  const onAccent = cardTextOn(deck.accentColor);
   const playable = isPlayable(deck);
   const bundled = deck.source === 'bundled';
+
+  const play = () => {
+    resetDraft();
+    toggleDeck(deck.id);
+    router.push('/new/teams');
+  };
 
   /**
    * Duplicating mints fresh card ids, which is what lets a bundled deck be
@@ -86,8 +96,7 @@ export default function DeckDetailScreen() {
     try {
       const copy = duplicateDeck(deck, new Date().toISOString());
       await upsertDeck(database.db, copy, 'custom');
-      haptics.select();
-      router.replace(`/decks/${copy.id}`);
+      router.replace(`/decks/edit/${copy.id}`);
     } finally {
       setBusy(false);
     }
@@ -96,7 +105,7 @@ export default function DeckDetailScreen() {
   const confirmDelete = () => {
     Alert.alert(
       `Delete ${deck.name}?`,
-      `${deck.cards.length} ${deck.cards.length === 1 ? 'card' : 'cards'} will go with it. This cannot be undone.`,
+      `${deck.cards.length} ${deck.cards.length === 1 ? 'card' : 'cards'} will go with it. This can’t be undone.`,
       [
         { text: 'Keep', style: 'cancel' },
         {
@@ -106,7 +115,7 @@ export default function DeckDetailScreen() {
             if (database.status !== 'ready') return;
             void (async () => {
               await deleteDeck(database.db, deck.id);
-              router.replace('/decks');
+              router.back();
             })();
           },
         },
@@ -116,8 +125,7 @@ export default function DeckDetailScreen() {
 
   return (
     <Screen edges={['top']}>
-      <Stack.Screen options={{ title: deck.name }} />
-      <BackBar onPress={router.back} />
+      {top}
 
       <FlatList
         data={deck.cards}
@@ -125,43 +133,98 @@ export default function DeckDetailScreen() {
         contentContainerStyle={styles.list}
         ListHeaderComponent={
           <View style={styles.header}>
-            <View style={[styles.banner, { backgroundColor: deck.accentColor }]}>
-              <Text card variant="display" style={[styles.bannerText, { color: accentText }]}>
-                {deck.name.toUpperCase()}
-              </Text>
-            </View>
-
-            {deck.description ? (
-              <Text variant="body" tone="muted" style={styles.description}>
-                {deck.description}
-              </Text>
-            ) : null}
-
-            <View style={styles.meta}>
-              <Text variant="label" tone="faint">
-                {deck.cards.length} {deck.cards.length === 1 ? 'card' : 'cards'}
-              </Text>
-              {deck.author ? (
-                <Text variant="label" tone="faint">
-                  by {deck.author}
+            <PopIn>
+              <Raised
+                face={deck.accentColor}
+                shade={darken(deck.accentColor)}
+                radius={radius.xl}
+                ledge={6}
+                style={styles.bannerOuter}
+                faceStyle={styles.banner}
+              >
+                <View style={styles.bannerBlob} />
+                <Text variant="hero" style={{ color: onAccent }} numberOfLines={3}>
+                  {deck.name}
                 </Text>
-              ) : null}
+                {deck.description ? (
+                  <Text variant="body" style={[styles.bannerBody, { color: onAccent }]}>
+                    {deck.description}
+                  </Text>
+                ) : null}
+                <View style={styles.pills}>
+                  <Pill text={`${deck.cards.length} ${deck.cards.length === 1 ? 'card' : 'cards'}`} ink={onAccent} />
+                  {deck.author ? <Pill text={`by ${deck.author}`} ink={onAccent} /> : null}
+                  {bundled ? <Pill text="Included free" ink={onAccent} /> : null}
+                </View>
+              </Raised>
+            </PopIn>
+
+            <View style={styles.actions}>
+              {playable ? (
+                <Button label="Play this deck" variant="primary" size="lg" icon="play" onPress={play} />
+              ) : (
+                <Text variant="body" tone="pass" align="center">
+                  Add {MIN_PLAYABLE_CARDS - deck.cards.length} more{' '}
+                  {MIN_PLAYABLE_CARDS - deck.cards.length === 1 ? 'card' : 'cards'} to play this deck.
+                </Text>
+              )}
+
+              <View style={styles.row}>
+                <Button
+                  label="Share"
+                  variant="blue"
+                  icon="share"
+                  onPress={() => router.push(`/decks/share/${deck.id}`)}
+                  style={styles.grow}
+                />
+                {bundled ? (
+                  <Button
+                    label={busy ? 'Copying' : 'Copy & edit'}
+                    icon="copy"
+                    disabled={busy}
+                    onPress={() => void duplicate()}
+                    accessibilityHint="Makes an editable copy of this deck"
+                    style={styles.grow}
+                  />
+                ) : (
+                  <Button
+                    label="Edit"
+                    icon="edit"
+                    onPress={() => router.push(`/decks/edit/${deck.id}`)}
+                    style={styles.grow}
+                  />
+                )}
+              </View>
+
+              {bundled ? (
+                <Text variant="caption" tone="faint" align="center">
+                  Included decks stay as they are, so updates never overwrite your work. Copy one to make it yours.
+                </Text>
+              ) : (
+                <View style={styles.row}>
+                  <Button
+                    label={busy ? 'Copying' : 'Duplicate'}
+                    icon="copy"
+                    size="sm"
+                    disabled={busy}
+                    onPress={() => void duplicate()}
+                    style={styles.grow}
+                  />
+                  <Button label="Delete" icon="trash" size="sm" onPress={confirmDelete} style={styles.grow} />
+                </View>
+              )}
             </View>
 
-            {playable ? null : (
-              <Text variant="caption" tone="muted" style={styles.warning}>
-                A deck needs {MIN_PLAYABLE_CARDS} cards to start a round.
-              </Text>
-            )}
+            <SectionLabel>What’s inside</SectionLabel>
           </View>
         }
         renderItem={({ item, index }) => (
-          <View style={styles.cardRow}>
-            <Text variant="caption" tone="faint" style={styles.cardIndex}>
+          <View style={[styles.cardRow, index === 0 && styles.cardRowFirst, index === deck.cards.length - 1 && styles.cardRowLast]}>
+            <Text variant="label" tone="faint" style={styles.cardIndex}>
               {index + 1}
             </Text>
             <View style={styles.cardBody}>
-              <Text variant="body">{item.text}</Text>
+              <Text variant="heading">{item.text}</Text>
               {/* Notes are a clue-giver hint. They belong here and in the recap,
                   never on the card itself during a round. */}
               {item.note ? (
@@ -172,140 +235,68 @@ export default function DeckDetailScreen() {
             </View>
           </View>
         )}
-        ListEmptyComponent={
-          <EmptyState title="This deck is empty" body="There are no cards in it yet." />
-        }
-        ListFooterComponent={
-          <View style={styles.actions}>
-            {/* Bundled decks are read-only. Duplicating gives you an editable
-                copy, which is better than letting an app update overwrite the
-                changes you made to one. */}
-            {bundled ? (
-              <>
-                <Button label="Share" onPress={() => router.push(`/decks/share/${deck.id}`)} />
-                <Button
-                  label={busy ? 'Copying' : 'Duplicate to edit'}
-                  disabled={busy}
-                  onPress={() => void duplicate()}
-                  accessibilityHint="Makes an editable copy of this deck"
-                />
-                <Text variant="caption" tone="faint" style={styles.actionNote}>
-                  Decks that come with Deckhead cannot be changed, so updates never overwrite your
-                  work.
-                </Text>
-              </>
-            ) : (
-              <>
-                <Button
-                  label="Share"
-                  variant="primary"
-                  onPress={() => router.push(`/decks/share/${deck.id}`)}
-                />
-                <Button label="Edit" onPress={() => router.push(`/decks/edit/${deck.id}`)} />
-                <Button
-                  label={busy ? 'Copying' : 'Duplicate'}
-                  disabled={busy}
-                  onPress={() => void duplicate()}
-                />
-                <Button label="Delete" onPress={confirmDelete} />
-              </>
-            )}
-          </View>
-        }
+        ListEmptyComponent={<EmptyState title="This deck is empty" body="There are no cards in it yet." />}
       />
     </Screen>
   );
 }
 
-function BackBar({ onPress }: { onPress: () => void }) {
+function Pill({ text, ink }: { text: string; ink: string }) {
   return (
-    <View style={styles.backBar}>
-      <Pressable
-        onPress={onPress}
-        accessibilityRole="button"
-        accessibilityLabel="Back to decks"
-        hitSlop={space.md}
-        style={({ pressed }) => [styles.back, pressed && styles.backPressed]}
-      >
-        <Text variant="label" tone="muted">
-          Decks
-        </Text>
-      </Pressable>
+    <View style={[styles.pill, { borderColor: ink }]}>
+      <Text variant="label" style={{ color: ink }}>
+        {text}
+      </Text>
     </View>
   );
 }
 
 const styles = StyleSheet.create({
-  backBar: {
-    paddingHorizontal: space.lg,
-    paddingVertical: space.sm,
-  },
-  back: {
-    alignSelf: 'flex-start',
-    paddingVertical: space.xs,
-    paddingHorizontal: space.sm,
-    marginLeft: -space.sm,
-    borderRadius: radius.sm,
-  },
-  backPressed: {
-    backgroundColor: color.surface,
-  },
-  header: {
-    gap: space.sm,
-    paddingBottom: space.md,
-  },
+  header: { gap: space.lg, paddingBottom: space.sm },
+  bannerOuter: { marginHorizontal: 20 },
   banner: {
-    minHeight: 132,
+    minHeight: 180,
     justifyContent: 'flex-end',
     padding: space.lg,
-    marginHorizontal: space.lg,
-    borderRadius: radius.lg,
-  },
-  bannerText: {
-    fontSize: 34,
-    lineHeight: 38,
-  },
-  description: {
-    paddingHorizontal: space.lg,
-  },
-  meta: {
-    flexDirection: 'row',
-    gap: space.md,
-    paddingHorizontal: space.lg,
-  },
-  warning: {
-    paddingHorizontal: space.lg,
-  },
-  list: {
-    paddingBottom: space.xxl,
-    flexGrow: 1,
-  },
-  actions: {
     gap: space.sm,
-    paddingHorizontal: space.lg,
-    paddingTop: space.lg,
   },
-  actionNote: {
-    paddingTop: space.xs,
+  bannerBlob: {
+    position: 'absolute',
+    width: 220,
+    height: 220,
+    borderRadius: 110,
+    right: -60,
+    top: -80,
+    backgroundColor: 'rgba(255,255,255,0.12)',
   },
+  bannerBody: { opacity: 0.9 },
+  pills: { flexDirection: 'row', flexWrap: 'wrap', gap: space.sm, paddingTop: space.xs },
+  pill: {
+    borderWidth: 2,
+    borderRadius: radius.pill,
+    paddingHorizontal: space.sm + 4,
+    paddingVertical: 3,
+    opacity: 0.9,
+  },
+  actions: { gap: space.sm + 4, paddingHorizontal: 20 },
+  row: { flexDirection: 'row', gap: space.sm + 4 },
+  grow: { flex: 1 },
+  list: { paddingBottom: space.xxl, flexGrow: 1 },
   cardRow: {
     flexDirection: 'row',
     gap: space.md,
-    paddingHorizontal: space.lg,
-    paddingVertical: space.sm,
+    marginHorizontal: 20,
+    paddingHorizontal: space.md,
+    paddingVertical: space.sm + 4,
     alignItems: 'baseline',
+    borderLeftWidth: 2,
+    borderRightWidth: 2,
+    borderBottomWidth: 2,
+    borderColor: color.line,
   },
-  cardIndex: {
-    minWidth: 24,
-    textAlign: 'right',
-  },
-  cardBody: {
-    flex: 1,
-    gap: 2,
-  },
-  centre: {
-    flex: 1,
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
+  cardRowFirst: { borderTopWidth: 2, borderTopLeftRadius: radius.lg, borderTopRightRadius: radius.lg },
+  cardRowLast: { borderBottomLeftRadius: radius.lg, borderBottomRightRadius: radius.lg },
+  cardIndex: { minWidth: 24, textAlign: 'right' },
+  cardBody: { flex: 1, gap: 2 },
+  centre: { flex: 1, alignItems: 'center', justifyContent: 'center' },
 });

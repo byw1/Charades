@@ -1,12 +1,15 @@
+import Constants from 'expo-constants';
 import { useRouter } from 'expo-router';
 import { Alert, Pressable, ScrollView, StyleSheet, View } from 'react-native';
 import { useHaptics } from '@/hooks/useHaptics';
 import { useSettings, useSettingsStore } from '@/hooks/useSettings';
-import { Button } from '@/ui/Button';
 import { Chip } from '@/ui/Chip';
+import { Icon, type IconName } from '@/ui/Icon';
 import { Screen } from '@/ui/Screen';
+import { Group, IconBadge, SectionLabel, SwitchRow } from '@/ui/Section';
 import { Text } from '@/ui/Text';
-import { color, radius, space } from '@/ui/tokens';
+import { TopBar } from '@/ui/TopBar';
+import { color, palette, space } from '@/ui/tokens';
 
 /**
  * App settings, as opposed to the per-game settings in the new game flow.
@@ -14,10 +17,9 @@ import { color, radius, space } from '@/ui/tokens';
  * These are preferences about the device and the person holding it, so they
  * persist across games rather than being chosen again every time.
  *
- * There is deliberately no sound toggle yet. The spec asks for one, off by
- * default, with a line explaining why — but nothing in the app plays audio, so
+ * There is deliberately no sound toggle yet. Nothing in the app plays audio, so
  * the control would be a switch wired to nothing. It lands with the sound it
- * governs. The stored setting already exists in useSettings for that day.
+ * governs; the stored setting already exists in useSettings for that day.
  */
 export default function SettingsScreen() {
   const router = useRouter();
@@ -27,176 +29,147 @@ export default function SettingsScreen() {
   const resetAll = useSettingsStore((s) => s.resetAll);
 
   const confirmReset = () => {
-    Alert.alert('Reset settings?', 'Input, haptics and brightness go back to their defaults. Your decks and games are not touched.', [
-      { text: 'Keep', style: 'cancel' },
-      {
-        text: 'Reset',
-        style: 'destructive',
-        onPress: () => {
-          resetAll();
-          haptics.select();
+    Alert.alert(
+      'Reset settings?',
+      'Input, haptics and brightness go back to their defaults. Your decks and games are not touched.',
+      [
+        { text: 'Keep', style: 'cancel' },
+        {
+          text: 'Reset',
+          style: 'destructive',
+          onPress: () => {
+            resetAll();
+            haptics.select();
+          },
         },
-      },
-    ]);
+      ],
+    );
   };
 
   return (
     <Screen>
-      <View style={styles.backBar}>
-        <Pressable
-          onPress={router.back}
-          accessibilityRole="button"
-          accessibilityLabel="Back to home"
-          hitSlop={space.md}
-          style={({ pressed }) => [styles.back, pressed && styles.backPressed]}
-        >
-          <Text variant="label" tone="muted">
-            Home
-          </Text>
-        </Pressable>
-      </View>
-
-      <View style={styles.header}>
-        <Text card variant="title">
-          SETTINGS
-        </Text>
-      </View>
+      <TopBar leading="back" onLeading={router.back} leadingLabel="Back to home" title="Settings" />
 
       <ScrollView contentContainerStyle={styles.body}>
-        <Section
-          label="INPUT"
-          help={
-            settings.inputMode === 'tap'
-              ? 'Top half of the screen is got it, bottom half is pass.'
-              : 'Tilt down for got it, up for pass. Tilt replaces tap for the whole round, so a hand resting on the screen cannot answer for you.'
-          }
-        >
-          <Chip
-            label="Tap"
-            selected={settings.inputMode === 'tap'}
-            onPress={() => {
-              haptics.select();
-              set('inputMode', 'tap');
-            }}
-            accessibilityLabel="Tap to answer"
-          />
-          <Chip
-            label="Tilt"
-            selected={settings.inputMode === 'tilt'}
-            onPress={() => {
-              haptics.select();
-              set('inputMode', 'tilt');
-            }}
-            accessibilityLabel="Tilt to answer"
-          />
-        </Section>
+        <View>
+          <SectionLabel>How you answer</SectionLabel>
+          <View style={styles.choices}>
+            <Chip
+              grow
+              emoji="👆"
+              label="Tap"
+              detail="Top half got it, bottom half pass"
+              selected={settings.inputMode === 'tap'}
+              onPress={() => set('inputMode', 'tap')}
+              accessibilityLabel="Tap to answer"
+            />
+            <Chip
+              grow
+              emoji="🙃"
+              label="Tilt"
+              detail="Tip down got it, tip up pass"
+              selected={settings.inputMode === 'tilt'}
+              onPress={() => set('inputMode', 'tilt')}
+              accessibilityLabel="Tilt to answer"
+            />
+          </View>
+          {settings.inputMode === 'tilt' ? (
+            <Text variant="caption" tone="muted" style={styles.note}>
+              Tilt replaces tap for the whole round, so a hand resting on the screen can’t answer for you.
+            </Text>
+          ) : null}
+        </View>
 
-        <Section
-          label="HAPTICS"
-          help="The phone talking to the hand it is held against. The holder cannot see the screen, so this is most of what they get."
-        >
-          <Chip
-            label="On"
-            selected={settings.haptics}
-            onPress={() => {
-              set('haptics', true);
-              // Fired after the change so turning them on demonstrates itself.
-              haptics.select();
-            }}
-            accessibilityLabel="Haptics on"
-          />
-          <Chip
-            label="Off"
-            selected={!settings.haptics}
-            onPress={() => {
-              haptics.select();
-              set('haptics', false);
-            }}
-            accessibilityLabel="Haptics off"
-          />
-        </Section>
+        <View>
+          <SectionLabel>During a round</SectionLabel>
+          <Group>
+            <SwitchRow
+              icon="phone"
+              tint={palette.purple}
+              title="Haptics"
+              detail="Buzzes tell the holder what happened."
+              value={settings.haptics}
+              onChange={(value) => set('haptics', value)}
+            />
+            <SwitchRow
+              icon="sun"
+              tint={palette.yellowShade}
+              title="Boost brightness"
+              detail="Full brightness so the card reads in a dim room."
+              value={settings.boostBrightness}
+              onChange={(value) => set('boostBrightness', value)}
+              last
+            />
+          </Group>
+        </View>
 
-        <Section
-          label="BRIGHTNESS"
-          help="Pushes the screen toward maximum for a round so the card reads across a dim room, then puts it back where it was."
-        >
-          <Chip
-            label="Boost"
-            selected={settings.boostBrightness}
-            onPress={() => {
-              haptics.select();
-              set('boostBrightness', true);
-            }}
-            accessibilityLabel="Boost brightness during a round"
-          />
-          <Chip
-            label="Leave it"
-            selected={!settings.boostBrightness}
-            onPress={() => {
-              haptics.select();
-              set('boostBrightness', false);
-            }}
-            accessibilityLabel="Leave brightness alone"
-          />
-        </Section>
+        <View>
+          <SectionLabel>More</SectionLabel>
+          <Group>
+            <NavRow
+              icon="help"
+              tint={palette.blue}
+              title="How to play"
+              onPress={() => router.push('/welcome?replay=1')}
+            />
+            <NavRow icon="reset" tint={palette.red} title="Reset settings" onPress={confirmReset} last />
+          </Group>
+        </View>
+
+        <View style={styles.colophon}>
+          <Text variant="label" tone="faint" align="center">
+            Deckhead {Constants.expoConfig?.version ?? ''}
+          </Text>
+          <Text variant="caption" tone="faint" align="center">
+            Works offline. No accounts, no ads, no tracking.{'\n'}Nothing you make ever leaves your phone unless you share it.
+          </Text>
+        </View>
       </ScrollView>
-
-      <View style={styles.footer}>
-        <Button
-          label="Reset settings"
-          onPress={confirmReset}
-          accessibilityHint="Puts input, haptics and brightness back to their defaults"
-        />
-      </View>
     </Screen>
   );
 }
 
-function Section({
-  label,
-  help,
-  children,
+function NavRow({
+  icon,
+  tint,
+  title,
+  onPress,
+  last = false,
 }: {
-  label: string;
-  help: string;
-  children: React.ReactNode;
+  icon: IconName;
+  tint: string;
+  title: string;
+  onPress: () => void;
+  last?: boolean;
 }) {
   return (
-    <View style={styles.section}>
-      <Text variant="caption" tone="faint" style={styles.label}>
-        {label}
+    <Pressable
+      onPress={onPress}
+      accessibilityRole="button"
+      style={({ pressed }) => [styles.row, !last && styles.rowDivider, pressed && styles.rowPressed]}
+    >
+      <IconBadge icon={icon} tint={tint} />
+      <Text variant="heading" style={styles.rowTitle}>
+        {title}
       </Text>
-      <View style={styles.row}>{children}</View>
-      <Text variant="caption" tone="muted" style={styles.help}>
-        {help}
-      </Text>
-    </View>
+      <Icon name="forward" size={20} color={color.textFaint} weight={3} />
+    </Pressable>
   );
 }
 
 const styles = StyleSheet.create({
-  backBar: {
-    paddingHorizontal: space.lg,
-    paddingVertical: space.sm,
+  body: { paddingTop: space.sm, paddingBottom: space.xl, gap: space.lg },
+  choices: { flexDirection: 'row', gap: space.sm + 4, paddingHorizontal: 20 },
+  note: { paddingHorizontal: 20, paddingTop: space.sm },
+  row: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: space.md,
+    paddingHorizontal: space.md,
+    paddingVertical: space.md - 2,
   },
-  back: {
-    alignSelf: 'flex-start',
-    paddingVertical: space.xs,
-    paddingHorizontal: space.sm,
-    marginLeft: -space.sm,
-    borderRadius: radius.sm,
-  },
-  backPressed: {
-    backgroundColor: color.surface,
-  },
-  header: {
-    paddingHorizontal: space.lg,
-    paddingBottom: space.md,
-  },
-  body: { paddingBottom: space.xl, gap: space.lg },
-  section: { gap: space.sm },
-  label: { paddingHorizontal: space.lg, letterSpacing: 1.2 },
-  row: { flexDirection: 'row', gap: space.sm, paddingHorizontal: space.lg, flexWrap: 'wrap' },
-  help: { paddingHorizontal: space.lg },
-  footer: { paddingHorizontal: space.lg, paddingBottom: space.md },
+  rowDivider: { borderBottomWidth: 2, borderBottomColor: color.line },
+  rowPressed: { backgroundColor: color.backgroundSoft },
+  rowTitle: { flex: 1 },
+  colophon: { gap: space.xs, paddingHorizontal: space.xl, paddingTop: space.md },
 });

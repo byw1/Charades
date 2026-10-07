@@ -8,20 +8,39 @@ export type ScreenProps = {
   /** Which insets to respect. Round screens opt out entirely to go full bleed. */
   edges?: readonly Edge[];
   style?: ViewStyle;
+  /** Canvas colour. White unless a screen is making a moment of it. */
+  background?: string;
 };
 
-/** Standard menu screen: ink background, safe-area aware. */
-export function Screen({ children, edges = ['top', 'bottom'], style }: ScreenProps) {
+/** Standard menu screen: a white canvas, safe-area aware. */
+export function Screen({ children, edges = ['top', 'bottom'], style, background = color.background }: ScreenProps) {
   return (
-    <SafeAreaView style={styles.fill} edges={edges}>
+    <SafeAreaView style={[styles.fill, { backgroundColor: background }]} edges={edges}>
       <View style={[styles.fill, style]}>{children}</View>
     </SafeAreaView>
   );
 }
 
+/**
+ * The pinned area at the bottom of a screen that holds its main action. A
+ * hairline above it separates it from scrolling content without a heavy bar.
+ */
+export function Footer({ children, divider = true }: { children: ReactNode; divider?: boolean }) {
+  return <View style={[styles.footer, divider && styles.divider]}>{children}</View>;
+}
+
 const styles = StyleSheet.create({
   fill: {
     flex: 1,
-    backgroundColor: color.ink,
+  },
+  footer: {
+    paddingHorizontal: 20,
+    paddingTop: 16,
+    paddingBottom: 12,
+    gap: 12,
+  },
+  divider: {
+    borderTopWidth: 2,
+    borderTopColor: color.line,
   },
 });

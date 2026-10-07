@@ -5,21 +5,20 @@ import * as Sharing from 'expo-sharing';
 import { useEffect, useMemo, useState } from 'react';
 import { ActivityIndicator, ScrollView, StyleSheet, useWindowDimensions, View } from 'react-native';
 import QRCode from 'react-native-qrcode-svg';
-import {
-  deckFileName,
-  deckLink,
-  measure,
-  QR_ERROR_CORRECTION,
-  type ShareSize,
-} from '@/decks/share';
+import { deckFileName, deckLink, measure, QR_ERROR_CORRECTION, type ShareSize } from '@/decks/share';
 import type { StoredDeck } from '@/decks/types';
 import { useDatabase } from '@/hooks/useDatabase';
 import { useHaptics } from '@/hooks/useHaptics';
 import { getDeck } from '@/storage/deckRepo';
 import { Button } from '@/ui/Button';
 import { EmptyState } from '@/ui/EmptyState';
+import { Mascot } from '@/ui/Mascot';
+import { PopIn } from '@/ui/motion';
+import { Raised } from '@/ui/Raised';
 import { Screen } from '@/ui/Screen';
+import { SpeechBubble } from '@/ui/SpeechBubble';
 import { Text } from '@/ui/Text';
+import { TopBar } from '@/ui/TopBar';
 import { color, radius, space } from '@/ui/tokens';
 
 /**
@@ -59,13 +58,13 @@ export default function ShareDeckScreen() {
 
   const size: ShareSize | null = useMemo(() => (deck ? measure(deck) : null), [deck]);
 
+  const top = <TopBar leading="close" onLeading={router.back} title="Share deck" />;
+
   if (missing) {
     return (
       <Screen>
-        <EmptyState title="That deck is gone" body="It may have been deleted." />
-        <View style={styles.footer}>
-          <Button label="Back" variant="primary" onPress={() => router.back()} />
-        </View>
+        {top}
+        <EmptyState title="That deck is gone" body="It may have been deleted." mood="sad" />
       </Screen>
     );
   }
@@ -73,8 +72,9 @@ export default function ShareDeckScreen() {
   if (!deck || !size) {
     return (
       <Screen>
+        {top}
         <View style={styles.centre}>
-          <ActivityIndicator color={color.brand} />
+          <ActivityIndicator color={color.brand} size="large" />
         </View>
       </Screen>
     );
@@ -106,91 +106,89 @@ export default function ShareDeckScreen() {
 
   const copyLink = async () => {
     await Clipboard.setStringAsync(deckLink(deck));
-    haptics.select();
+    haptics.correct();
     setCopied(true);
     setTimeout(() => setCopied(false), 2000);
   };
 
   // Full width less padding, capped so it does not dominate a large screen.
-  const qrSize = Math.min(width - space.lg * 2 - space.md * 2, 320);
+  const qrSize = Math.min(width - 40 - space.lg * 2, 300);
 
   return (
     <Screen>
-      <View style={styles.header}>
-        <Text card variant="title">
-          SHARE
-        </Text>
-        <Text variant="body" tone="muted">
-          {deck.name} · {deck.cards.length} {deck.cards.length === 1 ? 'card' : 'cards'}
-        </Text>
-      </View>
+      {top}
 
       <ScrollView contentContainerStyle={styles.body}>
+        <View style={styles.hello}>
+          <Mascot size={72} mood={size.fitsQr ? 'wink' : 'thinking'} />
+          <SpeechBubble>
+            <Text variant="heading">
+              {size.fitsQr ? 'Point a friend’s camera at this!' : 'Too big for a code — send it as a file.'}
+            </Text>
+            <Text variant="caption" tone="muted">
+              {deck.name} · {deck.cards.length} {deck.cards.length === 1 ? 'card' : 'cards'}
+            </Text>
+          </SpeechBubble>
+        </View>
+
         {size.fitsQr ? (
-          <View style={styles.qrSection}>
-            <View style={styles.qrFrame}>
+          <PopIn>
+            <Raised
+              face={color.background}
+              shade={color.brandShade}
+              border={color.brand}
+              radius={radius.xl}
+              ledge={6}
+              style={styles.qrOuter}
+              faceStyle={styles.qrFace}
+            >
               <QRCode
                 value={size.payload}
                 size={qrSize}
                 ecl={QR_ERROR_CORRECTION}
-                backgroundColor={color.bone}
+                backgroundColor={color.background}
                 color={color.ink}
               />
-            </View>
-            <Text variant="caption" tone="muted" style={styles.qrHint}>
-              Point another phone&apos;s camera at this.
-            </Text>
-          </View>
+            </Raised>
+          </PopIn>
         ) : (
-          <View style={styles.tooBig}>
-            <Text variant="heading">Too big for a QR code</Text>
-            <Text variant="body" tone="muted">
-              This deck has {deck.cards.length} cards, which is past what a scannable code holds.
-              Send it as a file instead — it works the same way at the other end.
-            </Text>
-          </View>
+          <Text variant="body" tone="muted" style={styles.pad}>
+            This deck has {deck.cards.length} cards, which is more than a scannable code holds. A file works
+            exactly the same at the other end.
+          </Text>
         )}
 
         <View style={styles.actions}>
           <Button
             label={busy ? 'Preparing' : 'Send as a file'}
-            variant={size.fitsQr ? 'secondary' : 'primary'}
+            variant={size.fitsQr ? 'blue' : 'primary'}
+            icon="share"
             disabled={busy}
             onPress={() => void shareFile()}
             accessibilityHint="Opens the share sheet with a .deckhead file"
           />
           <Button
-            label={copied ? 'Link copied' : 'Copy link'}
+            label={copied ? 'Link copied!' : 'Copy link'}
+            icon={copied ? 'check' : 'link'}
             onPress={() => void copyLink()}
             accessibilityHint="Copies a link that opens this deck in Deckhead"
           />
         </View>
 
-        <Text variant="caption" tone="faint" style={styles.note}>
-          Everything travels inside the link or the file. Nothing is uploaded anywhere.
+        <Text variant="caption" tone="faint" align="center" style={styles.pad}>
+          The whole deck travels inside the code, link or file. Nothing is uploaded anywhere.
         </Text>
       </ScrollView>
-
-      <View style={styles.footer}>
-        <Button label="Done" onPress={() => router.back()} />
-      </View>
     </Screen>
   );
 }
 
 const styles = StyleSheet.create({
-  header: { paddingHorizontal: space.lg, paddingTop: space.sm, paddingBottom: space.md, gap: 2 },
-  body: { paddingBottom: space.lg, gap: space.lg },
-  qrSection: { alignItems: 'center', gap: space.sm },
-  qrFrame: {
-    padding: space.md,
-    borderRadius: radius.lg,
-    backgroundColor: color.bone,
-  },
-  qrHint: { textAlign: 'center', paddingHorizontal: space.lg },
-  tooBig: { gap: space.sm, paddingHorizontal: space.lg },
-  actions: { gap: space.sm, paddingHorizontal: space.lg },
-  note: { paddingHorizontal: space.lg, textAlign: 'center' },
-  footer: { paddingHorizontal: space.lg, paddingBottom: space.md },
+  body: { paddingBottom: space.xl, gap: space.lg },
+  hello: { flexDirection: 'row', alignItems: 'center', gap: space.md, paddingHorizontal: 20 },
+  qrOuter: { alignSelf: 'center' },
+  qrFace: { padding: space.lg, alignItems: 'center', justifyContent: 'center' },
+  actions: { gap: space.sm + 4, paddingHorizontal: 20 },
+  pad: { paddingHorizontal: 20 },
   centre: { flex: 1, alignItems: 'center', justifyContent: 'center' },
 });

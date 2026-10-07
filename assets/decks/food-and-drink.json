@@ -5,13 +5,13 @@
   "description": "Things you eat, things you drink, and a few things you argue about.",
   "author": "Deckhead",
   "language": "en",
-  "accentColor": "#FF7A45",
+  "accentColor": "#E83A3A",
   "tags": [
     "food",
     "easy"
   ],
   "createdAt": "2026-07-26T18:00:00Z",
-  "updatedAt": "2026-07-26T18:00:00Z",
+  "updatedAt": "2026-10-07T12:00:00Z",
   "cards": [
     {
       "id": "crd_e438c3f2",

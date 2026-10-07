@@ -1,15 +1,17 @@
 import { useRouter } from 'expo-router';
 import { useState } from 'react';
-import { ScrollView, StyleSheet, TextInput, View } from 'react-native';
+import { KeyboardAvoidingView, Platform, ScrollView, StyleSheet, View } from 'react-native';
 import { areTeamsReady, MAX_TEAMS, MIN_TEAMS } from '@/game/teams';
-import { useHaptics } from '@/hooks/useHaptics';
 import { useNewGameStore } from '@/hooks/useNewGameStore';
 import { Button } from '@/ui/Button';
 import { Chip } from '@/ui/Chip';
-import { Screen } from '@/ui/Screen';
+import { cardTextOn } from '@/ui/contrast';
+import { Field } from '@/ui/Field';
+import { Footer, Screen } from '@/ui/Screen';
+import { SectionLabel } from '@/ui/Section';
 import { StepHeader } from '@/ui/StepHeader';
 import { Text } from '@/ui/Text';
-import { color, radius, space, type as typeScale } from '@/ui/tokens';
+import { radius, space } from '@/ui/tokens';
 
 /**
  * Step two of three: teams, or not.
@@ -20,7 +22,6 @@ import { color, radius, space, type as typeScale } from '@/ui/tokens';
  */
 export default function NewGameTeamsScreen() {
   const router = useRouter();
-  const haptics = useHaptics();
 
   const mode = useNewGameStore((s) => s.mode);
   const teams = useNewGameStore((s) => s.teams);
@@ -35,100 +36,104 @@ export default function NewGameTeamsScreen() {
 
   return (
     <Screen>
-      <StepHeader step={2} of={3} title="Players" subtitle="Teams are optional" />
+      <StepHeader
+        step={2}
+        of={3}
+        title="Who’s playing?"
+        subtitle="Teams are optional. Names help me take turns."
+        onClose={() => router.dismissAll()}
+        mood="wink"
+      />
 
-      <ScrollView contentContainerStyle={styles.body} keyboardDismissMode="on-drag">
-        <View style={styles.modeRow}>
-          <Chip
-            label="Just play"
-            selected={mode === 'justPlay'}
-            onPress={() => {
-              haptics.select();
-              setMode('justPlay');
-            }}
-            accessibilityLabel="Just play, no teams"
-          />
-          <Chip
-            label="Teams"
-            selected={mode === 'teams'}
-            onPress={() => {
-              haptics.select();
-              setMode('teams');
-            }}
-          />
-        </View>
-
-        {mode === 'justPlay' ? (
-          <View style={styles.section}>
-            <Text variant="caption" tone="faint" style={styles.label}>
-              WHO IS PLAYING
-            </Text>
-            <Text variant="caption" tone="muted" style={styles.help}>
-              Optional. Add names and Deckhead will rotate who holds the phone and keep a score for
-              each person.
-            </Text>
-            <PlayerList names={soloPlayers} onChange={setSoloPlayers} />
+      <KeyboardAvoidingView style={styles.fill} behavior={Platform.OS === 'ios' ? 'padding' : undefined}>
+        <ScrollView contentContainerStyle={styles.body} keyboardDismissMode="on-drag" keyboardShouldPersistTaps="handled">
+          <View style={styles.row}>
+            <Chip
+              grow
+              emoji="🎉"
+              label="Just play"
+              detail="Everyone together"
+              selected={mode === 'justPlay'}
+              onPress={() => setMode('justPlay')}
+              accessibilityLabel="Just play, no teams"
+            />
+            <Chip
+              grow
+              emoji="🏆"
+              label="Teams"
+              detail="Split up and compete"
+              selected={mode === 'teams'}
+              onPress={() => setMode('teams')}
+            />
           </View>
-        ) : (
-          <View style={styles.section}>
-            <Text variant="caption" tone="faint" style={styles.label}>
-              HOW MANY TEAMS
-            </Text>
-            <View style={styles.countRow}>
-              {Array.from({ length: MAX_TEAMS - MIN_TEAMS + 1 }, (_, i) => i + MIN_TEAMS).map(
-                (count) => (
-                  <Chip
-                    key={count}
-                    label={String(count)}
-                    selected={teams.length === count}
-                    onPress={() => {
-                      haptics.select();
-                      setTeamCount(count);
-                    }}
-                    accessibilityLabel={`${count} ${count === 1 ? 'team' : 'teams'}`}
-                  />
-                ),
-              )}
-            </View>
 
-            {teams.map((team) => (
-              <View key={team.id} style={styles.team}>
-                <View style={styles.teamHeader}>
-                  <View style={[styles.teamDot, { backgroundColor: team.color }]} />
-                  <TextInput
-                    value={team.name}
-                    onChangeText={(name) => renameTeam(team.id, name)}
-                    placeholder="Team name"
-                    placeholderTextColor={color.inkFaint}
-                    accessibilityLabel="Team name"
-                    style={styles.teamName}
-                    maxLength={24}
-                  />
-                </View>
-                <PlayerList
-                  names={team.playerNames}
-                  onChange={(names) => setTeamPlayers(team.id, names)}
-                />
+          {mode === 'justPlay' ? (
+            <View style={styles.section}>
+              <SectionLabel>Who’s here (optional)</SectionLabel>
+              <View style={styles.pad}>
+                <PlayerList names={soloPlayers} onChange={setSoloPlayers} />
+                <Text variant="caption" tone="muted">
+                  One name per line. I’ll pass the phone round and keep everyone’s score.
+                </Text>
               </View>
-            ))}
+            </View>
+          ) : (
+            <View style={styles.section}>
+              <SectionLabel>How many teams</SectionLabel>
+              <View style={styles.row}>
+                {Array.from({ length: MAX_TEAMS - MIN_TEAMS + 1 }, (_, i) => i + MIN_TEAMS)
+                  .filter((count) => count >= 2)
+                  .map((count) => (
+                    <Chip
+                      key={count}
+                      grow
+                      label={String(count)}
+                      selected={teams.length === count}
+                      onPress={() => setTeamCount(count)}
+                      accessibilityLabel={`${count} teams`}
+                    />
+                  ))}
+              </View>
 
-            {!ready ? (
-              <Text variant="caption" tone="muted" style={styles.help}>
-                Every team needs a name, and no two the same.
-              </Text>
-            ) : null}
-          </View>
-        )}
-      </ScrollView>
+              {teams.map((team) => (
+                <View key={team.id} style={[styles.team, { borderColor: team.color }]}>
+                  <View style={[styles.teamHeader, { backgroundColor: team.color }]}>
+                    <Field
+                      value={team.name}
+                      onChangeText={(name) => renameTeam(team.id, name)}
+                      placeholder="Team name"
+                      accessibilityLabel="Team name"
+                      maxLength={24}
+                      size="heading"
+                      style={[styles.teamName, { color: cardTextOn(team.color) }]}
+                      placeholderTextColor="rgba(255,255,255,0.7)"
+                    />
+                  </View>
+                  <View style={styles.teamBody}>
+                    <PlayerList names={team.playerNames} onChange={(names) => setTeamPlayers(team.id, names)} />
+                  </View>
+                </View>
+              ))}
 
-      <View style={styles.footer}>
+              {!ready ? (
+                <Text variant="caption" tone="pass" style={styles.pad}>
+                  Every team needs a name, and no two the same.
+                </Text>
+              ) : null}
+            </View>
+          )}
+        </ScrollView>
+      </KeyboardAvoidingView>
+
+      <Footer>
         <Button
-          label="Next"
+          label="Continue"
           variant="primary"
+          size="lg"
           disabled={!ready}
           onPress={() => router.push('/new/settings')}
         />
-      </View>
+      </Footer>
     </Screen>
   );
 }
@@ -143,14 +148,13 @@ function PlayerList({ names, onChange }: { names: string[]; onChange: (names: st
   const [draft, setDraft] = useState(names.join('\n'));
 
   return (
-    <TextInput
+    <Field
       value={draft}
       onChangeText={(text) => {
         setDraft(text);
         onChange(text.split('\n'));
       }}
       placeholder={'Sam\nAlex\nJo'}
-      placeholderTextColor={color.inkFaint}
       accessibilityLabel="Player names, one per line"
       multiline
       autoCapitalize="words"
@@ -161,34 +165,22 @@ function PlayerList({ names, onChange }: { names: string[]; onChange: (names: st
 }
 
 const styles = StyleSheet.create({
-  body: { paddingBottom: space.xl, gap: space.md },
-  modeRow: { flexDirection: 'row', gap: space.sm, paddingHorizontal: space.lg },
-  section: { gap: space.sm },
-  label: { paddingHorizontal: space.lg, paddingTop: space.sm, letterSpacing: 1.2 },
-  help: { paddingHorizontal: space.lg },
-  countRow: { flexDirection: 'row', gap: space.sm, paddingHorizontal: space.lg, flexWrap: 'wrap' },
-  team: { gap: space.sm, paddingTop: space.md },
-  teamHeader: { flexDirection: 'row', alignItems: 'center', gap: space.sm, paddingHorizontal: space.lg },
-  teamDot: { width: 16, height: 16, borderRadius: radius.pill },
+  fill: { flex: 1 },
+  body: { paddingTop: space.xs, paddingBottom: space.xl, gap: space.lg },
+  row: { flexDirection: 'row', gap: space.sm + 4, paddingHorizontal: 20 },
+  section: { gap: space.md },
+  pad: { paddingHorizontal: 20, gap: space.sm },
+  team: {
+    marginHorizontal: 20,
+    borderWidth: 2,
+    borderRadius: radius.lg,
+    overflow: 'hidden',
+  },
+  teamHeader: { padding: space.sm },
   teamName: {
-    ...typeScale.body,
-    flex: 1,
-    color: color.bone,
-    backgroundColor: color.surface,
-    borderRadius: radius.md,
-    paddingHorizontal: space.md,
-    paddingVertical: space.sm,
+    backgroundColor: 'rgba(255,255,255,0.18)',
+    borderColor: 'transparent',
   },
-  players: {
-    ...typeScale.body,
-    minHeight: 96,
-    color: color.bone,
-    backgroundColor: color.surface,
-    borderRadius: radius.md,
-    paddingHorizontal: space.md,
-    paddingVertical: space.sm,
-    marginHorizontal: space.lg,
-    textAlignVertical: 'top',
-  },
-  footer: { paddingHorizontal: space.lg, paddingBottom: space.md },
+  teamBody: { padding: space.sm },
+  players: { minHeight: 104 },
 });

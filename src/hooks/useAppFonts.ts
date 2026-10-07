@@ -1,13 +1,19 @@
-import { Anton_400Regular, useFonts } from '@expo-google-fonts/anton';
+import {
+  Nunito_700Bold,
+  Nunito_800ExtraBold,
+  Nunito_900Black,
+  useFonts,
+} from '@expo-google-fonts/nunito';
 
 /**
- * Loads the card typeface. UI type uses the system face and needs no loading.
+ * Loads Nunito, the one typeface in the app. Bundled with the app, so this
+ * reads from disk — no network, in keeping with the app being fully offline.
  *
  * Returns true once the app can render. Font loading failures resolve rather
- * than reject: a missing card face is a legibility regression, not a reason to
- * refuse to start a party game.
+ * than reject: the system face is a worse look, not a reason to refuse to
+ * start a party game.
  */
 export function useAppFonts(): boolean {
-  const [loaded, error] = useFonts({ Anton_400Regular });
+  const [loaded, error] = useFonts({ Nunito_700Bold, Nunito_800ExtraBold, Nunito_900Black });
   return loaded || error !== null;
 }

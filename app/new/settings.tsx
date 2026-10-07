@@ -4,7 +4,6 @@ import { ScrollView, StyleSheet, View } from 'react-native';
 import { makeSessionId } from '@/game/ids';
 import { ROUND_SECONDS_PRESETS, type WinCondition } from '@/game/types';
 import { useDatabase } from '@/hooks/useDatabase';
-import { useHaptics } from '@/hooks/useHaptics';
 import { useNewGameStore } from '@/hooks/useNewGameStore';
 import { useSessionStore } from '@/hooks/useSessionStore';
 import { useSettings } from '@/hooks/useSettings';
@@ -12,15 +11,15 @@ import { getDeck } from '@/storage/deckRepo';
 import { discardOtherUnfinishedSessions, saveSession } from '@/storage/sessionRepo';
 import { Button } from '@/ui/Button';
 import { Chip } from '@/ui/Chip';
-import { Screen } from '@/ui/Screen';
+import { Footer, Screen } from '@/ui/Screen';
+import { SectionLabel } from '@/ui/Section';
 import { StepHeader } from '@/ui/StepHeader';
-import { Text } from '@/ui/Text';
 import { space } from '@/ui/tokens';
 
-const WIN_CONDITIONS: { label: string; value: WinCondition; help: string }[] = [
-  { label: 'Rounds', value: { kind: 'rounds', count: 4 }, help: 'Everyone gets the same number of turns.' },
-  { label: 'Score', value: { kind: 'score', target: 20 }, help: 'First past the target, once the round is even.' },
-  { label: 'Deck out', value: { kind: 'deckExhausted' }, help: 'Play until the cards run out.' },
+const WIN_CONDITIONS: { label: string; emoji: string; value: WinCondition; help: string }[] = [
+  { label: 'Rounds', emoji: '🔁', value: { kind: 'rounds', count: 4 }, help: 'Same turns each' },
+  { label: 'Score', emoji: '🎯', value: { kind: 'score', target: 20 }, help: 'First to a target' },
+  { label: 'Deck out', emoji: '🃏', value: { kind: 'deckExhausted' }, help: 'Until cards run out' },
 ];
 
 const ROUND_COUNTS = [2, 3, 4, 6, 8];
@@ -30,7 +29,6 @@ const SCORE_TARGETS = [10, 15, 20, 30];
 export default function NewGameSettingsScreen() {
   const router = useRouter();
   const database = useDatabase();
-  const haptics = useHaptics();
 
   const deckIds = useNewGameStore((s) => s.deckIds);
   const settings = useNewGameStore((s) => s.settings);
@@ -82,57 +80,57 @@ export default function NewGameSettingsScreen() {
 
   return (
     <Screen>
-      <StepHeader step={3} of={3} title="Settings" subtitle="How the game runs" />
+      <StepHeader
+        step={3}
+        of={3}
+        title="Last thing: how do we play?"
+        subtitle="The defaults are great if you just want to go."
+        onClose={() => router.dismissAll()}
+        mood="excited"
+      />
 
       <ScrollView contentContainerStyle={styles.body}>
-        <Section label="ROUND LENGTH">
+        <View>
+          <SectionLabel>Round length</SectionLabel>
           <View style={styles.row}>
             {ROUND_SECONDS_PRESETS.map((preset) => (
               <Chip
                 key={preset}
+                grow
                 label={`${preset}s`}
                 selected={settings.roundSeconds === preset}
-                onPress={() => {
-                  haptics.select();
-                  setRoundSeconds(preset);
-                }}
+                onPress={() => setRoundSeconds(preset)}
                 accessibilityLabel={`${preset} second rounds`}
               />
             ))}
           </View>
-        </Section>
+        </View>
 
-        <Section label="GAME ENDS ON">
+        <View>
+          <SectionLabel>Game ends on</SectionLabel>
           <View style={styles.row}>
             {WIN_CONDITIONS.map((option) => (
               <Chip
                 key={option.label}
+                grow
+                emoji={option.emoji}
                 label={option.label}
+                detail={option.help}
                 selected={settings.winCondition.kind === option.value.kind}
-                onPress={() => {
-                  haptics.select();
-                  setWinCondition(option.value);
-                }}
+                onPress={() => setWinCondition(option.value)}
               />
             ))}
           </View>
-          <Text variant="caption" tone="muted" style={styles.help}>
-            {WIN_CONDITIONS.find((o) => o.value.kind === settings.winCondition.kind)?.help}
-          </Text>
 
           {settings.winCondition.kind === 'rounds' ? (
-            <View style={styles.row}>
+            <View style={[styles.row, styles.sub]}>
               {ROUND_COUNTS.map((count) => (
                 <Chip
                   key={count}
+                  grow
                   label={String(count)}
-                  selected={
-                    settings.winCondition.kind === 'rounds' && settings.winCondition.count === count
-                  }
-                  onPress={() => {
-                    haptics.select();
-                    setWinCondition({ kind: 'rounds', count });
-                  }}
+                  selected={settings.winCondition.kind === 'rounds' && settings.winCondition.count === count}
+                  onPress={() => setWinCondition({ kind: 'rounds', count })}
                   accessibilityLabel={`${count} rounds each`}
                 />
               ))}
@@ -140,76 +138,61 @@ export default function NewGameSettingsScreen() {
           ) : null}
 
           {settings.winCondition.kind === 'score' ? (
-            <View style={styles.row}>
+            <View style={[styles.row, styles.sub]}>
               {SCORE_TARGETS.map((target) => (
                 <Chip
                   key={target}
+                  grow
                   label={String(target)}
-                  selected={
-                    settings.winCondition.kind === 'score' && settings.winCondition.target === target
-                  }
-                  onPress={() => {
-                    haptics.select();
-                    setWinCondition({ kind: 'score', target });
-                  }}
+                  selected={settings.winCondition.kind === 'score' && settings.winCondition.target === target}
+                  onPress={() => setWinCondition({ kind: 'score', target })}
                   accessibilityLabel={`First to ${target} points`}
                 />
               ))}
             </View>
           ) : null}
-        </Section>
+        </View>
 
-        <Section label="PASSES">
+        <View>
+          <SectionLabel>Passing</SectionLabel>
           <View style={styles.row}>
             <Chip
+              grow
+              emoji="😌"
               label="Free"
+              detail="Pass all you like"
               selected={settings.passPenalty === 0}
-              onPress={() => {
-                haptics.select();
-                setPassPenalty(0);
-              }}
+              onPress={() => setPassPenalty(0)}
               accessibilityLabel="Passes cost nothing"
             />
             <Chip
-              label="Cost a point"
+              grow
+              emoji="😬"
+              label="Costs a point"
+              detail="Think before you skip"
               selected={settings.passPenalty === 1}
-              onPress={() => {
-                haptics.select();
-                setPassPenalty(1);
-              }}
+              onPress={() => setPassPenalty(1)}
             />
           </View>
-        </Section>
+        </View>
       </ScrollView>
 
-      <View style={styles.footer}>
+      <Footer>
         <Button
-          label={starting ? 'Starting' : 'Start'}
+          label={starting ? 'Starting' : 'Start game'}
           variant="primary"
+          size="lg"
+          icon="play"
           disabled={starting || database.status !== 'ready'}
           onPress={() => void start()}
         />
-      </View>
+      </Footer>
     </Screen>
   );
 }
 
-function Section({ label, children }: { label: string; children: React.ReactNode }) {
-  return (
-    <View style={styles.section}>
-      <Text variant="caption" tone="faint" style={styles.label}>
-        {label}
-      </Text>
-      {children}
-    </View>
-  );
-}
-
 const styles = StyleSheet.create({
-  body: { paddingBottom: space.xl, gap: space.lg },
-  section: { gap: space.sm },
-  label: { paddingHorizontal: space.lg, letterSpacing: 1.2 },
-  row: { flexDirection: 'row', gap: space.sm, paddingHorizontal: space.lg, flexWrap: 'wrap' },
-  help: { paddingHorizontal: space.lg },
-  footer: { paddingHorizontal: space.lg, paddingBottom: space.md },
+  body: { paddingTop: space.xs, paddingBottom: space.xl, gap: space.lg },
+  row: { flexDirection: 'row', gap: space.sm + 2, paddingHorizontal: 20, flexWrap: 'wrap' },
+  sub: { paddingTop: space.sm + 4 },
 });

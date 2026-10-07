@@ -1,9 +1,15 @@
 import { Stack } from 'expo-router';
+import * as SplashScreen from 'expo-splash-screen';
 import { StatusBar } from 'expo-status-bar';
+import { useEffect } from 'react';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
 import { useAppFonts } from '@/hooks/useAppFonts';
 import { useDeckLinks } from '@/hooks/useDeckLinks';
 import { color } from '@/ui/tokens';
+
+// Held until the typeface is ready, so the first frame anyone sees is the real
+// one rather than a flash of system text.
+void SplashScreen.preventAutoHideAsync().catch(() => undefined);
 
 export default function RootLayout() {
   const fontsReady = useAppFonts();
@@ -11,19 +17,25 @@ export default function RootLayout() {
   // A deckhead:// link lands on the import preview, never a silent install.
   useDeckLinks();
 
-  // Holding the splash rather than flashing unstyled text. The card face is
-  // the identity of the app; rendering a frame without it looks broken.
+  useEffect(() => {
+    if (fontsReady) void SplashScreen.hideAsync().catch(() => undefined);
+  }, [fontsReady]);
+
   if (!fontsReady) return null;
 
   return (
     <SafeAreaProvider>
-      <StatusBar style="light" />
+      <StatusBar style="dark" />
       <Stack
         screenOptions={{
           headerShown: false,
-          contentStyle: { backgroundColor: color.ink },
+          contentStyle: { backgroundColor: color.background },
+          animation: 'slide_from_right',
         }}
-      />
+      >
+        <Stack.Screen name="welcome" options={{ animation: 'fade', gestureEnabled: false }} />
+        <Stack.Screen name="round" options={{ animation: 'fade', gestureEnabled: false }} />
+      </Stack>
     </SafeAreaProvider>
   );
 }

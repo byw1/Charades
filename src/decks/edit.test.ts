@@ -38,7 +38,7 @@ describe('creating a deck', () => {
   it('starts empty with the brand accent', () => {
     const deck = createDeck({ now: NOW });
     expect(deck.cards).toEqual([]);
-    expect(deck.accentColor).toBe('#FF3D6E');
+    expect(deck.accentColor).toBe('#F0386B');
   });
 
   it('gives each new deck a distinct id', () => {

@@ -1,6 +1,6 @@
 import { useRouter } from 'expo-router';
 import { useMemo, useState } from 'react';
-import { FlatList, Pressable, StyleSheet, View } from 'react-native';
+import { FlatList, StyleSheet, View } from 'react-native';
 import { countOutcomes, scoreRound } from '@/game/scoring';
 import { whoseTurn } from '@/game/session';
 import type { Outcome } from '@/game/types';
@@ -9,10 +9,14 @@ import { useHaptics } from '@/hooks/useHaptics';
 import { useRoundScreenMode } from '@/hooks/useRoundScreenMode';
 import { findPoolCard, useSessionStore } from '@/hooks/useSessionStore';
 import { Button } from '@/ui/Button';
-import { EmptyState } from '@/ui/EmptyState';
+import { Icon } from '@/ui/Icon';
+import { Mascot, type MascotMood } from '@/ui/Mascot';
+import { PopIn } from '@/ui/motion';
+import { Raised } from '@/ui/Raised';
 import { Screen } from '@/ui/Screen';
+import { StatTile } from '@/ui/StatTile';
 import { Text } from '@/ui/Text';
-import { color, radius, space } from '@/ui/tokens';
+import { color, palette, radius, space } from '@/ui/tokens';
 
 /**
  * Every card from the round, with the result, tappable to override.
@@ -20,7 +24,7 @@ import { color, radius, space } from '@/ui/tokens';
  * Overrides matter because the holder is guessing blind and the group is
  * shouting: a mis-tap is normal, and arguing about it is worse than fixing it.
  * Score is derived from these results, so flipping one here is the whole edit —
- * and nothing is written until Done, so the edits land in one go.
+ * and nothing is written until Continue, so the edits land in one go.
  */
 export default function RoundRecapScreen() {
   const router = useRouter();
@@ -47,6 +51,8 @@ export default function RoundRecapScreen() {
   const turn = session ? whoseTurn(session) : null;
   const showTeam = (session?.teams.length ?? 0) > 1;
 
+  const { headline, mood } = verdict(correct);
+
   const done = async () => {
     if (database.status !== 'ready' || saving) return;
     setSaving(true);
@@ -60,107 +66,159 @@ export default function RoundRecapScreen() {
   };
 
   return (
-    <Screen>
-      <View style={styles.header}>
-        {showTeam && turn ? (
-          <Text variant="caption" tone="faint" style={{ color: turn.team.color }}>
-            {turn.team.name.toUpperCase()}
-          </Text>
-        ) : null}
-        <Text card variant="display">
-          {score}
-        </Text>
-        <Text variant="body" tone="muted">
-          {correct} got, {passed} {passed === 1 ? 'pass' : 'passes'}
-          {penalty > 0 && passed > 0 ? ` · passes cost ${passed}` : ''}
-        </Text>
-        {reshuffled ? (
-          <Text variant="caption" tone="faint">
-            The decks ran out and were reshuffled.
-          </Text>
-        ) : null}
-      </View>
-
-      <FlatList
-        data={results}
-        keyExtractor={(result) => result.cardId}
-        contentContainerStyle={styles.list}
-        ListEmptyComponent={
-          <EmptyState
-            title="No cards this round"
-            body="The timer ran out before anything was answered."
-          />
-        }
-        renderItem={({ item }) => {
-          const card = findPoolCard(pool, item.cardId);
-          const next: Outcome = item.outcome === 'correct' ? 'pass' : 'correct';
-
-          return (
-            <Pressable
-              onPress={() => {
-                haptics.select();
-                overrideResult(item.cardId, next);
-              }}
-              accessibilityRole="button"
-              accessibilityLabel={`${card?.text ?? 'Card'}, ${
-                item.outcome === 'correct' ? 'got it' : 'passed'
-              }. Tap to change to ${next === 'correct' ? 'got it' : 'passed'}.`}
-              style={({ pressed }) => [styles.row, pressed && styles.rowPressed]}
-            >
-              <View
-                style={[
-                  styles.marker,
-                  { backgroundColor: item.outcome === 'correct' ? color.correct : color.pass },
-                ]}
-              />
-              <View style={styles.rowBody}>
-                <Text variant="body" numberOfLines={1}>
-                  {card?.text ?? 'Card'}
+    <Screen edges={['top', 'bottom', 'left', 'right']}>
+      <View style={styles.panes}>
+        <View style={styles.summary}>
+          <View style={styles.hero}>
+            <PopIn>
+              <Mascot size={92} mood={mood} />
+            </PopIn>
+            <View style={styles.heroCopy}>
+              {showTeam && turn ? (
+                <Text variant="overline" style={{ color: turn.team.color }}>
+                  {turn.team.name.toUpperCase()}
+                  {turn.playerName ? ` · ${turn.playerName.toUpperCase()}` : ''}
                 </Text>
-                {/* The clue-giver hint. Shown here, never on the card. */}
-                {card?.note ? (
-                  <Text variant="caption" tone="faint" numberOfLines={1}>
-                    {card.note}
-                  </Text>
-                ) : null}
-              </View>
-              <Text variant="label" tone="muted">
-                {item.outcome === 'correct' ? 'Got it' : 'Pass'}
-              </Text>
-            </Pressable>
-          );
-        }}
-      />
+              ) : turn?.playerName ? (
+                <Text variant="overline" tone="faint">
+                  {turn.playerName.toUpperCase()}
+                </Text>
+              ) : null}
+              <Text variant="display">{headline}</Text>
+            </View>
+          </View>
 
-      <View style={styles.footer}>
-        <Button
-          label={saving ? 'Saving' : 'Done'}
-          variant="primary"
-          disabled={saving}
-          onPress={() => void done()}
-        />
+          <PopIn from="rise" delay={120} style={styles.stats}>
+            <StatTile label="Got it" value={correct} tint={color.correct} icon="check" />
+            <StatTile label="Passed" value={passed} tint={color.pass} icon="pass" />
+            <StatTile label="Points" value={score} tint={palette.blue} icon="trophy" />
+          </PopIn>
+
+          {reshuffled ? (
+            <Text variant="caption" tone="muted">
+              The decks ran out and were reshuffled.
+            </Text>
+          ) : null}
+
+          <View style={styles.spacer} />
+          <Button
+            label={saving ? 'Saving' : 'Continue'}
+            variant="primary"
+            size="lg"
+            disabled={saving}
+            onPress={() => void done()}
+          />
+        </View>
+
+        <View style={styles.listPane}>
+          <Text variant="overline" tone="faint" style={styles.listLabel}>
+            {results.length > 0 ? 'TAP A CARD TO FIX A MIS-TAP' : 'THIS ROUND'}
+          </Text>
+          <FlatList
+            data={results}
+            keyExtractor={(result) => result.cardId}
+            contentContainerStyle={styles.list}
+            ListEmptyComponent={
+              <View style={styles.empty}>
+                <Text variant="heading" align="center">
+                  No cards this round
+                </Text>
+                <Text variant="caption" tone="muted" align="center">
+                  The timer beat everyone to it. Next time!
+                </Text>
+              </View>
+            }
+            renderItem={({ item }) => {
+              const card = findPoolCard(pool, item.cardId);
+              const got = item.outcome === 'correct';
+              const next: Outcome = got ? 'pass' : 'correct';
+              const tint = got ? color.correct : color.pass;
+
+              return (
+                <Raised
+                  face={color.background}
+                  shade={color.line}
+                  border={color.line}
+                  radius={radius.md}
+                  onPress={() => overrideResult(item.cardId, next)}
+                  onPressIn={() => haptics.select()}
+                  accessibilityLabel={`${card?.text ?? 'Card'}, ${got ? 'got it' : 'passed'}. Tap to change to ${
+                    next === 'correct' ? 'got it' : 'passed'
+                  }.`}
+                  style={styles.row}
+                  faceStyle={styles.rowFace}
+                >
+                  <View style={[styles.marker, { backgroundColor: tint }]}>
+                    <Icon name={got ? 'check' : 'pass'} size={18} color={color.bone} weight={3.5} />
+                  </View>
+                  <View style={styles.rowBody}>
+                    <Text variant="heading" numberOfLines={1}>
+                      {card?.text ?? 'Card'}
+                    </Text>
+                    {/* The clue-giver hint. Shown here, never on the card. */}
+                    {card?.note ? (
+                      <Text variant="caption" tone="faint" numberOfLines={1}>
+                        {card.note}
+                      </Text>
+                    ) : null}
+                  </View>
+                  <Text variant="label" style={{ color: tint }}>
+                    {got ? 'GOT IT' : 'PASS'}
+                  </Text>
+                </Raised>
+              );
+            }}
+          />
+        </View>
       </View>
     </Screen>
   );
 }
 
+function verdict(correct: number): { headline: string; mood: MascotMood } {
+  if (correct >= 8) return { headline: 'On fire!', mood: 'excited' };
+  if (correct >= 5) return { headline: 'Great round!', mood: 'excited' };
+  if (correct >= 2) return { headline: 'Nice one!', mood: 'happy' };
+  if (correct === 1) return { headline: 'Off the mark!', mood: 'wink' };
+  return { headline: 'Tough one', mood: 'sad' };
+}
+
 const styles = StyleSheet.create({
-  header: {
+  panes: { flex: 1, flexDirection: 'row' },
+  summary: {
+    width: '42%',
     paddingHorizontal: space.lg,
     paddingTop: space.md,
     paddingBottom: space.sm,
-    gap: space.xs,
+    gap: space.md,
   },
-  list: { paddingVertical: space.sm, flexGrow: 1 },
-  row: {
+  hero: { flexDirection: 'row', alignItems: 'center', gap: space.md },
+  heroCopy: { flex: 1, gap: 2 },
+  stats: { flexDirection: 'row', gap: space.sm },
+  spacer: { flex: 1 },
+  listPane: {
+    flex: 1,
+    borderLeftWidth: 2,
+    borderLeftColor: color.line,
+    backgroundColor: color.backgroundSoft,
+  },
+  listLabel: { paddingHorizontal: space.lg, paddingTop: space.md, paddingBottom: space.sm },
+  list: { paddingHorizontal: space.lg, paddingBottom: space.lg, flexGrow: 1 },
+  row: { marginBottom: space.sm },
+  rowFace: {
     flexDirection: 'row',
     alignItems: 'center',
     gap: space.md,
-    paddingHorizontal: space.lg,
+    paddingHorizontal: space.md,
     paddingVertical: space.sm + 2,
   },
-  rowPressed: { backgroundColor: color.surface },
-  marker: { width: 6, height: 36, borderRadius: radius.sm },
-  rowBody: { flex: 1, gap: 2 },
-  footer: { paddingHorizontal: space.lg, paddingBottom: space.md },
+  marker: {
+    width: 32,
+    height: 32,
+    borderRadius: 16,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  rowBody: { flex: 1, gap: 1 },
+  empty: { flex: 1, alignItems: 'center', justifyContent: 'center', gap: space.xs, padding: space.lg },
 });

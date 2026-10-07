@@ -1,28 +1,44 @@
-import { useFocusEffect, useRouter } from 'expo-router';
+import { Redirect, useFocusEffect, useRouter } from 'expo-router';
 import { useCallback, useState } from 'react';
-import { StyleSheet, View } from 'react-native';
+import { ScrollView, StyleSheet, View } from 'react-native';
 import { standings } from '@/game/scoring';
 import { isJustPlay } from '@/game/teams';
 import type { Session } from '@/game/types';
 import { useDatabase } from '@/hooks/useDatabase';
 import { useNewGameStore } from '@/hooks/useNewGameStore';
 import { useSessionStore } from '@/hooks/useSessionStore';
+import { useSettingsStore } from '@/hooks/useSettings';
 import { getDeck } from '@/storage/deckRepo';
 import { getResumableSession } from '@/storage/sessionRepo';
 import { Button } from '@/ui/Button';
+import { Mascot } from '@/ui/Mascot';
+import { PopIn } from '@/ui/motion';
+import { Raised } from '@/ui/Raised';
 import { Screen } from '@/ui/Screen';
+import { SpeechBubble } from '@/ui/SpeechBubble';
 import { Text } from '@/ui/Text';
-import { color, radius, space } from '@/ui/tokens';
+import { IconButton } from '@/ui/TopBar';
+import { color, font, palette, radius, space } from '@/ui/tokens';
+
+const GREETINGS = [
+  'Ready for a round?',
+  'Card on your head. Friends shout clues. Go!',
+  'Guess what’s on my forehead!',
+  'Let’s get loud.',
+  'Who’s holding the phone first?',
+];
 
 export default function HomeScreen() {
   const router = useRouter();
   const database = useDatabase();
+  const onboarded = useSettingsStore((s) => s.onboarded);
 
   const resumeSession = useSessionStore((s) => s.resumeSession);
   const resetDraft = useNewGameStore((s) => s.reset);
 
   const [saved, setSaved] = useState<Session | null>(null);
   const [busy, setBusy] = useState(false);
+  const [greeting] = useState(() => GREETINGS[Math.floor(Math.random() * GREETINGS.length)] ?? '');
 
   // Checked on focus rather than once, so finishing a game clears the resume
   // card without needing a restart.
@@ -43,6 +59,8 @@ export default function HomeScreen() {
       };
     }, [database]),
   );
+
+  if (!onboarded) return <Redirect href="/welcome" />;
 
   const resume = async () => {
     if (!saved || database.status !== 'ready' || busy) return;
@@ -73,25 +91,54 @@ export default function HomeScreen() {
   };
 
   return (
-    <Screen style={styles.screen}>
-      <View style={styles.masthead}>
-        <Text card variant="display" style={styles.wordmark}>
-          DECKHEAD
+    <Screen>
+      <View style={styles.top}>
+        <Text style={styles.wordmark} accessibilityRole="header">
+          deckhead
         </Text>
-        <Text variant="body" tone="muted">
-          Phone on your forehead. Everyone else shouts clues.
-        </Text>
+        <IconButton icon="settings" label="Settings" onPress={() => router.push('/settings')} />
       </View>
 
+      <ScrollView contentContainerStyle={styles.body} bounces={false}>
+        <View style={styles.hero}>
+          <PopIn delay={150}>
+            <SpeechBubble tail="bottom">
+              <Text variant="heading" align="center">
+                {saved ? 'Welcome back! Your game is waiting.' : greeting}
+              </Text>
+            </SpeechBubble>
+          </PopIn>
+          <PopIn>
+            <Mascot size={220} mood={saved ? 'excited' : 'happy'} />
+          </PopIn>
+        </View>
+
+        {saved ? (
+          <PopIn from="rise" delay={250}>
+            <ResumeCard session={saved} onPress={() => void resume()} disabled={busy} />
+          </PopIn>
+        ) : null}
+      </ScrollView>
+
       <View style={styles.actions}>
-        {saved ? <ResumeCard session={saved} onPress={() => void resume()} disabled={busy} /> : null}
-        <Button
-          label={saved ? 'New game' : 'Start a game'}
-          variant={saved ? 'secondary' : 'primary'}
-          onPress={newGame}
-        />
-        <Button label="Decks" onPress={() => router.push('/decks')} />
-        <Button label="Settings" onPress={() => router.push('/settings')} />
+        <PopIn from="rise" delay={200}>
+          <Button
+            label={saved ? 'New game' : 'Play'}
+            variant={saved ? 'secondary' : 'primary'}
+            icon={saved ? 'plus' : 'play'}
+            size="lg"
+            onPress={newGame}
+          />
+        </PopIn>
+        <PopIn from="rise" delay={280}>
+          <View style={styles.row}>
+            <Button label="Decks" icon="decks" onPress={() => router.push('/decks')} style={styles.grow} />
+            <Button label="Rules" icon="help" onPress={() => router.push('/welcome?replay=1')} style={styles.grow} />
+          </View>
+        </PopIn>
+        <Text variant="caption" tone="faint" align="center">
+          No accounts · no ads · works offline
+        </Text>
       </View>
     </Screen>
   );
@@ -110,42 +157,68 @@ function ResumeCard({
   const table = standings(session);
   const solo = isJustPlay(session.teams);
 
-  const summary = solo
-    ? `${played} ${played === 1 ? 'round' : 'rounds'} in`
-    : table
-        .slice(0, 2)
-        .map((s) => `${s.teamName} ${s.score}`)
-        .join(' · ');
+  const summary =
+    played === 0
+      ? 'Not started yet'
+      : solo
+        ? `${played} ${played === 1 ? 'round' : 'rounds'} in · ${table[0]?.score ?? 0} points`
+        : table
+            .slice(0, 2)
+            .map((s) => `${s.teamName} ${s.score}`)
+            .join('  ·  ');
 
   return (
-    <View style={styles.resume}>
-      <Text variant="caption" tone="faint" style={styles.resumeLabel}>
+    <Raised
+      face={palette.yellowLight}
+      shade={palette.yellowShade}
+      border={palette.yellow}
+      radius={radius.lg}
+      style={styles.resume}
+      faceStyle={styles.resumeFace}
+    >
+      <Text variant="overline" style={{ color: palette.yellowShade }}>
         GAME IN PROGRESS
       </Text>
-      <Text variant="body" tone="muted" style={styles.resumeSummary}>
-        {played === 0 ? 'Not started yet' : summary}
-      </Text>
-      <Button label="Carry on" variant="primary" onPress={onPress} disabled={disabled} />
-    </View>
+      <Text variant="heading">{summary}</Text>
+      <Button label="Carry on" variant="blue" icon="play" onPress={onPress} disabled={disabled} />
+    </Raised>
   );
 }
 
 const styles = StyleSheet.create({
-  screen: {
+  top: {
+    flexDirection: 'row',
+    alignItems: 'center',
     justifyContent: 'space-between',
-    paddingHorizontal: space.lg,
-    paddingVertical: space.xl,
+    paddingLeft: 20,
+    paddingRight: space.sm,
+    paddingTop: space.sm,
   },
-  masthead: { gap: space.sm, paddingTop: space.xl },
-  wordmark: { fontSize: 56, lineHeight: 60, color: color.brand },
-  actions: { gap: space.sm },
-  resume: {
-    gap: space.sm,
-    padding: space.md,
-    borderRadius: radius.lg,
-    backgroundColor: color.surface,
-    marginBottom: space.sm,
+  wordmark: {
+    fontFamily: font.black,
+    fontSize: 30,
+    lineHeight: 36,
+    color: color.brand,
+    letterSpacing: -0.8,
   },
-  resumeLabel: { letterSpacing: 1.2 },
-  resumeSummary: { paddingBottom: space.xs },
+  body: {
+    flexGrow: 1,
+    justifyContent: 'center',
+    paddingVertical: space.lg,
+    gap: space.lg,
+  },
+  hero: {
+    alignItems: 'center',
+    gap: space.md,
+    paddingHorizontal: space.xl,
+  },
+  resume: { marginHorizontal: 20 },
+  resumeFace: { padding: space.md, gap: space.sm },
+  actions: {
+    paddingHorizontal: 20,
+    paddingBottom: space.sm,
+    gap: space.sm + 4,
+  },
+  row: { flexDirection: 'row', gap: space.sm + 4 },
+  grow: { flex: 1 },
 });

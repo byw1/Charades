@@ -11,17 +11,24 @@ import { useSessionStore } from '@/hooks/useSessionStore';
 import { getDeck } from '@/storage/deckRepo';
 import { saveSession } from '@/storage/sessionRepo';
 import { Button } from '@/ui/Button';
+import { Confetti } from '@/ui/Confetti';
+import { cardTextOn } from '@/ui/contrast';
 import { EmptyState } from '@/ui/EmptyState';
-import { Screen } from '@/ui/Screen';
+import { Mascot } from '@/ui/Mascot';
+import { PopIn } from '@/ui/motion';
+import { Footer, Screen } from '@/ui/Screen';
+import { SectionLabel } from '@/ui/Section';
+import { SpeechBubble } from '@/ui/SpeechBubble';
 import { Text } from '@/ui/Text';
-import { color, radius, space } from '@/ui/tokens';
+import { color, font, radius, space } from '@/ui/tokens';
 
 /**
  * Where the game stands, between rounds and at the end.
  *
  * One screen rather than two. The difference between "standings" and "final
  * standings" is what the game is asking you to do next, not what it is showing
- * you, so the table stays put and only the footer changes.
+ * you, so the table stays put and only the header and footer change — and the
+ * end gets confetti, because it should feel like an ending.
  *
  * Portrait: the phone comes off the forehead here and gets passed round.
  */
@@ -59,15 +66,16 @@ export default function StandingsScreen() {
   if (!session) {
     return (
       <Screen>
-        <EmptyState title="No game in progress" body="Start a new game from the home screen." />
-        <View style={styles.footer}>
-          <Button label="Home" variant="primary" onPress={() => router.replace('/')} />
-        </View>
+        <EmptyState title="No game in progress" body="Start a new one from the home screen." />
+        <Footer>
+          <Button label="Home" variant="primary" icon="home" onPress={() => router.replace('/')} />
+        </Footer>
       </Screen>
     );
   }
 
   const turn = whoseTurn(session);
+  const played = session.rounds.filter((r) => r.endedAt !== null).length;
 
   const playAgain = async () => {
     if (database.status !== 'ready' || busy) return;
@@ -103,51 +111,74 @@ export default function StandingsScreen() {
     router.replace('/');
   };
 
+  const headline = winState.over
+    ? solo
+      ? 'Game over!'
+      : winState.winners.length === 1
+        ? `${winState.winners[0]!.teamName} win!`
+        : 'It’s a tie!'
+    : 'Standings';
+
+  const bubble = winState.over
+    ? solo
+      ? `${table[0]?.score ?? 0} points together. Again?`
+      : winState.winners.length === 1
+        ? 'What a game. Rematch?'
+        : `${winState.winners.map((w) => w.teamName).join(' and ')} are level!`
+    : turn?.playerName
+      ? `${turn.playerName}, you’re up next!`
+      : `${played} ${played === 1 ? 'round' : 'rounds'} down. Keep going!`;
+
   return (
     <Screen>
-      <View style={styles.header}>
-        <Text card variant="title">
-          {winState.over ? 'FINAL' : 'STANDINGS'}
-        </Text>
-        {winState.over ? (
-          <Text variant="body" tone="muted">
-            {winState.winners.length === 1
-              ? `${winState.winners[0]!.teamName} wins`
-              : `${winState.winners.map((w) => w.teamName).join(' and ')} tie`}
-          </Text>
-        ) : (
-          <Text variant="body" tone="muted">
-            {session.rounds.filter((r) => r.endedAt !== null).length} rounds played
-          </Text>
-        )}
-      </View>
-
       <ScrollView contentContainerStyle={styles.body}>
+        <View style={styles.header}>
+          <PopIn>
+            <Mascot size={winState.over ? 130 : 96} mood={winState.over ? 'excited' : 'happy'} glyph={winState.over ? '★' : '?'} />
+          </PopIn>
+          <PopIn delay={100} style={styles.headerCopy}>
+            <Text variant={winState.over ? 'hero' : 'display'} align="center" accessibilityRole="header">
+              {headline}
+            </Text>
+            <SpeechBubble tail="bottom">
+              <Text variant="heading" align="center">
+                {bubble}
+              </Text>
+            </SpeechBubble>
+          </PopIn>
+        </View>
+
         {/* With one team the team row is just the total, so the per-player
             table is the interesting one and goes first. */}
         {solo ? null : (
           <View style={styles.section}>
+            <SectionLabel>Teams</SectionLabel>
             {table.map((standing, index) => {
               const winner = winState.over && winState.winners.some((w) => w.teamId === standing.teamId);
 
               return (
-                <View key={standing.teamId} style={[styles.row, winner && styles.winnerRow]}>
-                  <Text variant="label" tone="faint" style={styles.position}>
-                    {index + 1}
-                  </Text>
-                  <View style={[styles.dot, { backgroundColor: standing.teamColor }]} />
-                  <View style={styles.rowBody}>
-                    <Text variant="body">{standing.teamName}</Text>
-                    <Text variant="caption" tone="faint">
-                      {standing.correct} got · {standing.passed}{' '}
-                      {standing.passed === 1 ? 'pass' : 'passes'} · {standing.roundsPlayed}{' '}
-                      {standing.roundsPlayed === 1 ? 'round' : 'rounds'}
+                <PopIn key={standing.teamId} from="rise" delay={180 + index * 70}>
+                  <View style={[styles.row, winner && styles.winnerRow]}>
+                    <Rank place={index + 1} />
+                    <View style={[styles.avatar, { backgroundColor: standing.teamColor }]}>
+                      <Text style={[styles.avatarText, { color: cardTextOn(standing.teamColor) }]}>
+                        {[...standing.teamName][0]?.toUpperCase() ?? '?'}
+                      </Text>
+                    </View>
+                    <View style={styles.rowBody}>
+                      <Text variant="heading" numberOfLines={1}>
+                        {standing.teamName}
+                      </Text>
+                      <Text variant="caption" tone="muted">
+                        {standing.correct} got · {standing.passed} {standing.passed === 1 ? 'pass' : 'passes'} ·{' '}
+                        {standing.roundsPlayed} {standing.roundsPlayed === 1 ? 'round' : 'rounds'}
+                      </Text>
+                    </View>
+                    <Text variant="display" style={winner ? styles.winnerScore : null}>
+                      {standing.score}
                     </Text>
                   </View>
-                  <Text card variant="title">
-                    {standing.score}
-                  </Text>
-                </View>
+                </PopIn>
               );
             })}
           </View>
@@ -155,85 +186,128 @@ export default function StandingsScreen() {
 
         {players.length > 0 ? (
           <View style={styles.section}>
-            <Text variant="caption" tone="faint" style={styles.sectionLabel}>
-              {solo ? 'SCORES' : 'BY PLAYER'}
-            </Text>
+            <SectionLabel>{solo ? 'Scores' : 'By player'}</SectionLabel>
             {players.map((player, index) => (
-              <View key={`${player.teamId}/${player.playerName}`} style={styles.row}>
-                <Text variant="label" tone="faint" style={styles.position}>
-                  {index + 1}
-                </Text>
-                <View style={styles.rowBody}>
-                  <Text variant="body">{player.playerName}</Text>
-                  <Text variant="caption" tone="faint">
-                    {player.correct} got · {player.roundsPlayed}{' '}
-                    {player.roundsPlayed === 1 ? 'round' : 'rounds'}
-                  </Text>
+              <PopIn key={`${player.teamId}/${player.playerName}`} from="rise" delay={240 + index * 60}>
+                <View style={styles.row}>
+                  <Rank place={index + 1} />
+                  <View style={styles.rowBody}>
+                    <Text variant="heading" numberOfLines={1}>
+                      {player.playerName}
+                    </Text>
+                    <Text variant="caption" tone="muted">
+                      {player.correct} got · {player.roundsPlayed} {player.roundsPlayed === 1 ? 'round' : 'rounds'}
+                    </Text>
+                  </View>
+                  <Text variant="title">{player.score}</Text>
                 </View>
-                <Text card variant="heading">
-                  {player.score}
-                </Text>
-              </View>
+              </PopIn>
             ))}
           </View>
         ) : null}
 
         {poolExhausted ? (
-          <Text variant="caption" tone="faint" style={styles.note}>
+          <Text variant="caption" tone="muted" align="center" style={styles.note}>
             The decks ran out and were reshuffled.
           </Text>
         ) : null}
       </ScrollView>
 
-      <View style={styles.footer}>
+      <Footer>
         {winState.over ? (
           <>
             <Button
               label={busy ? 'Starting' : 'Play again'}
               variant="primary"
+              size="lg"
+              icon="reset"
               disabled={busy}
               onPress={() => void playAgain()}
             />
-            <Button label="Home" onPress={goHome} />
+            <Button label="Home" icon="home" onPress={goHome} />
           </>
         ) : (
           <>
             <Button
               label={turn?.playerName ? `Next · ${turn.playerName}` : 'Next round'}
               variant="primary"
+              size="lg"
+              icon="play"
               onPress={() => router.replace('/round/intro')}
             />
             <Button label="Finish later" onPress={goHome} accessibilityHint="Your game is saved" />
           </>
         )}
-      </View>
+      </Footer>
+
+      {winState.over ? <Confetti /> : null}
     </Screen>
   );
 }
 
+const MEDALS = [
+  { face: color.gold, shade: color.goldShade },
+  { face: color.silver, shade: color.silverShade },
+  { face: color.bronze, shade: color.bronzeShade },
+];
+
+/** First three get a medal; everyone else gets a plain number. */
+function Rank({ place }: { place: number }) {
+  const medal = MEDALS[place - 1];
+
+  if (!medal) {
+    return (
+      <View style={styles.rank}>
+        <Text variant="heading" tone="faint">
+          {place}
+        </Text>
+      </View>
+    );
+  }
+
+  return (
+    <View
+      style={[styles.rank, styles.medal, { backgroundColor: medal.face, borderColor: medal.shade }]}
+      accessibilityLabel={`Place ${place}`}
+    >
+      <Text style={styles.medalText}>{place}</Text>
+    </View>
+  );
+}
+
 const styles = StyleSheet.create({
-  header: {
-    paddingHorizontal: space.lg,
-    paddingTop: space.md,
-    paddingBottom: space.sm,
-    gap: 2,
-  },
   body: { paddingBottom: space.lg, gap: space.lg },
-  section: { gap: space.xs },
-  sectionLabel: { paddingHorizontal: space.lg, paddingTop: space.sm, letterSpacing: 1.2 },
+  header: { alignItems: 'center', gap: space.sm, paddingTop: space.lg, paddingHorizontal: space.lg },
+  headerCopy: { alignItems: 'center', gap: space.md },
+  section: { gap: space.sm },
   row: {
     flexDirection: 'row',
     alignItems: 'center',
     gap: space.md,
-    paddingHorizontal: space.lg,
-    paddingVertical: space.sm,
+    marginHorizontal: 20,
+    paddingHorizontal: space.md,
+    paddingVertical: space.sm + 4,
+    borderRadius: radius.lg,
+    borderWidth: 2,
+    borderColor: color.line,
+    backgroundColor: color.background,
   },
   winnerRow: {
-    backgroundColor: color.surface,
+    borderColor: color.gold,
+    backgroundColor: '#FFFBEA',
   },
-  position: { minWidth: 20 },
-  dot: { width: 14, height: 14, borderRadius: radius.pill },
-  rowBody: { flex: 1, gap: 2 },
+  winnerScore: { color: color.goldShade },
+  rank: { width: 32, height: 32, alignItems: 'center', justifyContent: 'center' },
+  medal: { borderRadius: 16, borderBottomWidth: 3 },
+  medalText: { fontFamily: font.black, fontSize: 16, lineHeight: 20, color: color.ink },
+  avatar: {
+    width: 44,
+    height: 44,
+    borderRadius: 22,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  avatarText: { fontFamily: font.black, fontSize: 20, lineHeight: 26 },
+  rowBody: { flex: 1, gap: 1 },
   note: { paddingHorizontal: space.lg },
-  footer: { paddingHorizontal: space.lg, paddingBottom: space.md, gap: space.sm },
 });

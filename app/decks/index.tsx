@@ -7,10 +7,14 @@ import { listDeckSummaries, searchDeckSummaries } from '@/storage/deckRepo';
 import { Button } from '@/ui/Button';
 import { DeckCard } from '@/ui/DeckCard';
 import { EmptyState } from '@/ui/EmptyState';
-import { Screen } from '@/ui/Screen';
+import { Icon } from '@/ui/Icon';
+import { Raised } from '@/ui/Raised';
+import { Footer, Screen } from '@/ui/Screen';
 import { SearchField } from '@/ui/SearchField';
+import { SectionLabel } from '@/ui/Section';
 import { Text } from '@/ui/Text';
-import { color, space } from '@/ui/tokens';
+import { TopBar } from '@/ui/TopBar';
+import { color, radius, space } from '@/ui/tokens';
 
 export default function DecksScreen() {
   const router = useRouter();
@@ -19,8 +23,8 @@ export default function DecksScreen() {
   const [decks, setDecks] = useState<DeckSummary[] | null>(null);
 
   // Reloads on focus as well as on query change, so a deck edited or deleted
-  // in M4 is current when the browser comes back rather than showing a stale
-  // count until the app restarts.
+  // is current when the browser comes back rather than showing a stale count
+  // until the app restarts.
   useFocusEffect(
     useCallback(() => {
       if (database.status !== 'ready') return;
@@ -29,9 +33,7 @@ export default function DecksScreen() {
       const { db } = database;
 
       void (async () => {
-        const results = query.trim()
-          ? await searchDeckSummaries(db, query)
-          : await listDeckSummaries(db);
+        const results = query.trim() ? await searchDeckSummaries(db, query) : await listDeckSummaries(db);
         if (!cancelled) setDecks(results);
       })();
 
@@ -47,17 +49,19 @@ export default function DecksScreen() {
     const custom = decks.filter((d) => d.source === 'custom');
 
     return [
-      ...(bundled.length ? [{ title: 'Included', data: bundled }] : []),
       // Shown even when empty, so the invitation to make one has a home.
-      { title: 'Yours', data: custom },
+      { title: 'Your decks', data: custom },
+      ...(bundled.length ? [{ title: 'Included free', data: bundled }] : []),
     ];
   }, [decks]);
+
+  const top = <TopBar leading="back" onLeading={router.back} title="Decks" />;
 
   if (database.status === 'error') {
     return (
       <Screen>
-        <Header />
-        <EmptyState title="Deckhead could not open your decks" body={database.message} />
+        {top}
+        <EmptyState title="Couldn’t open your decks" body={database.message} mood="sad" />
       </Screen>
     );
   }
@@ -65,35 +69,52 @@ export default function DecksScreen() {
   if (database.status === 'loading' || !decks) {
     return (
       <Screen>
-        <Header />
+        {top}
         <View style={styles.centre}>
-          <ActivityIndicator color={color.brand} />
+          <ActivityIndicator color={color.brand} size="large" />
         </View>
       </Screen>
     );
   }
 
+  const searching = query.trim().length > 0;
+
   return (
     <Screen>
-      <Header />
+      {top}
       <SearchField value={query} onChangeText={setQuery} />
 
       <SectionList
-        sections={sections}
+        sections={searching ? sections.filter((s) => s.data.length > 0) : sections}
         keyExtractor={(deck) => deck.id}
-        renderItem={({ item }) => (
-          <DeckCard deck={item} onPress={() => router.push(`/decks/${item.id}`)} />
-        )}
+        renderItem={({ item }) => <DeckCard deck={item} onPress={() => router.push(`/decks/${item.id}`)} />}
         renderSectionHeader={({ section }) => (
-          <Text variant="caption" tone="faint" style={styles.sectionHeader}>
-            {section.title.toUpperCase()}
-          </Text>
+          <View style={styles.sectionHeader}>
+            <SectionLabel>{section.title}</SectionLabel>
+          </View>
         )}
         renderSectionFooter={({ section }) =>
-          section.title === 'Yours' && section.data.length === 0 && !query.trim() ? (
-            <Text variant="caption" tone="muted" style={styles.invitation}>
-              Make a deck of inside jokes, or anything else your friends would shout at each other.
-            </Text>
+          section.title === 'Your decks' && section.data.length === 0 && !searching ? (
+            <Raised
+              face={color.background}
+              shade={color.line}
+              border={color.line}
+              radius={radius.lg}
+              onPress={() => router.push('/decks/edit/new')}
+              accessibilityLabel="Make your own deck"
+              style={styles.invite}
+              faceStyle={styles.inviteFace}
+            >
+              <View style={styles.inviteIcon}>
+                <Icon name="plus" size={26} color={color.bone} weight={3.5} />
+              </View>
+              <View style={styles.inviteBody}>
+                <Text variant="heading">Make your own deck</Text>
+                <Text variant="caption" tone="muted">
+                  Inside jokes, your friends’ names, anything the group would shout at each other.
+                </Text>
+              </View>
+            </Raised>
           ) : null
         }
         stickySectionHeadersEnabled={false}
@@ -101,67 +122,47 @@ export default function DecksScreen() {
         keyboardDismissMode="on-drag"
         ListEmptyComponent={
           <EmptyState
-            title={query.trim() ? 'Nothing matches that' : 'No decks yet'}
+            title={searching ? 'Nothing matches that' : 'No decks yet'}
             body={
-              query.trim()
-                ? `No deck or card mentions "${query.trim()}". Try a shorter search.`
+              searching
+                ? `No deck or card mentions “${query.trim()}”. Try something shorter.`
                 : 'Deckhead comes with five decks. If none are showing, something went wrong opening them.'
             }
           />
         }
       />
 
-      <View style={styles.footer}>
-        <Button
-          label="New deck"
-          variant="primary"
-          onPress={() => router.push('/decks/edit/new')}
-        />
-        <Button label="Import a deck" onPress={() => router.push('/decks/import')} />
-      </View>
+      <Footer>
+        <View style={styles.row}>
+          <Button label="New deck" variant="primary" icon="plus" onPress={() => router.push('/decks/edit/new')} style={styles.grow} />
+          <Button label="Import" icon="download" onPress={() => router.push('/decks/import')} style={styles.grow} />
+        </View>
+      </Footer>
     </Screen>
   );
 }
 
-function Header() {
-  return (
-    <View style={styles.header}>
-      <Text card variant="title">
-        DECKS
-      </Text>
-    </View>
-  );
-}
-
 const styles = StyleSheet.create({
-  header: {
-    paddingHorizontal: space.lg,
-    paddingTop: space.sm,
-    paddingBottom: space.md,
+  list: { paddingTop: space.sm, paddingBottom: space.md, flexGrow: 1 },
+  sectionHeader: { paddingTop: space.md },
+  invite: { marginHorizontal: 20, marginBottom: space.sm },
+  inviteFace: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: space.md,
+    padding: space.md,
+    borderStyle: 'dashed',
   },
-  list: {
-    paddingVertical: space.sm,
-    flexGrow: 1,
-  },
-  invitation: {
-    paddingHorizontal: space.lg,
-    paddingTop: space.xs,
-    paddingBottom: space.md,
-  },
-  footer: {
-    paddingHorizontal: space.lg,
-    paddingBottom: space.md,
-    gap: space.sm,
-  },
-  sectionHeader: {
-    paddingHorizontal: space.lg,
-    paddingTop: space.md,
-    paddingBottom: space.xs,
-    letterSpacing: 1.2,
-  },
-  centre: {
-    flex: 1,
+  inviteIcon: {
+    width: 48,
+    height: 48,
+    borderRadius: radius.md,
+    backgroundColor: color.correct,
     alignItems: 'center',
     justifyContent: 'center',
   },
+  inviteBody: { flex: 1, gap: 2 },
+  row: { flexDirection: 'row', gap: space.sm + 4 },
+  grow: { flex: 1 },
+  centre: { flex: 1, alignItems: 'center', justifyContent: 'center' },
 });

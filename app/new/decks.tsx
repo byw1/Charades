@@ -1,15 +1,17 @@
 import { useFocusEffect, useRouter } from 'expo-router';
 import { useCallback, useState } from 'react';
-import { ActivityIndicator, FlatList, Pressable, StyleSheet, View } from 'react-native';
+import { ActivityIndicator, FlatList, StyleSheet, View } from 'react-native';
 import { MIN_PLAYABLE_CARDS, summaryIsPlayable, type DeckSummary } from '@/decks/types';
 import { useDatabase } from '@/hooks/useDatabase';
 import { useHaptics } from '@/hooks/useHaptics';
 import { useNewGameStore } from '@/hooks/useNewGameStore';
 import { listDeckSummaries } from '@/storage/deckRepo';
 import { Button } from '@/ui/Button';
-import { readableTextOn } from '@/ui/contrast';
+import { DeckStack } from '@/ui/DeckCard';
 import { EmptyState } from '@/ui/EmptyState';
-import { Screen } from '@/ui/Screen';
+import { Icon } from '@/ui/Icon';
+import { Raised } from '@/ui/Raised';
+import { Footer, Screen } from '@/ui/Screen';
 import { StepHeader } from '@/ui/StepHeader';
 import { Text } from '@/ui/Text';
 import { color, radius, space } from '@/ui/tokens';
@@ -49,10 +51,21 @@ export default function NewGameDecksScreen() {
 
   const enough = totalCards >= MIN_PLAYABLE_CARDS;
 
+  const header = (
+    <StepHeader
+      step={1}
+      of={3}
+      title="Which decks are we playing?"
+      subtitle="Pick one, or mix a few together."
+      onClose={router.back}
+    />
+  );
+
   if (database.status === 'error') {
     return (
       <Screen>
-        <EmptyState title="Deckhead could not open your decks" body={database.message} />
+        {header}
+        <EmptyState title="Couldn’t open your decks" body={database.message} mood="sad" />
       </Screen>
     );
   }
@@ -60,8 +73,9 @@ export default function NewGameDecksScreen() {
   if (!decks) {
     return (
       <Screen>
+        {header}
         <View style={styles.centre}>
-          <ActivityIndicator color={color.brand} />
+          <ActivityIndicator color={color.brand} size="large" />
         </View>
       </Screen>
     );
@@ -69,7 +83,7 @@ export default function NewGameDecksScreen() {
 
   return (
     <Screen>
-      <StepHeader step={1} of={3} title="Decks" subtitle="Pick what you are playing with" />
+      {header}
 
       <FlatList
         data={decks}
@@ -80,87 +94,80 @@ export default function NewGameDecksScreen() {
           const playable = summaryIsPlayable(item);
 
           return (
-            <Pressable
-              onPress={() => {
-                haptics.select();
-                toggleDeck(item.id);
-              }}
+            <Raised
+              face={selected ? color.focusLight : color.background}
+              shade={selected ? color.focus : color.line}
+              border={selected ? color.focus : color.line}
+              radius={radius.lg}
+              onPress={() => toggleDeck(item.id)}
+              onPressIn={() => haptics.select()}
               disabled={!playable}
               accessibilityRole="checkbox"
               accessibilityState={{ checked: selected, disabled: !playable }}
               accessibilityLabel={`${item.name}, ${item.cardCount} cards`}
-              style={({ pressed }) => [
-                styles.row,
-                pressed && styles.rowPressed,
-                !playable && styles.rowDisabled,
-              ]}
+              style={[styles.tile, !playable && styles.disabled]}
+              faceStyle={styles.tileFace}
             >
-              <View
-                style={[
-                  styles.swatch,
-                  { backgroundColor: item.accentColor, opacity: selected ? 1 : 0.3 },
-                ]}
-              >
-                {selected ? (
-                  <Text variant="heading" style={{ color: readableTextOn(item.accentColor) }}>
-                    ✓
-                  </Text>
-                ) : null}
-              </View>
-
-              <View style={styles.body}>
-                <Text variant="body" numberOfLines={1}>
+              <DeckStack accent={item.accentColor} initial={[...item.name][0]?.toUpperCase() ?? '?'} size={48} />
+              <View style={styles.tileBody}>
+                <Text variant="heading" numberOfLines={1} style={selected ? { color: color.focus } : null}>
                   {item.name}
                 </Text>
                 <Text variant="caption" tone="faint">
                   {item.cardCount} cards{playable ? '' : ' · too few to play'}
                 </Text>
               </View>
-            </Pressable>
+              <View style={[styles.check, selected && styles.checkOn]}>
+                {selected ? <Icon name="check" size={18} color={color.bone} weight={3.5} /> : null}
+              </View>
+            </Raised>
           );
         }}
         ListEmptyComponent={
-          <EmptyState title="No decks" body="Something went wrong opening the bundled decks." />
+          <EmptyState title="No decks yet" body="Something went wrong opening the bundled decks." mood="sad" />
         }
       />
 
-      <View style={styles.footer}>
+      <Footer>
         <Button
           label={
             deckIds.length === 0
               ? 'Pick a deck'
               : !enough
                 ? `${MIN_PLAYABLE_CARDS} cards needed`
-                : `Next · ${totalCards} cards`
+                : `Continue · ${totalCards} cards`
           }
           variant="primary"
+          size="lg"
           disabled={!enough}
           onPress={() => router.push('/new/teams')}
         />
-      </View>
+      </Footer>
     </Screen>
   );
 }
 
 const styles = StyleSheet.create({
-  list: { paddingVertical: space.sm, flexGrow: 1 },
-  row: {
+  list: { paddingTop: space.xs, paddingBottom: space.md, flexGrow: 1 },
+  tile: { marginHorizontal: 20, marginBottom: space.sm + 4 },
+  tileFace: {
     flexDirection: 'row',
     alignItems: 'center',
     gap: space.md,
-    paddingHorizontal: space.lg,
-    paddingVertical: space.sm,
+    paddingVertical: space.sm + 4,
+    paddingHorizontal: space.md,
   },
-  rowPressed: { backgroundColor: color.surface },
-  rowDisabled: { opacity: 0.4 },
-  swatch: {
-    width: 48,
-    height: 48,
-    borderRadius: radius.md,
+  tileBody: { flex: 1, gap: 2 },
+  disabled: { opacity: 0.45 },
+  check: {
+    width: 30,
+    height: 30,
+    borderRadius: 15,
+    borderWidth: 2.5,
+    borderColor: color.line,
     alignItems: 'center',
     justifyContent: 'center',
   },
-  body: { flex: 1, gap: 2 },
-  footer: { paddingHorizontal: space.lg, paddingBottom: space.md },
+  checkOn: { backgroundColor: color.focus, borderColor: color.focus },
   centre: { flex: 1, alignItems: 'center', justifyContent: 'center' },
 });

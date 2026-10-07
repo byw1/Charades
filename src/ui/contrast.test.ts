@@ -1,12 +1,14 @@
 import {
   bestTextContrastOn,
+  cardTextOn,
   contrastRatio,
+  darken,
   LARGE_TEXT_CONTRAST_MIN,
   parseHexColor,
   readableTextOn,
   relativeLuminance,
 } from './contrast';
-import { color } from './tokens';
+import { color, deckColors } from './tokens';
 
 describe('parseHexColor', () => {
   it('parses six-digit hex', () => {
@@ -108,12 +110,54 @@ describe('bestTextContrastOn', () => {
     // The floor sits at the luminance where bone and ink are equally bad.
     // Many colours share that luminance, so the value is asserted and the
     // specific colour is only reported if this ever regresses.
-    expect({ worst: Number(worst.toFixed(2)), worstColor }).toMatchObject({ worst: 4.08 });
+    expect({ worst: Number(worst.toFixed(2)), worstColor }).toMatchObject({ worst: 4.13 });
     expect(worst).toBeGreaterThan(LARGE_TEXT_CONTRAST_MIN);
   });
 
   it('is highest at the luminance extremes', () => {
     expect(bestTextContrastOn('#000000')).toBeGreaterThan(bestTextContrastOn('#5a5a5a'));
     expect(bestTextContrastOn('#ffffff')).toBeGreaterThan(bestTextContrastOn('#5a5a5a'));
+  });
+});
+
+describe('cardTextOn', () => {
+  it('puts white on every colour a deck can be given in the editor', () => {
+    for (const accent of deckColors) {
+      expect(cardTextOn(accent)).toBe(color.bone);
+    }
+  });
+
+  it('falls back to dark text where white cannot be read', () => {
+    expect(cardTextOn('#FFC800')).toBe(color.ink);
+    expect(cardTextOn('#ffffff')).toBe(color.ink);
+  });
+
+  it('never picks a colour below AA large text', () => {
+    for (let r = 0; r <= 255; r += 51) {
+      for (let g = 0; g <= 255; g += 51) {
+        for (let b = 0; b <= 255; b += 51) {
+          const hex = `#${[r, g, b].map((v) => v.toString(16).padStart(2, '0')).join('')}`;
+          expect(contrastRatio(hex, cardTextOn(hex))).toBeGreaterThanOrEqual(LARGE_TEXT_CONTRAST_MIN);
+        }
+      }
+    }
+  });
+});
+
+describe('darken', () => {
+  it('mixes toward black', () => {
+    expect(darken('#ffffff', 0.5)).toBe('#808080');
+    expect(darken('#F0386B', 0)).toBe('#f0386b');
+    expect(darken('#F0386B', 1)).toBe('#000000');
+  });
+
+  it('always makes a colour darker, never lighter', () => {
+    for (const accent of deckColors) {
+      expect(relativeLuminance(darken(accent))).toBeLessThan(relativeLuminance(accent));
+    }
+  });
+
+  it('passes through anything that is not a hex colour', () => {
+    expect(darken('red')).toBe('red');
   });
 });

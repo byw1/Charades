@@ -1,5 +1,6 @@
-import { StyleSheet, Text, View } from 'react-native';
-import { readableTextOn } from './contrast';
+import { StyleSheet, Text, useWindowDimensions, View } from 'react-native';
+import { cardTextOn } from './contrast';
+import { fitCardText } from './fitText';
 import { font } from './tokens';
 
 export type CardFaceProps = {
@@ -7,31 +8,40 @@ export type CardFaceProps = {
   accentColor: string;
 };
 
+/** Horizontal room kept clear for the notch and rounded corners. */
+const PAD_X = 48;
+/** Vertical room kept clear for the timer bar above and breathing room below. */
+const PAD_Y = 56;
+
 /**
  * The card. Not a card-shaped thing on a screen — the whole screen.
  *
- * No chrome, no container, full-bleed accent colour, text sized to fill the
- * width in the heavy condensed face. It is read at arm's length across a dim
- * room, so size beats everything.
+ * Full-bleed deck colour, a couple of soft circles for depth, and the word in
+ * the heaviest rounded face at the largest size that fits. It is read at arm's
+ * length across a dim room, so size beats everything.
  *
- * Sizing starts deliberately too large and lets the platform shrink to fit,
- * rather than measuring and recalculating. That keeps a long title and a short
- * one both filling the space, with no layout pass visible to the player.
+ * The size is worked out up front by `fitCardText`, which also balances a
+ * title across lines. The platform's shrink-to-fit stays on underneath as a
+ * backstop for the rare card the estimate gets slightly wrong.
  */
 export function CardFace({ text, accentColor }: CardFaceProps) {
-  const color = readableTextOn(accentColor);
+  const { width, height } = useWindowDimensions();
+  const color = cardTextOn(accentColor);
+  const fit = fitCardText(text, width - PAD_X * 2, height - PAD_Y * 2);
 
   return (
     <View style={[styles.face, { backgroundColor: accentColor }]}>
+      <View style={[styles.blob, styles.blobOne]} pointerEvents="none" />
+      <View style={[styles.blob, styles.blobTwo]} pointerEvents="none" />
       <Text
-        style={[styles.text, { color }]}
-        numberOfLines={3}
+        style={[styles.text, { color, fontSize: fit.fontSize, lineHeight: fit.lineHeight }]}
+        numberOfLines={fit.lines.length}
         adjustsFontSizeToFit
-        minimumFontScale={0.15}
+        minimumFontScale={0.5}
         allowFontScaling={false}
         accessibilityLabel={text}
       >
-        {text.toUpperCase()}
+        {fit.lines.join('\n')}
       </Text>
     </View>
   );
@@ -42,14 +52,20 @@ const styles = StyleSheet.create({
     flex: 1,
     alignItems: 'center',
     justifyContent: 'center',
-    paddingHorizontal: 32,
+    paddingHorizontal: PAD_X,
+    paddingVertical: PAD_Y,
+    overflow: 'hidden',
   },
+  blob: {
+    position: 'absolute',
+    borderRadius: 999,
+    backgroundColor: 'rgba(255,255,255,0.08)',
+  },
+  blobOne: { width: 420, height: 420, top: -180, left: -120 },
+  blobTwo: { width: 320, height: 320, bottom: -160, right: -80 },
   text: {
     fontFamily: font.card,
-    // The starting size, shrunk to fit by the platform. High enough that a
-    // short word fills a landscape screen.
-    fontSize: 200,
-    lineHeight: 200,
     textAlign: 'center',
+    letterSpacing: -0.5,
   },
 });
