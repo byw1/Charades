@@ -108,7 +108,7 @@ export const WARNING_SECONDS = 10;
 export const defaultSettings: SessionSettings = {
   roundSeconds: 60,
   passPenalty: 0,
-  inputMode: 'tap',
+  inputMode: 'tilt',
   winCondition: { kind: 'rounds', count: 4 },
   shuffleAcrossDecks: true,
   mode: 'classic',

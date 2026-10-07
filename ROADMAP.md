@@ -58,11 +58,11 @@ them arrives.
   icon keep it readable. See the Redesign section of `spec/decisions.md`.
 - **Reduced motion — done.** Every decorative animation checks
   `useReducedMotion` and stands still when the phone asks it to.
-- **The tilt axis sign needs a real device.** Tilt is built and unit-tested, but
-  which way "down" reads on the accelerometer's z axis cannot be confirmed in a
-  simulator. It is isolated in `TILT_DOWN_SIGN` in `src/game/tilt.ts`; if a
-  device answers backwards, that constant is the whole fix. Check it before the
-  M7 TestFlight build.
+- **Tilt is now the default; confirm it on a phone.** The direction follows
+  Apple's CoreMotion convention, which expo-sensors passes through unchanged on
+  iOS, so tipping the screen to the floor scores. It still deserves one real
+  round on a device before release; if it ever answers backwards, the whole fix
+  is `TILT_DOWN_SIGN` in `src/game/tilt.ts`.
 - **Sound has a setting but no sound.** `Settings.sound` persists and the
   settings screen deliberately does not show it, because nothing plays audio
   yet. The toggle ships with the audio it governs, not before.

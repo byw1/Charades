@@ -1,9 +1,11 @@
 /**
  * Tilt input.
  *
- * Opt-in, never the default. The single most common complaint about the
+ * The default since October 2026, at the product owner's call: tip the phone
+ * down for got it, up to pass. The single most common complaint about the
  * incumbent is unreliable gyro controls, so the bar here is that a gesture must
- * be harder to make by accident than it is to make on purpose.
+ * be harder to make by accident than it is to make on purpose. Tap remains a
+ * setting.
  *
  * Three guards, because this is a party game and the phone gets waved about:
  *
@@ -67,8 +69,10 @@ export const TILT_MOTION_TOLERANCE = 0.35;
  * gravity sits almost entirely off this axis at rest and swings onto it as the
  * phone is tipped. On iOS a device lying screen-up reads z = -1, so a screen
  * tipped to face the floor reads z = +1 — which is the "down" of "tilt down for
- * got it". If a device ever reads inverted, this constant is the only line that
- * needs to change.
+ * got it". expo-sensors passes CoreMotion's readings through unchanged on iOS
+ * (AccelerometerModule.swift), so this follows Apple's convention directly. If
+ * a device ever reads inverted, this constant is the only line that needs to
+ * change.
  */
 export const TILT_DOWN_SIGN = 1;
 

@@ -14,7 +14,7 @@ These are product decisions, not preferences. Don't design around them.
 2. **No analytics, no ads, no tracking SDKs.** No ATT prompt. This is a stated differentiator on the store listing.
 3. **All content free.** Every bundled deck is available from install. No IAP in v1.
 4. **Nothing the user creates can be lost.** Decks and sessions persist locally and survive updates. Migration paths for schema changes are mandatory, not optional.
-5. **Tap is the default input, not tilt.** Tilt is an opt-in setting. The single most common complaint about the incumbent is unreliable gyro controls.
+5. **Controls must be reliable.** The single most common complaint about the incumbent is unreliable gyro controls. Tap was the original default; since October 2026, at the product owner's call, tilt is the default (tip down for got it, up to pass), guarded against accidental gestures three ways (see `src/game/tilt.ts`), and tap stays one setting away. A phone without an accelerometer always falls back to tap.
 
 ---
 

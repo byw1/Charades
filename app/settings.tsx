@@ -89,21 +89,21 @@ export default function SettingsScreen() {
           <View style={styles.choices}>
             <Chip
               grow
-              emoji="👆"
-              label="Tap"
-              detail="Top half got it, bottom half pass"
-              selected={settings.inputMode === 'tap'}
-              onPress={() => set('inputMode', 'tap')}
-              accessibilityLabel="Tap to answer"
-            />
-            <Chip
-              grow
               emoji="🙃"
               label="Tilt"
               detail="Tip down got it, tip up pass"
               selected={settings.inputMode === 'tilt'}
               onPress={() => set('inputMode', 'tilt')}
               accessibilityLabel="Tilt to answer"
+            />
+            <Chip
+              grow
+              emoji="👆"
+              label="Tap"
+              detail="Top half got it, bottom half pass"
+              selected={settings.inputMode === 'tap'}
+              onPress={() => set('inputMode', 'tap')}
+              accessibilityLabel="Tap to answer"
             />
           </View>
           {settings.inputMode === 'tilt' ? (

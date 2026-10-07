@@ -2,6 +2,7 @@ import Storage from 'expo-sqlite/kv-store';
 import { create } from 'zustand';
 import { useShallow } from 'zustand/react/shallow';
 import type { GameMode } from '@/game/types';
+import { DEFAULTS_VERSION, parseDefaultsVersion, upgradeSettings } from './settingsUpgrade';
 
 /**
  * App settings.
@@ -23,7 +24,11 @@ export type Settings = {
    * got it before anyone speaks, and it leaks across the room.
    */
   sound: boolean;
-  /** Tap is the default. Tilt is opt-in. */
+  /**
+   * Tilt is the default: tip the phone down for got it, up to pass, the way
+   * people expect a forehead game to work. Tap is a setting for anyone who
+   * prefers it.
+   */
   inputMode: 'tap' | 'tilt';
   boostBrightness: boolean;
   /** Whether the first-launch how-to-play has been seen. */
@@ -45,7 +50,7 @@ export type Settings = {
 export const defaultAppSettings: Settings = {
   haptics: true,
   sound: false,
-  inputMode: 'tap',
+  inputMode: 'tilt',
   boostBrightness: true,
   onboarded: false,
   quickMode: 'classic',
@@ -65,8 +70,24 @@ function sanitise(stored: Partial<Record<keyof Settings, unknown>>): Settings {
   }
   const settings = out as Settings;
   if (!['classic', 'taboo', 'threeRounds'].includes(settings.quickMode)) settings.quickMode = 'classic';
-  if (settings.inputMode !== 'tilt') settings.inputMode = 'tap';
+  if (settings.inputMode !== 'tap' && settings.inputMode !== 'tilt') settings.inputMode = defaultAppSettings.inputMode;
   return settings;
+}
+
+const DEFAULTS_KEY = 'settings.defaults';
+
+/** Runs any pending one-time default changes, and remembers that it has. */
+function applyNewDefaults(settings: Settings): Settings {
+  try {
+    const saved = parseDefaultsVersion(Storage.getItemSync(DEFAULTS_KEY));
+    if (saved >= DEFAULTS_VERSION) return settings;
+    const next = upgradeSettings(settings, saved);
+    Storage.setItemSync(STORAGE_KEY, JSON.stringify(pick(next)));
+    Storage.setItemSync(DEFAULTS_KEY, String(DEFAULTS_VERSION));
+    return next;
+  } catch {
+    return settings;
+  }
 }
 
 const STORAGE_KEY = 'settings.v1';
@@ -74,7 +95,11 @@ const STORAGE_KEY = 'settings.v1';
 function load(): Settings {
   try {
     const raw = Storage.getItemSync(STORAGE_KEY);
-    if (!raw) return defaultAppSettings;
+    if (!raw) {
+      // A fresh install already has the current defaults.
+      Storage.setItemSync(DEFAULTS_KEY, String(DEFAULTS_VERSION));
+      return defaultAppSettings;
+    }
 
     const parsed: unknown = JSON.parse(raw);
     if (typeof parsed !== 'object' || parsed === null) return defaultAppSettings;
@@ -82,7 +107,7 @@ function load(): Settings {
     // Merged over defaults rather than trusted wholesale, so a settings blob
     // written by an older build gains new keys instead of leaving them
     // undefined.
-    return sanitise(parsed as Partial<Record<keyof Settings, unknown>>);
+    return applyNewDefaults(sanitise(parsed as Partial<Record<keyof Settings, unknown>>));
   } catch {
     return defaultAppSettings;
   }

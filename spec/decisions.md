@@ -595,3 +595,24 @@ and a native module that fails to compile breaks the whole build.
   get right.
 
 Neither is ruled out. Both wait until there is a way to build and test them.
+
+## Bigger decks, tilt by default
+
+### Tilt is the default now
+
+The product owner asked for the phone-sideways, tip-up-or-down controls by
+default, which is how people expect a forehead game to work. The original spec
+made tap the default because the incumbent's gyro controls are unreliable; the
+answer to that was in how tilt is built, not in hiding it: a trigger well past
+anything a phone does resting on a forehead, a return to upright before the
+next gesture, and a dwell plus a motion gate, so an excited jerk does nothing.
+Tilt still replaces tap during a round, so a palm on the screen cannot answer,
+and a phone with no accelerometer falls back to tap.
+
+expo-sensors passes CoreMotion's readings through unchanged on iOS, so the
+direction follows Apple's convention: a screen facing the floor reads +1 on z,
+which is "tipped down", which is got it.
+
+Saved settings record every setting, so a new default would never reach a phone
+that had saved once. `settingsUpgrade.ts` switches such phones to tilt once and
+remembers it has, so anyone who then picks tap keeps tap.

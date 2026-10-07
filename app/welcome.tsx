@@ -38,13 +38,26 @@ const STORIES: Story[] = [
       { text: 'good boy 🐶', tint: '#FFFFFF', tilt: -4, top: '62%', left: '10%' },
     ],
   },
-  {
+];
+
+/** The intro stories, then one on controls. */
+const STORY_COUNT = STORIES.length + 1;
+
+/** The last story teaches whichever controls the phone is set to. */
+const CONTROLS: Record<'tilt' | 'tap', Story> = {
+  tilt: {
+    background: palette.blue,
+    caption: 'Tip it down if you got it',
+    detail: 'Tip it up to pass. Most cards before time’s up wins.',
+    mood: 'excited',
+  },
+  tap: {
     background: palette.blue,
     caption: 'Tap top if you got it',
     detail: 'Tap the bottom to pass. Most cards before time’s up wins.',
     mood: 'excited',
   },
-];
+};
 
 const STORY_MS = 4500;
 
@@ -63,9 +76,11 @@ export default function WelcomeScreen() {
   const reduced = useReducedMotion();
   const [index, setIndex] = useState(0);
   const [progress] = useState(() => new Animated.Value(0));
+  const inputMode = useSettingsStore((s) => s.inputMode);
+  const stories = [...STORIES, CONTROLS[inputMode]];
 
-  const story = STORIES[index] ?? STORIES[0]!;
-  const last = index === STORIES.length - 1;
+  const story = stories[index] ?? stories[0]!;
+  const last = index === stories.length - 1;
 
   const finish = () => {
     setSetting('onboarded', true);
@@ -86,7 +101,7 @@ export default function WelcomeScreen() {
       useNativeDriver: false,
     });
     animation.start(({ finished }) => {
-      if (finished) setIndex((current) => Math.min(current + 1, STORIES.length - 1));
+      if (finished) setIndex((current) => Math.min(current + 1, STORY_COUNT - 1));
     });
     return () => animation.stop();
   }, [index, last, progress, reduced]);
@@ -113,7 +128,7 @@ export default function WelcomeScreen() {
 
       <SafeAreaView style={styles.safe} pointerEvents="box-none">
         <View style={styles.top} pointerEvents="box-none">
-          <StoryBar count={STORIES.length} index={index} progress={progress} />
+          <StoryBar count={stories.length} index={index} progress={progress} />
           <View style={styles.topRow} pointerEvents="box-none">
             <View style={styles.from}>
               <Mascot size={32} animated={false} />
