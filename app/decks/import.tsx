@@ -4,7 +4,7 @@ import { File } from 'expo-file-system';
 import { useLocalSearchParams, useRouter } from 'expo-router';
 import { useCallback, useEffect, useRef, useState } from 'react';
 import { Linking, ScrollView, StyleSheet, View } from 'react-native';
-import { extractPayload } from '@/decks/share';
+import { collectQrPart, extractPayload, isQrPart, type QrCollection } from '@/decks/share';
 import { useDatabase } from '@/hooks/useDatabase';
 import { useDeckImport } from '@/hooks/useDeckImport';
 import { useHaptics } from '@/hooks/useHaptics';
@@ -23,6 +23,28 @@ import { color, gutter, palette, radius, space } from '@/ui/tokens';
 type Method = 'scan' | 'paste' | 'file';
 
 /**
+ * Reads a file handed over by iOS. AirDropped and mailed files are copied
+ * into the app's Inbox folder first; the copy is removed once read, since the
+ * deck is about to be imported properly or declined.
+ */
+function readIncomingFile(uri: string): string {
+  try {
+    const incoming = new File(uri);
+    const contents = incoming.textSync();
+    if (/\/Inbox\//.test(uri)) {
+      try {
+        incoming.delete();
+      } catch {
+        // Leaving a copy behind is harmless.
+      }
+    }
+    return contents;
+  } catch {
+    return '';
+  }
+}
+
+/**
  * Import a deck.
  *
  * Scan, file or paste, then always a preview and a confirm tap. Nothing is
@@ -34,13 +56,20 @@ export default function ImportDeckScreen() {
   const haptics = useHaptics();
   const importer = useDeckImport();
 
-  /** Set when arriving from a deep link, which skips straight to the preview. */
-  const { payload } = useLocalSearchParams<{ payload?: string }>();
+  /**
+   * Set when arriving from outside: a deck link carries a payload, and a
+   * .deckhead file opened from AirDrop, Files or Mail carries its location.
+   * Either skips straight to the preview.
+   */
+  const { payload, file } = useLocalSearchParams<{ payload?: string; file?: string }>();
 
   const [method, setMethod] = useState<Method>('scan');
   const [pasted, setPasted] = useState('');
   const [permission, requestPermission] = useCameraPermissions();
   const scanning = useRef(false);
+  // Pieces of a big deck shown as a sequence of codes, collected as they pass.
+  const pieces = useRef<QrCollection | null>(null);
+  const [progress, setProgress] = useState<{ have: number; total: number } | null>(null);
 
   const db = database.status === 'ready' ? database.db : null;
 
@@ -56,6 +85,13 @@ export default function ImportDeckScreen() {
   useEffect(() => {
     if (payload && db && importer.state.status === 'idle') offer(payload);
   }, [payload, db, importer.state.status, offer]);
+
+  const openedFile = useRef(false);
+  useEffect(() => {
+    if (!file || !db || openedFile.current) return;
+    openedFile.current = true;
+    offer(readIncomingFile(file));
+  }, [file, db, offer]);
 
   const pickFile = async () => {
     const result = await DocumentPicker.getDocumentAsync({ copyToCacheDirectory: true });
@@ -243,6 +279,26 @@ export default function ImportDeckScreen() {
                   // Fires every frame while a code is visible, so this is
                   // latched rather than debounced — one scan, one preview.
                   if (scanning.current) return;
+
+                  if (isQrPart(data)) {
+                    const result = collectQrPart(pieces.current, data);
+                    if (result.status === 'collecting') {
+                      pieces.current = result.collection;
+                      if (result.isNew) {
+                        haptics.select();
+                        setProgress({ have: result.have, total: result.total });
+                      }
+                      return;
+                    }
+                    pieces.current = null;
+                    setProgress(null);
+                    if (result.status === 'invalid') return;
+                    scanning.current = true;
+                    haptics.correct();
+                    offer(result.payload);
+                    return;
+                  }
+
                   scanning.current = true;
                   haptics.correct();
                   offer(data);
@@ -256,7 +312,7 @@ export default function ImportDeckScreen() {
               </View>
               <View style={styles.scanHint} pointerEvents="none">
                 <Text variant="label" tone="inverse">
-                  Point at a Deckhead code
+                  {progress ? `Got ${progress.have} of ${progress.total} codes. Keep it there…` : 'Point at a Deckhead code'}
                 </Text>
               </View>
             </View>

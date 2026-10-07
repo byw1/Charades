@@ -1,5 +1,6 @@
 import {
   addCard,
+  addPhotoCards,
   appendCards,
   createDeck,
   duplicateDeck,
@@ -9,6 +10,7 @@ import {
   moveCardUp,
   nextCopyName,
   parseBulkPaste,
+  parseTabooInput,
   removeCard,
   setDeckFields,
   updateCard,
@@ -330,5 +332,41 @@ describe('unsaved changes', () => {
   it('ignores updatedAt on its own', () => {
     const deck = deckWith(['One']);
     expect(hasChanges(deck, { ...deck, updatedAt: LATER })).toBe(false);
+  });
+});
+
+describe('photos and Taboo words on cards', () => {
+  const T = '2026-10-07T20:00:00Z';
+  const photo = 'data:image/jpeg;base64,AAAA';
+
+  it('adds a numbered card per photo', () => {
+    const deck = addPhotoCards(createDeck({ now: T }), [photo, photo], T);
+    expect(deck.cards.map((c) => c.text)).toEqual(['Photo 1', 'Photo 2']);
+    expect(deck.cards.every((c) => c.image === photo)).toBe(true);
+    expect(addPhotoCards(deck, [photo], T).cards[2]!.text).toBe('Photo 3');
+  });
+
+  it('sets, keeps and removes a photo without touching the card id', () => {
+    const deck = addCard(createDeck({ now: T }), 'Our dog', T);
+    const id = deck.cards[0]!.id;
+    const withPhoto = updateCard(deck, id, { image: photo }, T);
+    expect(withPhoto.cards[0]).toMatchObject({ id, image: photo });
+    expect(updateCard(withPhoto, id, { text: 'Biscuit' }, T).cards[0]!.image).toBe(photo);
+    expect(updateCard(withPhoto, id, { image: null }, T).cards[0]).not.toHaveProperty('image');
+  });
+
+  it('sets Taboo words from a comma list and drops the field when emptied', () => {
+    const deck = addCard(createDeck({ now: T }), 'Jaws', T);
+    const id = deck.cards[0]!.id;
+    const withTaboo = updateCard(deck, id, { taboo: parseTabooInput('shark,  beach , Shark,') }, T);
+    expect(withTaboo.cards[0]!.taboo).toEqual(['shark', 'beach']);
+    expect(updateCard(withTaboo, id, { taboo: [] }, T).cards[0]).not.toHaveProperty('taboo');
+  });
+
+  it('notices a changed photo or Taboo word as an unsaved change', () => {
+    const deck = addCard(createDeck({ now: T }), 'Jaws', T);
+    const id = deck.cards[0]!.id;
+    expect(hasChanges(deck, updateCard(deck, id, { taboo: ['shark'] }, T))).toBe(true);
+    expect(hasChanges(deck, updateCard(deck, id, { image: photo }, T))).toBe(true);
   });
 });

@@ -4,7 +4,6 @@ import { StatusBar } from 'expo-status-bar';
 import { useEffect } from 'react';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
 import { useAppFonts } from '@/hooks/useAppFonts';
-import { useDeckLinks } from '@/hooks/useDeckLinks';
 import { color } from '@/ui/tokens';
 
 // Held until the typefaces are ready, so the first frame anyone sees is the
@@ -14,8 +13,8 @@ void SplashScreen.preventAutoHideAsync().catch(() => undefined);
 export default function RootLayout() {
   const fontsReady = useAppFonts();
 
-  // A deckhead:// link lands on the import preview, never a silent install.
-  useDeckLinks();
+  // Deck links and .deckhead files are routed to the import preview by
+  // app/+native-intent.tsx, so neither can install a deck silently.
 
   useEffect(() => {
     if (fontsReady) void SplashScreen.hideAsync().catch(() => undefined);

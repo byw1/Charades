@@ -1,6 +1,7 @@
 import { decodeBase64Url, encodeBase64Url, utf8Decode, utf8Encode } from './base64url';
-import { addCard, createDeck, setDeckFields } from './edit';
+import { addCard, addPhotoCards, createDeck, setDeckFields } from './edit';
 import {
+  collectQrPart,
   deckFileName,
   deckLink,
   decodeDeck,
@@ -9,8 +10,14 @@ import {
   fitsInQr,
   measure,
   payloadFromLink,
+  MAX_QR_PARTS,
   PAYLOAD_PREFIX,
+  routeForIncoming,
+  QR_PART_LIMIT,
   QR_PAYLOAD_LIMIT,
+  splitForQr,
+  withoutPhotos,
+  type QrCollection,
 } from './share';
 import type { Deck } from './types';
 
@@ -308,5 +315,131 @@ describe('file names', () => {
   it('caps the length', () => {
     const name = deckFileName(deckOf(1, 'A'.repeat(200)));
     expect(name.length).toBeLessThanOrEqual(40 + '.deckhead'.length);
+  });
+});
+
+describe('photos and sharing', () => {
+  const photo = `data:image/jpeg;base64,${'A'.repeat(4000)}`;
+  const withPhotos = () => addPhotoCards(deckOf(12), [photo, photo], NOW);
+
+  it('keeps photos out of codes and links, and in files', () => {
+    const deck = withPhotos();
+    const size = measure(deck);
+    expect(size.photos).toBe(2);
+
+    const viaCode = decodeDeck(size.payload);
+    if (!viaCode.ok) throw new Error(viaCode.message);
+    expect(viaCode.deck.cards.some((c) => c.image)).toBe(false);
+    // The photo card is still there, as words.
+    expect(viaCode.deck.cards).toHaveLength(14);
+
+    const viaFile = decodeDeck(size.filePayload);
+    if (!viaFile.ok) throw new Error(viaFile.message);
+    expect(viaFile.deck.cards.filter((c) => c.image)).toHaveLength(2);
+
+    const viaLink = decodeDeck(payloadFromLink(deckLink(deck))!);
+    expect(viaLink.ok && viaLink.deck.cards.some((c) => c.image)).toBe(false);
+  });
+
+  it('leaves a deck without photos untouched', () => {
+    const deck = deckOf(10);
+    expect(withoutPhotos(deck)).toBe(deck);
+    expect(measure(deck).filePayload).toBe(measure(deck).payload);
+  });
+});
+
+describe('big decks over several codes', () => {
+  const payloadOf = (cards: number) => encodeDeck(deckOf(cards));
+
+  it('needs only one code for a normal deck', () => {
+    expect(measure(deckOf(50)).qrParts).toBeNull();
+  });
+
+  it('splits a big deck into codes that each fit comfortably', () => {
+    const size = measure(deckOf(400));
+    expect(size.fitsQr).toBe(false);
+    expect(size.qrParts!.length).toBeGreaterThan(1);
+    for (const part of size.qrParts!) expect(part.length).toBeLessThanOrEqual(QR_PART_LIMIT);
+  });
+
+  it('puts the deck back together from codes scanned in any order, with repeats', () => {
+    const payload = payloadOf(400);
+    const parts = splitForQr(payload);
+    const order = [...parts].reverse();
+    order.splice(1, 0, parts[parts.length - 1]!); // the same code twice
+
+    let collection: QrCollection | null = null;
+    let finished: string | null = null;
+    for (const part of order) {
+      const result = collectQrPart(collection, part);
+      if (result.status === 'collecting') collection = result.collection;
+      if (result.status === 'complete') finished = result.payload;
+    }
+    expect(finished).toBe(payload);
+    expect(decodeDeck(finished!).ok).toBe(true);
+  });
+
+  it('reports which pieces are new, so the scanner only buzzes once per code', () => {
+    const parts = splitForQr(payloadOf(400));
+    const first = collectQrPart(null, parts[0]!);
+    if (first.status !== 'collecting') throw new Error('expected collecting');
+    const again = collectQrPart(first.collection, parts[0]!);
+    expect(again).toMatchObject({ status: 'collecting', isNew: false, have: 1 });
+  });
+
+  it('starts over when a code from a different deck turns up', () => {
+    const a = splitForQr(payloadOf(400));
+    const b = splitForQr(encodeDeck(deckOf(400, 'Another Deck')));
+    const first = collectQrPart(null, a[0]!);
+    if (first.status !== 'collecting') throw new Error('expected collecting');
+    const switched = collectQrPart(first.collection, b[0]!);
+    expect(switched).toMatchObject({ status: 'collecting', have: 1 });
+    if (switched.status === 'collecting') expect(switched.collection.tag).not.toBe(first.collection.tag);
+  });
+
+  it('rejects a damaged piece rather than importing a broken deck', () => {
+    const parts = splitForQr(payloadOf(400));
+    let collection: QrCollection | null = null;
+    let last: ReturnType<typeof collectQrPart> | null = null;
+    parts.forEach((part, i) => {
+      const damaged = i === 1 ? part.replace(/.$/, (c) => (c === 'A' ? 'B' : 'A')) : part;
+      last = collectQrPart(collection, damaged);
+      if (last.status === 'collecting') collection = last.collection;
+    });
+    expect(last).toEqual({ status: 'invalid' });
+  });
+
+  it('ignores something that is not a piece', () => {
+    expect(collectQrPart(null, 'D1.abc')).toEqual({ status: 'invalid' });
+    expect(collectQrPart(null, 'DQ1.x.3.2.abc')).toEqual({ status: 'invalid' });
+  });
+
+  it('gives up on codes for a deck so big it should go as a file', () => {
+    expect(measure(deckOf(2000)).qrParts === null || measure(deckOf(2000)).qrParts!.length <= MAX_QR_PARTS).toBe(true);
+  });
+});
+
+describe('routeForIncoming', () => {
+  it('sends an AirDropped or opened file to the import preview', () => {
+    const url = 'file:///private/var/mobile/Containers/Data/Application/X/Documents/Inbox/Dorm%20Floor.deckhead';
+    expect(routeForIncoming(url)).toBe(`/decks/import?file=${encodeURIComponent(url)}`);
+  });
+
+  it('recognises a .deckhead path even without a file scheme', () => {
+    expect(routeForIncoming('/var/mobile/Inbox/Deck.deckhead')).toMatch(/^\/decks\/import\?file=/);
+  });
+
+  it('sends a deck link to the import preview with its payload', () => {
+    const link = deckLink(deckOf(12));
+    const route = routeForIncoming(link)!;
+    expect(route).toMatch(/^\/decks\/import\?payload=/);
+    const payload = decodeURIComponent(route.split('payload=')[1]!);
+    expect(decodeDeck(payload).ok).toBe(true);
+  });
+
+  it('leaves anything else to the router', () => {
+    expect(routeForIncoming('deckhead://settings')).toBeNull();
+    expect(routeForIncoming('/decks/abc')).toBeNull();
+    expect(routeForIncoming('')).toBeNull();
   });
 });

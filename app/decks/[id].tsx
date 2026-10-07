@@ -1,6 +1,6 @@
 import { useFocusEffect, useLocalSearchParams, useRouter } from 'expo-router';
 import { useCallback, useState } from 'react';
-import { ActivityIndicator, Alert, FlatList, StyleSheet, View } from 'react-native';
+import { ActivityIndicator, Alert, FlatList, Image, StyleSheet, View } from 'react-native';
 import { duplicateDeck } from '@/decks/edit';
 import { isPlayable, MIN_PLAYABLE_CARDS, type StoredDeck } from '@/decks/types';
 import { useDatabase } from '@/hooks/useDatabase';
@@ -187,6 +187,7 @@ export default function DeckDetailScreen() {
         renderItem={({ item, index }) => (
           <View style={styles.cardRow}>
             <Text style={styles.cardIndex}>{index + 1}</Text>
+            {item.image ? <Image source={{ uri: item.image }} style={styles.cardPhoto} accessible={false} /> : null}
             <View style={styles.cardBody}>
               <Text variant="heading">{item.text}</Text>
               {/* Notes are a clue-giver hint. They belong here and in the recap,
@@ -194,6 +195,11 @@ export default function DeckDetailScreen() {
               {item.note ? (
                 <Text variant="caption" tone="muted">
                   {item.note}
+                </Text>
+              ) : null}
+              {item.taboo ? (
+                <Text variant="caption" tone="faint">
+                  🚫 {item.taboo.join(' · ')}
                 </Text>
               ) : null}
             </View>
@@ -293,6 +299,7 @@ const styles = StyleSheet.create({
     borderBottomColor: color.line,
   },
   cardIndex: { fontFamily: font.heavy, fontSize: 13, lineHeight: 18, color: color.textFaint, minWidth: 22, textAlign: 'right' },
+  cardPhoto: { width: 44, height: 44, borderRadius: 10 },
   cardBody: { flex: 1, gap: 2 },
   centre: { flex: 1, alignItems: 'center', justifyContent: 'center' },
 });
