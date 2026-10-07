@@ -6,12 +6,13 @@
   "author": "Deckhead",
   "language": "en",
   "accentColor": "#FF3B47",
+  "emoji": "🎮",
   "tags": [
     "anime",
     "games"
   ],
   "createdAt": "2026-10-07T20:00:00Z",
-  "updatedAt": "2026-10-07T20:00:00Z",
+  "updatedAt": "2026-10-07T22:00:00Z",
   "cards": [
     {
       "id": "crd_c077c342",
@@ -561,6 +562,556 @@
         "Japanese",
         "adorable",
         "pink"
+      ]
+    },
+    {
+      "id": "crd_0a9100eb",
+      "text": "Hunter x Hunter",
+      "note": null,
+      "taboo": [
+        "Gon",
+        "Killua",
+        "Hisoka",
+        "anime"
+      ]
+    },
+    {
+      "id": "crd_f64b1b2c",
+      "text": "Fullmetal Alchemist",
+      "note": null,
+      "taboo": [
+        "Edward Elric",
+        "alchemy",
+        "brothers",
+        "automail"
+      ]
+    },
+    {
+      "id": "crd_b5855933",
+      "text": "One Punch Man",
+      "note": null,
+      "taboo": [
+        "Saitama",
+        "bald",
+        "hero",
+        "strongest"
+      ]
+    },
+    {
+      "id": "crd_635dfce5",
+      "text": "Haikyu!!",
+      "note": null,
+      "taboo": [
+        "volleyball",
+        "Hinata",
+        "crows",
+        "anime"
+      ]
+    },
+    {
+      "id": "crd_a652a4e2",
+      "text": "Your Name",
+      "note": null,
+      "taboo": [
+        "body swap",
+        "comet",
+        "Makoto Shinkai",
+        "anime film"
+      ]
+    },
+    {
+      "id": "crd_21543981",
+      "text": "Spirited Away",
+      "note": null,
+      "taboo": [
+        "Chihiro",
+        "No-Face",
+        "bathhouse",
+        "Ghibli"
+      ]
+    },
+    {
+      "id": "crd_8f266860",
+      "text": "Howl’s Moving Castle",
+      "note": null,
+      "taboo": [
+        "Sophie",
+        "wizard",
+        "walking house",
+        "Ghibli"
+      ]
+    },
+    {
+      "id": "crd_f6c346cd",
+      "text": "Yu-Gi-Oh!",
+      "note": null,
+      "taboo": [
+        "duel",
+        "cards",
+        "millennium puzzle",
+        "Kaiba"
+      ]
+    },
+    {
+      "id": "crd_5ebfda56",
+      "text": "Digimon",
+      "note": null,
+      "taboo": [
+        "digital monsters",
+        "Agumon",
+        "digivolve",
+        "Pokémon rival"
+      ]
+    },
+    {
+      "id": "crd_1466b681",
+      "text": "Cowboy Bebop",
+      "note": null,
+      "taboo": [
+        "Spike",
+        "space",
+        "bounty hunters",
+        "jazz"
+      ]
+    },
+    {
+      "id": "crd_5dd313e9",
+      "text": "Solo Leveling",
+      "note": null,
+      "taboo": [
+        "Sung Jinwoo",
+        "hunter",
+        "dungeon",
+        "level up"
+      ]
+    },
+    {
+      "id": "crd_f1c044c6",
+      "text": "Frieren",
+      "note": null,
+      "taboo": [
+        "elf",
+        "mage",
+        "journey",
+        "funeral"
+      ]
+    },
+    {
+      "id": "crd_0295dd7d",
+      "text": "Blue Lock",
+      "note": null,
+      "taboo": [
+        "soccer",
+        "striker",
+        "ego",
+        "anime"
+      ]
+    },
+    {
+      "id": "crd_165356c7",
+      "text": "Mario Party",
+      "note": null,
+      "taboo": [
+        "minigames",
+        "board",
+        "stars",
+        "friends"
+      ]
+    },
+    {
+      "id": "crd_2feb01a9",
+      "text": "Super Smash Bros.",
+      "note": null,
+      "taboo": [
+        "fighting",
+        "Nintendo",
+        "Mario",
+        "characters"
+      ]
+    },
+    {
+      "id": "crd_05b77091",
+      "text": "Splatoon",
+      "note": null,
+      "taboo": [
+        "ink",
+        "squid",
+        "Nintendo",
+        "turf war"
+      ]
+    },
+    {
+      "id": "crd_52b4308d",
+      "text": "Geometry Dash",
+      "note": null,
+      "taboo": [
+        "cube",
+        "jump",
+        "rhythm",
+        "spikes"
+      ]
+    },
+    {
+      "id": "crd_b7aa8f7c",
+      "text": "Subway Surfers",
+      "note": null,
+      "taboo": [
+        "run",
+        "train",
+        "graffiti",
+        "phone"
+      ]
+    },
+    {
+      "id": "crd_9dcb41fa",
+      "text": "Clash of Clans",
+      "note": null,
+      "taboo": [
+        "village",
+        "barbarian",
+        "attack",
+        "troops"
+      ]
+    },
+    {
+      "id": "crd_feff0db7",
+      "text": "Clash Royale",
+      "note": null,
+      "taboo": [
+        "cards",
+        "towers",
+        "elixir",
+        "arena"
+      ]
+    },
+    {
+      "id": "crd_77f0cba7",
+      "text": "Brawl Stars",
+      "note": null,
+      "taboo": [
+        "brawlers",
+        "Supercell",
+        "mobile",
+        "gems"
+      ]
+    },
+    {
+      "id": "crd_5be95d97",
+      "text": "Genshin Impact",
+      "note": null,
+      "taboo": [
+        "open world",
+        "gacha",
+        "Teyvat",
+        "anime game"
+      ]
+    },
+    {
+      "id": "crd_1dd09c12",
+      "text": "Hollow Knight",
+      "note": null,
+      "taboo": [
+        "bug",
+        "sword",
+        "Hallownest",
+        "indie"
+      ]
+    },
+    {
+      "id": "crd_f9f36223",
+      "text": "Undertale",
+      "note": null,
+      "taboo": [
+        "Sans",
+        "Frisk",
+        "determination",
+        "indie"
+      ]
+    },
+    {
+      "id": "crd_26a9db66",
+      "text": "Cuphead",
+      "note": null,
+      "taboo": [
+        "cartoon",
+        "cups",
+        "boss",
+        "1930s"
+      ]
+    },
+    {
+      "id": "crd_d4ac602b",
+      "text": "Portal",
+      "note": null,
+      "taboo": [
+        "Valve",
+        "cake",
+        "GLaDOS",
+        "puzzle"
+      ]
+    },
+    {
+      "id": "crd_45a580c0",
+      "text": "Metroid",
+      "note": null,
+      "taboo": [
+        "Samus",
+        "bounty hunter",
+        "power suit",
+        "Nintendo"
+      ]
+    },
+    {
+      "id": "crd_7f1efbb1",
+      "text": "Street Fighter",
+      "note": null,
+      "taboo": [
+        "Ryu",
+        "hadouken",
+        "arcade",
+        "Chun-Li"
+      ]
+    },
+    {
+      "id": "crd_016b2a33",
+      "text": "Crash Bandicoot",
+      "note": null,
+      "taboo": [
+        "orange",
+        "spin",
+        "Aku Aku",
+        "PlayStation"
+      ]
+    },
+    {
+      "id": "crd_34faf90f",
+      "text": "Spyro",
+      "note": null,
+      "taboo": [
+        "purple dragon",
+        "gems",
+        "PlayStation",
+        "fire"
+      ]
+    },
+    {
+      "id": "crd_53dbf8f7",
+      "text": "Space Invaders",
+      "note": null,
+      "taboo": [
+        "aliens",
+        "arcade",
+        "shoot",
+        "retro"
+      ]
+    },
+    {
+      "id": "crd_3503d5ac",
+      "text": "Dance Dance Revolution",
+      "note": null,
+      "taboo": [
+        "arrows",
+        "arcade",
+        "feet",
+        "rhythm"
+      ]
+    },
+    {
+      "id": "crd_ab8aad34",
+      "text": "Nintendo Switch",
+      "note": null,
+      "taboo": [
+        "Joy-Cons",
+        "console",
+        "handheld",
+        "dock"
+      ]
+    },
+    {
+      "id": "crd_d8414b60",
+      "text": "PlayStation",
+      "note": null,
+      "taboo": [
+        "Sony",
+        "console",
+        "controller",
+        "PS5"
+      ]
+    },
+    {
+      "id": "crd_13a32d7f",
+      "text": "Xbox",
+      "note": null,
+      "taboo": [
+        "Microsoft",
+        "console",
+        "Halo",
+        "green"
+      ]
+    },
+    {
+      "id": "crd_5d461745",
+      "text": "Steam Deck",
+      "note": null,
+      "taboo": [
+        "Valve",
+        "handheld",
+        "PC",
+        "gaming"
+      ]
+    },
+    {
+      "id": "crd_36ca93e6",
+      "text": "VR headset",
+      "note": null,
+      "taboo": [
+        "virtual reality",
+        "goggles",
+        "Oculus",
+        "Meta Quest"
+      ]
+    },
+    {
+      "id": "crd_7ed3c0c6",
+      "text": "Discord",
+      "note": null,
+      "taboo": [
+        "servers",
+        "chat",
+        "gamers",
+        "voice call"
+      ]
+    },
+    {
+      "id": "crd_fb39d42e",
+      "text": "Noob",
+      "note": null,
+      "taboo": [
+        "beginner",
+        "newbie",
+        "bad",
+        "gamer"
+      ]
+    },
+    {
+      "id": "crd_6800a45d",
+      "text": "Achievement unlocked",
+      "note": null,
+      "taboo": [
+        "trophy",
+        "game",
+        "badge",
+        "complete"
+      ]
+    },
+    {
+      "id": "crd_ef242c38",
+      "text": "Health potion",
+      "note": null,
+      "taboo": [
+        "heal",
+        "red bottle",
+        "HP",
+        "RPG"
+      ]
+    },
+    {
+      "id": "crd_7cadee8a",
+      "text": "Eevee",
+      "note": null,
+      "taboo": [
+        "Pokémon",
+        "evolutions",
+        "fox",
+        "brown"
+      ]
+    },
+    {
+      "id": "crd_8ffb0d48",
+      "text": "Mewtwo",
+      "note": null,
+      "taboo": [
+        "Pokémon",
+        "psychic",
+        "clone",
+        "legendary"
+      ]
+    },
+    {
+      "id": "crd_e5228b02",
+      "text": "Jigglypuff",
+      "note": null,
+      "taboo": [
+        "Pokémon",
+        "pink",
+        "sing",
+        "sleep"
+      ]
+    },
+    {
+      "id": "crd_94964dea",
+      "text": "Snorlax",
+      "note": null,
+      "taboo": [
+        "Pokémon",
+        "sleepy",
+        "big",
+        "blocks the road"
+      ]
+    },
+    {
+      "id": "crd_ee7ced5e",
+      "text": "Princess Peach",
+      "note": null,
+      "taboo": [
+        "Mario",
+        "pink dress",
+        "Mushroom Kingdom",
+        "crown"
+      ]
+    },
+    {
+      "id": "crd_100f6d66",
+      "text": "Bowser",
+      "note": null,
+      "taboo": [
+        "Mario villain",
+        "turtle",
+        "Koopa",
+        "castle"
+      ]
+    },
+    {
+      "id": "crd_10396639",
+      "text": "Yoshi",
+      "note": null,
+      "taboo": [
+        "green dinosaur",
+        "Mario",
+        "tongue",
+        "eggs"
+      ]
+    },
+    {
+      "id": "crd_7e5671d6",
+      "text": "Luigi",
+      "note": null,
+      "taboo": [
+        "Mario’s brother",
+        "green",
+        "mansion",
+        "plumber"
+      ]
+    },
+    {
+      "id": "crd_2248cc47",
+      "text": "No-Face",
+      "note": null,
+      "taboo": [
+        "Spirited Away",
+        "mask",
+        "ghost",
+        "gold"
       ]
     }
   ]

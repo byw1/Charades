@@ -3,14 +3,17 @@ import actItOut from '../../assets/decks/act-it-out.json';
 import animals from '../../assets/decks/animals.json';
 import animeAndGaming from '../../assets/decks/anime-and-gaming.json';
 import aroundTheHouse from '../../assets/decks/around-the-house.json';
+import celebrities from '../../assets/decks/celebrities.json';
 import collegeLife from '../../assets/decks/college-life.json';
 import emojiCharades from '../../assets/decks/emoji-charades.json';
-import films from '../../assets/decks/films-everyone-knows.json';
+import films from '../../assets/decks/films.json';
 import foodAndDrink from '../../assets/decks/food-and-drink.json';
 import genZSlang from '../../assets/decks/gen-z-slang.json';
 import musicIcons from '../../assets/decks/music-icons.json';
+import quotes from '../../assets/decks/quotes.json';
 import realityTv from '../../assets/decks/reality-tv.json';
 import snacksAndFastFood from '../../assets/decks/snacks-and-fast-food.json';
+import sports from '../../assets/decks/sports.json';
 import viralInternet from '../../assets/decks/viral-internet.json';
 
 /**
@@ -44,4 +47,7 @@ export const bundledDeckDocuments: readonly unknown[] = [
   throwback,
   snacksAndFastFood,
   emojiCharades,
+  celebrities,
+  sports,
+  quotes,
 ];

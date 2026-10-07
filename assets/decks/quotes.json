@@ -1,0 +1,519 @@
+{
+  "schemaVersion": 1,
+  "id": "dck_37a64828",
+  "name": "Movie & TV Quotes",
+  "description": "Say it like they said it. The room acts out the line, the guesser shouts it back. Accents encouraged.",
+  "author": "Deckhead",
+  "language": "en",
+  "accentColor": "#E040FB",
+  "emoji": "💬",
+  "tags": [
+    "film",
+    "tv",
+    "acting"
+  ],
+  "createdAt": "2026-10-07T22:00:00Z",
+  "updatedAt": "2026-10-07T22:00:00Z",
+  "cards": [
+    {
+      "id": "crd_ecc04845",
+      "text": "May the Force be with you",
+      "note": "Star Wars"
+    },
+    {
+      "id": "crd_ae8cbde4",
+      "text": "I'll be back",
+      "note": "The Terminator"
+    },
+    {
+      "id": "crd_b66dd463",
+      "text": "You can't handle the truth!",
+      "note": "A Few Good Men"
+    },
+    {
+      "id": "crd_793c8fef",
+      "text": "Here's Johnny!",
+      "note": "The Shining"
+    },
+    {
+      "id": "crd_6208709f",
+      "text": "Houston, we have a problem",
+      "note": "Apollo 13"
+    },
+    {
+      "id": "crd_4a32fdbf",
+      "text": "I'm the king of the world!",
+      "note": "Titanic"
+    },
+    {
+      "id": "crd_8d43369d",
+      "text": "Life is like a box of chocolates",
+      "note": "Forrest Gump"
+    },
+    {
+      "id": "crd_d65312db",
+      "text": "Just keep swimming",
+      "note": "Finding Nemo"
+    },
+    {
+      "id": "crd_43c27833",
+      "text": "To infinity and beyond!",
+      "note": "Toy Story"
+    },
+    {
+      "id": "crd_f2da3b98",
+      "text": "Hakuna matata",
+      "note": "The Lion King"
+    },
+    {
+      "id": "crd_771907f1",
+      "text": "You're a wizard, Harry",
+      "note": "Harry Potter"
+    },
+    {
+      "id": "crd_a5409505",
+      "text": "I see dead people",
+      "note": "The Sixth Sense"
+    },
+    {
+      "id": "crd_16b4e77f",
+      "text": "There's no place like home",
+      "note": "The Wizard of Oz"
+    },
+    {
+      "id": "crd_b3489d70",
+      "text": "E.T. phone home",
+      "note": "E.T."
+    },
+    {
+      "id": "crd_2da04163",
+      "text": "No, I am your father",
+      "note": "The Empire Strikes Back"
+    },
+    {
+      "id": "crd_96efcf82",
+      "text": "Show me the money!",
+      "note": "Jerry Maguire"
+    },
+    {
+      "id": "crd_13cc53ae",
+      "text": "Why so serious?",
+      "note": "The Dark Knight"
+    },
+    {
+      "id": "crd_120a0870",
+      "text": "I feel the need for speed",
+      "note": "Top Gun"
+    },
+    {
+      "id": "crd_e5fac713",
+      "text": "On Wednesdays we wear pink",
+      "note": "Mean Girls"
+    },
+    {
+      "id": "crd_a8d03549",
+      "text": "Stop trying to make fetch happen",
+      "note": "Mean Girls"
+    },
+    {
+      "id": "crd_2005fb10",
+      "text": "As if!",
+      "note": "Clueless"
+    },
+    {
+      "id": "crd_8b172ba5",
+      "text": "You had me at hello",
+      "note": "Jerry Maguire"
+    },
+    {
+      "id": "crd_8b69be75",
+      "text": "Keep the change, ya filthy animal",
+      "note": "Home Alone"
+    },
+    {
+      "id": "crd_66356a4f",
+      "text": "Bond. James Bond.",
+      "note": "James Bond"
+    },
+    {
+      "id": "crd_b3d9735e",
+      "text": "Wakanda forever!",
+      "note": "Black Panther"
+    },
+    {
+      "id": "crd_0ffa581b",
+      "text": "I am Groot",
+      "note": "Guardians of the Galaxy"
+    },
+    {
+      "id": "crd_d1430bdf",
+      "text": "I am Iron Man",
+      "note": "Iron Man"
+    },
+    {
+      "id": "crd_db333cc0",
+      "text": "Avengers, assemble!",
+      "note": "Avengers: Endgame"
+    },
+    {
+      "id": "crd_9a5131cd",
+      "text": "Do you wanna build a snowman?",
+      "note": "Frozen"
+    },
+    {
+      "id": "crd_06b0155e",
+      "text": "Ohana means family",
+      "note": "Lilo & Stitch"
+    },
+    {
+      "id": "crd_5b1f3d17",
+      "text": "Hasta la vista, baby",
+      "note": "Terminator 2"
+    },
+    {
+      "id": "crd_c71dc025",
+      "text": "Nobody puts Baby in a corner",
+      "note": "Dirty Dancing"
+    },
+    {
+      "id": "crd_a3153f3a",
+      "text": "Run, Forrest, run!",
+      "note": "Forrest Gump"
+    },
+    {
+      "id": "crd_b29efaa3",
+      "text": "Wax on, wax off",
+      "note": "The Karate Kid"
+    },
+    {
+      "id": "crd_0b047948",
+      "text": "You're gonna need a bigger boat",
+      "note": "Jaws"
+    },
+    {
+      "id": "crd_d326ba3b",
+      "text": "Life, uh, finds a way",
+      "note": "Jurassic Park"
+    },
+    {
+      "id": "crd_bc05f574",
+      "text": "Freedom!",
+      "note": "Braveheart"
+    },
+    {
+      "id": "crd_bf628458",
+      "text": "This is Sparta!",
+      "note": "300"
+    },
+    {
+      "id": "crd_9f3cf9cf",
+      "text": "Are you not entertained?",
+      "note": "Gladiator"
+    },
+    {
+      "id": "crd_c0b22af3",
+      "text": "My precious",
+      "note": "The Lord of the Rings"
+    },
+    {
+      "id": "crd_a96339c1",
+      "text": "You shall not pass!",
+      "note": "The Lord of the Rings"
+    },
+    {
+      "id": "crd_18a9e6bc",
+      "text": "Inconceivable!",
+      "note": "The Princess Bride"
+    },
+    {
+      "id": "crd_130172ec",
+      "text": "We're not in Kansas anymore",
+      "note": "The Wizard of Oz"
+    },
+    {
+      "id": "crd_c021bf9e",
+      "text": "Carpe diem",
+      "note": "Dead Poets Society"
+    },
+    {
+      "id": "crd_19edd3ac",
+      "text": "Dobby is a free elf!",
+      "note": "Harry Potter"
+    },
+    {
+      "id": "crd_cfa83184",
+      "text": "It's LeviOsa, not LevioSA",
+      "note": "Harry Potter"
+    },
+    {
+      "id": "crd_956e1618",
+      "text": "Ogres are like onions",
+      "note": "Shrek"
+    },
+    {
+      "id": "crd_5c634f5e",
+      "text": "Do you know the Muffin Man?",
+      "note": "Shrek"
+    },
+    {
+      "id": "crd_c91e17ee",
+      "text": "Why'd it have to be snakes?",
+      "note": "Indiana Jones"
+    },
+    {
+      "id": "crd_fcbb4fc2",
+      "text": "You talkin' to me?",
+      "note": "Taxi Driver"
+    },
+    {
+      "id": "crd_acd8929c",
+      "text": "An offer he can't refuse",
+      "note": "The Godfather"
+    },
+    {
+      "id": "crd_b34b61d0",
+      "text": "Bueller? Bueller?",
+      "note": "Ferris Bueller's Day Off"
+    },
+    {
+      "id": "crd_6e8e3224",
+      "text": "They're here!",
+      "note": "Poltergeist"
+    },
+    {
+      "id": "crd_796c5f8d",
+      "text": "Hey, you guys!",
+      "note": "The Goonies"
+    },
+    {
+      "id": "crd_22744ad8",
+      "text": "Adventure is out there!",
+      "note": "Up"
+    },
+    {
+      "id": "crd_0b647ab0",
+      "text": "Squirrel!",
+      "note": "Up"
+    },
+    {
+      "id": "crd_328b1fb5",
+      "text": "Fish are friends, not food",
+      "note": "Finding Nemo"
+    },
+    {
+      "id": "crd_a96d88ee",
+      "text": "P. Sherman, 42 Wallaby Way, Sydney",
+      "note": "Finding Nemo"
+    },
+    {
+      "id": "crd_8f3eb199",
+      "text": "Ka-chow!",
+      "note": "Cars"
+    },
+    {
+      "id": "crd_32cc6885",
+      "text": "Where's my super suit?",
+      "note": "The Incredibles"
+    },
+    {
+      "id": "crd_d7f04ece",
+      "text": "No capes!",
+      "note": "The Incredibles"
+    },
+    {
+      "id": "crd_3949ac91",
+      "text": "I volunteer as tribute!",
+      "note": "The Hunger Games"
+    },
+    {
+      "id": "crd_497333c4",
+      "text": "May the odds be ever in your favor",
+      "note": "The Hunger Games"
+    },
+    {
+      "id": "crd_c6738c24",
+      "text": "Hi Barbie! Hi Ken!",
+      "note": "Barbie"
+    },
+    {
+      "id": "crd_f221ad5e",
+      "text": "I'm just Ken",
+      "note": "Barbie"
+    },
+    {
+      "id": "crd_e04182e7",
+      "text": "I'm the captain now",
+      "note": "Captain Phillips"
+    },
+    {
+      "id": "crd_36829f1d",
+      "text": "Wilson!",
+      "note": "Cast Away"
+    },
+    {
+      "id": "crd_314dc1a5",
+      "text": "I'll never let go, Jack",
+      "note": "Titanic"
+    },
+    {
+      "id": "crd_9285b0cc",
+      "text": "Mischief managed",
+      "note": "Harry Potter"
+    },
+    {
+      "id": "crd_466b63b6",
+      "text": "Expecto Patronum!",
+      "note": "Harry Potter"
+    },
+    {
+      "id": "crd_bf53729f",
+      "text": "I don't have friends, I got family",
+      "note": "Fast Five"
+    },
+    {
+      "id": "crd_1c4ac289",
+      "text": "It's over, Anakin, I have the high ground",
+      "note": "Star Wars: Revenge of the Sith"
+    },
+    {
+      "id": "crd_e1a7e0a7",
+      "text": "Hello there",
+      "note": "Star Wars: Revenge of the Sith"
+    },
+    {
+      "id": "crd_0fbe4771",
+      "text": "Do or do not, there is no try",
+      "note": "The Empire Strikes Back"
+    },
+    {
+      "id": "crd_ec5ae56d",
+      "text": "It's a trap!",
+      "note": "Return of the Jedi"
+    },
+    {
+      "id": "crd_dbe0256f",
+      "text": "Mr. Stark, I don't feel so good",
+      "note": "Avengers: Infinity War"
+    },
+    {
+      "id": "crd_b8110343",
+      "text": "I can do this all day",
+      "note": "Captain America"
+    },
+    {
+      "id": "crd_dff6b224",
+      "text": "I am inevitable",
+      "note": "Avengers: Endgame"
+    },
+    {
+      "id": "crd_0f13cff1",
+      "text": "Love you 3000",
+      "note": "Avengers: Endgame"
+    },
+    {
+      "id": "crd_1fd03cf0",
+      "text": "We were on a break!",
+      "note": "Friends"
+    },
+    {
+      "id": "crd_8852f6cf",
+      "text": "How you doin'?",
+      "note": "Friends"
+    },
+    {
+      "id": "crd_ec21d274",
+      "text": "Pivot!",
+      "note": "Friends"
+    },
+    {
+      "id": "crd_b05bcb76",
+      "text": "Bazinga!",
+      "note": "The Big Bang Theory"
+    },
+    {
+      "id": "crd_f58d54cc",
+      "text": "D'oh!",
+      "note": "The Simpsons"
+    },
+    {
+      "id": "crd_e9705075",
+      "text": "Winter is coming",
+      "note": "Game of Thrones"
+    },
+    {
+      "id": "crd_e25c31f1",
+      "text": "Yada yada yada",
+      "note": "Seinfeld"
+    },
+    {
+      "id": "crd_7534db3c",
+      "text": "Bears. Beets. Battlestar Galactica.",
+      "note": "The Office"
+    },
+    {
+      "id": "crd_53b8d090",
+      "text": "Treat yo self!",
+      "note": "Parks and Recreation"
+    },
+    {
+      "id": "crd_9f20d893",
+      "text": "Cool cool cool cool cool",
+      "note": "Brooklyn Nine-Nine"
+    },
+    {
+      "id": "crd_a76160b4",
+      "text": "Is mayonnaise an instrument?",
+      "note": "SpongeBob SquarePants"
+    },
+    {
+      "id": "crd_75b83df1",
+      "text": "I'm ready!",
+      "note": "SpongeBob SquarePants"
+    },
+    {
+      "id": "crd_e0eea6a5",
+      "text": "Cowabunga!",
+      "note": "Teenage Mutant Ninja Turtles"
+    },
+    {
+      "id": "crd_1e7c62ce",
+      "text": "Yabba dabba doo!",
+      "note": "The Flintstones"
+    },
+    {
+      "id": "crd_71ee0fbd",
+      "text": "What's up, Doc?",
+      "note": "Looney Tunes"
+    },
+    {
+      "id": "crd_40359a42",
+      "text": "Live long and prosper",
+      "note": "Star Trek"
+    },
+    {
+      "id": "crd_d2159953",
+      "text": "Wubba lubba dub dub",
+      "note": "Rick and Morty"
+    },
+    {
+      "id": "crd_a9d4688f",
+      "text": "This is the way",
+      "note": "The Mandalorian"
+    },
+    {
+      "id": "crd_c77ef388",
+      "text": "You know nothing, Jon Snow",
+      "note": "Game of Thrones"
+    },
+    {
+      "id": "crd_74059947",
+      "text": "Shut up and take my money!",
+      "note": "Futurama"
+    },
+    {
+      "id": "crd_a305db5f",
+      "text": "Legen—wait for it—dary!",
+      "note": "How I Met Your Mother"
+    }
+  ]
+}

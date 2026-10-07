@@ -6,12 +6,13 @@
   "author": "Deckhead",
   "language": "en",
   "accentColor": "#E040FB",
+  "emoji": "📼",
   "tags": [
     "nostalgia",
     "internet"
   ],
   "createdAt": "2026-10-07T20:00:00Z",
-  "updatedAt": "2026-10-07T20:00:00Z",
+  "updatedAt": "2026-10-07T22:00:00Z",
   "cards": [
     {
       "id": "crd_6258f539",
@@ -561,6 +562,556 @@
         "borax",
         "gooey",
         "DIY"
+      ]
+    },
+    {
+      "id": "crd_30c5e700",
+      "text": "Thrift Shop",
+      "note": null,
+      "taboo": [
+        "Macklemore",
+        "twenty dollars",
+        "popping tags",
+        "song"
+      ]
+    },
+    {
+      "id": "crd_067ed423",
+      "text": "Uptown Funk",
+      "note": null,
+      "taboo": [
+        "Bruno Mars",
+        "Mark Ronson",
+        "don’t believe me just watch",
+        "song"
+      ]
+    },
+    {
+      "id": "crd_88cc92ae",
+      "text": "Royals",
+      "note": null,
+      "taboo": [
+        "Lorde",
+        "New Zealand",
+        "song",
+        "teenage"
+      ]
+    },
+    {
+      "id": "crd_6c80256c",
+      "text": "Let It Go",
+      "note": null,
+      "taboo": [
+        "Frozen",
+        "Elsa",
+        "Idina Menzel",
+        "snow queen"
+      ]
+    },
+    {
+      "id": "crd_bb166809",
+      "text": "Moves Like Jagger",
+      "note": null,
+      "taboo": [
+        "Maroon 5",
+        "Adam Levine",
+        "Christina Aguilera",
+        "whistle"
+      ]
+    },
+    {
+      "id": "crd_ef2b3218",
+      "text": "Party Rock Anthem",
+      "note": null,
+      "taboo": [
+        "LMFAO",
+        "shuffling",
+        "everyday",
+        "song"
+      ]
+    },
+    {
+      "id": "crd_b24d9224",
+      "text": "Rolling in the Deep",
+      "note": null,
+      "taboo": [
+        "Adele",
+        "scars of your love",
+        "song",
+        "breakup"
+      ]
+    },
+    {
+      "id": "crd_85fbcdb2",
+      "text": "Somebody That I Used to Know",
+      "note": null,
+      "taboo": [
+        "Gotye",
+        "painted",
+        "Kimbra",
+        "song"
+      ]
+    },
+    {
+      "id": "crd_79cc1c9f",
+      "text": "Shut Up and Dance",
+      "note": null,
+      "taboo": [
+        "Walk the Moon",
+        "song",
+        "she said",
+        "wedding"
+      ]
+    },
+    {
+      "id": "crd_0d98c6a0",
+      "text": "Hotline Bling",
+      "note": null,
+      "taboo": [
+        "Drake",
+        "phone",
+        "dance",
+        "cell"
+      ]
+    },
+    {
+      "id": "crd_a3a39cf4",
+      "text": "Kidz Bop",
+      "note": null,
+      "taboo": [
+        "kids",
+        "covers",
+        "clean lyrics",
+        "albums"
+      ]
+    },
+    {
+      "id": "crd_fbede0c9",
+      "text": "Teen Titans Go!",
+      "note": null,
+      "taboo": [
+        "Robin",
+        "Cartoon Network",
+        "superheroes",
+        "Beast Boy"
+      ]
+    },
+    {
+      "id": "crd_8be8b49d",
+      "text": "iCarly",
+      "note": null,
+      "taboo": [
+        "Miranda Cosgrove",
+        "web show",
+        "Spencer",
+        "Nickelodeon"
+      ]
+    },
+    {
+      "id": "crd_a39d78db",
+      "text": "Victorious",
+      "note": null,
+      "taboo": [
+        "Victoria Justice",
+        "Hollywood Arts",
+        "Nickelodeon",
+        "Tori"
+      ]
+    },
+    {
+      "id": "crd_25651442",
+      "text": "Hannah Montana",
+      "note": null,
+      "taboo": [
+        "Miley Cyrus",
+        "wig",
+        "best of both worlds",
+        "Disney"
+      ]
+    },
+    {
+      "id": "crd_e9d1c60c",
+      "text": "Good Luck Charlie",
+      "note": null,
+      "taboo": [
+        "Disney",
+        "baby",
+        "video diary",
+        "Teddy"
+      ]
+    },
+    {
+      "id": "crd_cd5833a4",
+      "text": "Austin & Ally",
+      "note": null,
+      "taboo": [
+        "Ross Lynch",
+        "Disney",
+        "music",
+        "duo"
+      ]
+    },
+    {
+      "id": "crd_6761c725",
+      "text": "Phineas and Ferb",
+      "note": null,
+      "taboo": [
+        "summer",
+        "Perry the Platypus",
+        "Doofenshmirtz",
+        "Disney"
+      ]
+    },
+    {
+      "id": "crd_37a6cfa4",
+      "text": "Adventure Time",
+      "note": null,
+      "taboo": [
+        "Finn",
+        "Jake",
+        "Cartoon Network",
+        "Ooo"
+      ]
+    },
+    {
+      "id": "crd_c5689649",
+      "text": "Gravity Falls",
+      "note": null,
+      "taboo": [
+        "Dipper",
+        "Mabel",
+        "Oregon",
+        "Disney"
+      ]
+    },
+    {
+      "id": "crd_15c9d217",
+      "text": "Big Time Rush",
+      "note": null,
+      "taboo": [
+        "boy band",
+        "Nickelodeon",
+        "hockey",
+        "Los Angeles"
+      ]
+    },
+    {
+      "id": "crd_060d13ce",
+      "text": "Sam & Cat",
+      "note": null,
+      "taboo": [
+        "Ariana Grande",
+        "Jennette McCurdy",
+        "babysitting",
+        "Nickelodeon"
+      ]
+    },
+    {
+      "id": "crd_67e5d91b",
+      "text": "Shake It Up",
+      "note": null,
+      "taboo": [
+        "Zendaya",
+        "Bella Thorne",
+        "dance",
+        "Disney"
+      ]
+    },
+    {
+      "id": "crd_721c1103",
+      "text": "Pretty Little Liars",
+      "note": null,
+      "taboo": [
+        "A",
+        "Rosewood",
+        "secrets",
+        "Spencer"
+      ]
+    },
+    {
+      "id": "crd_80a43889",
+      "text": "The Vampire Diaries",
+      "note": null,
+      "taboo": [
+        "Elena",
+        "Damon",
+        "Stefan",
+        "Mystic Falls"
+      ]
+    },
+    {
+      "id": "crd_8165cec2",
+      "text": "Gossip Girl",
+      "note": null,
+      "taboo": [
+        "XOXO",
+        "Upper East Side",
+        "Blair",
+        "Serena"
+      ]
+    },
+    {
+      "id": "crd_dd9eb672",
+      "text": "Teen Wolf",
+      "note": null,
+      "taboo": [
+        "Scott McCall",
+        "werewolf",
+        "Beacon Hills",
+        "MTV"
+      ]
+    },
+    {
+      "id": "crd_3da7beff",
+      "text": "The Office",
+      "note": null,
+      "taboo": [
+        "Michael Scott",
+        "Dunder Mifflin",
+        "Dwight",
+        "paper"
+      ]
+    },
+    {
+      "id": "crd_f15d3e05",
+      "text": "Parks and Recreation",
+      "note": null,
+      "taboo": [
+        "Leslie Knope",
+        "Pawnee",
+        "Ron Swanson",
+        "Treat Yo Self"
+      ]
+    },
+    {
+      "id": "crd_1f32eb0e",
+      "text": "Modern Family",
+      "note": null,
+      "taboo": [
+        "Pritchett",
+        "Phil Dunphy",
+        "mockumentary",
+        "Gloria"
+      ]
+    },
+    {
+      "id": "crd_3e772484",
+      "text": "New Girl",
+      "note": null,
+      "taboo": [
+        "Jess",
+        "Nick",
+        "roommates",
+        "loft"
+      ]
+    },
+    {
+      "id": "crd_d47f21b8",
+      "text": "Brooklyn Nine-Nine",
+      "note": null,
+      "taboo": [
+        "Jake Peralta",
+        "precinct",
+        "cool cool cool",
+        "Captain Holt"
+      ]
+    },
+    {
+      "id": "crd_a73c5396",
+      "text": "The Maze Runner",
+      "note": null,
+      "taboo": [
+        "Glade",
+        "Thomas",
+        "walls",
+        "Gladers"
+      ]
+    },
+    {
+      "id": "crd_925c3274",
+      "text": "Percy Jackson",
+      "note": null,
+      "taboo": [
+        "demigod",
+        "Poseidon",
+        "Camp Half-Blood",
+        "Lightning Thief"
+      ]
+    },
+    {
+      "id": "crd_bb1a844f",
+      "text": "Left Shark",
+      "note": null,
+      "taboo": [
+        "Katy Perry",
+        "Super Bowl",
+        "dancing",
+        "costume"
+      ]
+    },
+    {
+      "id": "crd_fd597b6d",
+      "text": "Ellen’s Oscars selfie",
+      "note": null,
+      "taboo": [
+        "Bradley Cooper",
+        "famous photo",
+        "retweets",
+        "2014"
+      ]
+    },
+    {
+      "id": "crd_b1ca02e4",
+      "text": "Rage comics",
+      "note": null,
+      "taboo": [
+        "Trollface",
+        "Me Gusta",
+        "meme faces",
+        "Forever Alone"
+      ]
+    },
+    {
+      "id": "crd_bcbd741d",
+      "text": "Infinity scarf",
+      "note": null,
+      "taboo": [
+        "loop",
+        "winter",
+        "fashion",
+        "cozy"
+      ]
+    },
+    {
+      "id": "crd_569b6fd7",
+      "text": "Uggs",
+      "note": null,
+      "taboo": [
+        "boots",
+        "sheepskin",
+        "basic",
+        "winter"
+      ]
+    },
+    {
+      "id": "crd_8f4f0db1",
+      "text": "Hollister",
+      "note": null,
+      "taboo": [
+        "surf",
+        "dark store",
+        "cologne",
+        "mall"
+      ]
+    },
+    {
+      "id": "crd_5b1ab6da",
+      "text": "Beats headphones",
+      "note": null,
+      "taboo": [
+        "Dr. Dre",
+        "red b",
+        "Apple",
+        "bass"
+      ]
+    },
+    {
+      "id": "crd_63f16e71",
+      "text": "Galaxy leggings",
+      "note": null,
+      "taboo": [
+        "space print",
+        "purple",
+        "Tumblr",
+        "tights"
+      ]
+    },
+    {
+      "id": "crd_05f6a45a",
+      "text": "Hipster",
+      "note": null,
+      "taboo": [
+        "glasses",
+        "indie",
+        "beanie",
+        "before it was cool"
+      ]
+    },
+    {
+      "id": "crd_412a18e9",
+      "text": "Kik",
+      "note": null,
+      "taboo": [
+        "messenger app",
+        "username",
+        "chat",
+        "Canadian"
+      ]
+    },
+    {
+      "id": "crd_2a82b27d",
+      "text": "Ask.fm",
+      "note": null,
+      "taboo": [
+        "anonymous",
+        "questions",
+        "profile",
+        "teens"
+      ]
+    },
+    {
+      "id": "crd_cf5f74f0",
+      "text": "iPhone 4",
+      "note": null,
+      "taboo": [
+        "glass back",
+        "FaceTime",
+        "Apple",
+        "2010"
+      ]
+    },
+    {
+      "id": "crd_78f27833",
+      "text": "Juju on That Beat",
+      "note": null,
+      "taboo": [
+        "dance",
+        "challenge",
+        "2016",
+        "Zay Hilfigerrr"
+      ]
+    },
+    {
+      "id": "crd_575c3e8b",
+      "text": "Whip and Nae Nae",
+      "note": null,
+      "taboo": [
+        "Silentó",
+        "dance",
+        "watch me",
+        "2015"
+      ]
+    },
+    {
+      "id": "crd_6bf3997a",
+      "text": "The Dougie",
+      "note": null,
+      "taboo": [
+        "dance",
+        "Cali Swag District",
+        "teach me how",
+        "2010"
+      ]
+    },
+    {
+      "id": "crd_b10d8dc6",
+      "text": "Selena Gomez & the Scene",
+      "note": null,
+      "taboo": [
+        "Love You Like a Love Song",
+        "Naturally",
+        "band",
+        "Disney"
       ]
     }
   ]

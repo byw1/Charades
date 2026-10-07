@@ -2,17 +2,23 @@
   "schemaVersion": 1,
   "id": "dck_bb222cd4",
   "name": "Act It Out",
-  "description": "Verbs and situations. Best played with the shouting turned up.",
+  "description": "Stepping on a Lego, getting left on read, a mime stuck in a box. No talking, all drama.",
   "author": "Deckhead",
   "language": "en",
   "accentColor": "#9B5CFF",
+  "emoji": "🎭",
   "tags": [
     "actions",
     "charades"
   ],
   "createdAt": "2026-07-26T18:00:00Z",
-  "updatedAt": "2026-10-07T18:00:00Z",
+  "updatedAt": "2026-10-07T22:00:00Z",
   "cards": [
+    {
+      "id": "crd_d51b6165",
+      "text": "Stepping on a Lego",
+      "note": null
+    },
     {
       "id": "crd_06ce77dd",
       "text": "Parallel parking",
@@ -26,11 +32,6 @@
     {
       "id": "crd_74d418eb",
       "text": "Winning the lottery",
-      "note": null
-    },
-    {
-      "id": "crd_5005f77e",
-      "text": "Assembling flat-pack furniture",
       "note": null
     },
     {
@@ -64,11 +65,6 @@
       "note": null
     },
     {
-      "id": "crd_75227315",
-      "text": "Doing the washing up",
-      "note": null
-    },
-    {
       "id": "crd_d5fae433",
       "text": "Riding a horse",
       "note": null
@@ -89,16 +85,6 @@
       "note": null
     },
     {
-      "id": "crd_597932db",
-      "text": "Carrying too much shopping",
-      "note": null
-    },
-    {
-      "id": "crd_1ce36323",
-      "text": "Tying a shoelace",
-      "note": null
-    },
-    {
       "id": "crd_35b3edb3",
       "text": "Falling asleep in a meeting",
       "note": null
@@ -109,11 +95,6 @@
       "note": null
     },
     {
-      "id": "crd_b83d4544",
-      "text": "Queueing",
-      "note": null
-    },
-    {
       "id": "crd_e5dc35a5",
       "text": "Brushing your teeth",
       "note": null
@@ -121,11 +102,6 @@
     {
       "id": "crd_56856507",
       "text": "Juggling",
-      "note": null
-    },
-    {
-      "id": "crd_c99fef14",
-      "text": "Reversing a trailer",
       "note": null
     },
     {
@@ -144,43 +120,13 @@
       "note": null
     },
     {
-      "id": "crd_e64d3b3c",
-      "text": "Losing at cards",
-      "note": null
-    },
-    {
-      "id": "crd_aa27bb95",
-      "text": "Threading a needle",
-      "note": null
-    },
-    {
       "id": "crd_2770c5bd",
       "text": "Getting caught in the rain",
       "note": null
     },
     {
-      "id": "crd_8cfe8844",
-      "text": "Cutting your own fringe",
-      "note": null
-    },
-    {
-      "id": "crd_c6214ce2",
-      "text": "Trying on shoes",
-      "note": null
-    },
-    {
-      "id": "crd_ceeeabd8",
-      "text": "Whistling",
-      "note": null
-    },
-    {
       "id": "crd_c8179db1",
       "text": "Arm wrestling",
-      "note": null
-    },
-    {
-      "id": "crd_bd5555da",
-      "text": "Doing a jigsaw",
       "note": null
     },
     {
@@ -194,43 +140,13 @@
       "note": null
     },
     {
-      "id": "crd_3f35cfd2",
-      "text": "Reading tiny print",
-      "note": null
-    },
-    {
-      "id": "crd_60bb8c3c",
-      "text": "Climbing a ladder",
-      "note": null
-    },
-    {
-      "id": "crd_e5529325",
-      "text": "Being stuck in a lift",
-      "note": null
-    },
-    {
       "id": "crd_3ffb690e",
       "text": "Blowing up a balloon",
       "note": null
     },
     {
-      "id": "crd_8a82aaef",
-      "text": "Hailing a taxi",
-      "note": null
-    },
-    {
-      "id": "crd_5789bb86",
-      "text": "Skipping",
-      "note": null
-    },
-    {
       "id": "crd_2ca6a7d9",
       "text": "Wrapping a present badly",
-      "note": null
-    },
-    {
-      "id": "crd_dc392c9f",
-      "text": "Hiccupping",
       "note": null
     },
     {
@@ -249,11 +165,6 @@
       "note": null
     },
     {
-      "id": "crd_f89d4838",
-      "text": "Waiting for a kettle",
-      "note": null
-    },
-    {
       "id": "crd_8863ad95",
       "text": "Miming through a window",
       "note": null
@@ -261,6 +172,346 @@
     {
       "id": "crd_3f7a992c",
       "text": "Pretending to be asleep",
+      "note": null
+    },
+    {
+      "id": "crd_3ef6fc96",
+      "text": "Doing a TikTok dance",
+      "note": null
+    },
+    {
+      "id": "crd_817ab320",
+      "text": "Taking a BeReal",
+      "note": null
+    },
+    {
+      "id": "crd_939becd8",
+      "text": "Getting left on read",
+      "note": null
+    },
+    {
+      "id": "crd_96607a69",
+      "text": "Walking into a glass door",
+      "note": null
+    },
+    {
+      "id": "crd_f7eb79e9",
+      "text": "Getting brain freeze",
+      "note": null
+    },
+    {
+      "id": "crd_7c8234e8",
+      "text": "Doing the worm",
+      "note": null
+    },
+    {
+      "id": "crd_3d24e2c3",
+      "text": "Moonwalking",
+      "note": null
+    },
+    {
+      "id": "crd_cfa82699",
+      "text": "Losing your phone in your bed",
+      "note": null
+    },
+    {
+      "id": "crd_152bd047",
+      "text": "Hitting snooze five times",
+      "note": null
+    },
+    {
+      "id": "crd_3e0bd81b",
+      "text": "Pretending to text to avoid someone",
+      "note": null
+    },
+    {
+      "id": "crd_bdc23e98",
+      "text": "Building IKEA furniture",
+      "note": null
+    },
+    {
+      "id": "crd_927a0a14",
+      "text": "Riding a mechanical bull",
+      "note": null
+    },
+    {
+      "id": "crd_aa71c807",
+      "text": "Surfing a huge wave",
+      "note": null
+    },
+    {
+      "id": "crd_5c57a5f2",
+      "text": "Skateboarding",
+      "note": null
+    },
+    {
+      "id": "crd_9663a284",
+      "text": "Snowboarding",
+      "note": null
+    },
+    {
+      "id": "crd_146d29a0",
+      "text": "Ice skating for the first time",
+      "note": null
+    },
+    {
+      "id": "crd_d9628838",
+      "text": "Riding a roller coaster",
+      "note": null
+    },
+    {
+      "id": "crd_1321e1df",
+      "text": "Walking through a haunted house",
+      "note": null
+    },
+    {
+      "id": "crd_4b015ef0",
+      "text": "Doing a cartwheel",
+      "note": null
+    },
+    {
+      "id": "crd_893293af",
+      "text": "Doing yoga",
+      "note": null
+    },
+    {
+      "id": "crd_b8e27b77",
+      "text": "Lifting weights at the gym",
+      "note": null
+    },
+    {
+      "id": "crd_29f0162c",
+      "text": "Running on a treadmill",
+      "note": null
+    },
+    {
+      "id": "crd_e477c1f9",
+      "text": "Sumo wrestling",
+      "note": null
+    },
+    {
+      "id": "crd_f2df0f81",
+      "text": "Bowling a strike",
+      "note": null
+    },
+    {
+      "id": "crd_d0387307",
+      "text": "Swinging a golf club",
+      "note": null
+    },
+    {
+      "id": "crd_e98e52fb",
+      "text": "Shooting a free throw",
+      "note": null
+    },
+    {
+      "id": "crd_efdfc07a",
+      "text": "Taking a penalty kick",
+      "note": null
+    },
+    {
+      "id": "crd_2a289a37",
+      "text": "Rock climbing",
+      "note": null
+    },
+    {
+      "id": "crd_efbaa66b",
+      "text": "Bungee jumping",
+      "note": null
+    },
+    {
+      "id": "crd_e67d0bec",
+      "text": "Skydiving",
+      "note": null
+    },
+    {
+      "id": "crd_dc761a7b",
+      "text": "Milking a cow",
+      "note": null
+    },
+    {
+      "id": "crd_9db340ab",
+      "text": "Walking a dog that won’t move",
+      "note": null
+    },
+    {
+      "id": "crd_2af57925",
+      "text": "Giving a cat a bath",
+      "note": null
+    },
+    {
+      "id": "crd_d32de82e",
+      "text": "Changing a diaper",
+      "note": null
+    },
+    {
+      "id": "crd_07e903cd",
+      "text": "Putting on skinny jeans",
+      "note": null
+    },
+    {
+      "id": "crd_e7ba9f46",
+      "text": "Doing makeup in a moving car",
+      "note": null
+    },
+    {
+      "id": "crd_c7927e1b",
+      "text": "Blowing a bubble with gum",
+      "note": null
+    },
+    {
+      "id": "crd_04171315",
+      "text": "Doing a magic trick",
+      "note": null
+    },
+    {
+      "id": "crd_7320b2d5",
+      "text": "A mime trapped in a box",
+      "note": null
+    },
+    {
+      "id": "crd_04c08f42",
+      "text": "Conducting an orchestra",
+      "note": null
+    },
+    {
+      "id": "crd_37287eb6",
+      "text": "DJing at a party",
+      "note": null
+    },
+    {
+      "id": "crd_10f1146f",
+      "text": "Playing the drums",
+      "note": null
+    },
+    {
+      "id": "crd_bdd869db",
+      "text": "Singing opera",
+      "note": null
+    },
+    {
+      "id": "crd_2e7c8b2e",
+      "text": "Walking a runway",
+      "note": null
+    },
+    {
+      "id": "crd_d8517946",
+      "text": "Taking a group photo",
+      "note": null
+    },
+    {
+      "id": "crd_83fb258d",
+      "text": "Photobombing",
+      "note": null
+    },
+    {
+      "id": "crd_eacc129a",
+      "text": "Proposing on one knee",
+      "note": null
+    },
+    {
+      "id": "crd_cd613f42",
+      "text": "Catching the bouquet",
+      "note": null
+    },
+    {
+      "id": "crd_ab24cee4",
+      "text": "Running from a bee",
+      "note": null
+    },
+    {
+      "id": "crd_5eee562c",
+      "text": "Walking like a zombie",
+      "note": null
+    },
+    {
+      "id": "crd_b8b8f7e8",
+      "text": "Being a T. rex",
+      "note": null
+    },
+    {
+      "id": "crd_a4c4f80b",
+      "text": "Doing the robot",
+      "note": null
+    },
+    {
+      "id": "crd_384939a7",
+      "text": "Studying the night before finals",
+      "note": null
+    },
+    {
+      "id": "crd_805729f6",
+      "text": "Waiting for your food to arrive",
+      "note": null
+    },
+    {
+      "id": "crd_2b12ccb2",
+      "text": "Scrolling your phone at 3am",
+      "note": null
+    },
+    {
+      "id": "crd_727bc482",
+      "text": "Looking for phone signal",
+      "note": null
+    },
+    {
+      "id": "crd_c06c8bef",
+      "text": "Rage quitting a video game",
+      "note": null
+    },
+    {
+      "id": "crd_cbfa35f1",
+      "text": "Giving an award speech",
+      "note": null
+    },
+    {
+      "id": "crd_f8a4280e",
+      "text": "Dodging the paparazzi",
+      "note": null
+    },
+    {
+      "id": "crd_9b3882dd",
+      "text": "Eating a really sour candy",
+      "note": null
+    },
+    {
+      "id": "crd_ac57116a",
+      "text": "Opening a ketchup packet",
+      "note": null
+    },
+    {
+      "id": "crd_c3109e9a",
+      "text": "Getting caught singing in the car",
+      "note": null
+    },
+    {
+      "id": "crd_c21e1d87",
+      "text": "Fainting dramatically",
+      "note": null
+    },
+    {
+      "id": "crd_dd9bd085",
+      "text": "Slipping on a banana peel",
+      "note": null
+    },
+    {
+      "id": "crd_008bec1f",
+      "text": "Walking on hot sand",
+      "note": null
+    },
+    {
+      "id": "crd_692ffcff",
+      "text": "Jumping into a cold pool",
+      "note": null
+    },
+    {
+      "id": "crd_5bc05e84",
+      "text": "Finding a spider in the shower",
+      "note": null
+    },
+    {
+      "id": "crd_db51bdd1",
+      "text": "Carrying every grocery bag in one trip",
       "note": null
     }
   ]

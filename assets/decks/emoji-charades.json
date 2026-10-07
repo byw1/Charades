@@ -2,16 +2,17 @@
   "schemaVersion": 1,
   "id": "dck_5731c307",
   "name": "Emoji Charades",
-  "description": "The room sees the emoji and acts them out, no talking. The guesser decodes it. The answer is under the emoji for the room.",
+  "description": "Movies, songs, holidays and sayings in emoji. The room acts out the emoji, no talking; the answer sits under them for the room.",
   "author": "Deckhead",
   "language": "en",
   "accentColor": "#5B5BFF",
+  "emoji": "😜",
   "tags": [
     "emoji",
     "charades"
   ],
   "createdAt": "2026-10-07T20:00:00Z",
-  "updatedAt": "2026-10-07T20:00:00Z",
+  "updatedAt": "2026-10-07T22:00:00Z",
   "cards": [
     {
       "id": "crd_75bafdfe",
@@ -262,6 +263,256 @@
       "id": "crd_40776390",
       "text": "🌕🐺",
       "note": "Werewolf"
+    },
+    {
+      "id": "crd_b85d9b12",
+      "text": "⚡🔨",
+      "note": "Thor"
+    },
+    {
+      "id": "crd_2e5636f6",
+      "text": "🛡️⭐🇺🇸",
+      "note": "Captain America"
+    },
+    {
+      "id": "crd_c796e50a",
+      "text": "💚💪😡",
+      "note": "The Hulk"
+    },
+    {
+      "id": "crd_fe47b5d8",
+      "text": "🏹🔥👧",
+      "note": "The Hunger Games"
+    },
+    {
+      "id": "crd_0501fd40",
+      "text": "🦁🧙‍♀️🚪",
+      "note": "The Lion, the Witch and the Wardrobe"
+    },
+    {
+      "id": "crd_b9e716cd",
+      "text": "🎈🤡",
+      "note": "It"
+    },
+    {
+      "id": "crd_cffe63b1",
+      "text": "🔪👻📞",
+      "note": "Scream"
+    },
+    {
+      "id": "crd_9628ba28",
+      "text": "👠🎃🕛",
+      "note": "Cinderella"
+    },
+    {
+      "id": "crd_6f9a5d23",
+      "text": "🌹🏰👸",
+      "note": "Beauty and the Beast"
+    },
+    {
+      "id": "crd_f22aeded",
+      "text": "👸💤",
+      "note": "Sleeping Beauty"
+    },
+    {
+      "id": "crd_58657d6d",
+      "text": "🦈🌪️",
+      "note": "Sharknado"
+    },
+    {
+      "id": "crd_482376df",
+      "text": "🏰🐭",
+      "note": "Disneyland"
+    },
+    {
+      "id": "crd_93d45be5",
+      "text": "🐒👒",
+      "note": "Curious George"
+    },
+    {
+      "id": "crd_143b89cc",
+      "text": "🧛🦇🏰",
+      "note": "Dracula"
+    },
+    {
+      "id": "crd_611acfa5",
+      "text": "👽🛸",
+      "note": "UFO"
+    },
+    {
+      "id": "crd_d0b34827",
+      "text": "🍕🍍",
+      "note": "Pineapple pizza"
+    },
+    {
+      "id": "crd_0e96ff96",
+      "text": "🔥🚒",
+      "note": "Firefighter"
+    },
+    {
+      "id": "crd_a6c874a3",
+      "text": "💍👰🤵",
+      "note": "Wedding"
+    },
+    {
+      "id": "crd_c1a02e94",
+      "text": "🎂🕯️🎉",
+      "note": "Birthday party"
+    },
+    {
+      "id": "crd_7c5756fb",
+      "text": "🎄🎅🦌",
+      "note": "Christmas"
+    },
+    {
+      "id": "crd_28821c29",
+      "text": "🎃👻🍬",
+      "note": "Halloween"
+    },
+    {
+      "id": "crd_21e21420",
+      "text": "🦃🍂",
+      "note": "Thanksgiving"
+    },
+    {
+      "id": "crd_e547d65a",
+      "text": "🐰🥚",
+      "note": "Easter bunny"
+    },
+    {
+      "id": "crd_e2fe9ee4",
+      "text": "🎆🇺🇸",
+      "note": "Fourth of July"
+    },
+    {
+      "id": "crd_a0a37819",
+      "text": "💘👼",
+      "note": "Cupid"
+    },
+    {
+      "id": "crd_1b328059",
+      "text": "🍀🌈💰",
+      "note": "Pot of gold"
+    },
+    {
+      "id": "crd_7fc86f61",
+      "text": "🏈🏆",
+      "note": "Super Bowl"
+    },
+    {
+      "id": "crd_c1a53efa",
+      "text": "🏅🔥",
+      "note": "Olympics"
+    },
+    {
+      "id": "crd_a0477edf",
+      "text": "🎢🎡",
+      "note": "Theme park"
+    },
+    {
+      "id": "crd_f69de122",
+      "text": "🏕️🔥🌭",
+      "note": "Camping trip"
+    },
+    {
+      "id": "crd_12255dff",
+      "text": "🚗🛣️🎶",
+      "note": "Road trip"
+    },
+    {
+      "id": "crd_b14c8fb0",
+      "text": "📺🍿🛋️",
+      "note": "Binge-watching"
+    },
+    {
+      "id": "crd_983813c2",
+      "text": "🐦🐦🪨",
+      "note": "Two birds, one stone"
+    },
+    {
+      "id": "crd_9c5664d7",
+      "text": "🔵🌕",
+      "note": "Once in a blue moon"
+    },
+    {
+      "id": "crd_74a4108e",
+      "text": "🥔🛋️",
+      "note": "Couch potato"
+    },
+    {
+      "id": "crd_5ace28bf",
+      "text": "🔨🧊",
+      "note": "Break the ice"
+    },
+    {
+      "id": "crd_c19c6751",
+      "text": "🐟🏜️",
+      "note": "Fish out of water"
+    },
+    {
+      "id": "crd_12185990",
+      "text": "🙈🙉🙊",
+      "note": "See no evil"
+    },
+    {
+      "id": "crd_33b0773c",
+      "text": "🍋➡️🥤",
+      "note": "When life gives you lemons"
+    },
+    {
+      "id": "crd_2c9a5100",
+      "text": "☔👩‍🎤",
+      "note": "Umbrella"
+    },
+    {
+      "id": "crd_cba531dd",
+      "text": "🌧️💜",
+      "note": "Purple Rain"
+    },
+    {
+      "id": "crd_dc240809",
+      "text": "🐎🛣️🤠",
+      "note": "Old Town Road"
+    },
+    {
+      "id": "crd_41a64e3c",
+      "text": "🍉🍬",
+      "note": "Watermelon Sugar"
+    },
+    {
+      "id": "crd_0379a755",
+      "text": "🌊👀",
+      "note": "Ocean Eyes"
+    },
+    {
+      "id": "crd_6ecd2282",
+      "text": "🚗🪪",
+      "note": "Drivers License"
+    },
+    {
+      "id": "crd_fa4c7735",
+      "text": "🐻🐻🐻👧",
+      "note": "Goldilocks and the Three Bears"
+    },
+    {
+      "id": "crd_a8ed839f",
+      "text": "🐷🐷🐷🐺",
+      "note": "The Three Little Pigs"
+    },
+    {
+      "id": "crd_f5295915",
+      "text": "🥚🧱💥",
+      "note": "Humpty Dumpty"
+    },
+    {
+      "id": "crd_99512f7a",
+      "text": "🧽🍍",
+      "note": "SpongeBob SquarePants"
+    },
+    {
+      "id": "crd_691be32c",
+      "text": "🐛🍎🍓",
+      "note": "The Very Hungry Caterpillar"
     }
   ]
 }

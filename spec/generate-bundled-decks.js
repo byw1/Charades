@@ -82,8 +82,9 @@ function checkTaboo(card, slug) {
 }
 
 function deck(source) {
-  const { slug, name, description, accentColor, tags, createdAt, updatedAt, cards } = source;
+  const { slug, name, description, accentColor, emoji, tags, createdAt, updatedAt, cards } = source;
   const seen = new Set();
+  if (!emoji) throw new Error(`${slug}: every bundled deck needs a cover emoji`);
 
   return {
     schemaVersion: 1,
@@ -93,6 +94,7 @@ function deck(source) {
     author: 'Deckhead',
     language: 'en',
     accentColor,
+    emoji,
     tags,
     createdAt,
     updatedAt,
@@ -124,9 +126,20 @@ if (problems.length > 0) {
   process.exit(1);
 }
 
-for (const d of decks) {
-  const slug = d.name.toLowerCase().replace(/&/g, 'and').replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '');
-  fs.writeFileSync(path.join(OUT, `${slug}.json`), JSON.stringify(d, null, 2) + '\n');
+// Files are named by slug, which never changes, rather than by deck name,
+// which can. Anything else in the folder is a stale deck and is removed.
+const written = new Set();
+decks.forEach((d, i) => {
+  const slug = require(path.join(DATA, files[i])).slug;
+  const file = `${slug}.json`;
+  written.add(file);
+  fs.writeFileSync(path.join(OUT, file), JSON.stringify(d, null, 2) + '\n');
   const taboo = d.cards.filter((c) => c.taboo).length;
-  console.log(`${slug}.json  ${d.cards.length} cards  ${taboo} with taboo  ${d.id}`);
+  console.log(`${file.padEnd(28)} ${String(d.cards.length).padStart(3)} cards  ${String(taboo).padStart(3)} with banned words  ${d.emoji}  ${d.name}`);
+});
+for (const file of fs.readdirSync(OUT)) {
+  if (file.endsWith('.json') && !written.has(file)) {
+    fs.unlinkSync(path.join(OUT, file));
+    console.log(`removed stale ${file}`);
+  }
 }

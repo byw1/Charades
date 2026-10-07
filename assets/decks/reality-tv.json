@@ -6,12 +6,13 @@
   "author": "Deckhead",
   "language": "en",
   "accentColor": "#FF3D8B",
+  "emoji": "🌹",
   "tags": [
     "tv",
     "pop culture"
   ],
   "createdAt": "2026-10-07T20:00:00Z",
-  "updatedAt": "2026-10-07T20:00:00Z",
+  "updatedAt": "2026-10-07T22:00:00Z",
   "cards": [
     {
       "id": "crd_9c6513d3",
@@ -561,6 +562,556 @@
         "next week",
         "suspense",
         "episode"
+      ]
+    },
+    {
+      "id": "crd_2923b1e9",
+      "text": "The Bachelorette",
+      "note": null,
+      "taboo": [
+        "roses",
+        "suitors",
+        "final",
+        "proposal"
+      ]
+    },
+    {
+      "id": "crd_e41a8aa9",
+      "text": "Bachelor in Paradise",
+      "note": null,
+      "taboo": [
+        "beach",
+        "Mexico",
+        "roses",
+        "couples"
+      ]
+    },
+    {
+      "id": "crd_65d1b882",
+      "text": "Vanderpump Rules",
+      "note": null,
+      "taboo": [
+        "Bravo",
+        "SUR",
+        "Lisa",
+        "Stassi"
+      ]
+    },
+    {
+      "id": "crd_347c83b0",
+      "text": "Summer House",
+      "note": null,
+      "taboo": [
+        "Hamptons",
+        "Bravo",
+        "friends",
+        "weekends"
+      ]
+    },
+    {
+      "id": "crd_208ab225",
+      "text": "The Challenge",
+      "note": null,
+      "taboo": [
+        "MTV",
+        "eliminations",
+        "CT",
+        "competitors"
+      ]
+    },
+    {
+      "id": "crd_4fd59eea",
+      "text": "Project Runway",
+      "note": null,
+      "taboo": [
+        "fashion",
+        "designers",
+        "Heidi Klum",
+        "make it work"
+      ]
+    },
+    {
+      "id": "crd_28e5be72",
+      "text": "Top Chef",
+      "note": null,
+      "taboo": [
+        "cooking",
+        "Bravo",
+        "Padma",
+        "pack your knives"
+      ]
+    },
+    {
+      "id": "crd_e272a4c4",
+      "text": "Kitchen Nightmares",
+      "note": null,
+      "taboo": [
+        "Gordon Ramsay",
+        "restaurant",
+        "rescue",
+        "disaster"
+      ]
+    },
+    {
+      "id": "crd_530a3931",
+      "text": "Tiny House Nation",
+      "note": null,
+      "taboo": [
+        "small",
+        "downsizing",
+        "home",
+        "build"
+      ]
+    },
+    {
+      "id": "crd_86dd2e8b",
+      "text": "House Hunters",
+      "note": null,
+      "taboo": [
+        "three homes",
+        "buyers",
+        "HGTV",
+        "pick one"
+      ]
+    },
+    {
+      "id": "crd_8da16ae8",
+      "text": "Property Brothers",
+      "note": null,
+      "taboo": [
+        "twins",
+        "Drew",
+        "Jonathan",
+        "renovate"
+      ]
+    },
+    {
+      "id": "crd_b2e83f34",
+      "text": "Dancing with the Stars",
+      "note": null,
+      "taboo": [
+        "ballroom",
+        "celebrities",
+        "mirror ball",
+        "judges"
+      ]
+    },
+    {
+      "id": "crd_88894948",
+      "text": "So You Think You Can Dance",
+      "note": null,
+      "taboo": [
+        "auditions",
+        "choreography",
+        "dancers",
+        "contest"
+      ]
+    },
+    {
+      "id": "crd_3f509680",
+      "text": "America’s Next Top Model",
+      "note": null,
+      "taboo": [
+        "Tyra",
+        "smize",
+        "photo shoot",
+        "runway"
+      ]
+    },
+    {
+      "id": "crd_dc6d5165",
+      "text": "Alone",
+      "note": null,
+      "taboo": [
+        "wilderness",
+        "survival",
+        "solo",
+        "tap out"
+      ]
+    },
+    {
+      "id": "crd_b5b6c4fd",
+      "text": "Deadliest Catch",
+      "note": null,
+      "taboo": [
+        "crab",
+        "Alaska",
+        "boats",
+        "fishermen"
+      ]
+    },
+    {
+      "id": "crd_d983a026",
+      "text": "Duck Dynasty",
+      "note": null,
+      "taboo": [
+        "beards",
+        "camo",
+        "Louisiana",
+        "family"
+      ]
+    },
+    {
+      "id": "crd_113af3c5",
+      "text": "90 Day Fiancé",
+      "note": null,
+      "taboo": [
+        "visa",
+        "K-1",
+        "love",
+        "international"
+      ]
+    },
+    {
+      "id": "crd_7d0d8b12",
+      "text": "Hoarders",
+      "note": null,
+      "taboo": [
+        "stuff",
+        "cleanup",
+        "house",
+        "piles"
+      ]
+    },
+    {
+      "id": "crd_d2dca858",
+      "text": "Extreme Couponing",
+      "note": null,
+      "taboo": [
+        "coupons",
+        "savings",
+        "stockpile",
+        "checkout"
+      ]
+    },
+    {
+      "id": "crd_9e41ce49",
+      "text": "The Ultimatum",
+      "note": null,
+      "taboo": [
+        "marry or move on",
+        "couples",
+        "Netflix",
+        "swap"
+      ]
+    },
+    {
+      "id": "crd_d2653f4e",
+      "text": "Siesta Key",
+      "note": null,
+      "taboo": [
+        "Florida",
+        "MTV",
+        "friends",
+        "beach"
+      ]
+    },
+    {
+      "id": "crd_3927b3b0",
+      "text": "Laguna Beach",
+      "note": null,
+      "taboo": [
+        "MTV",
+        "Lauren Conrad",
+        "Orange County",
+        "Kristin"
+      ]
+    },
+    {
+      "id": "crd_b45c5b0e",
+      "text": "The Hills",
+      "note": null,
+      "taboo": [
+        "MTV",
+        "Lauren Conrad",
+        "LA",
+        "Speidi"
+      ]
+    },
+    {
+      "id": "crd_f0035ac7",
+      "text": "The Simple Life",
+      "note": null,
+      "taboo": [
+        "Paris Hilton",
+        "Nicole Richie",
+        "farm",
+        "that's hot"
+      ]
+    },
+    {
+      "id": "crd_e7fe59de",
+      "text": "Selling the OC",
+      "note": null,
+      "taboo": [
+        "real estate",
+        "Orange County",
+        "Netflix",
+        "agents"
+      ]
+    },
+    {
+      "id": "crd_723c15e7",
+      "text": "Bling Empire",
+      "note": null,
+      "taboo": [
+        "rich",
+        "Los Angeles",
+        "Netflix",
+        "luxury"
+      ]
+    },
+    {
+      "id": "crd_69a23e30",
+      "text": "Lego Masters",
+      "note": null,
+      "taboo": [
+        "bricks",
+        "build",
+        "Will Arnett",
+        "teams"
+      ]
+    },
+    {
+      "id": "crd_aada850a",
+      "text": "Floor Is Lava",
+      "note": null,
+      "taboo": [
+        "jump",
+        "furniture",
+        "Netflix",
+        "obstacle"
+      ]
+    },
+    {
+      "id": "crd_52d52798",
+      "text": "Holey Moley",
+      "note": null,
+      "taboo": [
+        "mini golf",
+        "obstacles",
+        "celebrity host",
+        "wipeout"
+      ]
+    },
+    {
+      "id": "crd_fc65a511",
+      "text": "Cupcake Wars",
+      "note": null,
+      "taboo": [
+        "bakers",
+        "frosting",
+        "Food Network",
+        "judges"
+      ]
+    },
+    {
+      "id": "crd_f85bdac6",
+      "text": "Guy’s Grocery Games",
+      "note": null,
+      "taboo": [
+        "Flavortown",
+        "supermarket",
+        "cooking",
+        "shopping"
+      ]
+    },
+    {
+      "id": "crd_f3009983",
+      "text": "Worst Cooks in America",
+      "note": null,
+      "taboo": [
+        "boot camp",
+        "terrible",
+        "kitchen",
+        "recruits"
+      ]
+    },
+    {
+      "id": "crd_9ca020fc",
+      "text": "Kids Baking Championship",
+      "note": null,
+      "taboo": [
+        "children",
+        "desserts",
+        "Food Network",
+        "judges"
+      ]
+    },
+    {
+      "id": "crd_bebebdc8",
+      "text": "Jury Duty",
+      "note": null,
+      "taboo": [
+        "fake trial",
+        "Ronald",
+        "James Marsden",
+        "prank"
+      ]
+    },
+    {
+      "id": "crd_1f614eeb",
+      "text": "Love on the Spectrum",
+      "note": null,
+      "taboo": [
+        "dating",
+        "autism",
+        "Netflix",
+        "heartfelt"
+      ]
+    },
+    {
+      "id": "crd_d4b73171",
+      "text": "Indian Matchmaking",
+      "note": null,
+      "taboo": [
+        "Sima Aunty",
+        "arranged",
+        "Mumbai",
+        "Netflix"
+      ]
+    },
+    {
+      "id": "crd_c92a1b6d",
+      "text": "American Pickers",
+      "note": null,
+      "taboo": [
+        "antiques",
+        "road trip",
+        "barns",
+        "Mike and Frank"
+      ]
+    },
+    {
+      "id": "crd_360bbe53",
+      "text": "Impractical Jokers",
+      "note": null,
+      "taboo": [
+        "pranks",
+        "friends",
+        "punishment",
+        "hidden camera"
+      ]
+    },
+    {
+      "id": "crd_4c43d580",
+      "text": "Rose ceremony",
+      "note": null,
+      "taboo": [
+        "flower",
+        "Bachelor",
+        "will you accept",
+        "elimination"
+      ]
+    },
+    {
+      "id": "crd_92cedf70",
+      "text": "Hometown dates",
+      "note": null,
+      "taboo": [
+        "families",
+        "Bachelor",
+        "visits",
+        "parents"
+      ]
+    },
+    {
+      "id": "crd_ec2952a6",
+      "text": "Casa Amor",
+      "note": null,
+      "taboo": [
+        "Love Island",
+        "villa",
+        "temptation",
+        "recoupling"
+      ]
+    },
+    {
+      "id": "crd_d97ba322",
+      "text": "Bombshell",
+      "note": null,
+      "taboo": [
+        "Love Island",
+        "new arrival",
+        "villa",
+        "entrance"
+      ]
+    },
+    {
+      "id": "crd_10a9087a",
+      "text": "Hidden immunity idol",
+      "note": null,
+      "taboo": [
+        "Survivor",
+        "safe",
+        "search",
+        "tribal council"
+      ]
+    },
+    {
+      "id": "crd_40bfa3d7",
+      "text": "Head of Household",
+      "note": null,
+      "taboo": [
+        "Big Brother",
+        "HOH",
+        "nominate",
+        "power"
+      ]
+    },
+    {
+      "id": "crd_ec064a3d",
+      "text": "Blindside",
+      "note": null,
+      "taboo": [
+        "Survivor",
+        "surprise",
+        "voted out",
+        "vote"
+      ]
+    },
+    {
+      "id": "crd_c98dd130",
+      "text": "Showmance",
+      "note": null,
+      "taboo": [
+        "romance",
+        "show",
+        "couple",
+        "cameras"
+      ]
+    },
+    {
+      "id": "crd_6950dd63",
+      "text": "Alliance",
+      "note": null,
+      "taboo": [
+        "team up",
+        "strategy",
+        "Survivor",
+        "trust"
+      ]
+    },
+    {
+      "id": "crd_76537816",
+      "text": "Golden buzzer",
+      "note": null,
+      "taboo": [
+        "AGT",
+        "gold confetti",
+        "straight through",
+        "judges"
+      ]
+    },
+    {
+      "id": "crd_b56570e5",
+      "text": "Season finale",
+      "note": null,
+      "taboo": [
+        "last episode",
+        "ending",
+        "winner",
+        "cliffhanger"
       ]
     }
   ]

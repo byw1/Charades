@@ -2,17 +2,29 @@
   "schemaVersion": 1,
   "id": "dck_ee9c1331",
   "name": "Animals",
-  "description": "From the obvious to the ones nobody can describe without flapping.",
+  "description": "Capybaras, angry geese and everything in between. Flapping, honking and crawling strongly encouraged.",
   "author": "Deckhead",
   "language": "en",
   "accentColor": "#00C2B2",
+  "emoji": "🦁",
   "tags": [
     "nature",
     "easy"
   ],
   "createdAt": "2026-07-26T18:00:00Z",
-  "updatedAt": "2026-10-07T20:00:00Z",
+  "updatedAt": "2026-10-07T22:00:00Z",
   "cards": [
+    {
+      "id": "crd_1f2c2c41",
+      "text": "Capybara",
+      "note": null,
+      "taboo": [
+        "chill",
+        "giant rodent",
+        "South America",
+        "hot tub"
+      ]
+    },
     {
       "id": "crd_7facdd36",
       "text": "Elephant",
@@ -234,17 +246,6 @@
       ]
     },
     {
-      "id": "crd_cd02db80",
-      "text": "Woodpecker",
-      "note": null,
-      "taboo": [
-        "peck",
-        "tree",
-        "beak",
-        "knock"
-      ]
-    },
-    {
       "id": "crd_c9f6658a",
       "text": "Tarantula",
       "note": null,
@@ -366,17 +367,6 @@
       ]
     },
     {
-      "id": "crd_7c6e5703",
-      "text": "Badger",
-      "note": null,
-      "taboo": [
-        "stripe",
-        "honey",
-        "burrow",
-        "nocturnal"
-      ]
-    },
-    {
       "id": "crd_d201876c",
       "text": "Squid",
       "note": null,
@@ -396,28 +386,6 @@
         "chest",
         "silverback",
         "King Kong"
-      ]
-    },
-    {
-      "id": "crd_1c6a6df5",
-      "text": "Pelican",
-      "note": null,
-      "taboo": [
-        "beak",
-        "pouch",
-        "fish",
-        "bird"
-      ]
-    },
-    {
-      "id": "crd_f233c2e4",
-      "text": "Ferret",
-      "note": null,
-      "taboo": [
-        "weasel",
-        "pet",
-        "sneaky",
-        "long"
       ]
     },
     {
@@ -454,17 +422,6 @@
       ]
     },
     {
-      "id": "crd_9caf9463",
-      "text": "Vulture",
-      "note": null,
-      "taboo": [
-        "circling",
-        "bird",
-        "desert",
-        "bald"
-      ]
-    },
-    {
       "id": "crd_5031baa9",
       "text": "Llama",
       "note": null,
@@ -473,28 +430,6 @@
         "wool",
         "Peru",
         "alpaca"
-      ]
-    },
-    {
-      "id": "crd_2008f9b8",
-      "text": "Racoon",
-      "note": null,
-      "taboo": [
-        "bins",
-        "mask",
-        "trash panda",
-        "night"
-      ]
-    },
-    {
-      "id": "crd_53ed2925",
-      "text": "Swan",
-      "note": null,
-      "taboo": [
-        "white",
-        "lake",
-        "ballet",
-        "neck"
       ]
     },
     {
@@ -561,6 +496,622 @@
         "green",
         "insect",
         "arms"
+      ]
+    },
+    {
+      "id": "crd_9090ec1a",
+      "text": "Axolotl",
+      "note": null,
+      "taboo": [
+        "pink",
+        "smile",
+        "salamander",
+        "Mexico"
+      ]
+    },
+    {
+      "id": "crd_36980ad5",
+      "text": "Quokka",
+      "note": null,
+      "taboo": [
+        "happiest animal",
+        "smile",
+        "Australia",
+        "selfie"
+      ]
+    },
+    {
+      "id": "crd_f0afcf67",
+      "text": "Honey badger",
+      "note": null,
+      "taboo": [
+        "fearless",
+        "doesn’t care",
+        "snakes",
+        "Africa"
+      ]
+    },
+    {
+      "id": "crd_5ca24368",
+      "text": "Narwhal",
+      "note": null,
+      "taboo": [
+        "unicorn",
+        "horn",
+        "whale",
+        "Arctic"
+      ]
+    },
+    {
+      "id": "crd_a9a4690d",
+      "text": "Red panda",
+      "note": null,
+      "taboo": [
+        "fluffy",
+        "bamboo",
+        "Firefox",
+        "orange"
+      ]
+    },
+    {
+      "id": "crd_39098e10",
+      "text": "Pufferfish",
+      "note": null,
+      "taboo": [
+        "inflate",
+        "spiky",
+        "balloon",
+        "poison"
+      ]
+    },
+    {
+      "id": "crd_699ab41e",
+      "text": "Pigeon",
+      "note": null,
+      "taboo": [
+        "city",
+        "coo",
+        "bread",
+        "statue"
+      ]
+    },
+    {
+      "id": "crd_9943bff2",
+      "text": "Goose",
+      "note": null,
+      "taboo": [
+        "honk",
+        "angry",
+        "Canada",
+        "chase"
+      ]
+    },
+    {
+      "id": "crd_02365e3b",
+      "text": "Raccoon",
+      "note": null,
+      "taboo": [
+        "trash panda",
+        "bins",
+        "mask",
+        "night"
+      ]
+    },
+    {
+      "id": "crd_12fbf4d3",
+      "text": "Shark",
+      "note": null,
+      "taboo": [
+        "Jaws",
+        "teeth",
+        "fin",
+        "ocean"
+      ]
+    },
+    {
+      "id": "crd_b455bf48",
+      "text": "Blobfish",
+      "note": null,
+      "taboo": [
+        "ugly",
+        "deep sea",
+        "pink",
+        "sad"
+      ]
+    },
+    {
+      "id": "crd_c771a4eb",
+      "text": "Corgi",
+      "note": null,
+      "taboo": [
+        "short legs",
+        "Queen",
+        "fluffy",
+        "dog"
+      ]
+    },
+    {
+      "id": "crd_0ebb7dea",
+      "text": "Golden retriever",
+      "note": null,
+      "taboo": [
+        "dog",
+        "fetch",
+        "loyal",
+        "boyfriend"
+      ]
+    },
+    {
+      "id": "crd_f64d65a2",
+      "text": "Pug",
+      "note": null,
+      "taboo": [
+        "wrinkly",
+        "snort",
+        "flat face",
+        "dog"
+      ]
+    },
+    {
+      "id": "crd_266bdb6c",
+      "text": "Guinea pig",
+      "note": null,
+      "taboo": [
+        "squeak",
+        "pet",
+        "rodent",
+        "cage"
+      ]
+    },
+    {
+      "id": "crd_aa7758d8",
+      "text": "Alpaca",
+      "note": null,
+      "taboo": [
+        "Peru",
+        "llama",
+        "wool",
+        "fluffy"
+      ]
+    },
+    {
+      "id": "crd_0180d8d6",
+      "text": "Seal",
+      "note": null,
+      "taboo": [
+        "flippers",
+        "clap",
+        "ball",
+        "ocean"
+      ]
+    },
+    {
+      "id": "crd_4a67d595",
+      "text": "Polar bear",
+      "note": null,
+      "taboo": [
+        "Arctic",
+        "white",
+        "ice",
+        "Coca-Cola"
+      ]
+    },
+    {
+      "id": "crd_0acb4f0d",
+      "text": "Bald eagle",
+      "note": null,
+      "taboo": [
+        "America",
+        "bird",
+        "wings",
+        "symbol"
+      ]
+    },
+    {
+      "id": "crd_4191160c",
+      "text": "Parrot",
+      "note": null,
+      "taboo": [
+        "talk",
+        "pirate",
+        "colourful",
+        "copy"
+      ]
+    },
+    {
+      "id": "crd_50f665f8",
+      "text": "Gecko",
+      "note": null,
+      "taboo": [
+        "lizard",
+        "Geico",
+        "wall",
+        "sticky"
+      ]
+    },
+    {
+      "id": "crd_421ebfac",
+      "text": "Komodo dragon",
+      "note": null,
+      "taboo": [
+        "lizard",
+        "Indonesia",
+        "giant",
+        "venom"
+      ]
+    },
+    {
+      "id": "crd_889b89d0",
+      "text": "Tiger",
+      "note": null,
+      "taboo": [
+        "stripes",
+        "Tony",
+        "big cat",
+        "orange"
+      ]
+    },
+    {
+      "id": "crd_eacfba6b",
+      "text": "Lion",
+      "note": null,
+      "taboo": [
+        "roar",
+        "mane",
+        "king",
+        "Simba"
+      ]
+    },
+    {
+      "id": "crd_776b7e52",
+      "text": "Zebra",
+      "note": null,
+      "taboo": [
+        "stripes",
+        "horse",
+        "black and white",
+        "Africa"
+      ]
+    },
+    {
+      "id": "crd_968298c9",
+      "text": "Wolf",
+      "note": null,
+      "taboo": [
+        "howl",
+        "moon",
+        "pack",
+        "husky"
+      ]
+    },
+    {
+      "id": "crd_90ab7e46",
+      "text": "Fox",
+      "note": null,
+      "taboo": [
+        "red",
+        "sly",
+        "tail",
+        "ring-ding-ding"
+      ]
+    },
+    {
+      "id": "crd_fac86b25",
+      "text": "Bunny",
+      "note": null,
+      "taboo": [
+        "Easter",
+        "hop",
+        "carrot",
+        "rabbit"
+      ]
+    },
+    {
+      "id": "crd_fa966825",
+      "text": "Squirrel",
+      "note": null,
+      "taboo": [
+        "nuts",
+        "tree",
+        "tail",
+        "acorn"
+      ]
+    },
+    {
+      "id": "crd_c0eb4aac",
+      "text": "Chihuahua",
+      "note": null,
+      "taboo": [
+        "tiny",
+        "dog",
+        "Mexico",
+        "shaking"
+      ]
+    },
+    {
+      "id": "crd_8a3cbb8d",
+      "text": "Frog",
+      "note": null,
+      "taboo": [
+        "ribbit",
+        "lily pad",
+        "green",
+        "prince"
+      ]
+    },
+    {
+      "id": "crd_bc12e6eb",
+      "text": "Chicken",
+      "note": null,
+      "taboo": [
+        "cluck",
+        "egg",
+        "farm",
+        "nuggets"
+      ]
+    },
+    {
+      "id": "crd_6c56b79d",
+      "text": "Cow",
+      "note": null,
+      "taboo": [
+        "moo",
+        "milk",
+        "farm",
+        "spots"
+      ]
+    },
+    {
+      "id": "crd_b197b2d9",
+      "text": "Pig",
+      "note": null,
+      "taboo": [
+        "oink",
+        "mud",
+        "bacon",
+        "farm"
+      ]
+    },
+    {
+      "id": "crd_d1514073",
+      "text": "Goat",
+      "note": null,
+      "taboo": [
+        "baa",
+        "horns",
+        "cheese",
+        "farm"
+      ]
+    },
+    {
+      "id": "crd_742abed1",
+      "text": "Donkey",
+      "note": null,
+      "taboo": [
+        "Shrek",
+        "ears",
+        "hee-haw",
+        "stubborn"
+      ]
+    },
+    {
+      "id": "crd_4e133f99",
+      "text": "Duck",
+      "note": null,
+      "taboo": [
+        "quack",
+        "pond",
+        "bread",
+        "feathers"
+      ]
+    },
+    {
+      "id": "crd_37999252",
+      "text": "Bee",
+      "note": null,
+      "taboo": [
+        "buzz",
+        "honey",
+        "sting",
+        "hive"
+      ]
+    },
+    {
+      "id": "crd_a38147dd",
+      "text": "Butterfly",
+      "note": null,
+      "taboo": [
+        "wings",
+        "caterpillar",
+        "colourful",
+        "flutter"
+      ]
+    },
+    {
+      "id": "crd_ee165a94",
+      "text": "Mosquito",
+      "note": null,
+      "taboo": [
+        "bite",
+        "itchy",
+        "buzz",
+        "summer"
+      ]
+    },
+    {
+      "id": "crd_a444922b",
+      "text": "Cockroach",
+      "note": null,
+      "taboo": [
+        "gross",
+        "survive",
+        "kitchen",
+        "bug"
+      ]
+    },
+    {
+      "id": "crd_53146ad1",
+      "text": "Scorpion",
+      "note": null,
+      "taboo": [
+        "tail",
+        "sting",
+        "desert",
+        "claws"
+      ]
+    },
+    {
+      "id": "crd_731dc089",
+      "text": "Hummingbird",
+      "note": null,
+      "taboo": [
+        "tiny",
+        "wings",
+        "fast",
+        "nectar"
+      ]
+    },
+    {
+      "id": "crd_4f1df5f9",
+      "text": "Ladybug",
+      "note": null,
+      "taboo": [
+        "red",
+        "spots",
+        "bug",
+        "lucky"
+      ]
+    },
+    {
+      "id": "crd_7c1fc132",
+      "text": "Manatee",
+      "note": null,
+      "taboo": [
+        "sea cow",
+        "slow",
+        "Florida",
+        "chubby"
+      ]
+    },
+    {
+      "id": "crd_45b4a24f",
+      "text": "Orca",
+      "note": null,
+      "taboo": [
+        "killer whale",
+        "Free Willy",
+        "black and white",
+        "ocean"
+      ]
+    },
+    {
+      "id": "crd_52095767",
+      "text": "Stingray",
+      "note": null,
+      "taboo": [
+        "flat",
+        "tail",
+        "sting",
+        "ocean"
+      ]
+    },
+    {
+      "id": "crd_c2a8ed67",
+      "text": "Crab",
+      "note": null,
+      "taboo": [
+        "claws",
+        "sideways",
+        "beach",
+        "Sebastian"
+      ]
+    },
+    {
+      "id": "crd_97d52c1a",
+      "text": "Clownfish",
+      "note": null,
+      "taboo": [
+        "Nemo",
+        "orange",
+        "anemone",
+        "stripes"
+      ]
+    },
+    {
+      "id": "crd_a2714f8a",
+      "text": "Hyena",
+      "note": null,
+      "taboo": [
+        "laugh",
+        "scavenger",
+        "Lion King",
+        "spots"
+      ]
+    },
+    {
+      "id": "crd_3098a51b",
+      "text": "Sea turtle",
+      "note": null,
+      "taboo": [
+        "shell",
+        "ocean",
+        "beach",
+        "slow"
+      ]
+    },
+    {
+      "id": "crd_78afd2ac",
+      "text": "Dachshund",
+      "note": null,
+      "taboo": [
+        "sausage dog",
+        "long",
+        "short legs",
+        "wiener"
+      ]
+    },
+    {
+      "id": "crd_7160d481",
+      "text": "Husky",
+      "note": null,
+      "taboo": [
+        "blue eyes",
+        "snow",
+        "sled",
+        "howl"
+      ]
+    },
+    {
+      "id": "crd_198b1fc5",
+      "text": "Horse",
+      "note": null,
+      "taboo": [
+        "neigh",
+        "ride",
+        "gallop",
+        "saddle"
+      ]
+    },
+    {
+      "id": "crd_a92751a0",
+      "text": "Sheep",
+      "note": null,
+      "taboo": [
+        "baa",
+        "wool",
+        "flock",
+        "count"
+      ]
+    },
+    {
+      "id": "crd_cc0d9f63",
+      "text": "Mouse",
+      "note": null,
+      "taboo": [
+        "cheese",
+        "squeak",
+        "tiny",
+        "Mickey"
       ]
     }
   ]
