@@ -9,9 +9,11 @@ import { useDatabase } from '@/hooks/useDatabase';
 import { useRoundScreenMode } from '@/hooks/useRoundScreenMode';
 import { findPoolCard, useSessionStore } from '@/hooks/useSessionStore';
 import { Button } from '@/ui/Button';
+import { Confetti } from '@/ui/Confetti';
 import { Mascot, type MascotMood } from '@/ui/Mascot';
 import { PopIn } from '@/ui/motion';
-import { Screen } from '@/ui/Screen';
+import { useLayout } from '@/ui/layout';
+import { Footer, Screen } from '@/ui/Screen';
 import { StatTile } from '@/ui/StatTile';
 import { Tap } from '@/ui/Tap';
 import { Text } from '@/ui/Text';
@@ -41,8 +43,11 @@ export default function RoundRecapScreen() {
 
   const [saving, setSaving] = useState(false);
 
-  // Stays landscape: the phone is still sideways from the round.
-  useRoundScreenMode({ landscape: true });
+  useRoundScreenMode();
+  // Sideways: summary left, cards right. Upright: summary on top, cards
+  // below, and the button pinned at the bottom where a thumb is.
+  const { landscape } = useLayout();
+  const upright = !landscape;
 
   const { correct, passed } = useMemo(() => countOutcomes(results), [results]);
   const penalty = session?.settings.passPenalty ?? 0;
@@ -69,13 +74,17 @@ export default function RoundRecapScreen() {
     }
   };
 
+  const continueButton = (
+    <Button label={saving ? 'Saving…' : 'Continue'} variant="primary" size="lg" disabled={saving} onPress={() => void done()} />
+  );
+
   return (
     <Screen edges={['top', 'bottom', 'left', 'right']}>
-      <View style={styles.panes}>
-        <View style={styles.summary}>
+      <View style={[styles.panes, upright && styles.panesUpright]}>
+        <View style={[styles.summary, upright && styles.summaryUpright]}>
           <View style={styles.hero}>
             <PopIn style={styles.sticker}>
-              <Mascot size={84} mood={mood} />
+              <Mascot size={84} mood={mood} poke />
             </PopIn>
             <View style={styles.heroCopy}>
               {who ? (
@@ -112,11 +121,15 @@ export default function RoundRecapScreen() {
             </Text>
           ) : null}
 
-          <View style={styles.spacer} />
-          <Button label={saving ? 'Saving…' : 'Continue'} variant="primary" size="lg" disabled={saving} onPress={() => void done()} />
+          {upright ? null : (
+            <>
+              <View style={styles.spacer} />
+              {continueButton}
+            </>
+          )}
         </View>
 
-        <View style={styles.listPane}>
+        <View style={[styles.listPane, upright && styles.listPaneUpright]}>
           <Text variant="overline" tone="faint" style={styles.listLabel}>
             {results.length > 0 ? 'TAP ONE TO FIX A MIS-TAP' : 'THIS ROUND'}
           </Text>
@@ -167,6 +180,9 @@ export default function RoundRecapScreen() {
           />
         </View>
       </View>
+      {upright ? <Footer>{continueButton}</Footer> : null}
+      {/* A great round gets a little party of its own. */}
+      {correct >= 5 ? <Confetti count={40} /> : null}
     </Screen>
   );
 }
@@ -194,6 +210,9 @@ const styles = StyleSheet.create({
   stats: { flexDirection: 'row', gap: space.sm },
   spacer: { flex: 1 },
   listPane: { flex: 1, backgroundColor: color.surface, borderTopLeftRadius: 24, borderBottomLeftRadius: 24 },
+  panesUpright: { flexDirection: 'column' },
+  summaryUpright: { width: '100%' },
+  listPaneUpright: { marginHorizontal: space.sm, borderRadius: 24 },
   listLabel: { paddingHorizontal: space.lg, paddingTop: space.md, paddingBottom: space.sm },
   list: { paddingHorizontal: space.md, paddingBottom: space.lg, flexGrow: 1 },
   row: { flexDirection: 'row', alignItems: 'center', gap: space.md - 2, paddingHorizontal: space.sm, paddingVertical: 10, borderRadius: 14 },

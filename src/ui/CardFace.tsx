@@ -15,10 +15,15 @@ export type CardFaceProps = {
   image?: string;
 };
 
-/** Horizontal room kept clear for the notch and rounded corners. */
-const PAD_X = 48;
-/** Vertical room kept clear for the timer bar above and breathing room below. */
-const PAD_Y = 56;
+/**
+ * Room kept clear round the word. Sideways, the notch and rounded corners are
+ * at the ends; upright, the Dynamic Island and the timer are at the top, and
+ * width is the scarce thing, so the sides give it back.
+ */
+const PAD = {
+  sideways: { x: 48, y: 56 },
+  upright: { x: 22, y: 96 },
+} as const;
 const GAP = 24;
 
 /**
@@ -40,25 +45,29 @@ const GAP = 24;
 export function CardFace({ text, accentColor, note, taboo, image }: CardFaceProps) {
   const { width, height } = useWindowDimensions();
   const color = cardTextOn(accentColor);
+  // An upright photo card stacks the photo over the word.
+  const upright = height > width;
+  const pad = upright ? PAD.upright : PAD.sideways;
 
-  const innerW = width - PAD_X * 2;
-  const innerH = height - PAD_Y * 2;
+  const innerW = width - pad.x * 2;
+  const innerH = height - pad.y * 2;
 
   const answer = note && isEmojiCard({ text }) ? note : null;
   const forbidden = taboo && taboo.length > 0 ? taboo : null;
 
-  const photo = image ? Math.min(innerH, innerW * 0.42) : 0;
-  const textW = image ? innerW - photo - GAP : innerW;
-  const textH = forbidden ? innerH * 0.5 : answer ? innerH * 0.66 : innerH;
+  const photo = image ? (upright ? Math.min(innerW * 0.8, innerH * 0.42) : Math.min(innerH, innerW * 0.42)) : 0;
+  const textW = image && !upright ? innerW - photo - GAP : innerW;
+  const roomH = image && upright ? innerH - photo - GAP : innerH;
+  const textH = forbidden ? roomH * 0.5 : answer ? roomH * 0.66 : roomH;
   const fit = fitCardText(text, textW, textH, image ? { maxSize: 120 } : undefined);
   const answerFit = answer ? fitCardText(answer, textW, innerH * 0.24, { maxSize: 48, minSize: 20, maxLines: 2 }) : null;
 
   return (
-    <View style={[styles.face, { backgroundColor: accentColor }]}>
+    <View style={[styles.face, { backgroundColor: accentColor, paddingHorizontal: pad.x, paddingVertical: pad.y }]}>
       <View style={[styles.blob, styles.blobOne]} pointerEvents="none" />
       <View style={[styles.blob, styles.blobTwo]} pointerEvents="none" />
 
-      <View style={styles.row}>
+      <View style={[styles.row, upright && styles.column]}>
         {image ? (
           <Image
             source={{ uri: image }}
@@ -120,8 +129,6 @@ const styles = StyleSheet.create({
     flex: 1,
     alignItems: 'center',
     justifyContent: 'center',
-    paddingHorizontal: PAD_X,
-    paddingVertical: PAD_Y,
     overflow: 'hidden',
   },
   blob: {
@@ -132,6 +139,7 @@ const styles = StyleSheet.create({
   blobOne: { width: 420, height: 420, top: -180, left: -120 },
   blobTwo: { width: 320, height: 320, bottom: -160, right: -80 },
   row: { flexDirection: 'row', alignItems: 'center', gap: GAP },
+  column: { flexDirection: 'column' },
   photo: { borderRadius: radius.lg, borderWidth: 4, borderColor: 'rgba(255,255,255,0.9)' },
   words: { alignItems: 'center', gap: 10 },
   text: {

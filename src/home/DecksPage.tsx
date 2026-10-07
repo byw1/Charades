@@ -1,11 +1,13 @@
 import { useMemo } from 'react';
-import { ActivityIndicator, Text as RNText, ScrollView, StyleSheet, useWindowDimensions, View } from 'react-native';
+import { Text as RNText, ScrollView, StyleSheet, View } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import type { DeckSummary } from '@/decks/types';
+import { Loader } from '@/ui/Loader';
 import { CircleButton } from '@/ui/CircleButton';
 import { DeckCard } from '@/ui/DeckCard';
 import { EmptyState } from '@/ui/EmptyState';
 import { Icon } from '@/ui/Icon';
+import { useLayout } from '@/ui/layout';
 import { SearchField } from '@/ui/SearchField';
 import { SectionLabel } from '@/ui/Section';
 import { Tap } from '@/ui/Tap';
@@ -29,14 +31,25 @@ export type DecksPageProps = {
 
 const GAP = 12;
 
+/** The narrowest a cover tile gets before the grid drops a column. */
+const MIN_TILE = 160;
+
+/** How many tiles across: two upright, three or four on a phone on its side. */
+export function gridColumns(available: number): number {
+  return Math.max(2, Math.floor((available + GAP) / (MIN_TILE + GAP)));
+}
+
 /**
- * Every deck, as a feed of cover tiles two across. Yours first — the decks you
+ * Every deck, as a feed of cover tiles, two across upright and more sideways. Yours first — the decks you
  * made are the reason the app is worth keeping — then the free ones.
  */
 export function DecksPage({ decks, error, query, onQuery, onOpen, onNew, onImport, onGroup, onMagic, bottomInset }: DecksPageProps) {
-  const { width } = useWindowDimensions();
+  const { width, short } = useLayout();
   const insets = useSafeAreaInsets();
-  const tile = (width - gutter * 2 - GAP) / 2;
+  const available = width - insets.left - insets.right - gutter * 2;
+  const columns = gridColumns(available);
+  const tile = Math.floor((available - GAP * (columns - 1)) / columns);
+  const sides = { paddingLeft: insets.left, paddingRight: insets.right };
   const searching = query.trim().length > 0;
 
   const { mine, bundled } = useMemo(
@@ -48,25 +61,29 @@ export function DecksPage({ decks, error, query, onQuery, onOpen, onNew, onImpor
   );
 
   return (
-    <View style={[styles.page, { width, paddingTop: insets.top }]}>
-      <View style={styles.header}>
-        <Text variant="hero" accessibilityRole="header">
+    <View style={[styles.page, sides, { width, paddingTop: insets.top }]}>
+      {/* Sideways, the search moves up into the title row to save height. */}
+      <View style={[styles.header, short && styles.headerShort]}>
+        <Text variant={short ? 'display' : 'hero'} accessibilityRole="header">
           Decks
         </Text>
+        {short ? (
+          <View style={styles.inlineSearch}>
+            <SearchField value={query} onChangeText={onQuery} />
+          </View>
+        ) : null}
         <View style={styles.actions}>
           <CircleButton icon="download" label="Import a deck" onPress={onImport} />
           <CircleButton icon="plus" label="New deck" tone="brand" onPress={onNew} />
         </View>
       </View>
 
-      <SearchField value={query} onChangeText={onQuery} />
+      {short ? null : <SearchField value={query} onChangeText={onQuery} />}
 
       {error ? (
         <EmptyState title="Couldn’t open your decks" body={error} mood="sad" />
       ) : !decks ? (
-        <View style={styles.centre}>
-          <ActivityIndicator color={color.brand} size="large" />
-        </View>
+        <Loader />
       ) : (
         <ScrollView
           contentContainerStyle={[styles.body, { paddingBottom: bottomInset + space.lg }]}
@@ -149,6 +166,8 @@ const styles = StyleSheet.create({
     paddingTop: space.sm,
     paddingBottom: space.md,
   },
+  headerShort: { paddingTop: space.xs, paddingBottom: space.xs, gap: space.md },
+  inlineSearch: { flex: 1, marginHorizontal: -gutter },
   actions: { flexDirection: 'row', gap: space.sm },
   body: { paddingTop: space.lg, gap: space.lg },
   grid: { flexDirection: 'row', flexWrap: 'wrap', gap: GAP, paddingHorizontal: gutter },

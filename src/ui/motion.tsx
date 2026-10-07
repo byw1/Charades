@@ -100,3 +100,54 @@ export function Pulse({ children, style }: { children: ReactNode; style?: StyleP
     </Animated.View>
   );
 }
+
+/**
+ * Drifts its children gently up and down forever, like a sticker in water.
+ * Give neighbours different `delay`s so they don't bob in step.
+ */
+export function Float({
+  children,
+  delay = 0,
+  distance = 6,
+  style,
+}: {
+  children: ReactNode;
+  delay?: number;
+  distance?: number;
+  style?: StyleProp<ViewStyle>;
+}) {
+  const reduced = useReducedMotion();
+  const [value] = useState(() => new Animated.Value(0));
+
+  useEffect(() => {
+    if (reduced) return;
+
+    const loop = Animated.loop(
+      Animated.sequence([
+        Animated.timing(value, { toValue: 1, duration: 1600, easing: Easing.inOut(Easing.sin), useNativeDriver: true }),
+        Animated.timing(value, { toValue: 0, duration: 1600, easing: Easing.inOut(Easing.sin), useNativeDriver: true }),
+      ]),
+    );
+    const start = setTimeout(() => loop.start(), delay);
+    return () => {
+      clearTimeout(start);
+      loop.stop();
+    };
+  }, [delay, reduced, value]);
+
+  return (
+    <Animated.View
+      style={[
+        style,
+        {
+          transform: [
+            { translateY: value.interpolate({ inputRange: [0, 1], outputRange: [0, -distance] }) },
+            { rotate: value.interpolate({ inputRange: [0, 1], outputRange: ['-3deg', '3deg'] }) },
+          ],
+        },
+      ]}
+    >
+      {children}
+    </Animated.View>
+  );
+}

@@ -3,6 +3,7 @@ import { useEffect, useState } from 'react';
 import { Animated, Easing, Pressable, StyleSheet, Text as RNText, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useReducedMotion } from '@/hooks/useReducedMotion';
+import { useLayout } from '@/ui/layout';
 import { useSettingsStore } from '@/hooks/useSettings';
 import { Button } from '@/ui/Button';
 import { CircleButton } from '@/ui/CircleButton';
@@ -78,6 +79,7 @@ export default function WelcomeScreen() {
   const { replay } = useLocalSearchParams<{ replay?: string }>();
   const setSetting = useSettingsStore((s) => s.set);
   const reduced = useReducedMotion();
+  const { short } = useLayout();
   const [index, setIndex] = useState(0);
   const [progress] = useState(() => new Animated.Value(0));
   const inputMode = useSettingsStore((s) => s.inputMode);
@@ -143,35 +145,37 @@ export default function WelcomeScreen() {
           </View>
         </View>
 
-        <View style={styles.middle} pointerEvents="none" key={index}>
-          {story.stickers?.map((sticker) => (
-            <Sticker
-              key={sticker.text}
-              tint={sticker.tint}
-              tilt={sticker.tilt}
-              style={{
-                position: 'absolute',
-                top: sticker.top as `${number}%`,
-                left: sticker.left as `${number}%` | undefined,
-                right: sticker.right as `${number}%` | undefined,
-              }}
-            >
-              {sticker.text}
-            </Sticker>
-          ))}
-          <Mascot size={230} mood={story.mood} glyph={story.glyph} />
-        </View>
+        <View style={[styles.body, short && styles.bodySideways]} pointerEvents="box-none">
+          <View style={styles.middle} pointerEvents="none" key={index}>
+            {story.stickers?.map((sticker) => (
+              <Sticker
+                key={sticker.text}
+                tint={sticker.tint}
+                tilt={sticker.tilt}
+                style={{
+                  position: 'absolute',
+                  top: sticker.top as `${number}%`,
+                  left: sticker.left as `${number}%` | undefined,
+                  right: sticker.right as `${number}%` | undefined,
+                }}
+              >
+                {sticker.text}
+              </Sticker>
+            ))}
+            <Mascot size={short ? 170 : 230} mood={story.mood} glyph={story.glyph} />
+          </View>
 
-        <View style={styles.bottom} pointerEvents="box-none">
-          <Caption size="lg">{story.caption}</Caption>
-          <RNText style={styles.detail}>{story.detail}</RNText>
-          {last ? (
-            <View style={styles.cta}>
-              <Button label="Let’s play" variant="white" size="lg" onPress={finish} />
-            </View>
-          ) : (
-            <Text style={styles.tapHint}>Tap to continue</Text>
-          )}
+          <View style={[styles.bottom, short && styles.bottomSideways]} pointerEvents="box-none">
+            <Caption size="lg">{story.caption}</Caption>
+            <RNText style={styles.detail}>{story.detail}</RNText>
+            {last ? (
+              <View style={styles.cta}>
+                <Button label="Let’s play" variant="white" size="lg" onPress={finish} />
+              </View>
+            ) : (
+              <Text style={styles.tapHint}>Tap to continue</Text>
+            )}
+          </View>
         </View>
       </SafeAreaView>
     </View>
@@ -189,7 +193,10 @@ const styles = StyleSheet.create({
   from: { flexDirection: 'row', alignItems: 'center', gap: space.sm },
   fromName: { fontFamily: font.heavy, fontSize: 15, lineHeight: 20, color: color.bone },
   fromTime: { fontFamily: font.medium, fontSize: 13, lineHeight: 18, color: 'rgba(255,255,255,0.75)' },
-  middle: { flex: 1, alignItems: 'center', justifyContent: 'center' },
+  body: { flex: 1 },
+  bodySideways: { flexDirection: 'row', alignItems: 'center' },
+  bottomSideways: { flex: 1.2, justifyContent: 'center', paddingBottom: 0 },
+  middle: { flex: 1, alignSelf: 'stretch', alignItems: 'center', justifyContent: 'center' },
   bottom: { gap: space.md, paddingBottom: space.md, alignItems: 'center' },
   detail: {
     fontFamily: font.bold,

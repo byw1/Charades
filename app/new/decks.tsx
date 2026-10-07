@@ -1,10 +1,11 @@
 import { useFocusEffect, useRouter } from 'expo-router';
 import { useCallback, useState } from 'react';
-import { ActivityIndicator, FlatList, StyleSheet, View } from 'react-native';
+import { FlatList, StyleSheet, View } from 'react-native';
 import { MIN_PLAYABLE_CARDS, summaryIsPlayable, type DeckSummary } from '@/decks/types';
 import { useDatabase } from '@/hooks/useDatabase';
 import { useNewGameStore } from '@/hooks/useNewGameStore';
 import { listDeckSummaries } from '@/storage/deckRepo';
+import { Loader } from '@/ui/Loader';
 import { Button } from '@/ui/Button';
 import { EmptyState } from '@/ui/EmptyState';
 import { Icon } from '@/ui/Icon';
@@ -64,9 +65,7 @@ export default function NewGameDecksScreen() {
     return (
       <Screen>
         {header}
-        <View style={styles.centre}>
-          <ActivityIndicator color={color.brand} size="large" />
-        </View>
+        <Loader />
       </Screen>
     );
   }

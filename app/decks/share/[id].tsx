@@ -3,13 +3,14 @@ import { File, Paths } from 'expo-file-system';
 import { useLocalSearchParams, useRouter } from 'expo-router';
 import * as Sharing from 'expo-sharing';
 import { useEffect, useMemo, useState } from 'react';
-import { ActivityIndicator, Pressable, ScrollView, StyleSheet, useWindowDimensions, View } from 'react-native';
+import { Pressable, ScrollView, StyleSheet, useWindowDimensions, View } from 'react-native';
 import QRCode from 'react-native-qrcode-svg';
 import { deckFileName, deckLink, measure, QR_ERROR_CORRECTION, type ShareSize } from '@/decks/share';
 import type { StoredDeck } from '@/decks/types';
 import { useDatabase } from '@/hooks/useDatabase';
 import { useHaptics } from '@/hooks/useHaptics';
 import { getDeck } from '@/storage/deckRepo';
+import { Loader } from '@/ui/Loader';
 import { Button } from '@/ui/Button';
 import { EmptyState } from '@/ui/EmptyState';
 import { Mascot } from '@/ui/Mascot';
@@ -72,9 +73,7 @@ export default function ShareDeckScreen() {
     return (
       <Screen>
         {top}
-        <View style={styles.centre}>
-          <ActivityIndicator color={color.brand} size="large" />
-        </View>
+        <Loader />
       </Screen>
     );
   }

@@ -1,5 +1,5 @@
-import { useEffect, useRef, type ReactNode } from 'react';
-import { ScrollView, StyleSheet, Text as RNText, useWindowDimensions, View } from 'react-native';
+import { useEffect, useRef, useState, type ReactNode } from 'react';
+import { ScrollView, StyleSheet, Text as RNText, View } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { DEFAULT_DECK_EMOJI, MIN_PLAYABLE_CARDS } from '@/decks/types';
 import type { GameMode } from '@/game/types';
@@ -7,7 +7,10 @@ import { CircleButton } from '@/ui/CircleButton';
 import { cardTextOn } from '@/ui/contrast';
 import { EmojiSticker } from '@/ui/EmojiSticker';
 import { CARD_LETTER_SPACING, fitCardText } from '@/ui/fitText';
+import { useLayout } from '@/ui/layout';
+import { Loader } from '@/ui/Loader';
 import { Mascot } from '@/ui/Mascot';
+import { Float, PopIn } from '@/ui/motion';
 import { Tap } from '@/ui/Tap';
 import { Text } from '@/ui/Text';
 import { color, font, gutter, palette, radius, space } from '@/ui/tokens';
@@ -92,23 +95,26 @@ export function PlayPage({
   mode,
   onMode,
 }: PlayPageProps) {
-  const { width, height } = useWindowDimensions();
+  const { width, height, short: sideways } = useLayout();
   const insets = useSafeAreaInsets();
   const carousel = useRef<ScrollView>(null);
   const lens = lenses[selected] ?? lenses[0];
+  // The carousel's own width. Sideways it gets half the screen, and turning
+  // the phone changes it, so it is measured rather than assumed.
+  const [rail, setRail] = useState(width);
 
-  // Keep the carousel on the selected lens when it is changed from outside,
-  // and when the page first lays out.
+  // Keep the carousel on the selected lens when the page first lays out and
+  // whenever the rail changes size, which is what turning the phone does.
+  // During a swipe the carousel itself is the source of truth.
   useEffect(() => {
     carousel.current?.scrollTo({ x: selected * STEP, animated: false });
-    // Only on mount: during a swipe the carousel is the source of truth.
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  }, [rail]);
 
   if (!lens) {
     return (
       <View style={[styles.page, styles.loading, { width, backgroundColor: color.background }]}>
-        <Mascot size={120} mood="thinking" />
+        <Loader />
       </View>
     );
   }
@@ -116,7 +122,12 @@ export function PlayPage({
   const accent = lens.accent;
   const ink = cardTextOn(accent);
   const playable = lens.cardCount >= MIN_PLAYABLE_CARDS;
-  const title = fitCardText(lens.name, width - gutter * 4, height * 0.28, { maxSize: 84, minSize: 28 });
+  // Sideways, the deck takes the left half and the controls the right.
+  const titleWidth = sideways ? (width - insets.left - insets.right) / 2 - gutter * 2 : width - gutter * 4;
+  const title = fitCardText(lens.name, titleWidth, height * (sideways ? 0.3 : 0.28), {
+    maxSize: sideways ? 60 : 84,
+    minSize: 24,
+  });
 
   const pressLens = (index: number) => {
     if (index === selected) {
@@ -128,13 +139,140 @@ export function PlayPage({
     onSelect(index);
   };
 
+  const viewfinder = (
+    <View style={[styles.viewfinder, sideways && styles.viewfinderSideways]} pointerEvents="none">
+      {STICKER_SPOTS.map((spot, i) => {
+        const sticker = (lens.stickers ?? [])[i % Math.max(1, lens.stickers?.length ?? 0)] ?? lens.emoji;
+        return (
+          <Float
+            key={`${lens.key}-${i}`}
+            delay={i * 370}
+            style={[
+              styles.floating,
+              {
+                top: `${spot.top * 100}%`,
+                ...('left' in spot ? { left: `${spot.left * 100}%` } : { right: `${spot.right * 100}%` }),
+              },
+            ]}
+          >
+            <PopIn delay={60 + i * 50}>
+              <RNText
+                accessible={false}
+                allowFontScaling={false}
+                style={{ fontSize: spot.size, lineHeight: spot.size * 1.2, transform: [{ rotate: spot.rotate }] }}
+              >
+                {sticker}
+              </RNText>
+            </PopIn>
+          </Float>
+        );
+      })}
+      {/* Keyed by deck, so every swipe pops the new deck's sticker in. */}
+      <PopIn key={lens.key} style={styles.badge}>
+        <EmojiSticker emoji={lens.emoji} size={sideways ? 60 : 88} tilt={-8} />
+      </PopIn>
+      <RNText
+        style={[
+          styles.deckName,
+          { color: ink, fontSize: title.fontSize, lineHeight: title.lineHeight, letterSpacing: title.fontSize * CARD_LETTER_SPACING },
+        ]}
+        numberOfLines={title.lines.length}
+        adjustsFontSizeToFit
+        allowFontScaling={false}
+      >
+        {title.lines.join('\n')}
+      </RNText>
+      <Text style={[styles.meta, { color: ink }]}>
+        {lens.key === 'mix' ? `${lens.deckIds.length} decks · ` : ''}
+        {lens.cardCount} cards
+      </Text>
+    </View>
+  );
+
+  const controls = (
+    <View style={[styles.bottom, sideways && styles.bottomSideways]}>
+      <View style={styles.modes} accessibilityRole="tablist">
+        {MODES.map((item) => {
+          const active = item.mode === mode;
+          return (
+            <Tap
+              key={item.mode}
+              onPress={() => onMode(item.mode)}
+              squish={0.92}
+              accessibilityRole="tab"
+              accessibilityState={{ selected: active }}
+              accessibilityLabel={`${item.label} mode`}
+              contentStyle={[styles.mode, active && styles.modeActive]}
+            >
+              <RNText style={[styles.modeText, active && styles.modeTextActive]} allowFontScaling={false}>
+                {item.label}
+              </RNText>
+            </Tap>
+          );
+        })}
+      </View>
+
+      <Text style={[styles.hint, { color: ink }]} numberOfLines={1} adjustsFontSizeToFit>
+        {starting
+          ? 'Starting…'
+          : playable
+            ? (MODES.find((m) => m.mode === mode)?.hint ?? 'Tap to play')
+            : `Needs ${MIN_PLAYABLE_CARDS} cards · tap to open`}
+      </Text>
+
+      <View style={styles.carouselWrap} onLayout={(event) => setRail(event.nativeEvent.layout.width)}>
+        <ScrollView
+          ref={carousel}
+          horizontal
+          showsHorizontalScrollIndicator={false}
+          snapToInterval={STEP}
+          decelerationRate="fast"
+          scrollEventThrottle={16}
+          contentContainerStyle={{ paddingHorizontal: (rail - LENS) / 2, gap: GAP, alignItems: 'center' }}
+          onScroll={(event) => {
+            const index = Math.round(event.nativeEvent.contentOffset.x / STEP);
+            const clamped = Math.max(0, Math.min(lenses.length - 1, index));
+            if (clamped !== selected) onSelect(clamped);
+          }}
+        >
+          {lenses.map((item, index) => (
+            <Tap
+              key={item.key}
+              onPress={() => pressLens(index)}
+              squish={0.9}
+              accessibilityLabel={index === selected ? `Play ${item.name}` : item.name}
+              accessibilityState={{ selected: index === selected }}
+              contentStyle={[styles.lens, { backgroundColor: item.accent }]}
+            >
+              <RNText style={styles.lensEmoji} allowFontScaling={false}>
+                {item.emoji}
+              </RNText>
+            </Tap>
+          ))}
+        </ScrollView>
+
+        {/* The shutter: fixed in the middle, the selected lens sits inside it. */}
+        <View pointerEvents="none" style={[styles.ring, { left: (rail - RING) / 2, borderColor: ringColor(accent) }]} />
+      </View>
+    </View>
+  );
+
   return (
     <View style={[styles.page, { width, paddingBottom: bottomInset }]}>
       <View style={[styles.frame, { backgroundColor: accent }]}>
         <View style={[styles.blob, styles.blobOne]} pointerEvents="none" />
         <View style={[styles.blob, styles.blobTwo]} pointerEvents="none" />
 
-        <View style={[styles.top, { paddingTop: insets.top + space.sm }]}>
+        <View
+          style={[
+            styles.top,
+            {
+              paddingTop: insets.top + (sideways ? space.xs : space.sm),
+              paddingLeft: insets.left + gutter - 4,
+              paddingRight: insets.right + gutter - 4,
+            },
+          ]}
+        >
           <Tap onPress={onMe} accessibilityLabel="Your stats" contentStyle={styles.avatar}>
             <Mascot size={40} animated={false} />
           </Tap>
@@ -155,113 +293,9 @@ export function PlayPage({
 
         {resume ? <View style={styles.resume}>{resume}</View> : null}
 
-        <View style={styles.viewfinder} pointerEvents="none">
-          {STICKER_SPOTS.map((spot, i) => {
-            const sticker = (lens.stickers ?? [])[i % Math.max(1, lens.stickers?.length ?? 0)] ?? lens.emoji;
-            return (
-              <RNText
-                key={`${lens.key}-${i}`}
-                accessible={false}
-                allowFontScaling={false}
-                style={[
-                  styles.floating,
-                  {
-                    top: `${spot.top * 100}%`,
-                    ...('left' in spot ? { left: `${spot.left * 100}%` } : { right: `${spot.right * 100}%` }),
-                    fontSize: spot.size,
-                    lineHeight: spot.size * 1.2,
-                    transform: [{ rotate: spot.rotate }],
-                  },
-                ]}
-              >
-                {sticker}
-              </RNText>
-            );
-          })}
-          <View style={styles.badge}>
-            <EmojiSticker emoji={lens.emoji} size={88} tilt={-8} />
-          </View>
-          <RNText
-            style={[
-              styles.deckName,
-              { color: ink, fontSize: title.fontSize, lineHeight: title.lineHeight, letterSpacing: title.fontSize * CARD_LETTER_SPACING },
-            ]}
-            numberOfLines={title.lines.length}
-            adjustsFontSizeToFit
-            allowFontScaling={false}
-          >
-            {title.lines.join('\n')}
-          </RNText>
-          <Text style={[styles.meta, { color: ink }]}>
-            {lens.key === 'mix' ? `${lens.deckIds.length} decks · ` : ''}
-            {lens.cardCount} cards
-          </Text>
-        </View>
-
-        <View style={styles.bottom}>
-          <View style={styles.modes} accessibilityRole="tablist">
-            {MODES.map((item) => {
-              const active = item.mode === mode;
-              return (
-                <Tap
-                  key={item.mode}
-                  onPress={() => onMode(item.mode)}
-                  squish={0.92}
-                  accessibilityRole="tab"
-                  accessibilityState={{ selected: active }}
-                  accessibilityLabel={`${item.label} mode`}
-                  contentStyle={[styles.mode, active && styles.modeActive]}
-                >
-                  <RNText style={[styles.modeText, active && styles.modeTextActive]} allowFontScaling={false}>
-                    {item.label}
-                  </RNText>
-                </Tap>
-              );
-            })}
-          </View>
-
-          <Text style={[styles.hint, { color: ink }]} numberOfLines={1} adjustsFontSizeToFit>
-            {starting
-              ? 'Starting…'
-              : playable
-                ? (MODES.find((m) => m.mode === mode)?.hint ?? 'Tap to play')
-                : `Needs ${MIN_PLAYABLE_CARDS} cards · tap to open`}
-          </Text>
-
-          <View style={styles.carouselWrap}>
-            <ScrollView
-              ref={carousel}
-              horizontal
-              showsHorizontalScrollIndicator={false}
-              snapToInterval={STEP}
-              decelerationRate="fast"
-              scrollEventThrottle={16}
-              contentContainerStyle={{ paddingHorizontal: (width - LENS) / 2, gap: GAP, alignItems: 'center' }}
-              onScroll={(event) => {
-                const index = Math.round(event.nativeEvent.contentOffset.x / STEP);
-                const clamped = Math.max(0, Math.min(lenses.length - 1, index));
-                if (clamped !== selected) onSelect(clamped);
-              }}
-            >
-              {lenses.map((item, index) => (
-                <Tap
-                  key={item.key}
-                  onPress={() => pressLens(index)}
-                  squish={0.9}
-                  accessibilityLabel={index === selected ? `Play ${item.name}` : item.name}
-                  accessibilityState={{ selected: index === selected }}
-                  contentStyle={[styles.lens, { backgroundColor: item.accent }]}
-                >
-                  <RNText style={styles.lensEmoji} allowFontScaling={false}>
-                    {item.emoji}
-                  </RNText>
-                </Tap>
-              ))}
-            </ScrollView>
-
-            {/* The shutter: fixed in the middle, the selected lens sits inside it. */}
-            <View pointerEvents="none" style={[styles.ring, { left: (width - RING) / 2, borderColor: ringColor(accent) }]} />
-          </View>
+        <View style={[styles.body, sideways && styles.bodySideways, { paddingLeft: insets.left, paddingRight: insets.right }]}>
+          {viewfinder}
+          {controls}
         </View>
       </View>
     </View>
@@ -289,7 +323,6 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-between',
-    paddingHorizontal: gutter - 4,
   },
   avatar: {
     width: 44,
@@ -307,6 +340,10 @@ const styles = StyleSheet.create({
   },
   streakText: { fontFamily: font.heavy, fontSize: 16, lineHeight: 20, color: color.bone },
   resume: { paddingHorizontal: gutter, paddingTop: space.md },
+  body: { flex: 1 },
+  bodySideways: { flexDirection: 'row' },
+  viewfinderSideways: { paddingHorizontal: gutter, gap: 4 },
+  bottomSideways: { flex: 1, justifyContent: 'center', paddingBottom: space.sm },
   viewfinder: {
     flex: 1,
     alignItems: 'center',

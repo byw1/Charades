@@ -33,7 +33,7 @@ export default function ReelScreen() {
   const [loaded, setLoaded] = useState<Loaded | null | 'empty'>(null);
   const [index, setIndex] = useState(0);
 
-  useRoundScreenMode({ landscape: false });
+  useRoundScreenMode();
 
   useEffect(() => {
     if (database.status !== 'ready' || !sessionId) return;

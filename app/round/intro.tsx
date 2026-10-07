@@ -12,6 +12,7 @@ import { useRoundScreenMode } from '@/hooks/useRoundScreenMode';
 import { useSessionStore } from '@/hooks/useSessionStore';
 import { useSettings } from '@/hooks/useSettings';
 import { cardTextOn } from '@/ui/contrast';
+import { useLayout } from '@/ui/layout';
 import { Mascot } from '@/ui/Mascot';
 import { PopIn } from '@/ui/motion';
 import { color, font, palette, space } from '@/ui/tokens';
@@ -36,9 +37,12 @@ export default function RoundIntroScreen() {
   const settings = useSettings();
 
   const [count, setCount] = useState(COUNT_FROM);
+  // Upright, everything stacks; sideways it reads left to right.
+  const { landscape } = useLayout();
+  const upright = !landscape;
   const [ready, setReady] = useState(false);
 
-  useRoundScreenMode({ landscape: true });
+  useRoundScreenMode();
 
   // Opens the round for whoever is up. Not persisted until the round
   // completes, so quitting here leaves the session where it was.
@@ -89,23 +93,23 @@ export default function RoundIntroScreen() {
         accessibilityRole="button"
         accessibilityLabel={`${notice.overline}. ${notice.title}. ${notice.rule}. Tap when ready.`}
       >
-        <SafeAreaView style={styles.safe} edges={['left', 'right']}>
+        <SafeAreaView style={[styles.safe, upright && styles.safeUpright]}>
           <PopIn style={styles.noticeSticker}>
             <Text style={styles.noticeEmoji} allowFontScaling={false}>
               {notice.emoji}
             </Text>
           </PopIn>
-          <View style={styles.copy}>
+          <View style={[styles.copy, upright && styles.copyUpright]}>
             <View style={[styles.teamPill, { backgroundColor: notice.tint }]}>
               <Text style={[styles.team, { color: color.ink }]} allowFontScaling={false}>
                 {notice.overline}
               </Text>
             </View>
-            <Text style={[styles.who, { color: color.bone }]} allowFontScaling={false} numberOfLines={2}>
+            <Text style={[styles.who, { color: color.bone }, upright && styles.centred]} allowFontScaling={false} numberOfLines={2}>
               {notice.title}
             </Text>
-            <Text style={[styles.rule, { color: color.bone }]}>{notice.rule}</Text>
-            <Text style={[styles.hint, { color: notice.tint }]}>Tap when you’re ready</Text>
+            <Text style={[styles.rule, { color: color.bone }, upright && styles.centred]}>{notice.rule}</Text>
+            <Text style={[styles.hint, { color: notice.tint }, upright && styles.centred]}>Tap when you’re ready</Text>
           </View>
         </SafeAreaView>
       </Pressable>
@@ -122,12 +126,12 @@ export default function RoundIntroScreen() {
       accessibilityLabel={`${who}. Starting in ${count}. Tap to start now.`}
     >
       <View style={[styles.blob, { backgroundColor: ink === color.bone ? 'rgba(255,255,255,0.1)' : 'rgba(0,0,0,0.06)' }]} />
-      <SafeAreaView style={styles.safe} edges={['left', 'right']}>
+      <SafeAreaView style={[styles.safe, upright && styles.safeUpright]}>
         <PopIn style={styles.sticker}>
           <Mascot size={150} mood="excited" />
         </PopIn>
 
-        <View style={styles.copy}>
+        <View style={[styles.copy, upright && styles.copyUpright]}>
           {teamLabel ? (
             <View style={[styles.teamPill, { backgroundColor: ink }]}>
               <Text style={[styles.team, { color: background }]} allowFontScaling={false}>
@@ -135,10 +139,10 @@ export default function RoundIntroScreen() {
               </Text>
             </View>
           ) : null}
-          <Text style={[styles.who, { color: ink }]} allowFontScaling={false} numberOfLines={2}>
+          <Text style={[styles.who, { color: ink }, upright && styles.centred]} allowFontScaling={false} numberOfLines={2}>
             {who}
           </Text>
-          <Text style={[styles.hint, { color: ink }]}>
+          <Text style={[styles.hint, { color: ink }, upright && styles.centred]}>
             {settings.inputMode === 'tilt'
               ? 'Tip down if you got it, up to pass'
               : 'Tap the top if you got it, the bottom to pass'}
@@ -206,6 +210,9 @@ const styles = StyleSheet.create({
     gap: space.lg,
     paddingHorizontal: space.xl,
   },
+  safeUpright: { flexDirection: 'column', gap: space.xl },
+  copyUpright: { flexGrow: 0, flexShrink: 0, flexBasis: 'auto', alignItems: 'center' },
+  centred: { textAlign: 'center' },
   sticker: { transform: [{ rotate: '-8deg' }] },
   copy: { flex: 1, gap: space.sm, alignItems: 'flex-start' },
   teamPill: { borderRadius: 999, paddingHorizontal: 12, paddingVertical: 4 },

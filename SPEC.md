@@ -26,7 +26,7 @@ These are product decisions, not preferences. Don't design around them.
 - **expo-haptics** for feedback
 - **expo-keep-awake** so the screen never sleeps mid-round
 - **expo-brightness** to boost during a round and restore after
-- **expo-screen-orientation** for per-screen orientation locking
+- **expo-screen-orientation** to hold the round's orientation steady while it runs
 - **react-native-mmkv** for settings and small state, **expo-sqlite** for decks and session history
 - **zustand** for game state. No Redux.
 - **expo-camera** for QR scanning on deck import, and for round videos when switched on
@@ -183,17 +183,17 @@ Home
 
 | Screen | Orientation | Notes |
 |---|---|---|
-| Home | Portrait | Resume in-progress session if one exists |
-| Decks | Portrait | Bundled + custom, search, card counts |
-| Deck detail | Portrait | Card list, edit, duplicate, share, delete |
-| Deck editor | Portrait | Add/edit/reorder/bulk-paste cards |
-| Import deck | Portrait | QR scan, file, or paste JSON |
-| New game (3 steps) | Portrait | Decks → teams → settings |
-| Round intro | Landscape | Who's up, countdown |
-| Round | Landscape | The card screen |
-| Recap | Landscape | Editable results |
-| Standings | Portrait | Cumulative, per team and per player |
-| Settings | Portrait | Input mode, haptics, sound, brightness, reset |
+| Home | Either | Resume in-progress session if one exists |
+| Decks | Either | Bundled + custom, search, card counts |
+| Deck detail | Either | Card list, edit, duplicate, share, delete |
+| Deck editor | Either | Add/edit/reorder/bulk-paste cards |
+| Import deck | Either | QR scan, file, or paste JSON |
+| New game (3 steps) | Either | Decks → teams → settings |
+| Round intro | Either | Who's up, countdown |
+| Round | Either, held | The card screen. Holds whichever way it started |
+| Recap | Either | Editable results |
+| Standings | Either | Cumulative, per team and per player |
+| Settings | Either | Input mode, haptics, sound, brightness, reset |
 
 ---
 
@@ -211,7 +211,7 @@ Home
 
 Sound is **off by default**. When the phone dings for "correct," the guesser knows they got it before anyone speaks, and it leaks information across the room. Make this a setting with a one-line explanation of why it's off.
 
-**During a round:** keep-awake on, brightness pushed toward max, orientation locked landscape, notifications don't matter but incoming calls will interrupt so handle app backgrounding by pausing the timer and offering resume.
+**During a round:** keep-awake on, brightness pushed toward max, orientation held the way the round started (portrait or landscape), notifications don't matter but incoming calls will interrupt so handle app backgrounding by pausing the timer and offering resume.
 
 ---
 
@@ -320,4 +320,4 @@ Don't write exhaustive component tests. A smoke test that the round screen rende
 - App Store name: `Deckhead`
 - Subtitle: `Charades Party Game` — the brand goes in the name field, the keywords go here
 - Privacy: declare no data collection. It's true and it's a selling point.
-- Orientation: portrait for menus, landscape locked for round screens
+- Orientation: every screen works upright and sideways and re-lays out when the phone turns; only a running round holds its orientation

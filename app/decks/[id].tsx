@@ -1,17 +1,19 @@
 import { useFocusEffect, useLocalSearchParams, useRouter } from 'expo-router';
 import { useCallback, useState } from 'react';
-import { ActivityIndicator, Alert, FlatList, Image, StyleSheet, View } from 'react-native';
+import { Alert, FlatList, Image, StyleSheet, View } from 'react-native';
 import { duplicateDeck } from '@/decks/edit';
 import { DEFAULT_DECK_EMOJI, isPlayable, MIN_PLAYABLE_CARDS, type StoredDeck } from '@/decks/types';
 import { useDatabase } from '@/hooks/useDatabase';
 import { useNewGameStore } from '@/hooks/useNewGameStore';
 import { deleteDeck, getDeck, upsertDeck } from '@/storage/deckRepo';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
+import { Loader } from '@/ui/Loader';
 import { Button } from '@/ui/Button';
 import { CircleButton } from '@/ui/CircleButton';
 import { cardTextOn } from '@/ui/contrast';
 import { EmojiSticker } from '@/ui/EmojiSticker';
 import { EmptyState } from '@/ui/EmptyState';
+import { READABLE_WIDTH, useLayout } from '@/ui/layout';
 import { Icon, type IconName } from '@/ui/Icon';
 import { Screen } from '@/ui/Screen';
 import { SectionLabel } from '@/ui/Section';
@@ -32,6 +34,7 @@ export default function DeckDetailScreen() {
   const resetDraft = useNewGameStore((s) => s.reset);
   const toggleDeck = useNewGameStore((s) => s.toggleDeck);
   const insets = useSafeAreaInsets();
+  const { short } = useLayout();
   const [state, setState] = useState<LoadState>({ status: 'loading' });
   const [busy, setBusy] = useState(false);
 
@@ -61,9 +64,7 @@ export default function DeckDetailScreen() {
     return (
       <Screen>
         {top}
-        <View style={styles.centre}>
-          <ActivityIndicator color={color.brand} size="large" />
-        </View>
+        <Loader />
       </Screen>
     );
   }
@@ -132,15 +133,24 @@ export default function DeckDetailScreen() {
       <FlatList
         data={deck.cards}
         keyExtractor={(card) => card.id}
-        contentContainerStyle={[styles.list, { paddingBottom: insets.bottom + space.xl }]}
+        contentContainerStyle={[
+          styles.list,
+          { paddingBottom: insets.bottom + space.xl, paddingLeft: insets.left, paddingRight: insets.right },
+        ]}
         ListHeaderComponent={
           <View style={styles.header}>
-            <View style={[styles.hero, { backgroundColor: deck.accentColor, paddingTop: insets.top + 64 }]}>
+            <View
+              style={[
+                styles.hero,
+                short && styles.heroShort,
+                { backgroundColor: deck.accentColor, paddingTop: insets.top + (short ? 56 : 64) },
+              ]}
+            >
               <Text style={styles.watermark} accessible={false} allowFontScaling={false}>
                 {deck.emoji ?? DEFAULT_DECK_EMOJI}
               </Text>
-              <EmojiSticker emoji={deck.emoji ?? DEFAULT_DECK_EMOJI} size={76} tilt={-8} />
-              <Text style={[styles.title, { color: onAccent }]} numberOfLines={3} accessibilityRole="header">
+              <EmojiSticker emoji={deck.emoji ?? DEFAULT_DECK_EMOJI} size={short ? 56 : 76} tilt={-8} />
+              <Text style={[styles.title, short && styles.titleShort, { color: onAccent }]} numberOfLines={3} accessibilityRole="header">
                 {deck.name}
               </Text>
               {deck.description ? (
@@ -153,7 +163,7 @@ export default function DeckDetailScreen() {
               </View>
             </View>
 
-            <View style={styles.actions}>
+            <View style={[styles.actions, short && styles.readable]}>
               {playable ? (
                 <Button label="Play this deck" variant="primary" size="lg" icon="play" onPress={play} />
               ) : (
@@ -210,7 +220,7 @@ export default function DeckDetailScreen() {
         ListEmptyComponent={<EmptyState title="This deck is empty" body="There are no cards in it yet." />}
       />
 
-      <View style={[styles.floating, { top: insets.top + space.sm }]}>
+      <View style={[styles.floating, { top: insets.top + space.sm, left: insets.left + gutter - 4 }]}>
         <CircleButton icon="back" label="Back to decks" tone="scrim" onPress={router.back} />
       </View>
     </View>
@@ -274,7 +284,10 @@ const styles = StyleSheet.create({
     opacity: 0.2,
     transform: [{ rotate: '-14deg' }],
   },
+  heroShort: { minHeight: 0, paddingBottom: space.md },
   title: { fontFamily: font.display, fontSize: 48, lineHeight: 50, letterSpacing: -1.8 },
+  titleShort: { fontSize: 36, lineHeight: 38 },
+  readable: { width: '100%', maxWidth: READABLE_WIDTH, alignSelf: 'center' },
   description: { fontFamily: font.bold, fontSize: 15, lineHeight: 21, opacity: 0.88 },
   pills: { flexDirection: 'row', flexWrap: 'wrap', gap: space.sm, paddingTop: space.xs },
   pill: { borderWidth: 2, borderRadius: radius.pill, paddingHorizontal: 12, paddingVertical: 3 },

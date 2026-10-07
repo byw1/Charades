@@ -1,6 +1,7 @@
 import { useRouter } from 'expo-router';
 import { useCallback, useEffect, useRef, useState } from 'react';
 import { AppState, Pressable, StyleSheet, Text, View } from 'react-native';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { elapsedMs, remainingMs } from '@/game/round';
 import { phaseInfo } from '@/game/threeRounds';
 import { twistById } from '@/game/twists';
@@ -17,6 +18,7 @@ import { CardFace } from '@/ui/CardFace';
 import { cardTextOn } from '@/ui/contrast';
 import { FlashOverlay } from '@/ui/FlashOverlay';
 import { Icon } from '@/ui/Icon';
+import { useLayout } from '@/ui/layout';
 import { Mascot } from '@/ui/Mascot';
 import { PopIn } from '@/ui/motion';
 import { RoundCamera } from '@/ui/RoundCamera';
@@ -47,6 +49,13 @@ export default function RoundPlayScreen() {
   const pauseRound = useSessionStore((s) => s.pauseRound);
   const resumeRound = useSessionStore((s) => s.resumeRound);
   const tick = useSessionStore((s) => s.tick);
+  // The round plays whichever way the phone is held; only the full-screen
+  // moments (paused, time's up) need to know which way that is.
+  const { landscape } = useLayout();
+  const upright = !landscape;
+  // Upright, the room's pills drop below the Dynamic Island.
+  const insets = useSafeAreaInsets();
+  const pillTop = upright ? { top: insets.top + 16 } : null;
 
   const [now, setNow] = useState(() => Date.now());
   // Each flash gets its own id, so a quick second answer is not cut short by
@@ -56,7 +65,7 @@ export default function RoundPlayScreen() {
   const warned = useRef(false);
   const endSignalled = useRef(false);
 
-  useRoundScreenMode({ landscape: true, boostBrightness: settings.boostBrightness });
+  useRoundScreenMode({ holdOrientation: true, boostBrightness: settings.boostBrightness });
 
   // Start on mount. The intro screen owns the countdown, so by the time this
   // renders the phone is already on a forehead.
@@ -158,17 +167,17 @@ export default function RoundPlayScreen() {
   if (state.phase === 'paused') {
     return (
       <Pressable
-        style={styles.paused}
+        style={[styles.paused, upright && styles.stacked]}
         onPress={() => resumeRound(Date.now())}
         accessibilityRole="button"
         accessibilityLabel={`Paused. ${Math.ceil(left / 1000)} seconds left. Tap to carry on.`}
       >
         <Mascot size={150} mood="sleepy" />
-        <View style={styles.pausedCopy}>
-          <Text style={styles.pausedTitle} allowFontScaling={false}>
+        <View style={[styles.pausedCopy, upright && styles.centred]}>
+          <Text style={[styles.pausedTitle, upright && styles.pausedTitleUpright]} allowFontScaling={false}>
             Paused 😴
           </Text>
-          <Text style={styles.pausedBody}>
+          <Text style={[styles.pausedBody, upright && styles.textCentred]}>
             {Math.ceil(left / 1000)} seconds left. Tap anywhere to carry on.
           </Text>
         </View>
@@ -195,7 +204,7 @@ export default function RoundPlayScreen() {
   return (
     <View style={styles.screen}>
       <View style={[styles.card, { backgroundColor: accent }]}>
-        <TimerBar fraction={fraction} warning={warning} />
+        <TimerBar fraction={fraction} warning={warning} top={upright ? insets.top + 2 : undefined} />
         {card ? (
           <CardFace
             text={card.text}
@@ -210,7 +219,7 @@ export default function RoundPlayScreen() {
       </View>
 
       {/* For the room, not the holder: how the round is going. */}
-      <View style={styles.tally} pointerEvents="none" accessible={false}>
+      <View style={[styles.tally, pillTop]} pointerEvents="none" accessible={false}>
         <Icon name="check" size={18} color={onAccent} weight={3.5} />
         <Text style={[styles.tallyText, { color: onAccent }]} allowFontScaling={false}>
           {got}
@@ -219,7 +228,7 @@ export default function RoundPlayScreen() {
 
       {/* The rule in force, for the room: a chaos twist or the hat's phase. */}
       {badge ? (
-        <View style={styles.badge} pointerEvents="none" accessible={false}>
+        <View style={[styles.badge, pillTop]} pointerEvents="none" accessible={false}>
           <Text style={[styles.badgeText, { color: onAccent }]} allowFontScaling={false} numberOfLines={1}>
             {badge}
           </Text>
@@ -258,12 +267,12 @@ export default function RoundPlayScreen() {
       {flash ? <FlashOverlay key={flash.id} outcome={flash.outcome} busted={flash.busted} /> : null}
 
       {state.phase === 'ended' ? (
-        <View style={styles.timeUp} pointerEvents="none">
+        <View style={[styles.timeUp, upright && styles.stacked]} pointerEvents="none">
           <PopIn>
             <Mascot size={150} mood="wow" />
           </PopIn>
           <PopIn delay={80}>
-            <Text style={styles.timeUpText} allowFontScaling={false}>
+            <Text style={[styles.timeUpText, upright && styles.timeUpTextUpright]} allowFontScaling={false}>
               {state.cleared ? 'Hat’s empty!' : 'Time’s up!'}
             </Text>
           </PopIn>
@@ -333,6 +342,11 @@ const styles = StyleSheet.create({
     paddingHorizontal: space.xl,
   },
   pausedCopy: { gap: space.xs, flexShrink: 1 },
+  stacked: { flexDirection: 'column' },
+  centred: { alignItems: 'center' },
+  textCentred: { textAlign: 'center' },
+  pausedTitleUpright: { fontSize: 52, lineHeight: 56, textAlign: 'center' },
+  timeUpTextUpright: { fontSize: 64, lineHeight: 68, textAlign: 'center' },
   pausedTitle: {
     fontFamily: font.display,
     fontSize: 64,

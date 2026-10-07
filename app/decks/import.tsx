@@ -323,7 +323,7 @@ export default function ImportDeckScreen() {
             </View>
           ) : (
             <View style={styles.permission}>
-              <Mascot size={110} mood="wink" />
+              <Mascot size={110} mood="wink" poke />
               <ChatLine>I only use the camera to read deck codes. No photos are taken or kept.</ChatLine>
               <Button
                 label={permission?.canAskAgain === false ? 'Open Settings' : 'Allow camera'}

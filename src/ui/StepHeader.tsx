@@ -1,4 +1,5 @@
 import { StyleSheet, View } from 'react-native';
+import { useLayout } from './layout';
 import { Mascot, type MascotMood } from './Mascot';
 import { StoryBar } from './ProgressBar';
 import { Text } from './Text';
@@ -19,6 +20,29 @@ export type StepHeaderProps = {
  * a close button, and the question in big type with Dex stuck beside it.
  */
 export function StepHeader({ step, of, title, subtitle, onClose, mood = 'happy' }: StepHeaderProps) {
+  const { short } = useLayout();
+
+  // Sideways, the question goes up into the bar beside the close button, so
+  // the step's content gets the height instead.
+  if (short) {
+    return (
+      <TopBar
+        leading="close"
+        onLeading={onClose}
+        leadingLabel="Leave setup"
+        center={
+          <View style={styles.compact}>
+            <StoryBar count={of} index={step - 1} />
+            <Text variant="heading" numberOfLines={1} accessibilityRole="header">
+              {title}
+            </Text>
+          </View>
+        }
+        trailing={<Mascot size={40} mood={mood} />}
+      />
+    );
+  }
+
   return (
     <View>
       <TopBar leading="close" onLeading={onClose} leadingLabel="Leave setup" center={<StoryBar count={of} index={step - 1} />} />
@@ -51,5 +75,6 @@ const styles = StyleSheet.create({
     paddingBottom: space.md,
   },
   copy: { flex: 1, gap: 4 },
+  compact: { gap: 6 },
   sticker: { transform: [{ rotate: '8deg' }] },
 });

@@ -113,6 +113,10 @@ free [Expo account](https://expo.dev/signup).
 
 To update it later, run `npm run phone` again and install the new link.
 
+> **Turning the phone sideways needs a fresh build too.** The app used to be
+> portrait-only, and that is baked into the installed app. Run `npm run phone`
+> once more so it can turn with the phone.
+
 > **After the game night update you need a fresh build.** It added new native
 > parts (camera recording, speech, notifications, Apple Intelligence), and an
 > app built before them can't use them. Run `npm run phone` once more.

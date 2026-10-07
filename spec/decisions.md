@@ -647,3 +647,40 @@ It was also checked end to end: the web preview was played with the browser
 switched offline after the first load and every non-local request blocked and
 logged. It made none. The one place Wi-Fi matters is Expo Go during
 development, which loads the game from the computer; DEPLOY.md says so plainly.
+
+## Both ways up, and a livelier Dex
+
+### Every screen works upright and sideways
+
+The product owner wanted the app usable whichever way the phone is held, and
+turning it mid-screen was breaking layouts (the Play screen's title ran into
+its controls, round screens squeezed into a one-letter-wide column). The app
+no longer locks orientation anywhere except a running round.
+
+- `useLayout()` (src/ui/layout.ts) re-reads the screen's shape on every turn.
+  "Short" (under 500pt tall) means a phone on its side, and screens switch to
+  side-by-side layouts there: Play puts the deck on the left and the modes and
+  carousel on the right; the intro stories put Dex beside the words; the
+  decks grid goes to three or four across; step headers fold into the top bar;
+  footers put their buttons side by side; the tab bar slims down.
+- Upright, the round screens stack: the intro, recap, pause and "time's up"
+  were all written for landscape and now read top to bottom too. The card
+  pads for the Dynamic Island upright and for the notch sideways, and a photo
+  card puts the photo above the word.
+- Sideways, menu screens respect the side safe areas and hold their content to
+  a readable column instead of stretching edge to edge.
+- A running round holds the orientation it started in. The holder is tipping
+  the phone against their forehead, and a sideways wobble must not spin the
+  card under them. Tilt reads the screen-normal axis, so it works the same in
+  either orientation.
+
+### A loader with a personality, and a Dex that moves
+
+Spinners became `Loader`: Dex hopping on the spot with squash and stretch, a
+shadow that shrinks as it rises, the forehead card flipping to a new emoji on
+every hop, bouncing dots and a rotating line of copy. Dex itself now bounces
+with squash and stretch, glances left and right, and every so often the card
+on its forehead wobbles; sleepy Dex breathes slowly with z's drifting off.
+Where Dex isn't inside another button it can be poked for a boing and a spin
+of the card. The Play screen's stickers float and pop in on every swipe, and
+a round of five or more gets confetti. All of it is off under reduced motion.

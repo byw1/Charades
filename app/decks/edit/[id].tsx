@@ -1,7 +1,6 @@
 import { useLocalSearchParams, useRouter } from 'expo-router';
 import { useEffect, useState } from 'react';
 import {
-  ActivityIndicator,
   Alert,
   FlatList,
   Image,
@@ -19,6 +18,7 @@ import { useDeckEditor } from '@/hooks/useDeckEditor';
 import { useHaptics } from '@/hooks/useHaptics';
 import { pickPhotos, takePhoto } from '@/media/photos';
 import { getDeck, upsertDeck } from '@/storage/deckRepo';
+import { Loader } from '@/ui/Loader';
 import { Button } from '@/ui/Button';
 import { cardTextOn } from '@/ui/contrast';
 import { EmojiSticker } from '@/ui/EmojiSticker';
@@ -76,9 +76,7 @@ export default function DeckEditorScreen() {
     return (
       <Screen>
         <TopBar leading="close" onLeading={router.back} />
-        <View style={styles.centre}>
-          <ActivityIndicator color={color.brand} size="large" />
-        </View>
+        <Loader />
       </Screen>
     );
   }
@@ -556,7 +554,7 @@ const styles = StyleSheet.create({
     opacity: 0.2,
     transform: [{ rotate: '-14deg' }],
   },
-  previewSticker: { position: 'absolute', top: space.md, left: space.md },
+  previewSticker: { alignSelf: 'flex-start', marginBottom: space.sm },
   emojiBlock: { gap: space.sm },
   emojis: { gap: space.sm, paddingRight: space.md },
   emojiChoice: {

@@ -1,6 +1,7 @@
 import type { ReactNode } from 'react';
 import { StyleSheet, View } from 'react-native';
 import { CircleButton } from './CircleButton';
+import { useLayout } from './layout';
 import { Text } from './Text';
 import { color, font, gutter, minTapTarget, space } from './tokens';
 
@@ -20,8 +21,10 @@ export type TopBarProps = {
  * bold centred title, room for another circle on the right.
  */
 export function TopBar({ leading = 'back', onLeading, leadingLabel, title, center, trailing }: TopBarProps) {
+  const { short } = useLayout();
+
   return (
-    <View style={styles.bar}>
+    <View style={[styles.bar, short && styles.barShort]}>
       <View style={styles.side}>
         {leading && onLeading ? (
           <CircleButton
@@ -53,6 +56,7 @@ const styles = StyleSheet.create({
     minHeight: minTapTarget + space.md,
     gap: space.sm,
   },
+  barShort: { paddingVertical: 2, minHeight: minTapTarget + 4 },
   side: { minWidth: minTapTarget, alignItems: 'flex-start' },
   trailing: { alignItems: 'flex-end' },
   center: { flex: 1, justifyContent: 'center' },

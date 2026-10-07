@@ -33,7 +33,8 @@ import { color, font, gutter, palette, radius, space } from '@/ui/tokens';
  * you, so the table stays put and only the header and footer change — and the
  * end gets confetti, because it should feel like an ending.
  *
- * Portrait: the phone comes off the forehead here and gets passed round.
+ * The phone comes off the forehead here and gets passed round, so it lays
+ * out for whichever way it ends up being held.
  */
 export default function StandingsScreen() {
   const router = useRouter();
@@ -58,8 +59,7 @@ export default function StandingsScreen() {
     return () => clearTimeout(id);
   }, [sessionId]);
 
-  // Back to portrait: the round flow is over for now.
-  useRoundScreenMode({ landscape: false });
+  useRoundScreenMode();
 
   const winState = useMemo(
     () => (session ? sessionWinState(session, poolExhausted) : { over: false as const }),
@@ -152,7 +152,7 @@ export default function StandingsScreen() {
       <ScrollView contentContainerStyle={styles.body}>
         <View style={styles.header}>
           <PopIn style={styles.sticker}>
-            <Mascot size={winState.over ? 120 : 84} mood={winState.over ? 'excited' : 'happy'} glyph={winState.over ? '★' : '?'} />
+            <Mascot size={winState.over ? 120 : 84} mood={winState.over ? 'excited' : 'happy'} glyph={winState.over ? '★' : '?'} poke />
           </PopIn>
           <PopIn delay={80} style={styles.headerCopy}>
             <Text variant="hero" accessibilityRole="header">

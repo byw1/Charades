@@ -1,9 +1,10 @@
-import { ScrollView, StyleSheet, Text as RNText, useWindowDimensions, View } from 'react-native';
+import { ScrollView, StyleSheet, Text as RNText, View } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import type { Friend, Rivalry } from '@/game/friends';
 import { badges as badgesFor, type PlayStats } from '@/game/stats';
 import { CircleButton } from '@/ui/CircleButton';
 import { Icon, type IconName } from '@/ui/Icon';
+import { READABLE_WIDTH, useLayout } from '@/ui/layout';
 import { Mascot } from '@/ui/Mascot';
 import { Group, IconBadge, SectionLabel } from '@/ui/Section';
 import { Avatar, ChatLine, tintFor } from '@/ui/Social';
@@ -27,7 +28,7 @@ export type MePageProps = {
  * things worth screenshotting — and the settings tucked behind a gear.
  */
 export function MePage({ stats, friends, rivalry, onWrapped, onSettings, onRules, bottomInset }: MePageProps) {
-  const { width } = useWindowDimensions();
+  const { width, short } = useLayout();
   const insets = useSafeAreaInsets();
   const s = stats ?? { games: 0, rounds: 0, cardsGuessed: 0, bestRound: 0, streak: 0, playedToday: false };
   const list = badgesFor(s);
@@ -43,17 +44,20 @@ export function MePage({ stats, friends, rivalry, onWrapped, onSettings, onRules
           : `${s.streak}-day streak ⏳ play today to keep it alive`;
 
   return (
-    <View style={[styles.page, { width, paddingTop: insets.top }]}>
-      <View style={styles.header}>
-        <Text variant="hero" accessibilityRole="header">
+    <View style={[styles.page, { width, paddingTop: insets.top, paddingLeft: insets.left, paddingRight: insets.right }]}>
+      <View style={[styles.header, short && styles.headerShort]}>
+        <Text variant={short ? 'display' : 'hero'} accessibilityRole="header">
           You
         </Text>
         <CircleButton icon="settings" label="Settings" onPress={onSettings} />
       </View>
 
-      <ScrollView contentContainerStyle={[styles.body, { paddingBottom: bottomInset + space.lg }]} showsVerticalScrollIndicator={false}>
+      <ScrollView
+        contentContainerStyle={[styles.body, short && styles.bodyShort, { paddingBottom: bottomInset + space.lg }]}
+        showsVerticalScrollIndicator={false}
+      >
         <View style={styles.hero}>
-          <Mascot size={120} mood={s.streak > 0 ? 'excited' : 'happy'} />
+          <Mascot size={short ? 90 : 120} mood={s.streak > 0 ? 'excited' : 'happy'} poke />
           <View style={styles.streakBlock}>
             <RNText style={styles.streakNumber} allowFontScaling={false}>
               🔥 {s.streak}
@@ -66,12 +70,13 @@ export function MePage({ stats, friends, rivalry, onWrapped, onSettings, onRules
 
         <ChatLine style={styles.pad}>{line}</ChatLine>
 
-        <View style={styles.grid}>
-          <View style={styles.row}>
+        {/* Two by two upright; one row of four on a phone on its side. */}
+        <View style={[styles.grid, short && styles.row]}>
+          <View style={[styles.row, short && styles.grow]}>
             <StatTile label="Cards guessed" value={s.cardsGuessed} tint={palette.yellow} />
             <StatTile label="Best round" value={s.bestRound} tint={palette.green} />
           </View>
-          <View style={styles.row}>
+          <View style={[styles.row, short && styles.grow]}>
             <StatTile label="Games" value={s.games} tint={palette.pink} />
             <StatTile label="Rounds" value={s.rounds} tint={palette.blue} />
           </View>
@@ -199,7 +204,9 @@ const styles = StyleSheet.create({
     paddingTop: space.sm,
     paddingBottom: space.sm,
   },
+  headerShort: { paddingTop: space.xs, paddingBottom: 0 },
   body: { gap: space.lg, paddingTop: space.sm },
+  bodyShort: { width: '100%', maxWidth: READABLE_WIDTH, alignSelf: 'center' },
   pad: { paddingHorizontal: gutter },
   hero: { flexDirection: 'row', alignItems: 'center', gap: space.lg, paddingHorizontal: gutter },
   streakBlock: { gap: 0 },
