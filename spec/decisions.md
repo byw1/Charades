@@ -63,6 +63,8 @@ validator keeps the import path auditable and the dependency tree small.
 
 ### Anton for card text
 
+_Superseded by the redesign below: Nunito everywhere._
+
 The spec asks for a heavy condensed grotesque for card text and a separate
 neutral face for UI. Card text uses Anton, which is free under the SIL Open Font
 License, genuinely condensed, and available as a single heavy weight — which is
@@ -248,3 +250,93 @@ not: it is a fact about the person holding the phone, and asking again every
 game is friction for a preference that never changes. It lives in app settings
 and the new game flow stamps the current value into `Session.settings.inputMode`
 at start, so a stored session still records what it was actually played with.
+
+## Redesign
+
+A ground-up visual redesign, asked for by the product owner: bright, clean and
+fun, in the spirit of Duolingo. The game engine, storage, sharing and tilt are
+untouched; everything the player sees is new. This supersedes the spec's
+original design direction — a near-black canvas, a condensed face for cards
+and a neutral one for UI, no exclamation marks in chrome.
+
+### Light, chunky and pressable
+
+A white canvas, saturated colour used with intent, and every pressable surface
+sitting on a solid ledge of its own darker shade that it visibly presses into,
+with a light haptic on touch-down. The ledge is a separate layer under the face
+rather than a bottom border, so a press moves the face without shifting the
+layout around it.
+
+The legibility brief survives the change of mood. Every colour that carries
+white text clears 3:1 against white, which is WCAG AA for the large, heavy type
+it is always paired with; `cardTextOn` prefers white on a deck colour only when
+it clears that bar, and falls back to dark text on pale colours like yellow.
+
+### One typeface: Nunito
+
+Rounded terminals and heavy weights that stay friendly at any size. One family
+for menus and cards keeps the app sounding like one voice; weight does the work
+of hierarchy. Card text is now mixed case rather than uppercase — mixed case is
+faster to read at a glance, and the rounded face is what carries the volume.
+
+### Dex
+
+A mascot gives a party app a personality to hang copy on. Dex is a round head
+with a card stuck to its forehead — the game explained in one picture. Dex asks
+the questions in setup, reacts to how a round went, sleeps on the pause screen
+and celebrates the end of a game.
+
+Drawn in SVG rather than shipped as images, so moods are a prop, it is sharp
+at every size, and it costs nothing in bundle size. It bobs and blinks unless
+the phone has reduced motion on, in which case every decorative animation in
+the app stands still. The flashes stay, because they carry information.
+
+### Copy can be excited now
+
+"Got it!", "Nice one!", "Time's up!". The old rule against exclamation marks
+suited a quiet, dark interface; it fights a cheerful one. Instructions stay
+plain — exclamation marks are for reactions, not for buttons.
+
+### The flash pops rather than blinks
+
+The full-screen flash now shows an icon and a word that spring in, and stays
+for 420ms instead of 250ms so the word can be read before it goes. It is still
+the signature moment of the round and still fills the whole screen.
+
+### Card text is sized up front
+
+The platform's shrink-to-fit was carrying the whole job of fitting a card to
+the screen. It behaves differently per platform and cannot balance a title
+across lines, and rendering every screen during the redesign showed long titles
+overflowing where it is unavailable. `fitCardText` now picks the largest size
+that fits, with balanced line breaks, as a pure tested function; shrink-to-fit
+stays on underneath as a backstop.
+
+### Deck colours avoid green and orange
+
+They are the correct and pass flashes, and a card the same colour as its own
+flash makes the signature moment fail to read. The editor offers eight colours
+from `deckColors`, none of them green or orange, which settles the item carried
+over from M4 without a perceptual-distance check. An imported deck can still
+arrive in any colour; the flash's word and icon keep it readable.
+
+### Input mode lives in settings, not setup
+
+Unchanged from M6, but now presented as a big two-way choice with a line on
+how each works, because it changes how the round feels more than any other
+setting.
+
+## Shipping
+
+### Ship config lives in the repo; brand sources do not
+
+`eas.json`, `store.config.json` and the setup script are committed, so getting
+to TestFlight is three commands from a fresh clone. The exported icon PNGs are
+committed because the app will not build without them; the sources that
+generated them stay out, per `.gitignore` and TRADEMARK.md.
+
+### Expo SDK 57 patch alignment
+
+Moved to expo 57.0.27 and React Native 0.86.3. 0.86.0 ships a Hermes build
+with a known memory regression, and expo-doctor flagged 22 patch-level
+mismatches against the SDK. The update is patch-only within SDK 57.

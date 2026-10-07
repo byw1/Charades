@@ -5,10 +5,11 @@ showing a card they can't see. Everyone else shouts clues. The holder guesses.
 Repeat until the timer runs out.
 
 Fully offline. No accounts, no ads, no tracking. Every deck is free from
-install.
+install. Hosted by Dex, a little purple head with a card stuck to its forehead.
 
 - [SPEC.md](./SPEC.md) — the product spec. The source of truth.
 - [ROADMAP.md](./ROADMAP.md) — build order and what is deliberately not in v1.
+- [DEPLOY.md](./DEPLOY.md) — put it on your own iPhone, or on the App Store.
 
 ## Running it
 
@@ -19,8 +20,18 @@ npm install
 npm start
 ```
 
-Then scan the QR code with [Expo Go](https://expo.dev/go) on a phone, or press
-`i` for the iOS simulator.
+Then scan the QR code with your iPhone's camera, with [Expo Go](https://expo.dev/go)
+installed, or press `i` for the iOS simulator.
+
+To install it as a real app on your phone, or ship it to the App Store:
+
+```sh
+npm run setup        # once: choose your app ID
+npm run phone        # build an installable copy for your iPhone
+npm run store        # build and upload to TestFlight / App Store Connect
+```
+
+[DEPLOY.md](./DEPLOY.md) walks through each step, including what Apple needs.
 
 ## Checks
 
@@ -38,11 +49,14 @@ npm test            # jest
   /game           Pure game logic. No React, no React Native imports.
   /decks          Deck schema, validation, import/export
   /storage        Persistence + migrations
-  /ui             Components, design tokens
+  /ui             Components, design tokens, Dex the mascot
   /hooks
 /assets
   /decks          Bundled starter decks as JSON
 /spec             Supporting docs. SPEC.md lives at the root.
+/scripts          The setup script
+eas.json          Cloud build profiles: preview (your phone), production (App Store)
+store.config.json The App Store listing, uploaded with `npm run store:listing`
 ```
 
 Everything in `/src/game` is pure TypeScript, enforced by an ESLint rule rather

@@ -218,6 +218,11 @@ Target: someone builds a deck of inside jokes and seven people have it in under 
 
 ## Design direction
 
+> **Superseded.** The app was redesigned in October 2026 — bright, chunky and
+> playful, with a mascot. The physical brief below still holds; the visual
+> answer to it changed. See the Redesign section of
+> [spec/decisions.md](./spec/decisions.md).
+
 The design brief is set by the physical situation: a phone held at arm's length on someone's forehead, read by a group across a dim room, often after drinks. Legibility at distance and in low light beats every other consideration. This is not negotiable, and it should drive the visual identity rather than being a constraint bolted onto a pretty design.
 
 **The card is the whole screen.** No chrome, no container, no card-shaped card. Full-bleed deck accent color, text auto-fitted to fill the available width in a heavy condensed face. The timer is a thin bar along one edge, not a number competing with the word.

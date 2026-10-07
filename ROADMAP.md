@@ -11,7 +11,7 @@ committed, with a check-in before the next one starts.
 | M4 | Custom decks: editor, bulk paste, duplicate, delete, reordering | Complete |
 | M5 | Sharing: export, QR, file import, deep links, preview and collision handling | Complete |
 | M6 | Polish: tilt mode, settings, accessibility, backgrounding, empty and error states | In progress |
-| M7 | Ship: EAS config, icons and splash, screenshots, privacy manifest, TestFlight | Not started |
+| M7 | Ship: EAS config, icons and splash, screenshots, privacy manifest, TestFlight | In progress |
 
 ## Not in v1
 
@@ -48,13 +48,12 @@ them arrives.
   is an M7 task and the one part of sharing that is not fully offline.
 - **Custom deck empty state — done.** The browser now always shows a "Yours"
   section, with an invitation when it is empty and a New deck button below it.
-- **Accent colour and the state flash.** A user-chosen `accentColor` close to
-  the correct or pass colour would stop the full-screen flash reading, which is
-  the signature element. This did not ship with M4 — the editor still lets any
-  accent through — so it carries into M6, and wants perceptual colour distance
-  rather than a contrast ratio. This replaces an earlier concern about accent
-  colour clashing with card text, which turned out not to be possible — see
-  `src/ui/contrast.ts`.
+- **Accent colour and the state flash — done.** The editor now offers only
+  colours from `deckColors`, which leaves out green and orange, the correct and
+  pass flashes. An imported deck can still be any colour; the flash's word and
+  icon keep it readable. See the Redesign section of `spec/decisions.md`.
+- **Reduced motion — done.** Every decorative animation checks
+  `useReducedMotion` and stands still when the phone asks it to.
 - **The tilt axis sign needs a real device.** Tilt is built and unit-tested, but
   which way "down" reads on the accelerometer's z axis cannot be confirmed in a
   simulator. It is isolated in `TILT_DOWN_SIGN` in `src/game/tilt.ts`; if a
@@ -63,3 +62,7 @@ them arrives.
 - **Sound has a setting but no sound.** `Settings.sound` persists and the
   settings screen deliberately does not show it, because nothing plays audio
   yet. The toggle ships with the audio it governs, not before.
+- **What is left for M7.** Config, icons, splash, privacy manifest and policy,
+  and the App Store listing are in the repo. What remains needs a person and an
+  Apple account: screenshots from a real phone, a TestFlight pass, and the
+  submit button. DEPLOY.md walks through each.
