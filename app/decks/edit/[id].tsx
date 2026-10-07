@@ -377,7 +377,7 @@ function Editor({ initial, isNew }: { initial: Deck; isNew: boolean }) {
                     <TabooField
                       initial={item.taboo ?? []}
                       onChange={(taboo) => editor.updateCard(item.id, { taboo })}
-                      label={`Taboo words for card ${index + 1}`}
+                      label={`Banned words for card ${index + 1}`}
                     />
                   ) : null}
                   <View style={styles.extras}>
@@ -385,7 +385,7 @@ function Editor({ initial, isNew }: { initial: Deck; isNew: boolean }) {
                       <Extra label="+ Photo" hint={`Add a photo to card ${index + 1}`} onPress={() => photoFor(item.id, false)} />
                     )}
                     {showTaboo ? null : (
-                      <Extra label="+ Taboo words" hint={`Add Taboo words to card ${index + 1}`} onPress={() => toggleTaboo(item.id)} />
+                      <Extra label="+ Banned words" hint={`Add banned words to card ${index + 1}`} onPress={() => toggleTaboo(item.id)} />
                     )}
                   </View>
                 </View>
@@ -430,7 +430,7 @@ function Editor({ initial, isNew }: { initial: Deck; isNew: boolean }) {
   );
 }
 
-/** Taboo words as a comma-separated line, parsed as it is typed. */
+/** Banned words (the `taboo` field) as a comma-separated line, parsed as it is typed. */
 function TabooField({ initial, onChange, label }: { initial: readonly string[]; onChange: (taboo: string[]) => void; label: string }) {
   const [text, setText] = useState(initial.join(', '));
   return (

@@ -36,6 +36,23 @@ This is the fastest way to play and to see changes live, but it runs inside
 Expo Go and needs your computer running. For a real app icon on your home
 screen, keep going.
 
+### What works in Expo Go
+
+Almost everything. A few features need the real app from step 2, because Expo
+Go doesn't include the parts of iOS they use. In Expo Go they're greyed out or
+hidden, not broken.
+
+| Feature | Expo Go | Real app (step 2) |
+|---|---|---|
+| All decks, Classic, Banned and 3 Rounds, chaos, forfeits | ✅ | ✅ |
+| Friends, Wrapped, group deck builder, photo cards | ✅ | ✅ |
+| Big decks over several QR codes | ✅ | ✅ |
+| Film the room and the highlight reel | ✅ | ✅ |
+| Streak reminders | ✅ | ✅ |
+| Voice referee | — | ✅ on iPhones that recognise speech offline |
+| Dream one up (AI decks) | — | ✅ on iPhone 15 Pro or newer, iOS 26, Apple Intelligence on |
+| AirDrop a deck and it opens in Deckhead | — | ✅ |
+
 ---
 
 ## 2. A real app on your own iPhone
@@ -81,6 +98,27 @@ free [Expo account](https://expo.dev/signup).
    Deckhead.
 
 To update it later, run `npm run phone` again and install the new link.
+
+> **After the game night update you need a fresh build.** It added new native
+> parts (camera recording, speech, notifications, Apple Intelligence), and an
+> app built before them can't use them. Run `npm run phone` once more.
+
+### Five things to check on a real iPhone
+
+Everything is tested, but these can only be checked on a phone. Each takes a
+minute.
+
+1. **Voice referee.** Settings → Extras → Voice referee. Start a Banned game and
+   say the answer: it should flash green. Say a word from the red strip: it
+   should flash "Busted!".
+2. **Dream one up.** On an iPhone with Apple Intelligence, Decks → Dream one up
+   → type a theme. Turn on airplane mode first: it should still work.
+3. **Film the room.** Settings → Extras → Film the room. Play a round, then
+   tap "Watch the highlights" on the standings screen.
+4. **Streak reminders.** Settings → Extras → Streak reminders. With a streak
+   going, don't play the next day: a nudge should arrive at 7pm.
+5. **AirDrop.** Share a deck as a file to another iPhone with Deckhead
+   installed. It should offer to open in Deckhead and land on "Add this deck?".
 
 > **No paid account but you have a Mac?** Install Xcode, plug in your iPhone
 > and run `npx expo run:ios --device`. It installs with a free Apple ID, but

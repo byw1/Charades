@@ -17,7 +17,8 @@ export type WinCondition =
  * How the game is played.
  *
  * - classic: the room describes the card any way it likes.
- * - taboo: the card lists words the room may not say.
+ * - taboo: the card lists words the room may not say. Shown to players as
+ *   "Banned" — Taboo is Hasbro's trademark, so it never appears in the app.
  * - threeRounds: one hat of cards played three times — say anything, then
  *   one word, then act it out — so every phase gets easier to remember and
  *   funnier to watch.

@@ -43,7 +43,7 @@ export type PlayPageProps = {
 /** The modes, in the order a camera app lists its modes: left to right. */
 export const MODES: readonly { mode: GameMode; label: string; hint: string }[] = [
   { mode: 'classic', label: 'Classic', hint: 'Tap to play' },
-  { mode: 'taboo', label: 'Taboo', hint: 'Tap to play · some words are banned' },
+  { mode: 'taboo', label: 'Banned', hint: 'Tap to play · some words are off limits' },
   { mode: 'threeRounds', label: '3 Rounds', hint: 'Tap to play · same cards, three ways' },
 ];
 

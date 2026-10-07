@@ -12,19 +12,23 @@ committed, with a check-in before the next one starts.
 | M5 | Sharing: export, QR, file import, deep links, preview and collision handling | Complete |
 | M6 | Polish: tilt mode, settings, accessibility, backgrounding, empty and error states | In progress |
 | M7 | Ship: EAS config, icons and splash, screenshots, privacy manifest, TestFlight | In progress |
+| Game night | Nine new decks with banned words, banned-words and three-round modes, chaos twists, forfeits, friends and rivalries, Wrapped, group deck builder, photo cards, multi-code sharing, open-in-Deckhead, round videos and highlight reel, voice referee, AI deck maker, streak reminders | Complete, needs a device pass |
 
 ## Not in v1
 
 Deliberately excluded. Listed here so the decisions stay visible rather than
 being rediscovered as gaps.
 
-- **AI deck generation** — needs a server, which breaks the fully-offline rule.
-- **Second-device / companion-phone mode** — same reason.
+- ~~**AI deck generation**~~ — now ships, on-device with Apple Intelligence.
+- **Second-device / companion-phone mode** — no server is needed after all
+  (MultipeerConnectivity works phone to phone), but it needs native Swift that
+  has to be built and tested on real iPhones. Deferred; see spec/decisions.md.
+- **Home-screen widget** — same reason: a WidgetKit extension in Swift.
 - **Apple Watch app** — a separate target and a separate input model.
 - **Localization beyond English** — deck content is language-tagged, so the data
   model is ready, but no translated UI ships in v1.
 - **Community deck repository** — needs hosting and moderation.
-- **Video recording of the guesser** — camera is scoped to QR import only.
+- ~~**Video recording of the guesser**~~ — now ships as opt-in video of the room.
 - **Any monetization** — all content is free from install, no IAP.
 
 ## Deferred to a later milestone
@@ -66,3 +70,9 @@ them arrives.
   and the App Store listing are in the repo. What remains needs a person and an
   Apple account: screenshots from a real phone, a TestFlight pass, and the
   submit button. DEPLOY.md walks through each.
+- **Game night needs a device pass.** Everything new is unit-tested and was
+  walked through in a browser, but five things can only be checked on an
+  iPhone: the voice referee (on-device speech recognition), the AI deck maker
+  (iOS 26 with Apple Intelligence), round recording and the highlight reel,
+  streak reminder delivery, and opening a .deckhead file from AirDrop. All
+  need the installed app, not Expo Go. DEPLOY.md lists them.

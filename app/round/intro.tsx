@@ -163,7 +163,7 @@ type Notice = { emoji: string; overline: string; title: string; rule: string; ti
 
 /**
  * What the room needs to hear before this round, if anything: a new phase in
- * three-round mode, a chaos twist, or the Taboo rule on the first round.
+ * three-round mode, a chaos twist, or the banned-words rule on the first round.
  */
 function announcement(session: Session): Notice | null {
   const open = session.rounds.find((round) => round.endedAt === null);
@@ -185,7 +185,7 @@ function announcement(session: Session): Notice | null {
   if (first && session.settings.mode === 'taboo') {
     return {
       emoji: '🚫',
-      overline: 'TABOO',
+      overline: 'BANNED WORDS',
       title: 'Don’t say the words',
       rule: 'The room can’t say anything listed under the card. Slip up and it’s busted: the card’s gone and it costs a point.',
       tint: palette.red,

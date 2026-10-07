@@ -19,7 +19,7 @@ const WIN_CONDITIONS: { label: string; emoji: string; value: WinCondition; help:
 
 const MODES: { mode: GameMode; label: string; emoji: string; help: string }[] = [
   { mode: 'classic', label: 'Classic', emoji: '🗣️', help: 'Any clue goes' },
-  { mode: 'taboo', label: 'Taboo', emoji: '🚫', help: 'Some words banned' },
+  { mode: 'taboo', label: 'Banned', emoji: '🚫', help: 'Some words off limits' },
   { mode: 'threeRounds', label: '3 Rounds', emoji: '🎩', help: 'Talk, one word, act' },
 ];
 

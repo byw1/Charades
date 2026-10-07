@@ -252,13 +252,13 @@ export function validateDeck(input: unknown): ValidationResult {
       let taboo: string[] = [];
       if (raw.taboo !== undefined && raw.taboo !== null) {
         if (!Array.isArray(raw.taboo) || raw.taboo.some((t) => typeof t !== 'string')) {
-          fail(`${path}.taboo`, `The Taboo words on card ${index + 1} are not a list of text.`);
+          fail(`${path}.taboo`, `The banned words on card ${index + 1} are not a list of text.`);
         } else {
           taboo = normaliseTaboo(raw.taboo as string[]);
           if (taboo.length > MAX_TABOO_WORDS) {
-            fail(`${path}.taboo`, `Cards are limited to ${MAX_TABOO_WORDS} Taboo words.`);
+            fail(`${path}.taboo`, `Cards are limited to ${MAX_TABOO_WORDS} banned words.`);
           } else if (taboo.some((t) => t.length > MAX_TABOO_WORD_LENGTH)) {
-            fail(`${path}.taboo`, `Taboo words are limited to ${MAX_TABOO_WORD_LENGTH} characters.`);
+            fail(`${path}.taboo`, `Banned words are limited to ${MAX_TABOO_WORD_LENGTH} characters.`);
           }
         }
       }

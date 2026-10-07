@@ -153,7 +153,7 @@ export default function SettingsScreen() {
               title="Voice referee"
               detail={
                 canListen
-                  ? 'Listens during a round: says got it when it hears the answer, and busted when it hears a Taboo word. Speech is recognised on this iPhone, never online.'
+                  ? 'Listens during a round: says got it when it hears the answer, and busted when it hears a banned word. Speech is recognised on this iPhone, never online.'
                   : 'Needs the installed app on an iPhone that can recognise speech offline. Not available in Expo Go.'
               }
               value={settings.voiceReferee && canListen}
