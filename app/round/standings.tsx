@@ -21,6 +21,7 @@ import { PopIn } from '@/ui/motion';
 import { Footer, Screen } from '@/ui/Screen';
 import { SectionLabel } from '@/ui/Section';
 import { Avatar, ChatLine } from '@/ui/Social';
+import { StatTile } from '@/ui/StatTile';
 import { Text } from '@/ui/Text';
 import { color, font, gutter, palette, radius, space } from '@/ui/tokens';
 
@@ -138,7 +139,9 @@ export default function StandingsScreen() {
     ? solo
       ? `${table[0]?.score ?? 0} points between you. Run it back?`
       : winState.winners.length === 1
-        ? 'That was close. Rematch?'
+        ? (table[0]?.score ?? 0) - (table[1]?.score ?? 0) <= 3
+          ? 'That was close. Rematch?'
+          : 'Not even close. Rematch?'
         : `${winState.winners.map((w) => w.teamName).join(' and ')} are level. Settle it?`
     : turn?.playerName
       ? `${turn.playerName}, you’re up next.`
@@ -216,6 +219,15 @@ export default function StandingsScreen() {
             })}
           </View>
         )}
+
+        {/* One team with no names has no table to show, so show the total. */}
+        {solo && players.length === 0 && table[0] ? (
+          <PopIn from="rise" delay={160} style={styles.totals}>
+            <StatTile label="points" value={table[0].score} tint={color.brand} />
+            <StatTile label="got it" value={table[0].correct} tint={color.correct} />
+            <StatTile label={played === 1 ? 'round' : 'rounds'} value={played} tint={palette.blue} />
+          </PopIn>
+        ) : null}
 
         {players.length > 0 ? (
           <View style={styles.section}>
@@ -337,6 +349,7 @@ const styles = StyleSheet.create({
   score: { fontFamily: font.display, fontSize: 32, lineHeight: 36, color: color.text },
   note: { paddingHorizontal: gutter },
   footerRow: { flexDirection: 'row', gap: 10 },
+  totals: { flexDirection: 'row', gap: space.sm, paddingHorizontal: gutter },
   grow: { flex: 1 },
   hat: {
     flexDirection: 'row',
