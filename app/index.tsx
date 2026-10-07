@@ -174,6 +174,7 @@ export default function HomeScreen() {
           onOpen={(id) => router.push(`/decks/${id}`)}
           onNew={() => router.push('/decks/edit/new')}
           onImport={() => router.push('/decks/import')}
+          onGroup={() => router.push('/decks/group')}
           bottomInset={bar}
         />
         <PlayPage

@@ -1,5 +1,5 @@
 import { useMemo } from 'react';
-import { ActivityIndicator, ScrollView, StyleSheet, useWindowDimensions, View } from 'react-native';
+import { ActivityIndicator, Text as RNText, ScrollView, StyleSheet, useWindowDimensions, View } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import type { DeckSummary } from '@/decks/types';
 import { CircleButton } from '@/ui/CircleButton';
@@ -20,6 +20,10 @@ export type DecksPageProps = {
   onOpen: (id: string) => void;
   onNew: () => void;
   onImport: () => void;
+  /** The "deck about your group" builder. */
+  onGroup: () => void;
+  /** The on-device AI deck maker, when this phone can run it. */
+  onMagic?: () => void;
   bottomInset: number;
 };
 
@@ -29,7 +33,7 @@ const GAP = 12;
  * Every deck, as a feed of cover tiles two across. Yours first — the decks you
  * made are the reason the app is worth keeping — then the free ones.
  */
-export function DecksPage({ decks, error, query, onQuery, onOpen, onNew, onImport, bottomInset }: DecksPageProps) {
+export function DecksPage({ decks, error, query, onQuery, onOpen, onNew, onImport, onGroup, onMagic, bottomInset }: DecksPageProps) {
   const { width } = useWindowDimensions();
   const insets = useSafeAreaInsets();
   const tile = (width - gutter * 2 - GAP) / 2;
@@ -89,7 +93,29 @@ export function DecksPage({ decks, error, query, onQuery, onOpen, onNew, onImpor
                       Make a deck
                     </Text>
                     <Text variant="caption" tone="muted" align="center">
-                      Inside jokes, your friends, your teachers
+                      Type cards, paste a list or add photos
+                    </Text>
+                  </Tap>
+                )}
+                {searching ? null : (
+                  <Tap onPress={onGroup} accessibilityLabel="Make a deck about your group" style={{ width: tile }} contentStyle={styles.newTile}>
+                    <RNText style={styles.tileEmoji}>👯</RNText>
+                    <Text variant="heading" align="center">
+                      About your group
+                    </Text>
+                    <Text variant="caption" tone="muted" align="center">
+                      Answer five questions, get a deck only you can play
+                    </Text>
+                  </Tap>
+                )}
+                {searching || !onMagic ? null : (
+                  <Tap onPress={onMagic} accessibilityLabel="Make a deck with on-device AI" style={{ width: tile }} contentStyle={styles.newTile}>
+                    <RNText style={styles.tileEmoji}>✨</RNText>
+                    <Text variant="heading" align="center">
+                      Dream one up
+                    </Text>
+                    <Text variant="caption" tone="muted" align="center">
+                      Type a theme. Apple Intelligence writes it, on this phone
                     </Text>
                   </Tap>
                 )}
@@ -126,6 +152,7 @@ const styles = StyleSheet.create({
   actions: { flexDirection: 'row', gap: space.sm },
   body: { paddingTop: space.lg, gap: space.lg },
   grid: { flexDirection: 'row', flexWrap: 'wrap', gap: GAP, paddingHorizontal: gutter },
+  tileEmoji: { fontSize: 34, lineHeight: 42 },
   newTile: {
     aspectRatio: 0.78,
     borderRadius: radius.lg,
