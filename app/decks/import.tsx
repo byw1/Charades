@@ -3,17 +3,23 @@ import * as DocumentPicker from 'expo-document-picker';
 import { File } from 'expo-file-system';
 import { useLocalSearchParams, useRouter } from 'expo-router';
 import { useCallback, useEffect, useRef, useState } from 'react';
-import { ScrollView, StyleSheet, TextInput, View } from 'react-native';
+import { Linking, ScrollView, StyleSheet, View } from 'react-native';
 import { extractPayload } from '@/decks/share';
 import { useDatabase } from '@/hooks/useDatabase';
 import { useDeckImport } from '@/hooks/useDeckImport';
 import { useHaptics } from '@/hooks/useHaptics';
 import { Button } from '@/ui/Button';
 import { Chip } from '@/ui/Chip';
-import { readableTextOn } from '@/ui/contrast';
-import { Screen } from '@/ui/Screen';
+import { cardTextOn, darken } from '@/ui/contrast';
+import { Field } from '@/ui/Field';
+import { Mascot } from '@/ui/Mascot';
+import { PopIn } from '@/ui/motion';
+import { Raised } from '@/ui/Raised';
+import { Footer, Screen } from '@/ui/Screen';
+import { SpeechBubble } from '@/ui/SpeechBubble';
 import { Text } from '@/ui/Text';
-import { color, radius, space, type as typeScale } from '@/ui/tokens';
+import { TopBar } from '@/ui/TopBar';
+import { color, palette, radius, space } from '@/ui/tokens';
 
 type Method = 'scan' | 'paste' | 'file';
 
@@ -71,76 +77,85 @@ export default function ImportDeckScreen() {
   if (done) {
     return (
       <Screen>
-        <View style={styles.header}>
-          <Text card variant="title">
-            {done.action === 'replaced' ? 'REPLACED' : 'ADDED'}
-          </Text>
-          <Text variant="body" tone="muted">
-            {done.deck.name} · {done.deck.cards.length} cards
-            {done.action === 'copied' ? ' · saved as a copy' : ''}
-          </Text>
+        <TopBar leading="close" onLeading={router.back} />
+        <View style={styles.celebrate}>
+          <PopIn>
+            <Mascot size={160} mood="excited" glyph="✓" />
+          </PopIn>
+          <PopIn delay={100} style={styles.celebrateCopy}>
+            <Text variant="display" align="center">
+              {done.action === 'replaced' ? 'Deck updated!' : 'Deck added!'}
+            </Text>
+            <Text variant="body" tone="muted" align="center">
+              {done.deck.name} · {done.deck.cards.length} cards
+              {done.action === 'copied' ? ' · saved as a copy' : ''}
+            </Text>
+          </PopIn>
         </View>
-
-        <View style={styles.footer}>
-          <Button
-            label="Open it"
-            variant="primary"
-            onPress={() => router.replace(`/decks/${done.deck.id}`)}
-          />
+        <Footer>
+          <Button label="Open it" variant="primary" size="lg" onPress={() => router.replace(`/decks/${done.deck.id}`)} />
           <Button
             label="Import another"
             onPress={() => {
               importer.reset();
+              scanning.current = false;
               setPasted('');
             }}
           />
-        </View>
+        </Footer>
       </Screen>
     );
   }
 
   if (preview) {
+    const deck = preview.deck;
+    const onAccent = cardTextOn(deck.accentColor);
+
     return (
       <Screen>
-        <View style={styles.header}>
-          <Text card variant="title">
-            IMPORT
-          </Text>
-        </View>
+        <TopBar leading="close" onLeading={router.back} title="Add this deck?" />
 
         <ScrollView contentContainerStyle={styles.body}>
-          <View style={[styles.previewCard, { backgroundColor: preview.deck.accentColor }]}>
-            <Text
-              card
-              variant="title"
-              style={{ color: readableTextOn(preview.deck.accentColor) }}
-              numberOfLines={2}
+          <PopIn>
+            <Raised
+              face={deck.accentColor}
+              shade={darken(deck.accentColor)}
+              radius={radius.xl}
+              ledge={6}
+              style={styles.pad}
+              faceStyle={styles.previewCard}
             >
-              {preview.deck.name.toUpperCase()}
-            </Text>
-            <Text variant="label" style={{ color: readableTextOn(preview.deck.accentColor) }}>
-              {preview.deck.cards.length} {preview.deck.cards.length === 1 ? 'card' : 'cards'}
-              {preview.deck.author ? ` · by ${preview.deck.author}` : ''}
-            </Text>
-          </View>
+              <Text variant="display" style={{ color: onAccent }} numberOfLines={2}>
+                {deck.name}
+              </Text>
+              <Text variant="label" style={{ color: onAccent, opacity: 0.9 }}>
+                {deck.cards.length} {deck.cards.length === 1 ? 'card' : 'cards'}
+                {deck.author ? ` · by ${deck.author}` : ''}
+              </Text>
+            </Raised>
+          </PopIn>
 
-          {preview.deck.description ? (
+          {deck.description ? (
             <Text variant="body" tone="muted" style={styles.pad}>
-              {preview.deck.description}
+              {deck.description}
             </Text>
           ) : null}
 
           {/* A few cards, so it is obvious what you are agreeing to. */}
-          <View style={styles.sample}>
-            {preview.deck.cards.slice(0, 5).map((card) => (
-              <Text key={card.id} variant="caption" tone="faint" numberOfLines={1}>
-                {card.text}
-              </Text>
+          <View style={[styles.pad, styles.sample]}>
+            {deck.cards.slice(0, 6).map((card) => (
+              <View key={card.id} style={styles.sampleChip}>
+                <Text variant="label" numberOfLines={1}>
+                  {card.text}
+                </Text>
+              </View>
             ))}
-            {preview.deck.cards.length > 5 ? (
-              <Text variant="caption" tone="faint">
-                and {preview.deck.cards.length - 5} more
-              </Text>
+            {deck.cards.length > 6 ? (
+              <View style={styles.sampleChip}>
+                <Text variant="label" tone="muted">
+                  +{deck.cards.length - 6} more
+                </Text>
+              </View>
             ) : null}
           </View>
 
@@ -151,28 +166,32 @@ export default function ImportDeckScreen() {
           ))}
 
           {preview.collides ? (
-            <Text variant="caption" tone="muted" style={styles.pad}>
-              You already have this deck. Replacing overwrites your copy, including any changes you
-              made to it.
-            </Text>
+            <View style={[styles.pad, styles.collision]}>
+              <Text variant="label" style={{ color: palette.yellowShade }}>
+                YOU ALREADY HAVE THIS DECK
+              </Text>
+              <Text variant="caption" tone="muted">
+                Replacing overwrites your copy, including any changes you made. Keeping both is always safe.
+              </Text>
+            </View>
           ) : null}
         </ScrollView>
 
-        <View style={styles.footer}>
+        <Footer>
           {preview.collides ? (
             <>
               <Button
                 label="Keep both"
                 variant="primary"
+                size="lg"
                 onPress={() => {
-                  haptics.select();
                   if (db) void importer.confirmKeepBoth(db);
                 }}
               />
               <Button
                 label="Replace mine"
+                variant="danger"
                 onPress={() => {
-                  haptics.select();
                   if (db) void importer.confirmReplace(db);
                 }}
               />
@@ -181,49 +200,47 @@ export default function ImportDeckScreen() {
             <Button
               label="Add this deck"
               variant="primary"
+              size="lg"
+              icon="plus"
               onPress={() => {
-                haptics.select();
                 if (db) void importer.confirmAdd(db);
               }}
             />
           )}
           <Button
-            label="Cancel"
+            label="Not now"
+            variant="ghost"
             onPress={() => {
               importer.reset();
               scanning.current = false;
             }}
           />
-        </View>
+        </Footer>
       </Screen>
     );
   }
 
   return (
     <Screen>
-      <View style={styles.header}>
-        <Text card variant="title">
-          IMPORT
-        </Text>
-        <Text variant="caption" tone="muted">
-          Scan a code, open a file, or paste a link
-        </Text>
-      </View>
+      <TopBar leading="close" onLeading={router.back} title="Import a deck" />
 
       <View style={styles.methods}>
-        <Chip label="Scan" selected={method === 'scan'} onPress={() => setMethod('scan')} />
-        <Chip label="Paste" selected={method === 'paste'} onPress={() => setMethod('paste')} />
-        <Chip label="File" selected={method === 'file'} onPress={() => setMethod('file')} />
+        <Chip grow emoji="📷" label="Scan" selected={method === 'scan'} onPress={() => setMethod('scan')} />
+        <Chip grow emoji="📋" label="Paste" selected={method === 'paste'} onPress={() => setMethod('paste')} />
+        <Chip grow emoji="📁" label="File" selected={method === 'file'} onPress={() => setMethod('file')} />
       </View>
 
       {error ? (
-        <Text variant="body" tone="muted" style={styles.error}>
-          {error.message}
-        </Text>
+        <View style={styles.error}>
+          <Mascot size={56} mood="sad" animated={false} />
+          <Text variant="label" style={styles.errorText}>
+            {error.message}
+          </Text>
+        </View>
       ) : null}
 
       {method === 'scan' ? (
-        <View style={styles.scanArea}>
+        <View style={styles.area}>
           {permission?.granted ? (
             <View style={styles.camera}>
               <CameraView
@@ -235,21 +252,39 @@ export default function ImportDeckScreen() {
                   // latched rather than debounced — one scan, one preview.
                   if (scanning.current) return;
                   scanning.current = true;
-                  haptics.select();
+                  haptics.correct();
                   offer(data);
                 }}
               />
+              <View style={styles.viewfinder} pointerEvents="none">
+                <View style={[styles.corner, styles.tl]} />
+                <View style={[styles.corner, styles.tr]} />
+                <View style={[styles.corner, styles.bl]} />
+                <View style={[styles.corner, styles.br]} />
+              </View>
+              <View style={styles.scanHint} pointerEvents="none">
+                <Text variant="label" tone="inverse">
+                  Point at a Deckhead code
+                </Text>
+              </View>
             </View>
           ) : (
             <View style={styles.permission}>
-              <Text variant="body" tone="muted">
-                Deckhead needs the camera to scan a deck code. It is used for nothing else and no
-                images are stored.
-              </Text>
+              <Mascot size={110} mood="wink" />
+              <SpeechBubble tail="bottom">
+                <Text variant="body" align="center">
+                  I only use the camera to read deck codes. No photos are taken or kept.
+                </Text>
+              </SpeechBubble>
               <Button
                 label={permission?.canAskAgain === false ? 'Open Settings' : 'Allow camera'}
                 variant="primary"
-                onPress={() => void requestPermission()}
+                icon="camera"
+                onPress={() => {
+                  if (permission?.canAskAgain === false) void Linking.openSettings();
+                  else void requestPermission();
+                }}
+                style={styles.stretch}
               />
             </View>
           )}
@@ -257,77 +292,95 @@ export default function ImportDeckScreen() {
       ) : null}
 
       {method === 'paste' ? (
-        <View style={styles.pasteArea}>
-          <TextInput
+        <View style={styles.area}>
+          <Field
             value={pasted}
             onChangeText={setPasted}
             placeholder="Paste a deckhead:// link or a deck code"
-            placeholderTextColor={color.inkFaint}
             accessibilityLabel="Deck link or code"
             multiline
             autoCapitalize="none"
             autoCorrect={false}
             style={styles.pasteBox}
           />
-          <Button
-            label="Import"
-            variant="primary"
-            disabled={!pasted.trim()}
-            onPress={() => offer(pasted)}
-          />
+          <Button label="Import" variant="primary" size="lg" disabled={!pasted.trim()} onPress={() => offer(pasted)} />
         </View>
       ) : null}
 
       {method === 'file' ? (
-        <View style={styles.pasteArea}>
-          <Text variant="body" tone="muted">
-            Open a .deckhead file someone sent you.
+        <View style={[styles.area, styles.fileArea]}>
+          <Mascot size={110} mood="happy" glyph="📁" />
+          <Text variant="body" tone="muted" align="center">
+            Open a .deckhead file someone sent you — from Messages, Mail, Files or AirDrop.
           </Text>
-          <Button label="Choose a file" variant="primary" onPress={() => void pickFile()} />
+          <Button label="Choose a file" variant="primary" icon="file" onPress={() => void pickFile()} style={styles.stretch} />
         </View>
       ) : null}
-
-      <View style={styles.footer}>
-        <Button label="Back" onPress={() => router.back()} />
-      </View>
     </Screen>
   );
 }
 
+const CORNER = 34;
+
 const styles = StyleSheet.create({
-  header: { paddingHorizontal: space.lg, paddingTop: space.sm, paddingBottom: space.md, gap: 2 },
-  methods: { flexDirection: 'row', gap: space.sm, paddingHorizontal: space.lg },
-  body: { paddingBottom: space.lg, gap: space.md },
-  scanArea: { flex: 1, padding: space.lg },
+  body: { paddingTop: space.sm, paddingBottom: space.lg, gap: space.md },
+  pad: { marginHorizontal: 20 },
+  previewCard: { minHeight: 140, justifyContent: 'flex-end', padding: space.lg, gap: 2 },
+  sample: { flexDirection: 'row', flexWrap: 'wrap', gap: space.sm },
+  sampleChip: {
+    paddingHorizontal: space.sm + 4,
+    paddingVertical: space.xs + 2,
+    borderRadius: radius.pill,
+    borderWidth: 2,
+    borderColor: color.line,
+    maxWidth: '100%',
+  },
+  collision: {
+    gap: 4,
+    padding: space.md,
+    borderRadius: radius.md,
+    borderWidth: 2,
+    borderColor: palette.yellow,
+    backgroundColor: palette.yellowLight,
+  },
+  methods: { flexDirection: 'row', gap: space.sm, paddingHorizontal: 20, paddingTop: space.xs },
+  error: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: space.sm,
+    marginHorizontal: 20,
+    marginTop: space.md,
+    padding: space.sm,
+    borderRadius: radius.md,
+    backgroundColor: palette.redLight,
+  },
+  errorText: { flex: 1, color: palette.redShade },
+  area: { flex: 1, padding: 20, gap: space.md },
   camera: {
     flex: 1,
-    borderRadius: radius.lg,
+    borderRadius: radius.xl,
     overflow: 'hidden',
-    backgroundColor: color.surface,
+    backgroundColor: color.ink,
   },
-  permission: {
-    flex: 1,
-    justifyContent: 'center',
-    gap: space.md,
+  viewfinder: { ...StyleSheet.absoluteFill, margin: space.xl },
+  corner: { position: 'absolute', width: CORNER, height: CORNER, borderColor: color.bone },
+  tl: { top: 0, left: 0, borderTopWidth: 6, borderLeftWidth: 6, borderTopLeftRadius: 16 },
+  tr: { top: 0, right: 0, borderTopWidth: 6, borderRightWidth: 6, borderTopRightRadius: 16 },
+  bl: { bottom: 0, left: 0, borderBottomWidth: 6, borderLeftWidth: 6, borderBottomLeftRadius: 16 },
+  br: { bottom: 0, right: 0, borderBottomWidth: 6, borderRightWidth: 6, borderBottomRightRadius: 16 },
+  scanHint: {
+    position: 'absolute',
+    bottom: space.md,
+    alignSelf: 'center',
+    paddingHorizontal: space.md,
+    paddingVertical: space.xs + 2,
+    borderRadius: radius.pill,
+    backgroundColor: 'rgba(0,0,0,0.55)',
   },
-  pasteArea: { flex: 1, padding: space.lg, gap: space.md },
-  pasteBox: {
-    ...typeScale.body,
-    flex: 1,
-    color: color.bone,
-    backgroundColor: color.surface,
-    borderRadius: radius.md,
-    padding: space.md,
-    textAlignVertical: 'top',
-  },
-  previewCard: {
-    marginHorizontal: space.lg,
-    padding: space.lg,
-    borderRadius: radius.lg,
-    gap: space.xs,
-  },
-  sample: { paddingHorizontal: space.lg, gap: 2 },
-  pad: { paddingHorizontal: space.lg },
-  error: { paddingHorizontal: space.lg, paddingTop: space.sm },
-  footer: { paddingHorizontal: space.lg, paddingBottom: space.md, gap: space.sm },
+  permission: { flex: 1, alignItems: 'center', justifyContent: 'center', gap: space.md },
+  pasteBox: { flex: 1 },
+  fileArea: { alignItems: 'center', justifyContent: 'center' },
+  stretch: { alignSelf: 'stretch' },
+  celebrate: { flex: 1, alignItems: 'center', justifyContent: 'center', gap: space.lg, padding: space.xl },
+  celebrateCopy: { gap: space.sm },
 });

@@ -11,14 +11,18 @@ import type { Team } from './types';
 export const MIN_TEAMS = 1;
 export const MAX_TEAMS = 6;
 
-/** Distinct enough to tell apart across a dim room, and distinct from the flash colours. */
+/**
+ * Distinct enough to tell apart across a dim room. Each matches its default
+ * team name, so the Reds are red. Team colour is never shown on the card face,
+ * so the green and orange here cannot be confused with the round's flashes.
+ */
 export const TEAM_COLORS = [
-  '#FF3D6E',
-  '#00B8D9',
-  '#FFC53D',
-  '#7C5CFF',
-  '#36D399',
-  '#FF7A45',
+  '#E83A3A',
+  '#0F9AE0',
+  '#F5B400',
+  '#8B5CF6',
+  '#2FA84F',
+  '#E67700',
 ] as const;
 
 export const DEFAULT_TEAM_NAMES = [

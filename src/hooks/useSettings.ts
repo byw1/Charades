@@ -22,9 +22,11 @@ export type Settings = {
    * got it before anyone speaks, and it leaks across the room.
    */
   sound: boolean;
-  /** Tap is the default. Tilt is opt-in and arrives in M6. */
+  /** Tap is the default. Tilt is opt-in. */
   inputMode: 'tap' | 'tilt';
   boostBrightness: boolean;
+  /** Whether the first-launch how-to-play has been seen. */
+  onboarded: boolean;
 };
 
 export const defaultAppSettings: Settings = {
@@ -32,6 +34,7 @@ export const defaultAppSettings: Settings = {
   sound: false,
   inputMode: 'tap',
   boostBrightness: true,
+  onboarded: false,
 };
 
 const STORAGE_KEY = 'settings.v1';
@@ -67,16 +70,18 @@ export const useSettingsStore = create<SettingsStore>((set, get) => ({
   },
 
   resetAll() {
-    set(defaultAppSettings);
-    persist(defaultAppSettings);
+    // Resetting preferences is not a reason to sit through the intro again.
+    const next = { ...defaultAppSettings, onboarded: get().onboarded };
+    set(next);
+    persist(next);
   },
 }));
 
 function persist(settings: Settings): void {
-  const { haptics, sound, inputMode, boostBrightness } = settings;
+  const { haptics, sound, inputMode, boostBrightness, onboarded } = settings;
   void Storage.setItem(
     STORAGE_KEY,
-    JSON.stringify({ haptics, sound, inputMode, boostBrightness }),
+    JSON.stringify({ haptics, sound, inputMode, boostBrightness, onboarded }),
   ).catch(() => undefined);
 }
 
@@ -93,6 +98,7 @@ export function useSettings(): Settings {
       sound: s.sound,
       inputMode: s.inputMode,
       boostBrightness: s.boostBrightness,
+      onboarded: s.onboarded,
     })),
   );
 }

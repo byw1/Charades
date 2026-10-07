@@ -1,14 +1,6 @@
 import { useLocalSearchParams, useRouter } from 'expo-router';
 import { useEffect, useState } from 'react';
-import {
-  ActivityIndicator,
-  Alert,
-  FlatList,
-  Pressable,
-  StyleSheet,
-  TextInput,
-  View,
-} from 'react-native';
+import { ActivityIndicator, Alert, FlatList, KeyboardAvoidingView, Platform, Pressable, StyleSheet, View } from 'react-native';
 import { createDeck } from '@/decks/edit';
 import { CARD_TEXT_SOFT_CAP, MIN_PLAYABLE_CARDS, type Deck } from '@/decks/types';
 import { useDatabase } from '@/hooks/useDatabase';
@@ -16,14 +8,16 @@ import { useDeckEditor } from '@/hooks/useDeckEditor';
 import { useHaptics } from '@/hooks/useHaptics';
 import { getDeck, upsertDeck } from '@/storage/deckRepo';
 import { Button } from '@/ui/Button';
-import { readableTextOn } from '@/ui/contrast';
+import { cardTextOn, darken } from '@/ui/contrast';
 import { EmptyState } from '@/ui/EmptyState';
-import { Screen } from '@/ui/Screen';
+import { Field } from '@/ui/Field';
+import { Icon, type IconName } from '@/ui/Icon';
+import { ProgressBar } from '@/ui/ProgressBar';
+import { Raised } from '@/ui/Raised';
+import { Footer, Screen } from '@/ui/Screen';
 import { Text } from '@/ui/Text';
-import { color, radius, space, type as typeScale } from '@/ui/tokens';
-
-/** Deck colours to choose from. Deliberately few — this is not a colour picker. */
-const ACCENTS = ['#FF3D6E', '#2BD576', '#FF7A45', '#7C5CFF', '#00B8D9', '#FFC53D'];
+import { TopBar } from '@/ui/TopBar';
+import { color, deckColors, radius, space } from '@/ui/tokens';
 
 export default function DeckEditorScreen() {
   const { id } = useLocalSearchParams<{ id: string }>();
@@ -59,10 +53,8 @@ export default function DeckEditorScreen() {
   if (missing) {
     return (
       <Screen>
-        <EmptyState title="That deck is gone" body="It may have been deleted." />
-        <View style={styles.footer}>
-          <Button label="Back" variant="primary" onPress={() => router.back()} />
-        </View>
+        <TopBar leading="close" onLeading={router.back} />
+        <EmptyState title="That deck is gone" body="It may have been deleted." mood="sad" />
       </Screen>
     );
   }
@@ -70,8 +62,9 @@ export default function DeckEditorScreen() {
   if (!loaded) {
     return (
       <Screen>
+        <TopBar leading="close" onLeading={router.back} />
         <View style={styles.centre}>
-          <ActivityIndicator color={color.brand} />
+          <ActivityIndicator color={color.brand} size="large" />
         </View>
       </Screen>
     );
@@ -100,7 +93,7 @@ function Editor({ initial, isNew }: { initial: Deck; isNew: boolean }) {
     try {
       await upsertDeck(database.db, draft, 'custom');
       editor.markSaved(draft);
-      haptics.select();
+      haptics.correct();
       router.replace(`/decks/${draft.id}`);
     } finally {
       setSaving(false);
@@ -123,6 +116,7 @@ function Editor({ initial, isNew }: { initial: Deck; isNew: boolean }) {
     const text = newCard.trim();
     if (!text) return;
     editor.addCard(text);
+    haptics.select();
     setNewCard('');
   };
 
@@ -131,13 +125,13 @@ function Editor({ initial, isNew }: { initial: Deck; isNew: boolean }) {
     editor.appendCards(result.cards);
     setPasteText('');
     setPasting(false);
-    haptics.select();
+    haptics.correct();
 
     const notes: string[] = [];
     if (result.cards.length) notes.push(`Added ${result.cards.length}.`);
     if (result.duplicates.length) notes.push(`Skipped ${result.duplicates.length} already here.`);
     if (result.overLength.length) {
-      notes.push(`${result.overLength.length} over ${CARD_TEXT_SOFT_CAP} characters — they will be small on the card.`);
+      notes.push(`${result.overLength.length} over ${CARD_TEXT_SOFT_CAP} characters — they’ll be small on the card.`);
     }
 
     if (notes.length) Alert.alert('Pasted', notes.join(' '));
@@ -146,213 +140,229 @@ function Editor({ initial, isNew }: { initial: Deck; isNew: boolean }) {
   if (pasting) {
     return (
       <Screen>
-        <View style={styles.header}>
-          <Text card variant="title">
-            PASTE CARDS
-          </Text>
-          <Text variant="caption" tone="muted">
-            One per line. Add a hint after a pipe: Card text | hint
-          </Text>
-        </View>
-
-        <TextInput
-          value={pasteText}
-          onChangeText={setPasteText}
-          placeholder={'My Chemical Romance\nFall Out Boy\nParamore'}
-          placeholderTextColor={color.inkFaint}
-          accessibilityLabel="Cards, one per line"
-          multiline
-          autoCapitalize="sentences"
-          autoCorrect={false}
-          style={styles.pasteBox}
-        />
-
-        <View style={styles.footer}>
-          <Button label="Add them" variant="primary" onPress={applyPaste} />
-          <Button
-            label="Cancel"
-            onPress={() => {
-              setPasteText('');
-              setPasting(false);
-            }}
-          />
-        </View>
+        <TopBar leading="close" onLeading={() => setPasting(false)} title="Paste a list" />
+        <KeyboardAvoidingView style={styles.fill} behavior={Platform.OS === 'ios' ? 'padding' : undefined}>
+          <View style={styles.pasteBody}>
+            <Text variant="body" tone="muted">
+              One card per line. Add a hint for clue-givers after a pipe:{' '}
+              <Text variant="label" tone="default">
+                Card text | hint
+              </Text>
+            </Text>
+            <Field
+              value={pasteText}
+              onChangeText={setPasteText}
+              placeholder={'My Chemical Romance\nFall Out Boy | They sang Sugar\nParamore'}
+              accessibilityLabel="Cards, one per line"
+              multiline
+              autoFocus
+              autoCapitalize="sentences"
+              autoCorrect={false}
+              style={styles.pasteBox}
+            />
+          </View>
+          <Footer>
+            <Button label="Add them" variant="primary" size="lg" icon="plus" disabled={!pasteText.trim()} onPress={applyPaste} />
+          </Footer>
+        </KeyboardAvoidingView>
       </Screen>
     );
   }
 
+  const count = draft.cards.length;
+  const needed = Math.max(0, MIN_PLAYABLE_CARDS - count);
+  const onAccent = cardTextOn(draft.accentColor);
+
   return (
     <Screen>
-      <View style={styles.header}>
-        <Text card variant="title">
-          {isNew ? 'NEW DECK' : 'EDIT DECK'}
-        </Text>
-      </View>
+      <TopBar leading="close" onLeading={leave} leadingLabel="Close editor" title={isNew ? 'New deck' : 'Edit deck'} />
 
-      <FlatList
-        data={draft.cards}
-        keyExtractor={(card) => card.id}
-        keyboardDismissMode="on-drag"
-        contentContainerStyle={styles.list}
-        ListHeaderComponent={
-          <View style={styles.meta}>
-            <TextInput
-              value={draft.name}
-              onChangeText={editor.setName}
-              placeholder="Deck name"
-              placeholderTextColor={color.inkFaint}
-              accessibilityLabel="Deck name"
-              style={styles.nameInput}
-              maxLength={60}
-            />
-            <TextInput
-              value={draft.description}
-              onChangeText={editor.setDescription}
-              placeholder="What is in it? (optional)"
-              placeholderTextColor={color.inkFaint}
-              accessibilityLabel="Deck description"
-              style={styles.input}
-              maxLength={280}
-            />
+      <KeyboardAvoidingView style={styles.fill} behavior={Platform.OS === 'ios' ? 'padding' : undefined}>
+        <FlatList
+          data={draft.cards}
+          keyExtractor={(card) => card.id}
+          keyboardDismissMode="on-drag"
+          keyboardShouldPersistTaps="handled"
+          contentContainerStyle={styles.list}
+          ListHeaderComponent={
+            <View style={styles.meta}>
+              {/* A live preview: this is what the deck will look like. */}
+              <Raised
+                face={draft.accentColor}
+                shade={darken(draft.accentColor)}
+                radius={radius.xl}
+                ledge={6}
+                faceStyle={styles.preview}
+              >
+                <Text variant="display" style={{ color: onAccent }} numberOfLines={2}>
+                  {draft.name.trim() || 'Your deck'}
+                </Text>
+                <Text variant="label" style={{ color: onAccent, opacity: 0.9 }}>
+                  {count} {count === 1 ? 'card' : 'cards'}
+                </Text>
+              </Raised>
 
-            <View style={styles.accents}>
-              {ACCENTS.map((accent) => (
-                <Pressable
-                  key={accent}
-                  onPress={() => {
-                    haptics.select();
-                    editor.setAccentColor(accent);
-                  }}
-                  accessibilityRole="radio"
-                  accessibilityState={{ selected: draft.accentColor === accent }}
-                  accessibilityLabel={`Deck colour ${accent}`}
-                  style={[
-                    styles.accent,
-                    { backgroundColor: accent },
-                    draft.accentColor === accent && styles.accentSelected,
-                  ]}
+              <View style={styles.fieldGroup}>
+                <Field
+                  value={draft.name}
+                  onChangeText={editor.setName}
+                  placeholder="Deck name"
+                  accessibilityLabel="Deck name"
+                  size="heading"
+                  maxLength={60}
+                />
+                <Field
+                  value={draft.description}
+                  onChangeText={editor.setDescription}
+                  placeholder="What’s in it? (optional)"
+                  accessibilityLabel="Deck description"
+                  maxLength={280}
+                />
+              </View>
+
+              <View style={styles.swatches} accessibilityRole="radiogroup">
+                {deckColors.map((accent) => {
+                  const selected = draft.accentColor.toLowerCase() === accent.toLowerCase();
+                  return (
+                    <View key={accent} style={styles.swatchCell}>
+                      <Pressable
+                        onPress={() => {
+                          haptics.select();
+                          editor.setAccentColor(accent);
+                        }}
+                        accessibilityRole="radio"
+                        accessibilityState={{ selected }}
+                        accessibilityLabel={`Deck colour ${accent}`}
+                        style={[styles.swatchRing, selected && { borderColor: accent }]}
+                      >
+                        <View style={[styles.swatch, { backgroundColor: accent }]}>
+                          {selected ? <Icon name="check" size={20} color={cardTextOn(accent)} weight={3.5} /> : null}
+                        </View>
+                      </Pressable>
+                    </View>
+                  );
+                })}
+              </View>
+
+              <View style={styles.progress}>
+                <View style={styles.progressText}>
+                  <Text variant="heading">
+                    {count} {count === 1 ? 'card' : 'cards'}
+                  </Text>
+                  <Text variant="label" tone={needed > 0 ? 'pass' : 'correct'}>
+                    {needed > 0 ? `${needed} more to play` : 'Ready to play!'}
+                  </Text>
+                </View>
+                <View style={styles.progressBar}>
+                  <ProgressBar value={count / MIN_PLAYABLE_CARDS} height={12} />
+                </View>
+              </View>
+
+              <View style={styles.addRow}>
+                <Field
+                  value={newCard}
+                  onChangeText={setNewCard}
+                  onSubmitEditing={commitNewCard}
+                  placeholder="Type a card and hit return"
+                  accessibilityLabel="New card text"
+                  style={styles.grow}
+                  returnKeyType="done"
+                  submitBehavior="submit"
+                />
+                <Raised
+                  face={newCard.trim() ? color.correct : color.line}
+                  shade={newCard.trim() ? color.correctShade : color.lineShade}
+                  radius={radius.md}
+                  onPress={commitNewCard}
+                  disabled={!newCard.trim()}
+                  accessibilityLabel="Add card"
+                  faceStyle={styles.addButton}
                 >
-                  {draft.accentColor === accent ? (
-                    <Text variant="label" style={{ color: readableTextOn(accent) }}>
-                      ✓
+                  <Icon name="plus" size={26} color={newCard.trim() ? color.bone : color.textFaint} weight={3.5} />
+                </Raised>
+              </View>
+
+              <Button label="Paste a whole list" icon="paste" size="sm" onPress={() => setPasting(true)} />
+
+              {count > 0 ? (
+                <Text variant="overline" tone="faint">
+                  CARDS
+                </Text>
+              ) : null}
+            </View>
+          }
+          renderItem={({ item, index }) => {
+            const tooLong = item.text.length > CARD_TEXT_SOFT_CAP;
+
+            return (
+              <View style={styles.cardRow}>
+                <View style={styles.cardBody}>
+                  <Field
+                    value={item.text}
+                    onChangeText={(text) => editor.updateCard(item.id, { text })}
+                    accessibilityLabel={`Card ${index + 1}`}
+                    multiline
+                    style={styles.cardInput}
+                  />
+                  {tooLong ? (
+                    <Text variant="caption" tone="pass">
+                      {item.text.length} characters — small at arm’s length
                     </Text>
                   ) : null}
-                </Pressable>
-              ))}
-            </View>
+                </View>
 
-            <View style={styles.addRow}>
-              <TextInput
-                value={newCard}
-                onChangeText={setNewCard}
-                onSubmitEditing={commitNewCard}
-                placeholder="Add a card"
-                placeholderTextColor={color.inkFaint}
-                accessibilityLabel="New card text"
-                style={[styles.input, styles.addInput]}
-                returnKeyType="done"
-                blurOnSubmit={false}
-              />
-              <Pressable
-                onPress={commitNewCard}
-                accessibilityRole="button"
-                accessibilityLabel="Add card"
-                style={styles.addButton}
-              >
-                <Text variant="heading">+</Text>
-              </Pressable>
-            </View>
-
-            <Button label="Paste a list" onPress={() => setPasting(true)} style={styles.paste} />
-
-            <View style={styles.countRow}>
-              <Text variant="caption" tone="faint">
-                {draft.cards.length} {draft.cards.length === 1 ? 'card' : 'cards'}
-                {draft.cards.length < MIN_PLAYABLE_CARDS
-                  ? ` · ${MIN_PLAYABLE_CARDS} needed to play`
-                  : ''}
-              </Text>
-            </View>
-          </View>
-        }
-        renderItem={({ item, index }) => {
-          const tooLong = item.text.length > CARD_TEXT_SOFT_CAP;
-
-          return (
-            <View style={styles.cardRow}>
-              <View style={styles.cardBody}>
-                <TextInput
-                  value={item.text}
-                  onChangeText={(text) => editor.updateCard(item.id, { text })}
-                  accessibilityLabel={`Card ${index + 1}`}
-                  style={styles.cardInput}
-                  multiline
-                />
-                {tooLong ? (
-                  <Text variant="caption" tone="muted">
-                    {item.text.length} characters — small at arm&apos;s length
-                  </Text>
-                ) : null}
+                <View style={styles.cardActions}>
+                  <SmallIcon
+                    icon="up"
+                    hint={`Move card ${index + 1} up`}
+                    disabled={index === 0}
+                    onPress={() => editor.moveUp(item.id)}
+                  />
+                  <SmallIcon
+                    icon="down"
+                    hint={`Move card ${index + 1} down`}
+                    disabled={index === count - 1}
+                    onPress={() => editor.moveDown(item.id)}
+                  />
+                  <SmallIcon icon="trash" hint={`Delete card ${index + 1}`} danger onPress={() => editor.removeCard(item.id)} />
+                </View>
               </View>
-
-              <View style={styles.cardActions}>
-                <IconButton
-                  label="↑"
-                  hint={`Move card ${index + 1} up`}
-                  disabled={index === 0}
-                  onPress={() => editor.moveUp(item.id)}
-                />
-                <IconButton
-                  label="↓"
-                  hint={`Move card ${index + 1} down`}
-                  disabled={index === draft.cards.length - 1}
-                  onPress={() => editor.moveDown(item.id)}
-                />
-                <IconButton
-                  label="×"
-                  hint={`Delete card ${index + 1}`}
-                  onPress={() => editor.removeCard(item.id)}
-                />
-              </View>
-            </View>
-          );
-        }}
-        ListEmptyComponent={
-          <EmptyState
-            title="No cards yet"
-            body="Type one above, or paste a whole list at once."
-          />
-        }
-      />
-
-      <View style={styles.footer}>
-        {editor.errors.length > 0 ? (
-          <Text variant="caption" tone="muted">
-            {editor.errors[0]?.message}
-          </Text>
-        ) : null}
-        <Button
-          label={saving ? 'Saving' : 'Save'}
-          variant="primary"
-          disabled={!editor.canSave || saving}
-          onPress={() => void save()}
+            );
+          }}
         />
-        <Button label="Cancel" onPress={leave} />
-      </View>
+
+        <Footer>
+          {editor.errors.length > 0 && count > 0 ? (
+            <Text variant="caption" tone="pass" align="center">
+              {editor.errors[0]?.message}
+            </Text>
+          ) : null}
+          <Button
+            label={saving ? 'Saving' : 'Save deck'}
+            variant="primary"
+            size="lg"
+            icon="check"
+            disabled={!editor.canSave || saving}
+            onPress={() => void save()}
+          />
+        </Footer>
+      </KeyboardAvoidingView>
     </Screen>
   );
 }
 
-function IconButton({
-  label,
+function SmallIcon({
+  icon,
   hint,
   onPress,
   disabled = false,
+  danger = false,
 }: {
-  label: string;
+  icon: IconName;
   hint: string;
   onPress: () => void;
   disabled?: boolean;
+  danger?: boolean;
 }) {
   return (
     <Pressable
@@ -361,100 +371,61 @@ function IconButton({
       accessibilityRole="button"
       accessibilityLabel={hint}
       accessibilityState={{ disabled }}
-      style={({ pressed }) => [
-        styles.icon,
-        disabled && styles.iconDisabled,
-        pressed && !disabled && styles.iconPressed,
-      ]}
+      hitSlop={4}
+      style={({ pressed }) => [styles.icon, disabled && styles.iconDisabled, pressed && !disabled && styles.iconPressed]}
     >
-      <Text variant="body" tone={disabled ? 'faint' : 'muted'}>
-        {label}
-      </Text>
+      <Icon name={icon} size={18} color={danger ? color.danger : color.textMuted} weight={3} />
     </Pressable>
   );
 }
 
 const styles = StyleSheet.create({
-  header: { paddingHorizontal: space.lg, paddingTop: space.sm, paddingBottom: space.sm, gap: 2 },
+  fill: { flex: 1 },
   list: { paddingBottom: space.lg, flexGrow: 1 },
-  meta: { gap: space.sm, paddingHorizontal: space.lg, paddingBottom: space.md },
-  nameInput: {
-    ...typeScale.heading,
-    color: color.bone,
-    backgroundColor: color.surface,
-    borderRadius: radius.md,
-    paddingHorizontal: space.md,
-    paddingVertical: space.sm,
-  },
-  input: {
-    ...typeScale.body,
-    color: color.bone,
-    backgroundColor: color.surface,
-    borderRadius: radius.md,
-    paddingHorizontal: space.md,
-    paddingVertical: space.sm,
-  },
-  accents: { flexDirection: 'row', gap: space.sm, flexWrap: 'wrap' },
-  accent: {
-    width: 44,
-    height: 44,
-    borderRadius: radius.md,
-    alignItems: 'center',
-    justifyContent: 'center',
-    borderWidth: 2,
+  meta: { gap: space.md, paddingHorizontal: 20, paddingBottom: space.sm },
+  preview: { minHeight: 120, justifyContent: 'flex-end', padding: space.lg, gap: 2 },
+  fieldGroup: { gap: space.sm },
+  swatches: { flexDirection: 'row', flexWrap: 'wrap', rowGap: space.sm },
+  swatchCell: { width: '25%', alignItems: 'center' },
+  swatchRing: {
+    padding: 3,
+    borderRadius: 26,
+    borderWidth: 3,
     borderColor: 'transparent',
   },
-  accentSelected: { borderColor: color.bone },
-  addRow: { flexDirection: 'row', gap: space.sm, alignItems: 'center' },
-  addInput: { flex: 1 },
-  addButton: {
-    width: 48,
-    height: 48,
+  swatch: {
+    width: 40,
+    height: 40,
+    borderRadius: 20,
     alignItems: 'center',
     justifyContent: 'center',
-    borderRadius: radius.md,
-    backgroundColor: color.surfaceRaised,
   },
-  paste: { marginTop: space.xs },
-  pasteBox: {
-    ...typeScale.body,
-    flex: 1,
-    color: color.bone,
-    backgroundColor: color.surface,
-    borderRadius: radius.md,
-    padding: space.md,
-    marginHorizontal: space.lg,
-    marginBottom: space.md,
-    textAlignVertical: 'top',
-  },
-  countRow: { paddingTop: space.xs },
+  progress: { gap: space.sm },
+  progressText: { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'baseline' },
+  progressBar: { flexDirection: 'row' },
+  addRow: { flexDirection: 'row', gap: space.sm, alignItems: 'flex-start' },
+  grow: { flex: 1 },
+  addButton: { width: 52, height: 52, alignItems: 'center', justifyContent: 'center' },
+  pasteBody: { flex: 1, paddingHorizontal: 20, gap: space.md },
+  pasteBox: { flex: 1, minHeight: 200 },
   cardRow: {
     flexDirection: 'row',
     alignItems: 'flex-start',
     gap: space.sm,
-    paddingHorizontal: space.lg,
+    paddingHorizontal: 20,
     paddingVertical: space.xs,
   },
   cardBody: { flex: 1, gap: 2 },
-  cardInput: {
-    ...typeScale.body,
-    color: color.bone,
-    backgroundColor: color.surface,
-    borderRadius: radius.md,
-    paddingHorizontal: space.md,
-    paddingVertical: space.sm,
-  },
-  cardActions: { flexDirection: 'row', gap: space.xs, paddingTop: space.xs },
+  cardInput: { paddingVertical: space.sm + 2 },
+  cardActions: { flexDirection: 'row', gap: 2, paddingTop: 6 },
   icon: {
-    width: 40,
-    height: 40,
+    width: 36,
+    height: 36,
     alignItems: 'center',
     justifyContent: 'center',
     borderRadius: radius.sm,
-    backgroundColor: color.surface,
   },
-  iconDisabled: { opacity: 0.35 },
-  iconPressed: { backgroundColor: color.surfaceRaised },
-  footer: { paddingHorizontal: space.lg, paddingBottom: space.md, gap: space.sm },
+  iconDisabled: { opacity: 0.3 },
+  iconPressed: { backgroundColor: color.backgroundSoft },
   centre: { flex: 1, alignItems: 'center', justifyContent: 'center' },
 });

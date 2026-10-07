@@ -5,13 +5,13 @@
   "description": "If someone in the room has not seen it, they have at least heard of it.",
   "author": "Deckhead",
   "language": "en",
-  "accentColor": "#FF3D6E",
+  "accentColor": "#F0386B",
   "tags": [
     "film",
     "classics"
   ],
   "createdAt": "2026-07-26T18:00:00Z",
-  "updatedAt": "2026-07-26T18:00:00Z",
+  "updatedAt": "2026-10-07T12:00:00Z",
   "cards": [
     {
       "id": "crd_a597f271",

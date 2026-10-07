@@ -66,18 +66,53 @@ export function readableTextOn(background: string): string {
 export const LARGE_TEXT_CONTRAST_MIN = 3;
 
 /**
+ * Text colour for big, heavy type on a coloured surface: deck tiles, the card
+ * face, team badges.
+ *
+ * Prefers white whenever white clears AA large text, because white on a
+ * saturated colour is the look — dark text on a vivid blue reads as a warning
+ * label. Falls back to whichever option is stronger only when white genuinely
+ * cannot be read, such as on yellow.
+ */
+export function cardTextOn(background: string): string {
+  return contrastRatio(background, color.bone) >= LARGE_TEXT_CONTRAST_MIN
+    ? color.bone
+    : readableTextOn(background);
+}
+
+/**
  * The best available contrast for text on a given background, whichever of
  * bone or ink wins.
  *
  * Worth knowing: because bone and ink sit at opposite ends of the luminance
- * range, this never drops below about 4.08:1 for any colour — the worst case is
+ * range, this never drops below about 4.13:1 for any colour — the worst case is
  * the mid grey where the two options are equally bad, and even that clears AA
  * large text. So a deck accent cannot make its own card text unreadable, and no
  * contrast warning is needed in the deck editor. The real hazard for a
  * user-chosen accent is being too close to the correct or pass flash colour,
- * which would make the full-screen state flash fail to read. That is an M4
- * concern and wants perceptual colour distance, not a contrast ratio.
+ * which would make the full-screen state flash fail to read. The editor avoids
+ * it by only offering colours from `deckColors`, which leaves green and orange
+ * out; the flash also carries a large word and icon, so an imported deck in a
+ * clashing colour still reads.
  */
 export function bestTextContrastOn(background: string): number {
   return Math.max(contrastRatio(background, color.bone), contrastRatio(background, color.ink));
+}
+
+/**
+ * The colour mixed toward black by `amount` (0 to 1). Used to draw the ledge
+ * under a surface in an arbitrary deck colour, so a deck's own banner presses
+ * the same way the built-in buttons do. Returns the input unchanged if it is
+ * not a hex colour.
+ */
+export function darken(hex: string, amount = 0.22): string {
+  const rgb = parseHexColor(hex);
+  if (!rgb) return hex;
+
+  const mix = (value: number) =>
+    Math.round(value * (1 - Math.min(1, Math.max(0, amount))))
+      .toString(16)
+      .padStart(2, '0');
+
+  return `#${mix(rgb.r)}${mix(rgb.g)}${mix(rgb.b)}`;
 }

@@ -1,30 +1,49 @@
 import { Text as RNText, type TextProps as RNTextProps, StyleSheet } from 'react-native';
-import { color, font, type } from './tokens';
+import { color, type } from './tokens';
 
 type Variant = keyof typeof type;
-type Tone = 'default' | 'muted' | 'faint';
+export type Tone =
+  | 'default'
+  | 'muted'
+  | 'faint'
+  | 'inverse'
+  | 'brand'
+  | 'focus'
+  | 'correct'
+  | 'pass';
 
 export type TextProps = RNTextProps & {
   variant?: Variant;
   tone?: Tone;
-  /** Use the condensed card face rather than the UI face. */
-  card?: boolean;
+  align?: 'left' | 'center' | 'right';
 };
 
 const tones: Record<Tone, string> = {
-  default: color.bone,
-  muted: color.inkMuted,
-  faint: color.inkFaint,
+  default: color.text,
+  muted: color.textMuted,
+  faint: color.textFaint,
+  inverse: color.bone,
+  brand: color.brand,
+  focus: color.focus,
+  correct: color.correct,
+  pass: color.pass,
 };
 
-/** UI text. Card text is its own component, since it auto-fits rather than scaling. */
-export function Text({ variant = 'body', tone = 'default', card = false, style, ...rest }: TextProps) {
+/**
+ * UI text. Card text in a round is its own component, since it auto-fits the
+ * screen rather than following the type scale.
+ *
+ * Dynamic Type stays on, capped so the largest accessibility sizes still fit a
+ * chunky button rather than breaking out of it.
+ */
+export function Text({ variant = 'body', tone = 'default', align, style, ...rest }: TextProps) {
   return (
     <RNText
       style={StyleSheet.compose(
-        [type[variant], { color: tones[tone] }, card ? { fontFamily: font.card } : null],
+        [type[variant], { color: tones[tone] }, align ? { textAlign: align } : null],
         style,
       )}
+      maxFontSizeMultiplier={1.6}
       {...rest}
     />
   );

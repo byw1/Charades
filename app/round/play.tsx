@@ -4,15 +4,19 @@ import { AppState, Pressable, StyleSheet, Text, View } from 'react-native';
 import { remainingMs } from '@/game/round';
 import type { Outcome } from '@/game/types';
 import { WARNING_SECONDS } from '@/game/types';
-import { useRoundScreenMode } from '@/hooks/useRoundScreenMode';
 import { useHaptics } from '@/hooks/useHaptics';
+import { useRoundScreenMode } from '@/hooks/useRoundScreenMode';
 import { useSessionStore } from '@/hooks/useSessionStore';
 import { useSettings } from '@/hooks/useSettings';
 import { useTilt } from '@/hooks/useTilt';
 import { CardFace } from '@/ui/CardFace';
+import { cardTextOn } from '@/ui/contrast';
 import { FlashOverlay } from '@/ui/FlashOverlay';
+import { Icon } from '@/ui/Icon';
+import { Mascot } from '@/ui/Mascot';
+import { PopIn } from '@/ui/motion';
 import { TimerBar } from '@/ui/TimerBar';
-import { color, flashMs, font, space } from '@/ui/tokens';
+import { color, flashMs, font, palette, radius, space } from '@/ui/tokens';
 
 const TICK_MS = 100;
 
@@ -36,7 +40,10 @@ export default function RoundPlayScreen() {
   const tick = useSessionStore((s) => s.tick);
 
   const [now, setNow] = useState(() => Date.now());
-  const [flash, setFlash] = useState<Outcome | null>(null);
+  // Each flash gets its own id, so a quick second answer is not cut short by
+  // the first flash's timer clearing it.
+  const [flash, setFlash] = useState<{ outcome: Outcome; id: number } | null>(null);
+  const flashId = useRef(0);
   const warned = useRef(false);
   const endSignalled = useRef(false);
 
@@ -85,8 +92,8 @@ export default function RoundPlayScreen() {
     endSignalled.current = true;
     haptics.timeUp();
 
-    // Let the final flash land before the recap replaces the screen.
-    const id = setTimeout(() => router.replace('/round/recap'), flashMs + 250);
+    // Long enough to read "Time's up" before the recap replaces the screen.
+    const id = setTimeout(() => router.replace('/round/recap'), 1_400);
     return () => clearTimeout(id);
   }, [haptics, router, state.phase]);
 
@@ -98,8 +105,11 @@ export default function RoundPlayScreen() {
       else haptics.pass();
 
       resolve(outcome, Date.now());
-      setFlash(outcome);
-      setTimeout(() => setFlash(null), flashMs);
+
+      flashId.current += 1;
+      const id = flashId.current;
+      setFlash({ outcome, id });
+      setTimeout(() => setFlash((current) => (current?.id === id ? null : current)), flashMs);
     },
     [haptics, resolve, state.phase],
   );
@@ -121,31 +131,45 @@ export default function RoundPlayScreen() {
 
   if (state.phase === 'paused') {
     return (
-      <Pressable style={styles.paused} onPress={() => resumeRound(Date.now())}>
-        <Text style={styles.pausedTitle} allowFontScaling={false}>
-          PAUSED
-        </Text>
-        <Text style={styles.pausedBody}>
-          {Math.ceil(left / 1000)} seconds left. Tap anywhere to carry on.
-        </Text>
+      <Pressable
+        style={styles.paused}
+        onPress={() => resumeRound(Date.now())}
+        accessibilityRole="button"
+        accessibilityLabel={`Paused. ${Math.ceil(left / 1000)} seconds left. Tap to carry on.`}
+      >
+        <Mascot size={150} mood="sleepy" />
+        <View style={styles.pausedCopy}>
+          <Text style={styles.pausedTitle} allowFontScaling={false}>
+            Paused
+          </Text>
+          <Text style={styles.pausedBody}>
+            {Math.ceil(left / 1000)} seconds left. Tap anywhere to carry on.
+          </Text>
+        </View>
       </Pressable>
     );
   }
 
   const card = state.card;
-  const accent = card?.accentColor ?? color.ink;
+  const accent = card?.accentColor ?? color.brand;
   const fraction = state.durationMs === 0 ? 0 : left / state.durationMs;
   const warning = left <= WARNING_SECONDS * 1_000;
+  const got = state.results.filter((result) => result.outcome === 'correct').length;
+  const onAccent = cardTextOn(accent);
 
   return (
     <View style={styles.screen}>
       <View style={[styles.card, { backgroundColor: accent }]}>
         <TimerBar fraction={fraction} warning={warning} />
-        {card ? (
-          <CardFace text={card.text} accentColor={accent} />
-        ) : (
-          <View style={styles.blank} />
-        )}
+        {card ? <CardFace text={card.text} accentColor={accent} /> : <View style={styles.blank} />}
+      </View>
+
+      {/* For the room, not the holder: how the round is going. */}
+      <View style={styles.tally} pointerEvents="none" accessible={false}>
+        <Icon name="check" size={18} color={onAccent} weight={3.5} />
+        <Text style={[styles.tallyText, { color: onAccent }]} allowFontScaling={false}>
+          {got}
+        </Text>
       </View>
 
       {/* Half the screen each. The holder is aiming by position, not by sight. */}
@@ -166,13 +190,18 @@ export default function RoundPlayScreen() {
         </View>
       )}
 
-      {flash ? <FlashOverlay outcome={flash} /> : null}
+      {flash ? <FlashOverlay key={flash.id} outcome={flash.outcome} /> : null}
 
       {state.phase === 'ended' ? (
         <View style={styles.timeUp} pointerEvents="none">
-          <Text style={styles.timeUpText} allowFontScaling={false}>
-            TIME
-          </Text>
+          <PopIn>
+            <Mascot size={150} mood="wow" />
+          </PopIn>
+          <PopIn delay={80}>
+            <Text style={styles.timeUpText} allowFontScaling={false}>
+              Time’s up!
+            </Text>
+          </PopIn>
         </View>
       ) : null}
     </View>
@@ -190,6 +219,23 @@ const styles = StyleSheet.create({
   blank: {
     flex: 1,
   },
+  tally: {
+    position: 'absolute',
+    top: 40,
+    right: 56,
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 4,
+    paddingHorizontal: space.sm + 4,
+    paddingVertical: 4,
+    borderRadius: radius.pill,
+    backgroundColor: 'rgba(0,0,0,0.16)',
+  },
+  tallyText: {
+    fontFamily: font.black,
+    fontSize: 18,
+    lineHeight: 22,
+  },
   hitAreas: {
     ...StyleSheet.absoluteFill,
     flexDirection: 'column',
@@ -199,33 +245,40 @@ const styles = StyleSheet.create({
   },
   paused: {
     flex: 1,
+    flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'center',
-    backgroundColor: color.ink,
-    gap: space.sm,
+    backgroundColor: palette.purple,
+    gap: space.xl,
+    paddingHorizontal: space.xl,
   },
+  pausedCopy: { gap: space.xs, flexShrink: 1 },
   pausedTitle: {
-    fontFamily: font.card,
+    fontFamily: font.black,
     fontSize: 64,
-    lineHeight: 70,
+    lineHeight: 72,
     color: color.bone,
   },
   pausedBody: {
-    fontSize: 17,
-    lineHeight: 24,
-    color: color.inkMuted,
+    fontFamily: font.bold,
+    fontSize: 19,
+    lineHeight: 26,
+    color: color.bone,
+    opacity: 0.9,
   },
   timeUp: {
     ...StyleSheet.absoluteFill,
+    flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'center',
-    backgroundColor: color.ink,
+    gap: space.lg,
+    backgroundColor: color.gold,
     zIndex: 20,
   },
   timeUpText: {
-    fontFamily: font.card,
-    fontSize: 120,
-    lineHeight: 128,
-    color: color.bone,
+    fontFamily: font.black,
+    fontSize: 96,
+    lineHeight: 108,
+    color: color.ink,
   },
 });
