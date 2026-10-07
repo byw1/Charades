@@ -31,11 +31,11 @@ export type Lens = {
  * the edges so they never sit on the deck name.
  */
 const STICKER_SPOTS = [
-  { top: 0.04, left: 0.06, size: 44, rotate: '-14deg' },
-  { top: 0.12, right: 0.08, size: 56, rotate: '12deg' },
-  { top: 0.72, left: 0.08, size: 52, rotate: '9deg' },
+  { top: 0.03, left: 0.06, size: 44, rotate: '-14deg' },
+  { top: 0.1, right: 0.08, size: 56, rotate: '12deg' },
+  { top: 0.86, left: 0.07, size: 48, rotate: '9deg' },
   { top: 0.8, right: 0.1, size: 40, rotate: '-10deg' },
-  { top: 0.42, right: 0.02, size: 34, rotate: '18deg' },
+  { top: 0.22, left: 0.03, size: 32, rotate: '18deg' },
 ] as const;
 
 export type PlayPageProps = {

@@ -144,8 +144,9 @@ export default function RoundPlayScreen() {
    * for the whole round, so leaving full-screen tap targets live underneath a
    * tilt game is a stray palm away from resolving a card nobody guessed.
    *
-   * A device with no accelerometer keeps tap, so choosing tilt can never leave
-   * a round with no way to answer.
+   * A device with no accelerometer, or one whose sensor stays silent, keeps
+   * tap, so tilt being the default can never leave a round with no way to
+   * answer.
    */
   const tiltChosen = settings.inputMode === 'tilt';
   const { available: tiltAvailable } = useTilt({

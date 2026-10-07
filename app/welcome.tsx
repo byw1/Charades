@@ -17,6 +17,8 @@ type Story = {
   caption: string;
   detail: string;
   mood: MascotMood;
+  /** What Dex's forehead card shows. A question mark unless something better fits. */
+  glyph?: string;
   stickers?: { text: string; tint: string; tilt: number; top: string; left?: string; right?: string }[];
 };
 
@@ -50,12 +52,14 @@ const CONTROLS: Record<'tilt' | 'tap', Story> = {
     caption: 'Tip it down if you got it',
     detail: 'Tip it up to pass. Most cards before time’s up wins.',
     mood: 'excited',
+    glyph: '👇',
   },
   tap: {
     background: palette.blue,
     caption: 'Tap top if you got it',
     detail: 'Tap the bottom to pass. Most cards before time’s up wins.',
     mood: 'excited',
+    glyph: '👆',
   },
 };
 
@@ -155,7 +159,7 @@ export default function WelcomeScreen() {
               {sticker.text}
             </Sticker>
           ))}
-          <Mascot size={230} mood={story.mood} glyph={index === 2 ? '👆' : '?'} />
+          <Mascot size={230} mood={story.mood} glyph={story.glyph} />
         </View>
 
         <View style={styles.bottom} pointerEvents="box-none">
