@@ -15,6 +15,40 @@ export type DatabaseState =
   | { status: 'ready'; db: SQLiteDatabase }
   | { status: 'error'; message: string };
 
+let startup: Promise<SQLiteDatabase> | null = null;
+
+/**
+ * Open, migrate and seed, once per app launch, shared by every caller.
+ *
+ * Seeding has to be shared as well as the open. Every screen asks for the
+ * database, and two asking in the same frame — Home and the start-game hook
+ * do — would otherwise run two seeds at once on one connection: overlapping
+ * transactions and duplicate inserts. A failed startup is not cached, so a
+ * transient failure can be retried by the next screen that asks.
+ */
+function start(): Promise<SQLiteDatabase> {
+  startup ??= (async () => {
+    const db = await openDatabase();
+    const report = await seedBundledDecks(db);
+
+    if (report.rejected.length > 0) {
+      // A build problem rather than a user problem, and the app still works
+      // with whatever installed. Loud in development, silent in production
+      // because there is nothing the user could do about it.
+      if (__DEV__) {
+        console.warn('Bundled decks failed validation:', report.rejected);
+      }
+    }
+
+    return db;
+  })().catch((error: unknown) => {
+    startup = null;
+    throw error;
+  });
+
+  return startup;
+}
+
 export function useDatabase(): DatabaseState {
   const [state, setState] = useState<DatabaseState>({ status: 'loading' });
 
@@ -23,18 +57,7 @@ export function useDatabase(): DatabaseState {
 
     void (async () => {
       try {
-        const db = await openDatabase();
-        const report = await seedBundledDecks(db);
-
-        if (report.rejected.length > 0) {
-          // A build problem rather than a user problem, and the app still
-          // works with whatever installed. Loud in development, silent in
-          // production because there is nothing the user could do about it.
-          if (__DEV__) {
-            console.warn('Bundled decks failed validation:', report.rejected);
-          }
-        }
-
+        const db = await start();
         if (!cancelled) setState({ status: 'ready', db });
       } catch (error) {
         if (cancelled) return;
