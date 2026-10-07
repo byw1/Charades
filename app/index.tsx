@@ -17,6 +17,7 @@ import { useSessionStore } from '@/hooks/useSessionStore';
 import { useSettingsStore } from '@/hooks/useSettings';
 import { useStartGame } from '@/hooks/useStartGame';
 import { getDeck, listDeckSummaries, searchDeckSummaries } from '@/storage/deckRepo';
+import { deckMakerAvailable } from '@/media/ai';
 import { syncStreakReminder } from '@/media/reminders';
 import { getResumableSession, listSessions } from '@/storage/sessionRepo';
 import { BottomBar, useBottomBarHeight, type BottomTab } from '@/ui/BottomBar';
@@ -61,6 +62,9 @@ export default function HomeScreen() {
   const [stats, setStats] = useState<PlayStats | null>(null);
   const [friends, setFriends] = useState<{ board: Friend[]; rivalry: Rivalry | null }>({ board: [], rivalry: null });
   const [lensIndex, setLensIndex] = useState(0);
+  // Checked once: Apple Intelligence being on or off is not something that
+  // changes while the home screen is open.
+  const [canDream] = useState(() => deckMakerAvailable());
 
   // Everything is reloaded on focus, so coming back from a game, the editor or
   // an import shows what just changed.
@@ -182,6 +186,7 @@ export default function HomeScreen() {
           onNew={() => router.push('/decks/edit/new')}
           onImport={() => router.push('/decks/import')}
           onGroup={() => router.push('/decks/group')}
+          onMagic={canDream ? () => router.push('/decks/magic') : undefined}
           bottomInset={bar}
         />
         <PlayPage
