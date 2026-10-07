@@ -6,14 +6,11 @@
     "version": "0.1.0",
     "orientation": "portrait",
     "icon": "./assets/icon.png",
-    "userInterfaceStyle": "dark",
-    "backgroundColor": "#14121A",
-    "splash": {
-      "image": "./assets/splash-icon.png",
-      "resizeMode": "contain",
-      "backgroundColor": "#14121A"
-    },
-    "assetBundlePatterns": ["**/*"],
+    "userInterfaceStyle": "light",
+    "backgroundColor": "#FFFFFF",
+    "assetBundlePatterns": [
+      "**/*"
+    ],
     "ios": {
       "bundleIdentifier": "com.deckhead.app",
       "supportsTablet": false,
@@ -30,7 +27,7 @@
     "android": {
       "package": "com.deckhead.app",
       "adaptiveIcon": {
-        "backgroundColor": "#14121A",
+        "backgroundColor": "#FFC800",
         "foregroundImage": "./assets/android-icon-foreground.png",
         "backgroundImage": "./assets/android-icon-background.png",
         "monochromeImage": "./assets/android-icon-monochrome.png"
@@ -41,15 +38,32 @@
       "expo-router",
       "expo-font",
       [
+        "expo-splash-screen",
+        {
+          "backgroundColor": "#FFC800",
+          "image": "./assets/splash-icon.png",
+          "imageWidth": 220
+        }
+      ],
+      [
         "expo-camera",
         {
           "cameraPermission": "Deckhead uses the camera only to scan a deck code. No photos are taken or stored.",
           "recordAudioAndroid": false
         }
+      ],
+      [
+        "expo-sensors",
+        {
+          "motionPermission": "Deckhead uses motion only for the optional tilt controls, to tell when you tip the phone to answer. Nothing is recorded."
+        }
       ]
     ],
     "experiments": {
       "typedRoutes": true
+    },
+    "web": {
+      "favicon": "./assets/favicon.png"
     }
   }
 }

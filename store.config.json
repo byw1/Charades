@@ -1,0 +1,38 @@
+{
+  "configVersion": 0,
+  "apple": {
+    "copyright": "2026 William Lawrence",
+    "categories": [["GAMES", "GAMES_FAMILY", "GAMES_WORD"], "ENTERTAINMENT"],
+    "info": {
+      "en-US": {
+        "title": "Deckhead",
+        "subtitle": "Charades Party Game",
+        "promoText": "Phone on your forehead. Friends shout clues. Every deck free, no ads, no accounts — and make your own decks in seconds.",
+        "description": "Hold the phone to your forehead. A word appears that everyone can see except you. Your friends shout clues, act it out, hum it — anything but say the word — and you guess as many as you can before the timer runs out.\n\nEVERYTHING IS FREE\nEvery deck is included from the moment you install. No ads, no subscriptions, no in-app purchases, no accounts.\n\nMAKE YOUR OWN DECKS\nInside jokes, your friends' names, your office legends. Type a few cards or paste a whole list at once.\n\nSHARE IN SECONDS\nShow a QR code and the whole room has your deck. Or send it as a link or a file — it travels inside the code, so nothing is uploaded anywhere.\n\nCONTROLS YOU CAN TRUST\nTap the top half of the screen if you got it, the bottom half to pass. Huge targets you can hit without looking. Prefer tilting? Turn it on in Settings — it's built to ignore an excited jerk of the phone.\n\nA GAME WITH AN ENDING\nPlay in teams or just play together. Pick a number of rounds, a target score, or play until the cards run out. Deckhead rotates who holds the phone, keeps the score, and lets you fix a mis-tap after every round.\n\nBUILT FOR A ROOM AFTER DARK\nGiant, bold cards that fill the screen. Full-screen flashes everyone can read from across the room. Buzzes that tell the holder what happened without leaking it to the guesser.\n\nPRIVATE BY DESIGN\nDeckhead works completely offline and collects nothing. Your decks and games stay on your phone.",
+        "keywords": ["charades", "party", "game", "forehead", "guess", "friends", "family", "word", "cards", "offline", "teams"],
+        "releaseNotes": "Meet Dex! A brand-new look, a quick how-to-play, tilt controls, and a whole lot more bounce.",
+        "supportUrl": "https://github.com/byw1/Deckhead/issues",
+        "privacyPolicyUrl": "https://github.com/byw1/Deckhead/blob/main/PRIVACY.md"
+      }
+    },
+    "advisory": {
+      "alcoholTobaccoOrDrugUseOrReferences": "NONE",
+      "contests": "NONE",
+      "gamblingSimulated": "NONE",
+      "horrorOrFearThemes": "NONE",
+      "matureOrSuggestiveThemes": "NONE",
+      "medicalOrTreatmentInformation": "NONE",
+      "profanityOrCrudeHumor": "NONE",
+      "sexualContentGraphicAndNudity": "NONE",
+      "sexualContentOrNudity": "NONE",
+      "violenceCartoonOrFantasy": "NONE",
+      "violenceRealistic": "NONE",
+      "violenceRealisticProlongedGraphicOrSadistic": "NONE",
+      "gambling": false,
+      "unrestrictedWebAccess": false
+    },
+    "release": {
+      "automaticRelease": false
+    }
+  }
+}
