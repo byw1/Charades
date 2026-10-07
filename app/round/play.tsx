@@ -16,7 +16,7 @@ import { Icon } from '@/ui/Icon';
 import { Mascot } from '@/ui/Mascot';
 import { PopIn } from '@/ui/motion';
 import { TimerBar } from '@/ui/TimerBar';
-import { color, flashMs, font, palette, radius, space } from '@/ui/tokens';
+import { color, flashMs, font, radius, space } from '@/ui/tokens';
 
 const TICK_MS = 100;
 
@@ -140,7 +140,7 @@ export default function RoundPlayScreen() {
         <Mascot size={150} mood="sleepy" />
         <View style={styles.pausedCopy}>
           <Text style={styles.pausedTitle} allowFontScaling={false}>
-            Paused
+            Paused 😴
           </Text>
           <Text style={styles.pausedBody}>
             {Math.ceil(left / 1000)} seconds left. Tap anywhere to carry on.
@@ -221,18 +221,18 @@ const styles = StyleSheet.create({
   },
   tally: {
     position: 'absolute',
-    top: 40,
-    right: 56,
+    top: 30,
+    right: 52,
     flexDirection: 'row',
     alignItems: 'center',
     gap: 4,
     paddingHorizontal: space.sm + 4,
     paddingVertical: 4,
     borderRadius: radius.pill,
-    backgroundColor: 'rgba(0,0,0,0.16)',
+    backgroundColor: 'rgba(0,0,0,0.22)',
   },
   tallyText: {
-    fontFamily: font.black,
+    fontFamily: font.display,
     fontSize: 18,
     lineHeight: 22,
   },
@@ -248,15 +248,16 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'center',
-    backgroundColor: palette.purple,
+    backgroundColor: color.background,
     gap: space.xl,
     paddingHorizontal: space.xl,
   },
   pausedCopy: { gap: space.xs, flexShrink: 1 },
   pausedTitle: {
-    fontFamily: font.black,
+    fontFamily: font.display,
     fontSize: 64,
-    lineHeight: 72,
+    lineHeight: 68,
+    letterSpacing: -2,
     color: color.bone,
   },
   pausedBody: {
@@ -272,13 +273,14 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
     gap: space.lg,
-    backgroundColor: color.gold,
+    backgroundColor: color.brand,
     zIndex: 20,
   },
   timeUpText: {
-    fontFamily: font.black,
-    fontSize: 96,
+    fontFamily: font.display,
+    fontSize: 104,
     lineHeight: 108,
+    letterSpacing: -3,
     color: color.ink,
   },
 });

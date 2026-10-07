@@ -3,24 +3,22 @@ import { useCallback, useState } from 'react';
 import { ActivityIndicator, FlatList, StyleSheet, View } from 'react-native';
 import { MIN_PLAYABLE_CARDS, summaryIsPlayable, type DeckSummary } from '@/decks/types';
 import { useDatabase } from '@/hooks/useDatabase';
-import { useHaptics } from '@/hooks/useHaptics';
 import { useNewGameStore } from '@/hooks/useNewGameStore';
 import { listDeckSummaries } from '@/storage/deckRepo';
 import { Button } from '@/ui/Button';
-import { DeckStack } from '@/ui/DeckCard';
 import { EmptyState } from '@/ui/EmptyState';
 import { Icon } from '@/ui/Icon';
-import { Raised } from '@/ui/Raised';
 import { Footer, Screen } from '@/ui/Screen';
+import { Avatar } from '@/ui/Social';
 import { StepHeader } from '@/ui/StepHeader';
+import { Tap } from '@/ui/Tap';
 import { Text } from '@/ui/Text';
-import { color, radius, space } from '@/ui/tokens';
+import { color, gutter, space } from '@/ui/tokens';
 
-/** Step one of three: which decks are in play. */
+/** Step one of three: which decks are in play. Pick as many as you like. */
 export default function NewGameDecksScreen() {
   const router = useRouter();
   const database = useDatabase();
-  const haptics = useHaptics();
 
   const deckIds = useNewGameStore((s) => s.deckIds);
   const toggleDeck = useNewGameStore((s) => s.toggleDeck);
@@ -45,20 +43,12 @@ export default function NewGameDecksScreen() {
     }, [database]),
   );
 
-  const totalCards = (decks ?? [])
-    .filter((d) => deckIds.includes(d.id))
-    .reduce((sum, d) => sum + d.cardCount, 0);
-
+  const chosen = (decks ?? []).filter((d) => deckIds.includes(d.id));
+  const totalCards = chosen.reduce((sum, d) => sum + d.cardCount, 0);
   const enough = totalCards >= MIN_PLAYABLE_CARDS;
 
   const header = (
-    <StepHeader
-      step={1}
-      of={3}
-      title="Which decks are we playing?"
-      subtitle="Pick one, or mix a few together."
-      onClose={router.back}
-    />
+    <StepHeader step={1} of={3} title="Pick your decks" subtitle="One, or mix a few." onClose={router.back} />
   );
 
   if (database.status === 'error') {
@@ -94,51 +84,50 @@ export default function NewGameDecksScreen() {
           const playable = summaryIsPlayable(item);
 
           return (
-            <Raised
-              face={selected ? color.focusLight : color.background}
-              shade={selected ? color.focus : color.line}
-              border={selected ? color.focus : color.line}
-              radius={radius.lg}
+            <Tap
               onPress={() => toggleDeck(item.id)}
-              onPressIn={() => haptics.select()}
               disabled={!playable}
+              squish={0.98}
               accessibilityRole="checkbox"
               accessibilityState={{ checked: selected, disabled: !playable }}
               accessibilityLabel={`${item.name}, ${item.cardCount} cards`}
-              style={[styles.tile, !playable && styles.disabled]}
-              faceStyle={styles.tileFace}
+              contentStyle={[styles.row, !playable && styles.disabled]}
             >
-              <DeckStack accent={item.accentColor} initial={[...item.name][0]?.toUpperCase() ?? '?'} size={48} />
-              <View style={styles.tileBody}>
-                <Text variant="heading" numberOfLines={1} style={selected ? { color: color.focus } : null}>
+              <Avatar name={item.name} tint={item.accentColor} size={46} />
+              <View style={styles.rowBody}>
+                <Text variant="heading" numberOfLines={1}>
                   {item.name}
                 </Text>
-                <Text variant="caption" tone="faint">
+                <Text variant="caption" tone="muted">
                   {item.cardCount} cards{playable ? '' : ' · too few to play'}
                 </Text>
               </View>
               <View style={[styles.check, selected && styles.checkOn]}>
-                {selected ? <Icon name="check" size={18} color={color.bone} weight={3.5} /> : null}
+                {selected ? <Icon name="check" size={16} color={color.ink} weight={3.5} /> : null}
               </View>
-            </Raised>
+            </Tap>
           );
         }}
-        ListEmptyComponent={
-          <EmptyState title="No decks yet" body="Something went wrong opening the bundled decks." mood="sad" />
-        }
+        ListEmptyComponent={<EmptyState title="No decks yet" body="Something went wrong opening the free decks." mood="sad" />}
       />
 
       <Footer>
+        {chosen.length > 0 ? (
+          <Text variant="caption" tone="muted" numberOfLines={1} align="center">
+            {chosen.map((d) => d.name).join(', ')}
+          </Text>
+        ) : null}
         <Button
           label={
             deckIds.length === 0
-              ? 'Pick a deck'
+              ? 'Pick at least one'
               : !enough
                 ? `${MIN_PLAYABLE_CARDS} cards needed`
-                : `Continue · ${totalCards} cards`
+                : `Next · ${totalCards} cards`
           }
-          variant="primary"
+          variant="blue"
           size="lg"
+          icon={enough ? 'forward' : undefined}
           disabled={!enough}
           onPress={() => router.push('/new/teams')}
         />
@@ -148,23 +137,22 @@ export default function NewGameDecksScreen() {
 }
 
 const styles = StyleSheet.create({
-  list: { paddingTop: space.xs, paddingBottom: space.md, flexGrow: 1 },
-  tile: { marginHorizontal: 20, marginBottom: space.sm + 4 },
-  tileFace: {
+  list: { paddingBottom: space.md, flexGrow: 1 },
+  row: {
     flexDirection: 'row',
     alignItems: 'center',
-    gap: space.md,
-    paddingVertical: space.sm + 4,
-    paddingHorizontal: space.md,
+    gap: space.md - 4,
+    paddingHorizontal: gutter,
+    paddingVertical: 10,
   },
-  tileBody: { flex: 1, gap: 2 },
-  disabled: { opacity: 0.45 },
+  rowBody: { flex: 1, gap: 1 },
+  disabled: { opacity: 0.4 },
   check: {
-    width: 30,
-    height: 30,
-    borderRadius: 15,
-    borderWidth: 2.5,
-    borderColor: color.line,
+    width: 26,
+    height: 26,
+    borderRadius: 13,
+    borderWidth: 2,
+    borderColor: color.textFaint,
     alignItems: 'center',
     justifyContent: 'center',
   },

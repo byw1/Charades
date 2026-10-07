@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { StyleSheet, TextInput, View } from 'react-native';
 import { Icon } from './Icon';
-import { color, radius, space, type as typeScale } from './tokens';
+import { color, gutter, radius, space, type as typeScale } from './tokens';
 
 export type SearchFieldProps = {
   value: string;
@@ -14,12 +14,14 @@ export function SearchField({ value, onChangeText, placeholder = 'Search decks a
 
   return (
     <View style={[styles.wrap, focused && styles.focused]}>
-      <Icon name="search" size={20} color={focused ? color.focus : color.textFaint} />
+      <Icon name="search" size={18} color={focused ? color.text : color.textFaint} />
       <TextInput
         value={value}
         onChangeText={onChangeText}
         placeholder={placeholder}
         placeholderTextColor={color.textFaint}
+        selectionColor={color.brand}
+        keyboardAppearance="dark"
         accessibilityLabel={placeholder}
         autoCapitalize="none"
         autoCorrect={false}
@@ -38,21 +40,13 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     gap: space.sm,
-    backgroundColor: color.backgroundSoft,
-    borderRadius: radius.md,
+    backgroundColor: color.surface,
+    borderRadius: radius.pill,
     borderWidth: 2,
-    borderColor: color.line,
+    borderColor: color.surface,
     paddingHorizontal: space.md,
-    marginHorizontal: 20,
+    marginHorizontal: gutter,
   },
-  focused: {
-    borderColor: color.focus,
-    backgroundColor: color.background,
-  },
-  input: {
-    ...typeScale.body,
-    flex: 1,
-    color: color.text,
-    paddingVertical: space.sm + 4,
-  },
+  focused: { borderColor: color.line },
+  input: { ...typeScale.body, flex: 1, color: color.text, paddingVertical: space.sm + 2 },
 });

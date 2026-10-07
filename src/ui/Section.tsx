@@ -3,9 +3,9 @@ import { StyleSheet, Switch, View } from 'react-native';
 import { useHaptics } from '@/hooks/useHaptics';
 import { Icon, type IconName } from './Icon';
 import { Text } from './Text';
-import { color, radius, space } from './tokens';
+import { color, gutter, radius, space } from './tokens';
 
-/** A small uppercase label above a group of controls. */
+/** A small label above a group of controls. */
 export function SectionLabel({ children }: { children: string }) {
   return (
     <Text variant="overline" tone="faint" style={styles.label}>
@@ -14,7 +14,7 @@ export function SectionLabel({ children }: { children: string }) {
   );
 }
 
-/** A white card with a soft edge that groups related rows, settings-style. */
+/** A rounded block that groups related rows, settings-style. */
 export function Group({ children }: { children: ReactNode }) {
   return <View style={styles.group}>{children}</View>;
 }
@@ -29,7 +29,7 @@ export type SwitchRowProps = {
   last?: boolean;
 };
 
-/** One on/off setting: a coloured icon badge, a title, a line of why, a switch. */
+/** One on/off setting: a coloured icon, a title, a line of why, a switch. */
 export function SwitchRow({ icon, tint, title, detail, value, onChange, last = false }: SwitchRowProps) {
   const haptics = useHaptics();
 
@@ -50,58 +50,40 @@ export function SwitchRow({ icon, tint, title, detail, value, onChange, last = f
           onChange(next);
           haptics.select();
         }}
-        trackColor={{ true: color.correct, false: color.line }}
-        thumbColor={color.background}
-        ios_backgroundColor={color.line}
+        trackColor={{ true: color.brand, false: color.surfaceRaised }}
+        thumbColor={value ? color.ink : color.bone}
+        ios_backgroundColor={color.surfaceRaised}
         accessibilityLabel={title}
       />
     </View>
   );
 }
 
-/** A rounded square of colour with a white icon in it. */
-export function IconBadge({ icon, tint, size = 40 }: { icon: IconName; tint: string; size?: number }) {
+/** A rounded square of colour with an icon in it. */
+export function IconBadge({ icon, tint, size = 36 }: { icon: IconName; tint: string; size?: number }) {
   return (
-    <View
-      style={[styles.badge, { width: size, height: size, backgroundColor: tint }]}
-      accessible={false}
-    >
-      <Icon name={icon} size={size * 0.55} color={color.bone} weight={2.75} />
+    <View style={[styles.badge, { width: size, height: size, backgroundColor: tint }]} accessible={false}>
+      <Icon name={icon} size={size * 0.55} color={color.ink} weight={2.75} />
     </View>
   );
 }
 
 const styles = StyleSheet.create({
-  label: {
-    paddingHorizontal: 20,
-    paddingBottom: space.sm,
-  },
+  label: { paddingHorizontal: gutter, paddingBottom: space.sm },
   group: {
-    marginHorizontal: 20,
+    marginHorizontal: gutter,
     borderRadius: radius.lg,
-    borderWidth: 2,
-    borderColor: color.line,
-    backgroundColor: color.background,
+    backgroundColor: color.surface,
     overflow: 'hidden',
   },
   row: {
     flexDirection: 'row',
     alignItems: 'center',
-    gap: space.md,
+    gap: space.md - 4,
     paddingHorizontal: space.md,
-    paddingVertical: space.md - 2,
+    paddingVertical: space.md - 4,
   },
-  rowDivider: {
-    borderBottomWidth: 2,
-    borderBottomColor: color.line,
-  },
-  rowBody: {
-    flex: 1,
-    gap: 2,
-  },
-  badge: {
-    borderRadius: radius.sm,
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
+  rowDivider: { borderBottomWidth: StyleSheet.hairlineWidth, borderBottomColor: color.line },
+  rowBody: { flex: 1, gap: 2 },
+  badge: { borderRadius: radius.sm, alignItems: 'center', justifyContent: 'center' },
 });

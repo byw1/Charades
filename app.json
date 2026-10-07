@@ -6,8 +6,8 @@
     "version": "0.1.0",
     "orientation": "portrait",
     "icon": "./assets/icon.png",
-    "userInterfaceStyle": "light",
-    "backgroundColor": "#FFFFFF",
+    "userInterfaceStyle": "dark",
+    "backgroundColor": "#0A0A0D",
     "assetBundlePatterns": [
       "**/*"
     ],
@@ -27,7 +27,7 @@
     "android": {
       "package": "com.deckhead.app",
       "adaptiveIcon": {
-        "backgroundColor": "#FFC800",
+        "backgroundColor": "#0A0A0D",
         "foregroundImage": "./assets/android-icon-foreground.png",
         "backgroundImage": "./assets/android-icon-background.png",
         "monochromeImage": "./assets/android-icon-monochrome.png"
@@ -40,9 +40,9 @@
       [
         "expo-splash-screen",
         {
-          "backgroundColor": "#FFC800",
+          "backgroundColor": "#0A0A0D",
           "image": "./assets/splash-icon.png",
-          "imageWidth": 220
+          "imageWidth": 200
         }
       ],
       [

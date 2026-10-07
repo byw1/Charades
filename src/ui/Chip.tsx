@@ -1,8 +1,7 @@
 import { StyleSheet, View } from 'react-native';
-import { useHaptics } from '@/hooks/useHaptics';
-import { Raised } from './Raised';
+import { Tap } from './Tap';
 import { Text } from './Text';
-import { color, minTapTarget, radius, space } from './tokens';
+import { color, font, minTapTarget, radius, space } from './tokens';
 
 export type ChipProps = {
   label: string;
@@ -20,8 +19,8 @@ export type ChipProps = {
 };
 
 /**
- * A choice. Selected chips turn blue, the same way a picked answer does in a
- * quiz app: the colour change is the confirmation, no tick needed.
+ * A choice. Selected flips to solid white with dark text — the filter-chip
+ * look — so the pick is obvious at a glance on a dark screen.
  */
 export function Chip({
   label,
@@ -33,48 +32,55 @@ export function Chip({
   detail,
   grow = false,
 }: ChipProps) {
-  const haptics = useHaptics();
+  const tall = Boolean(detail);
 
   return (
-    <Raised
-      face={selected ? color.focusLight : color.background}
-      shade={selected ? color.focus : color.line}
-      border={selected ? color.focus : color.line}
-      radius={radius.md}
+    <Tap
       onPress={onPress}
-      onPressIn={() => haptics.select()}
       accessibilityRole={role}
       accessibilityState={role === 'radio' ? { selected } : { checked: selected }}
       accessibilityLabel={accessibilityLabel ?? label}
       style={grow ? styles.grow : null}
-      faceStyle={[styles.face, detail ? styles.faceTall : null]}
+      contentStyle={[
+        styles.face,
+        tall ? styles.faceTall : styles.facePill,
+        { backgroundColor: selected ? color.bone : color.surface },
+        grow && styles.fill,
+      ]}
     >
       <View style={styles.row}>
         {emoji ? <Text style={styles.emoji}>{emoji}</Text> : null}
-        <Text variant="label" style={{ color: selected ? color.focus : color.text }} numberOfLines={1}>
+        <Text style={[styles.label, { color: selected ? color.ink : color.text }]} numberOfLines={1}>
           {label}
         </Text>
       </View>
       {detail ? (
-        <Text variant="caption" tone="muted" align="center" numberOfLines={2}>
+        <Text
+          variant="caption"
+          align="center"
+          numberOfLines={2}
+          style={{ color: selected ? '#4A4A55' : color.textMuted }}
+        >
           {detail}
         </Text>
       ) : null}
-    </Raised>
+    </Tap>
   );
 }
 
 const styles = StyleSheet.create({
   grow: { flex: 1 },
+  fill: { flexGrow: 1 },
   face: {
-    minHeight: minTapTarget + 4,
+    minHeight: minTapTarget,
     minWidth: 52,
     alignItems: 'center',
     justifyContent: 'center',
     paddingHorizontal: space.md,
-    paddingVertical: space.sm,
   },
-  faceTall: { paddingVertical: space.md, gap: 2 },
-  row: { flexDirection: 'row', alignItems: 'center', gap: space.sm },
-  emoji: { fontSize: 20, lineHeight: 26 },
+  facePill: { borderRadius: radius.pill, paddingVertical: space.sm },
+  faceTall: { borderRadius: radius.md, paddingVertical: space.md - 2, gap: 2 },
+  row: { flexDirection: 'row', alignItems: 'center', gap: 6 },
+  label: { fontFamily: font.heavy, fontSize: 15, lineHeight: 20 },
+  emoji: { fontSize: 18, lineHeight: 24 },
 });

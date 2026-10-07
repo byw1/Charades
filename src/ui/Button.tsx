@@ -1,11 +1,10 @@
 import { StyleSheet, View, type StyleProp, type ViewStyle } from 'react-native';
-import { useHaptics } from '@/hooks/useHaptics';
 import { Icon, type IconName } from './Icon';
-import { Raised } from './Raised';
+import { Tap } from './Tap';
 import { Text } from './Text';
-import { color, minTapTarget, palette, radius, space } from './tokens';
+import { color, font, radius, space } from './tokens';
 
-export type ButtonVariant = 'primary' | 'secondary' | 'blue' | 'brand' | 'danger' | 'gold' | 'ghost';
+export type ButtonVariant = 'primary' | 'secondary' | 'blue' | 'danger' | 'white' | 'ghost';
 
 export type ButtonProps = {
   label: string;
@@ -18,29 +17,20 @@ export type ButtonProps = {
   style?: StyleProp<ViewStyle>;
 };
 
-const skins: Record<
-  Exclude<ButtonVariant, 'ghost'>,
-  { face: string; shade: string; text: string; border?: string }
-> = {
-  primary: { face: color.correct, shade: color.correctShade, text: color.bone },
-  blue: { face: palette.blue, shade: palette.blueShade, text: color.bone },
-  brand: { face: color.brand, shade: color.brandShade, text: color.bone },
-  danger: { face: color.danger, shade: color.dangerShade, text: color.bone },
-  gold: { face: color.gold, shade: color.goldShade, text: color.ink },
-  secondary: { face: color.background, shade: color.line, text: color.text, border: color.line },
+const skins: Record<ButtonVariant, { face: string; text: string }> = {
+  primary: { face: color.brand, text: color.ink },
+  secondary: { face: color.glass, text: color.text },
+  blue: { face: color.focus, text: color.ink },
+  danger: { face: color.danger, text: color.bone },
+  white: { face: color.bone, text: color.ink },
+  ghost: { face: 'transparent', text: color.textMuted },
 };
 
-const disabledSkin = { face: color.line, shade: color.lineShade, text: color.textFaint };
-
-const heights = { lg: 58, md: 50, sm: minTapTarget } as const;
+const heights = { lg: 58, md: 50, sm: 42 } as const;
 
 /**
- * The chunky button.
- *
- * Uppercase, heavy, and sitting on a ledge it visibly presses into, with a
- * light haptic on touch-down so it feels like a physical key. Primary is green
- * because green means go everywhere in this app — it is also the colour of a
- * correct guess.
+ * A fat pill. Yellow means "do the thing", and there is only ever one yellow
+ * button on a screen. Everything else is glass.
  */
 export function Button({
   label,
@@ -52,90 +42,38 @@ export function Button({
   accessibilityHint,
   style,
 }: ButtonProps) {
-  const haptics = useHaptics();
-
-  if (variant === 'ghost') {
-    return (
-      <Raised
-        face="transparent"
-        shade="transparent"
-        ledge={0}
-        onPress={onPress}
-        onPressIn={() => haptics.select()}
-        disabled={disabled}
-        accessibilityLabel={label}
-        accessibilityHint={accessibilityHint}
-        style={style}
-        faceStyle={[styles.face, { minHeight: heights[size] }]}
-      >
-        <Content label={label} icon={icon} text={disabled ? color.textFaint : color.focus} size={size} />
-      </Raised>
-    );
-  }
-
-  const skin = disabled ? disabledSkin : skins[variant];
+  const skin = skins[variant];
+  const face = disabled && variant !== 'ghost' ? color.surfaceRaised : skin.face;
+  const text = disabled ? color.textFaint : skin.text;
 
   return (
-    <Raised
-      face={skin.face}
-      shade={skin.shade}
-      border={disabled ? undefined : 'border' in skin ? skin.border : undefined}
+    <Tap
       onPress={onPress}
-      onPressIn={() => haptics.select()}
       disabled={disabled}
-      radius={radius.md}
+      squish={size === 'lg' ? 0.96 : 0.94}
       accessibilityLabel={label}
       accessibilityHint={accessibilityHint}
       style={style}
-      faceStyle={[styles.face, { minHeight: heights[size] }]}
+      contentStyle={[styles.face, { minHeight: heights[size], backgroundColor: face }]}
     >
-      <Content label={label} icon={icon} text={skin.text} size={size} />
-    </Raised>
-  );
-}
-
-function Content({
-  label,
-  icon,
-  text,
-  size,
-}: {
-  label: string;
-  icon?: IconName;
-  text: string;
-  size: 'lg' | 'md' | 'sm';
-}) {
-  return (
-    <View style={styles.content}>
-      {icon ? <Icon name={icon} size={size === 'sm' ? 18 : 22} color={text} /> : null}
-      <Text
-        variant="label"
-        style={[styles.label, size === 'lg' && styles.labelLarge, { color: text }]}
-        numberOfLines={1}
-      >
-        {label.toUpperCase()}
-      </Text>
-    </View>
+      <View style={styles.content}>
+        {icon ? <Icon name={icon} size={size === 'sm' ? 18 : 20} color={text} weight={2.75} /> : null}
+        <Text style={[styles.label, size === 'lg' && styles.labelLarge, { color: text }]} numberOfLines={1}>
+          {label}
+        </Text>
+      </View>
+    </Tap>
   );
 }
 
 const styles = StyleSheet.create({
   face: {
+    borderRadius: radius.pill,
     alignItems: 'center',
     justifyContent: 'center',
-    paddingHorizontal: space.md,
+    paddingHorizontal: space.lg,
   },
-  content: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    gap: space.sm,
-  },
-  label: {
-    letterSpacing: 0.8,
-    fontSize: 16,
-  },
-  labelLarge: {
-    fontSize: 18,
-    letterSpacing: 1,
-  },
+  content: { flexDirection: 'row', alignItems: 'center', gap: space.sm },
+  label: { fontFamily: font.heavy, fontSize: 16, lineHeight: 20 },
+  labelLarge: { fontSize: 18, lineHeight: 22 },
 });

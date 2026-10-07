@@ -6,16 +6,18 @@ import { isPlayable, MIN_PLAYABLE_CARDS, type StoredDeck } from '@/decks/types';
 import { useDatabase } from '@/hooks/useDatabase';
 import { useNewGameStore } from '@/hooks/useNewGameStore';
 import { deleteDeck, getDeck, upsertDeck } from '@/storage/deckRepo';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { Button } from '@/ui/Button';
-import { cardTextOn, darken } from '@/ui/contrast';
+import { CircleButton } from '@/ui/CircleButton';
+import { cardTextOn } from '@/ui/contrast';
 import { EmptyState } from '@/ui/EmptyState';
-import { PopIn } from '@/ui/motion';
-import { Raised } from '@/ui/Raised';
+import { Icon, type IconName } from '@/ui/Icon';
 import { Screen } from '@/ui/Screen';
 import { SectionLabel } from '@/ui/Section';
+import { Tap } from '@/ui/Tap';
 import { Text } from '@/ui/Text';
 import { TopBar } from '@/ui/TopBar';
-import { color, radius, space } from '@/ui/tokens';
+import { color, font, gutter, radius, space } from '@/ui/tokens';
 
 type LoadState =
   | { status: 'loading' }
@@ -28,6 +30,7 @@ export default function DeckDetailScreen() {
   const database = useDatabase();
   const resetDraft = useNewGameStore((s) => s.reset);
   const toggleDeck = useNewGameStore((s) => s.toggleDeck);
+  const insets = useSafeAreaInsets();
   const [state, setState] = useState<LoadState>({ status: 'loading' });
   const [busy, setBusy] = useState(false);
 
@@ -124,40 +127,29 @@ export default function DeckDetailScreen() {
   };
 
   return (
-    <Screen edges={['top']}>
-      {top}
-
+    <View style={styles.screen}>
       <FlatList
         data={deck.cards}
         keyExtractor={(card) => card.id}
-        contentContainerStyle={styles.list}
+        contentContainerStyle={[styles.list, { paddingBottom: insets.bottom + space.xl }]}
         ListHeaderComponent={
           <View style={styles.header}>
-            <PopIn>
-              <Raised
-                face={deck.accentColor}
-                shade={darken(deck.accentColor)}
-                radius={radius.xl}
-                ledge={6}
-                style={styles.bannerOuter}
-                faceStyle={styles.banner}
-              >
-                <View style={styles.bannerBlob} />
-                <Text variant="hero" style={{ color: onAccent }} numberOfLines={3}>
-                  {deck.name}
-                </Text>
-                {deck.description ? (
-                  <Text variant="body" style={[styles.bannerBody, { color: onAccent }]}>
-                    {deck.description}
-                  </Text>
-                ) : null}
-                <View style={styles.pills}>
-                  <Pill text={`${deck.cards.length} ${deck.cards.length === 1 ? 'card' : 'cards'}`} ink={onAccent} />
-                  {deck.author ? <Pill text={`by ${deck.author}`} ink={onAccent} /> : null}
-                  {bundled ? <Pill text="Included free" ink={onAccent} /> : null}
-                </View>
-              </Raised>
-            </PopIn>
+            <View style={[styles.hero, { backgroundColor: deck.accentColor, paddingTop: insets.top + 64 }]}>
+              <Text style={[styles.initial, { color: onAccent }]} accessible={false}>
+                {[...deck.name][0]?.toUpperCase() ?? '?'}
+              </Text>
+              <Text style={[styles.title, { color: onAccent }]} numberOfLines={3} accessibilityRole="header">
+                {deck.name}
+              </Text>
+              {deck.description ? (
+                <Text style={[styles.description, { color: onAccent }]}>{deck.description}</Text>
+              ) : null}
+              <View style={styles.pills}>
+                <Pill text={`${deck.cards.length} ${deck.cards.length === 1 ? 'card' : 'cards'}`} ink={onAccent} />
+                {deck.author ? <Pill text={`by ${deck.author}`} ink={onAccent} /> : null}
+                {bundled ? <Pill text="Free deck" ink={onAccent} /> : null}
+              </View>
+            </View>
 
             <View style={styles.actions}>
               {playable ? (
@@ -170,59 +162,31 @@ export default function DeckDetailScreen() {
               )}
 
               <View style={styles.row}>
-                <Button
-                  label="Share"
-                  variant="blue"
-                  icon="share"
-                  onPress={() => router.push(`/decks/share/${deck.id}`)}
-                  style={styles.grow}
-                />
+                <Action icon="share" label="Share" onPress={() => router.push(`/decks/share/${deck.id}`)} />
                 {bundled ? (
-                  <Button
-                    label={busy ? 'Copying' : 'Copy & edit'}
-                    icon="copy"
-                    disabled={busy}
-                    onPress={() => void duplicate()}
-                    accessibilityHint="Makes an editable copy of this deck"
-                    style={styles.grow}
-                  />
+                  <Action icon="copy" label={busy ? 'Copying' : 'Copy & edit'} onPress={() => void duplicate()} />
                 ) : (
-                  <Button
-                    label="Edit"
-                    icon="edit"
-                    onPress={() => router.push(`/decks/edit/${deck.id}`)}
-                    style={styles.grow}
-                  />
+                  <>
+                    <Action icon="edit" label="Edit" onPress={() => router.push(`/decks/edit/${deck.id}`)} />
+                    <Action icon="copy" label={busy ? 'Copying' : 'Duplicate'} onPress={() => void duplicate()} />
+                    <Action icon="trash" label="Delete" danger onPress={confirmDelete} />
+                  </>
                 )}
               </View>
 
               {bundled ? (
                 <Text variant="caption" tone="faint" align="center">
-                  Included decks stay as they are, so updates never overwrite your work. Copy one to make it yours.
+                  Free decks stay as they are so updates never wipe your changes. Copy one to make it yours.
                 </Text>
-              ) : (
-                <View style={styles.row}>
-                  <Button
-                    label={busy ? 'Copying' : 'Duplicate'}
-                    icon="copy"
-                    size="sm"
-                    disabled={busy}
-                    onPress={() => void duplicate()}
-                    style={styles.grow}
-                  />
-                  <Button label="Delete" icon="trash" size="sm" onPress={confirmDelete} style={styles.grow} />
-                </View>
-              )}
+              ) : null}
             </View>
 
             <SectionLabel>What’s inside</SectionLabel>
           </View>
         }
         renderItem={({ item, index }) => (
-          <View style={[styles.cardRow, index === 0 && styles.cardRowFirst, index === deck.cards.length - 1 && styles.cardRowLast]}>
-            <Text variant="label" tone="faint" style={styles.cardIndex}>
-              {index + 1}
-            </Text>
+          <View style={styles.cardRow}>
+            <Text style={styles.cardIndex}>{index + 1}</Text>
             <View style={styles.cardBody}>
               <Text variant="heading">{item.text}</Text>
               {/* Notes are a clue-giver hint. They belong here and in the recap,
@@ -237,7 +201,35 @@ export default function DeckDetailScreen() {
         )}
         ListEmptyComponent={<EmptyState title="This deck is empty" body="There are no cards in it yet." />}
       />
-    </Screen>
+
+      <View style={[styles.floating, { top: insets.top + space.sm }]}>
+        <CircleButton icon="back" label="Back to decks" tone="scrim" onPress={router.back} />
+      </View>
+    </View>
+  );
+}
+
+/** A round action with a label under it, the way a profile lays out its buttons. */
+function Action({
+  icon,
+  label,
+  onPress,
+  danger = false,
+}: {
+  icon: IconName;
+  label: string;
+  onPress: () => void;
+  danger?: boolean;
+}) {
+  return (
+    <Tap onPress={onPress} accessibilityLabel={label} style={styles.action} contentStyle={styles.actionInner}>
+      <View style={styles.actionCircle}>
+        <Icon name={icon} size={22} color={danger ? color.danger : color.text} weight={2.75} />
+      </View>
+      <Text variant="caption" style={{ color: danger ? color.danger : color.textMuted }}>
+        {label}
+      </Text>
+    </Tap>
   );
 }
 
@@ -252,51 +244,55 @@ function Pill({ text, ink }: { text: string; ink: string }) {
 }
 
 const styles = StyleSheet.create({
+  screen: { flex: 1, backgroundColor: color.background },
+  floating: { position: 'absolute', left: gutter - 4 },
   header: { gap: space.lg, paddingBottom: space.sm },
-  bannerOuter: { marginHorizontal: 20 },
-  banner: {
-    minHeight: 180,
-    justifyContent: 'flex-end',
-    padding: space.lg,
+  hero: {
+    paddingHorizontal: gutter + 4,
+    paddingBottom: space.lg,
     gap: space.sm,
+    borderBottomLeftRadius: radius.xl,
+    borderBottomRightRadius: radius.xl,
+    overflow: 'hidden',
+    minHeight: 300,
+    justifyContent: 'flex-end',
   },
-  bannerBlob: {
+  initial: {
     position: 'absolute',
-    width: 220,
-    height: 220,
-    borderRadius: 110,
-    right: -60,
-    top: -80,
-    backgroundColor: 'rgba(255,255,255,0.12)',
+    right: -20,
+    top: -10,
+    fontFamily: font.display,
+    fontSize: 300,
+    lineHeight: 320,
+    opacity: 0.14,
   },
-  bannerBody: { opacity: 0.9 },
+  title: { fontFamily: font.display, fontSize: 48, lineHeight: 50, letterSpacing: -1.8 },
+  description: { fontFamily: font.bold, fontSize: 15, lineHeight: 21, opacity: 0.88 },
   pills: { flexDirection: 'row', flexWrap: 'wrap', gap: space.sm, paddingTop: space.xs },
-  pill: {
-    borderWidth: 2,
-    borderRadius: radius.pill,
-    paddingHorizontal: space.sm + 4,
-    paddingVertical: 3,
-    opacity: 0.9,
+  pill: { borderWidth: 2, borderRadius: radius.pill, paddingHorizontal: 12, paddingVertical: 3 },
+  actions: { gap: space.md, paddingHorizontal: gutter },
+  row: { flexDirection: 'row', justifyContent: 'center', gap: space.lg },
+  action: { minWidth: 64 },
+  actionInner: { alignItems: 'center', gap: 6 },
+  actionCircle: {
+    width: 52,
+    height: 52,
+    borderRadius: 26,
+    backgroundColor: color.surface,
+    alignItems: 'center',
+    justifyContent: 'center',
   },
-  actions: { gap: space.sm + 4, paddingHorizontal: 20 },
-  row: { flexDirection: 'row', gap: space.sm + 4 },
-  grow: { flex: 1 },
-  list: { paddingBottom: space.xxl, flexGrow: 1 },
+  list: { flexGrow: 1 },
   cardRow: {
     flexDirection: 'row',
     gap: space.md,
-    marginHorizontal: 20,
-    paddingHorizontal: space.md,
-    paddingVertical: space.sm + 4,
+    marginHorizontal: gutter,
+    paddingVertical: 12,
     alignItems: 'baseline',
-    borderLeftWidth: 2,
-    borderRightWidth: 2,
-    borderBottomWidth: 2,
-    borderColor: color.line,
+    borderBottomWidth: StyleSheet.hairlineWidth,
+    borderBottomColor: color.line,
   },
-  cardRowFirst: { borderTopWidth: 2, borderTopLeftRadius: radius.lg, borderTopRightRadius: radius.lg },
-  cardRowLast: { borderBottomLeftRadius: radius.lg, borderBottomRightRadius: radius.lg },
-  cardIndex: { minWidth: 24, textAlign: 'right' },
+  cardIndex: { fontFamily: font.heavy, fontSize: 13, lineHeight: 18, color: color.textFaint, minWidth: 22, textAlign: 'right' },
   cardBody: { flex: 1, gap: 2 },
   centre: { flex: 1, alignItems: 'center', justifyContent: 'center' },
 });

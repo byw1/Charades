@@ -22,7 +22,7 @@ export type NewDeckInput = {
   random?: RandomSource;
 };
 
-export const DEFAULT_ACCENT = '#F0386B';
+export const DEFAULT_ACCENT = '#FF3D8B';
 
 export function createDeck(input: NewDeckInput): Deck {
   return {

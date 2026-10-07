@@ -10,16 +10,15 @@ import { useDeckImport } from '@/hooks/useDeckImport';
 import { useHaptics } from '@/hooks/useHaptics';
 import { Button } from '@/ui/Button';
 import { Chip } from '@/ui/Chip';
-import { cardTextOn, darken } from '@/ui/contrast';
+import { cardTextOn } from '@/ui/contrast';
 import { Field } from '@/ui/Field';
 import { Mascot } from '@/ui/Mascot';
 import { PopIn } from '@/ui/motion';
-import { Raised } from '@/ui/Raised';
 import { Footer, Screen } from '@/ui/Screen';
-import { SpeechBubble } from '@/ui/SpeechBubble';
+import { ChatLine } from '@/ui/Social';
 import { Text } from '@/ui/Text';
 import { TopBar } from '@/ui/TopBar';
-import { color, palette, radius, space } from '@/ui/tokens';
+import { color, gutter, palette, radius, space } from '@/ui/tokens';
 
 type Method = 'scan' | 'paste' | 'file';
 
@@ -117,14 +116,7 @@ export default function ImportDeckScreen() {
 
         <ScrollView contentContainerStyle={styles.body}>
           <PopIn>
-            <Raised
-              face={deck.accentColor}
-              shade={darken(deck.accentColor)}
-              radius={radius.xl}
-              ledge={6}
-              style={styles.pad}
-              faceStyle={styles.previewCard}
-            >
+            <View style={[styles.pad, styles.previewCard, { backgroundColor: deck.accentColor }]}>
               <Text variant="display" style={{ color: onAccent }} numberOfLines={2}>
                 {deck.name}
               </Text>
@@ -132,7 +124,7 @@ export default function ImportDeckScreen() {
                 {deck.cards.length} {deck.cards.length === 1 ? 'card' : 'cards'}
                 {deck.author ? ` · by ${deck.author}` : ''}
               </Text>
-            </Raised>
+            </View>
           </PopIn>
 
           {deck.description ? (
@@ -167,7 +159,7 @@ export default function ImportDeckScreen() {
 
           {preview.collides ? (
             <View style={[styles.pad, styles.collision]}>
-              <Text variant="label" style={{ color: palette.yellowShade }}>
+              <Text variant="label" style={{ color: palette.yellow }}>
                 YOU ALREADY HAVE THIS DECK
               </Text>
               <Text variant="caption" tone="muted">
@@ -271,11 +263,7 @@ export default function ImportDeckScreen() {
           ) : (
             <View style={styles.permission}>
               <Mascot size={110} mood="wink" />
-              <SpeechBubble tail="bottom">
-                <Text variant="body" align="center">
-                  I only use the camera to read deck codes. No photos are taken or kept.
-                </Text>
-              </SpeechBubble>
+              <ChatLine>I only use the camera to read deck codes. No photos are taken or kept.</ChatLine>
               <Button
                 label={permission?.canAskAgain === false ? 'Open Settings' : 'Allow camera'}
                 variant="primary"
@@ -324,8 +312,8 @@ const CORNER = 34;
 
 const styles = StyleSheet.create({
   body: { paddingTop: space.sm, paddingBottom: space.lg, gap: space.md },
-  pad: { marginHorizontal: 20 },
-  previewCard: { minHeight: 140, justifyContent: 'flex-end', padding: space.lg, gap: 2 },
+  pad: { marginHorizontal: gutter },
+  previewCard: { minHeight: 160, justifyContent: 'flex-end', padding: space.lg, gap: 2, borderRadius: radius.xl },
   sample: { flexDirection: 'row', flexWrap: 'wrap', gap: space.sm },
   sampleChip: {
     paddingHorizontal: space.sm + 4,
@@ -333,6 +321,7 @@ const styles = StyleSheet.create({
     borderRadius: radius.pill,
     borderWidth: 2,
     borderColor: color.line,
+    backgroundColor: color.surface,
     maxWidth: '100%',
   },
   collision: {
@@ -341,21 +330,21 @@ const styles = StyleSheet.create({
     borderRadius: radius.md,
     borderWidth: 2,
     borderColor: palette.yellow,
-    backgroundColor: palette.yellowLight,
+    backgroundColor: 'rgba(255,229,0,0.08)',
   },
-  methods: { flexDirection: 'row', gap: space.sm, paddingHorizontal: 20, paddingTop: space.xs },
+  methods: { flexDirection: 'row', gap: space.sm, paddingHorizontal: gutter, paddingTop: space.xs },
   error: {
     flexDirection: 'row',
     alignItems: 'center',
     gap: space.sm,
-    marginHorizontal: 20,
+    marginHorizontal: gutter,
     marginTop: space.md,
     padding: space.sm,
     borderRadius: radius.md,
-    backgroundColor: palette.redLight,
+    backgroundColor: 'rgba(255,59,71,0.12)',
   },
-  errorText: { flex: 1, color: palette.redShade },
-  area: { flex: 1, padding: 20, gap: space.md },
+  errorText: { flex: 1, color: palette.red },
+  area: { flex: 1, padding: gutter, gap: space.md },
   camera: {
     flex: 1,
     borderRadius: radius.xl,

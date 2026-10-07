@@ -128,8 +128,9 @@ and it uploads with one command.
 
 4. **Finish in App Store Connect** (the parts that can't be automated):
    - **Screenshots.** Play a game on your phone and press Side + Volume Up on
-     the screens you're proudest of — home, a card mid-round, the recap and the
-     final standings with confetti are a good set. Apple needs at least one
+     the screens you're proudest of — the Play screen, a card mid-round, a
+     "Big brain" flash, the recap, and the You page with a streak going are a
+     good set. Apple needs at least one
      set for the 6.9" or 6.5" iPhone size; screenshots from a recent Pro Max
      fit directly.
    - **App Privacy** → Get Started → "No, we do not collect data from this

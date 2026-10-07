@@ -1,35 +1,25 @@
 import { StyleSheet, View } from 'react-native';
-import { Icon, type IconName } from './Icon';
 import { Text } from './Text';
-import { color, radius, space } from './tokens';
+import { color, font, radius, space } from './tokens';
 
 export type StatTileProps = {
   label: string;
   value: string | number;
-  tint: string;
-  icon: IconName;
+  tint?: string;
+  emoji?: string;
 };
 
-/**
- * A result tile: a coloured header strip with the label, and the number below
- * in the same colour. The shape a finished lesson uses to show what you did.
- */
-export function StatTile({ label, value, tint, icon }: StatTileProps) {
+/** A number worth bragging about: big, coloured, with a small label under it. */
+export function StatTile({ label, value, tint = color.text, emoji }: StatTileProps) {
   return (
-    <View
-      style={[styles.tile, { borderColor: tint, backgroundColor: tint }]}
-      accessible
-      accessibilityLabel={`${label}: ${value}`}
-    >
-      <Text variant="overline" tone="inverse" align="center" style={styles.label}>
-        {label.toUpperCase()}
+    <View style={styles.tile} accessible accessibilityLabel={`${label}: ${value}`}>
+      <Text style={[styles.value, { color: tint }]} numberOfLines={1} adjustsFontSizeToFit>
+        {emoji ? `${emoji} ` : ''}
+        {value}
       </Text>
-      <View style={styles.body}>
-        <Icon name={icon} size={22} color={tint} weight={3} />
-        <Text variant="title" style={{ color: tint }}>
-          {value}
-        </Text>
-      </View>
+      <Text variant="caption" tone="muted" numberOfLines={1}>
+        {label}
+      </Text>
     </View>
   );
 }
@@ -37,20 +27,11 @@ export function StatTile({ label, value, tint, icon }: StatTileProps) {
 const styles = StyleSheet.create({
   tile: {
     flex: 1,
-    borderWidth: 2,
+    backgroundColor: color.surface,
     borderRadius: radius.md,
-    overflow: 'hidden',
+    paddingVertical: space.md - 4,
+    paddingHorizontal: space.md - 4,
+    gap: 2,
   },
-  label: {
-    paddingVertical: 4,
-  },
-  body: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'center',
-    gap: 6,
-    backgroundColor: color.background,
-    borderRadius: radius.md - 4,
-    paddingVertical: space.sm + 2,
-  },
+  value: { fontFamily: font.display, fontSize: 28, lineHeight: 32 },
 });

@@ -1,58 +1,71 @@
 import { useLocalSearchParams, useRouter } from 'expo-router';
-import { useState } from 'react';
-import { Pressable, StyleSheet, View } from 'react-native';
+import { useEffect, useState } from 'react';
+import { Animated, Easing, Pressable, StyleSheet, Text as RNText, View } from 'react-native';
+import { SafeAreaView } from 'react-native-safe-area-context';
+import { useReducedMotion } from '@/hooks/useReducedMotion';
 import { useSettingsStore } from '@/hooks/useSettings';
 import { Button } from '@/ui/Button';
-import { Icon } from '@/ui/Icon';
+import { CircleButton } from '@/ui/CircleButton';
 import { Mascot, type MascotMood } from '@/ui/Mascot';
-import { PopIn } from '@/ui/motion';
-import { Screen } from '@/ui/Screen';
+import { StoryBar } from '@/ui/ProgressBar';
+import { Caption, Sticker } from '@/ui/Social';
 import { Text } from '@/ui/Text';
-import { color, palette, radius, space } from '@/ui/tokens';
+import { color, font, gutter, palette, space } from '@/ui/tokens';
 
-type Slide = {
-  title: string;
-  body: string;
-  art: 'forehead' | 'shout' | 'tap';
+type Story = {
+  background: string;
+  caption: string;
+  detail: string;
   mood: MascotMood;
+  stickers?: { text: string; tint: string; tilt: number; top: string; left?: string; right?: string }[];
 };
 
-const SLIDES: Slide[] = [
+const STORIES: Story[] = [
   {
-    title: 'Phone on your forehead',
-    body: 'A word shows on the screen. You can’t see it — but everyone else can.',
-    art: 'forehead',
+    background: palette.purple,
+    caption: 'Put the phone on your forehead',
+    detail: 'A word pops up. Everyone can see it except you.',
     mood: 'happy',
   },
   {
-    title: 'Your friends shout clues',
-    body: 'Describe it, act it out, hum it. Anything except saying the word.',
-    art: 'shout',
+    background: palette.pink,
+    caption: 'Your friends yell clues',
+    detail: 'Act it out, hum it, describe it. Just don’t say it.',
     mood: 'wow',
+    stickers: [
+      { text: 'it barks!!', tint: palette.yellow, tilt: -10, top: '22%', left: '6%' },
+      { text: 'FETCH', tint: palette.blue, tilt: 8, top: '30%', right: '6%' },
+      { text: 'good boy 🐶', tint: '#FFFFFF', tilt: -4, top: '62%', left: '10%' },
+    ],
   },
   {
-    title: 'Tap top if you got it',
-    body: 'Tap the bottom half to pass. Most cards before the timer runs out wins.',
-    art: 'tap',
+    background: palette.blue,
+    caption: 'Tap top if you got it',
+    detail: 'Tap the bottom to pass. Most cards before time’s up wins.',
     mood: 'excited',
   },
 ];
 
+const STORY_MS = 4500;
+
 /**
- * How to play, in three cards.
+ * How to play, as stories.
  *
- * Shown once on first launch, and any time from Home. A party game gets
- * explained out loud to a room, so each card is one sentence someone could
- * read to everyone else.
+ * Tap the right side for next, the left side for back, and each one moves on
+ * by itself — the format everyone this is for already knows how to work.
+ * Shown once on first launch, and any time from the You page. Under reduced
+ * motion the stories wait for a tap instead of moving on by themselves.
  */
 export default function WelcomeScreen() {
   const router = useRouter();
   const { replay } = useLocalSearchParams<{ replay?: string }>();
   const setSetting = useSettingsStore((s) => s.set);
+  const reduced = useReducedMotion();
   const [index, setIndex] = useState(0);
+  const [progress] = useState(() => new Animated.Value(0));
 
-  const slide = SLIDES[index] ?? SLIDES[0]!;
-  const last = index === SLIDES.length - 1;
+  const story = STORIES[index] ?? STORIES[0]!;
+  const last = index === STORIES.length - 1;
 
   const finish = () => {
     setSetting('onboarded', true);
@@ -60,137 +73,113 @@ export default function WelcomeScreen() {
     else router.replace('/');
   };
 
+  useEffect(() => {
+    progress.setValue(0);
+    if (reduced || last) {
+      if (last) progress.setValue(1);
+      return;
+    }
+    const animation = Animated.timing(progress, {
+      toValue: 1,
+      duration: STORY_MS,
+      easing: Easing.linear,
+      useNativeDriver: false,
+    });
+    animation.start(({ finished }) => {
+      if (finished) setIndex((current) => Math.min(current + 1, STORIES.length - 1));
+    });
+    return () => animation.stop();
+  }, [index, last, progress, reduced]);
+
   return (
-    <Screen>
-      <View style={styles.top}>
-        <View style={styles.dots} accessible accessibilityLabel={`Step ${index + 1} of ${SLIDES.length}`}>
-          {SLIDES.map((_, i) => (
-            <View key={i} style={[styles.dot, i === index && styles.dotActive]} />
+    <View style={[styles.screen, { backgroundColor: story.background }]}>
+      {/* Tap zones: left third goes back, the rest goes forward. */}
+      <View style={StyleSheet.absoluteFill}>
+        <View style={styles.zones}>
+          <Pressable
+            style={styles.back}
+            onPress={() => setIndex(Math.max(0, index - 1))}
+            accessibilityRole="button"
+            accessibilityLabel="Previous"
+          />
+          <Pressable
+            style={styles.next}
+            onPress={() => (last ? undefined : setIndex(index + 1))}
+            accessibilityRole="button"
+            accessibilityLabel="Next"
+          />
+        </View>
+      </View>
+
+      <SafeAreaView style={styles.safe} pointerEvents="box-none">
+        <View style={styles.top} pointerEvents="box-none">
+          <StoryBar count={STORIES.length} index={index} progress={progress} />
+          <View style={styles.topRow} pointerEvents="box-none">
+            <View style={styles.from}>
+              <Mascot size={32} animated={false} />
+              <Text style={styles.fromName}>Dex</Text>
+              <Text style={styles.fromTime}>how to play</Text>
+            </View>
+            <CircleButton icon="close" label="Skip" tone="scrim" size={36} onPress={finish} />
+          </View>
+        </View>
+
+        <View style={styles.middle} pointerEvents="none" key={index}>
+          {story.stickers?.map((sticker) => (
+            <Sticker
+              key={sticker.text}
+              tint={sticker.tint}
+              tilt={sticker.tilt}
+              style={{
+                position: 'absolute',
+                top: sticker.top as `${number}%`,
+                left: sticker.left as `${number}%` | undefined,
+                right: sticker.right as `${number}%` | undefined,
+              }}
+            >
+              {sticker.text}
+            </Sticker>
           ))}
+          <Mascot size={230} mood={story.mood} glyph={index === 2 ? '👆' : '?'} />
         </View>
-        {last ? null : (
-          <Pressable onPress={finish} accessibilityRole="button" hitSlop={space.md}>
-            <Text variant="label" tone="faint">
-              SKIP
-            </Text>
-          </Pressable>
-        )}
-      </View>
 
-      {/* Keyed on the slide so each one springs in fresh. */}
-      <View style={styles.body} key={index}>
-        <PopIn style={styles.art}>
-          <Art kind={slide.art} mood={slide.mood} />
-        </PopIn>
-        <PopIn from="rise" delay={120} style={styles.copy}>
-          <Text variant="display" align="center" accessibilityRole="header">
-            {slide.title}
-          </Text>
-          <Text variant="body" tone="muted" align="center">
-            {slide.body}
-          </Text>
-        </PopIn>
-      </View>
-
-      <View style={styles.footer}>
-        <Button
-          label={last ? 'Let’s play' : 'Continue'}
-          variant="primary"
-          size="lg"
-          onPress={() => (last ? finish() : setIndex(index + 1))}
-        />
-      </View>
-    </Screen>
-  );
-}
-
-function Art({ kind, mood }: { kind: Slide['art']; mood: MascotMood }) {
-  if (kind === 'forehead') {
-    return <Mascot size={220} mood={mood} glyph="?" />;
-  }
-
-  if (kind === 'shout') {
-    return (
-      <View style={styles.shout}>
-        <View style={[styles.clue, styles.clueLeft]}>
-          <Text variant="heading" tone="inverse">
-            It barks!
-          </Text>
+        <View style={styles.bottom} pointerEvents="box-none">
+          <Caption size="lg">{story.caption}</Caption>
+          <RNText style={styles.detail}>{story.detail}</RNText>
+          {last ? (
+            <View style={styles.cta}>
+              <Button label="Let’s play" variant="white" size="lg" onPress={finish} />
+            </View>
+          ) : (
+            <Text style={styles.tapHint}>Tap to continue</Text>
+          )}
         </View>
-        <Mascot size={190} mood={mood} />
-        <View style={[styles.clue, styles.clueRight]}>
-          <Text variant="heading" tone="inverse">
-            Fetch!
-          </Text>
-        </View>
-      </View>
-    );
-  }
-
-  return (
-    <View style={styles.phone}>
-      <View style={[styles.half, { backgroundColor: color.correct }]}>
-        <Icon name="check" size={34} color={color.bone} weight={4} />
-        <Text variant="title" tone="inverse">
-          Got it
-        </Text>
-      </View>
-      <View style={[styles.half, { backgroundColor: color.pass }]}>
-        <Icon name="pass" size={34} color={color.bone} weight={4} />
-        <Text variant="title" tone="inverse">
-          Pass
-        </Text>
-      </View>
+      </SafeAreaView>
     </View>
   );
 }
 
 const styles = StyleSheet.create({
-  top: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'space-between',
-    paddingHorizontal: 20,
-    paddingTop: space.md,
-    minHeight: 48,
+  screen: { flex: 1 },
+  zones: { flex: 1, flexDirection: 'row' },
+  back: { flex: 1 },
+  next: { flex: 2 },
+  safe: { flex: 1 },
+  top: { paddingHorizontal: space.sm, paddingTop: space.sm, gap: space.sm },
+  topRow: { flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', paddingHorizontal: 4 },
+  from: { flexDirection: 'row', alignItems: 'center', gap: space.sm },
+  fromName: { fontFamily: font.heavy, fontSize: 15, lineHeight: 20, color: color.bone },
+  fromTime: { fontFamily: font.medium, fontSize: 13, lineHeight: 18, color: 'rgba(255,255,255,0.75)' },
+  middle: { flex: 1, alignItems: 'center', justifyContent: 'center' },
+  bottom: { gap: space.md, paddingBottom: space.md, alignItems: 'center' },
+  detail: {
+    fontFamily: font.bold,
+    fontSize: 17,
+    lineHeight: 23,
+    color: color.bone,
+    textAlign: 'center',
+    paddingHorizontal: gutter * 2,
   },
-  dots: { flexDirection: 'row', gap: 8 },
-  dot: { width: 10, height: 10, borderRadius: 5, backgroundColor: color.line },
-  dotActive: { width: 28, backgroundColor: color.correct },
-  body: {
-    flex: 1,
-    alignItems: 'center',
-    justifyContent: 'center',
-    paddingHorizontal: space.xl,
-    gap: space.xl,
-  },
-  art: { alignItems: 'center', justifyContent: 'center', minHeight: 240 },
-  copy: { gap: space.sm },
-  footer: { paddingHorizontal: 20, paddingBottom: space.md },
-  shout: { width: 300, alignItems: 'center' },
-  clue: {
-    position: 'absolute',
-    paddingHorizontal: space.md,
-    paddingVertical: space.sm,
-    borderRadius: radius.md,
-    zIndex: 2,
-  },
-  clueLeft: { left: 0, top: 10, backgroundColor: palette.blue, transform: [{ rotate: '-8deg' }] },
-  clueRight: { right: 0, top: 60, backgroundColor: palette.pink, transform: [{ rotate: '7deg' }] },
-  phone: {
-    width: 260,
-    height: 230,
-    borderRadius: radius.xl,
-    borderWidth: 8,
-    borderColor: color.ink,
-    overflow: 'hidden',
-    transform: [{ rotate: '-4deg' }],
-  },
-  half: {
-    flex: 1,
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'center',
-    gap: space.sm,
-  },
+  cta: { alignSelf: 'stretch', paddingHorizontal: gutter },
+  tapHint: { fontFamily: font.bold, fontSize: 13, lineHeight: 18, color: 'rgba(255,255,255,0.7)', paddingBottom: space.sm },
 });

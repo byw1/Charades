@@ -7,8 +7,8 @@ export type FieldProps = TextInputProps & {
 };
 
 /**
- * A text input. Soft grey at rest, white with a blue edge when focused, so it
- * is always obvious which box the keyboard is typing into.
+ * A text input. Quiet at rest, with a blue edge when focused so it is always
+ * obvious which box the keyboard is typing into.
  */
 export const Field = forwardRef<TextInput, FieldProps>(function Field(
   { size = 'body', style, onFocus, onBlur, multiline, ...rest },
@@ -20,6 +20,8 @@ export const Field = forwardRef<TextInput, FieldProps>(function Field(
     <TextInput
       ref={ref}
       placeholderTextColor={color.textFaint}
+      selectionColor={color.brand}
+      keyboardAppearance="dark"
       multiline={multiline}
       onFocus={(event) => {
         setFocused(true);
@@ -31,7 +33,7 @@ export const Field = forwardRef<TextInput, FieldProps>(function Field(
       }}
       style={[
         styles.input,
-        size === 'heading' ? typeScale.heading : typeScale.body,
+        size === 'heading' ? styles.heading : typeScale.body,
         multiline && styles.multiline,
         focused && styles.focused,
         style,
@@ -44,19 +46,14 @@ export const Field = forwardRef<TextInput, FieldProps>(function Field(
 const styles = StyleSheet.create({
   input: {
     color: color.text,
-    backgroundColor: color.backgroundSoft,
+    backgroundColor: color.surface,
     borderRadius: radius.md,
     borderWidth: 2,
-    borderColor: color.line,
+    borderColor: color.surface,
     paddingHorizontal: space.md,
     paddingVertical: space.sm + 4,
   },
-  multiline: {
-    textAlignVertical: 'top',
-    paddingTop: space.sm + 4,
-  },
-  focused: {
-    borderColor: color.focus,
-    backgroundColor: color.background,
-  },
+  heading: { ...typeScale.heading, fontSize: 18, lineHeight: 24 },
+  multiline: { textAlignVertical: 'top', paddingTop: space.sm + 4 },
+  focused: { borderColor: color.focus },
 });

@@ -14,12 +14,11 @@ import { Button } from '@/ui/Button';
 import { EmptyState } from '@/ui/EmptyState';
 import { Mascot } from '@/ui/Mascot';
 import { PopIn } from '@/ui/motion';
-import { Raised } from '@/ui/Raised';
 import { Screen } from '@/ui/Screen';
-import { SpeechBubble } from '@/ui/SpeechBubble';
+import { ChatLine } from '@/ui/Social';
 import { Text } from '@/ui/Text';
 import { TopBar } from '@/ui/TopBar';
-import { color, radius, space } from '@/ui/tokens';
+import { color, gutter, radius, space } from '@/ui/tokens';
 
 /**
  * Share a deck.
@@ -112,7 +111,7 @@ export default function ShareDeckScreen() {
   };
 
   // Full width less padding, capped so it does not dominate a large screen.
-  const qrSize = Math.min(width - 40 - space.lg * 2, 300);
+  const qrSize = Math.min(width - gutter * 2 - space.md * 2 - 20, 300);
 
   return (
     <Screen>
@@ -121,35 +120,29 @@ export default function ShareDeckScreen() {
       <ScrollView contentContainerStyle={styles.body}>
         <View style={styles.hello}>
           <Mascot size={72} mood={size.fitsQr ? 'wink' : 'thinking'} />
-          <SpeechBubble>
+          <ChatLine style={styles.grow}>
             <Text variant="heading">
-              {size.fitsQr ? 'Point a friend’s camera at this!' : 'Too big for a code — send it as a file.'}
+              {size.fitsQr ? 'Point a friend’s camera at this.' : 'Too big for a code. Send it as a file.'}
             </Text>
             <Text variant="caption" tone="muted">
               {deck.name} · {deck.cards.length} {deck.cards.length === 1 ? 'card' : 'cards'}
             </Text>
-          </SpeechBubble>
+          </ChatLine>
         </View>
 
         {size.fitsQr ? (
           <PopIn>
-            <Raised
-              face={color.background}
-              shade={color.brandShade}
-              border={color.brand}
-              radius={radius.xl}
-              ledge={6}
-              style={styles.qrOuter}
-              faceStyle={styles.qrFace}
-            >
+            {/* Always dark modules on white, whatever the app's theme: a code
+                that is not dark-on-light scans badly or not at all. */}
+            <View style={styles.qrFrame}>
               <QRCode
                 value={size.payload}
                 size={qrSize}
                 ecl={QR_ERROR_CORRECTION}
-                backgroundColor={color.background}
+                backgroundColor={color.bone}
                 color={color.ink}
               />
-            </Raised>
+            </View>
           </PopIn>
         ) : (
           <Text variant="body" tone="muted" style={styles.pad}>
@@ -168,7 +161,7 @@ export default function ShareDeckScreen() {
             accessibilityHint="Opens the share sheet with a .deckhead file"
           />
           <Button
-            label={copied ? 'Link copied!' : 'Copy link'}
+            label={copied ? 'Copied ✓' : 'Copy link'}
             icon={copied ? 'check' : 'link'}
             onPress={() => void copyLink()}
             accessibilityHint="Copies a link that opens this deck in Deckhead"
@@ -185,10 +178,17 @@ export default function ShareDeckScreen() {
 
 const styles = StyleSheet.create({
   body: { paddingBottom: space.xl, gap: space.lg },
-  hello: { flexDirection: 'row', alignItems: 'center', gap: space.md, paddingHorizontal: 20 },
-  qrOuter: { alignSelf: 'center' },
-  qrFace: { padding: space.lg, alignItems: 'center', justifyContent: 'center' },
-  actions: { gap: space.sm + 4, paddingHorizontal: 20 },
-  pad: { paddingHorizontal: 20 },
+  hello: { flexDirection: 'row', alignItems: 'center', gap: space.md, paddingHorizontal: gutter },
+  grow: { flex: 1 },
+  qrFrame: {
+    alignSelf: 'center',
+    padding: space.md,
+    borderRadius: radius.xl,
+    borderWidth: 10,
+    borderColor: color.brand,
+    backgroundColor: color.bone,
+  },
+  actions: { gap: space.sm + 4, paddingHorizontal: gutter },
+  pad: { paddingHorizontal: gutter },
   centre: { flex: 1, alignItems: 'center', justifyContent: 'center' },
 });

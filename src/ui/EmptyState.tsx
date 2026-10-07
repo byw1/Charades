@@ -25,12 +25,5 @@ export function EmptyState({ title, body, mood = 'thinking' }: EmptyStateProps) 
 }
 
 const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    alignItems: 'center',
-    justifyContent: 'center',
-    paddingHorizontal: space.xl,
-    paddingVertical: space.xl,
-    gap: space.sm,
-  },
+  container: { flex: 1, alignItems: 'center', justifyContent: 'center', padding: space.xl, gap: space.sm },
 });
