@@ -1,7 +1,7 @@
 import { Redirect, useFocusEffect, useRouter } from 'expo-router';
 import { useCallback, useMemo, useRef, useState } from 'react';
 import { ScrollView, StyleSheet, useWindowDimensions, View } from 'react-native';
-import type { DeckSummary } from '@/decks/types';
+import { DEFAULT_DECK_EMOJI, type DeckSummary } from '@/decks/types';
 import { friendBoard, topRivalry, type Friend, type Rivalry } from '@/game/friends';
 import { planStreakReminder } from '@/game/reminders';
 import { playStats, type PlayStats } from '@/game/stats';
@@ -123,6 +123,7 @@ export default function HomeScreen() {
       accent: d.accentColor,
       deckIds: [d.id],
       cardCount: d.cardCount,
+      emoji: d.emoji ?? DEFAULT_DECK_EMOJI,
     }));
     return [mixLens(all), ...decks];
   }, [all]);

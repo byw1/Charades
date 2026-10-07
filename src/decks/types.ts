@@ -41,6 +41,12 @@ export type Deck = {
   language: string;
   /** Hex colour driving the full-bleed card background. */
   accentColor: string;
+  /**
+   * The deck's cover sticker, shown on its tile, its lens and its page.
+   * Optional and left off when unset, like a card's photo, so older decks and
+   * older builds are unaffected.
+   */
+  emoji?: string;
   tags: string[];
   createdAt: string;
   updatedAt: string;
@@ -62,11 +68,26 @@ export type DeckSummary = {
   description: string;
   author: string;
   accentColor: string;
+  emoji: string | null;
   tags: string[];
   source: DeckSource;
   cardCount: number;
+  /** The first card's text, as a peek at what is inside. */
+  sample: string | null;
   updatedAt: string;
 };
+
+/** Shown for a deck that has not picked an emoji. */
+export const DEFAULT_DECK_EMOJI = '🃏';
+
+/** The cover emoji offered in the editor. Any emoji imports fine; these are quick picks. */
+export const DECK_EMOJI_CHOICES = [
+  '🃏', '🎉', '🔥', '😂', '💅', '🎓', '🍕', '🍿', '🎬', '🎤', '🎮', '🏀', '⚽', '🐶', '🦄', '👻',
+  '🤡', '👽', '🌮', '🧋', '🏠', '✈️', '🏖️', '🎄', '🎃', '❤️', '💀', '🧠', '🚀', '🌈', '👯', '✨',
+] as const;
+
+/** Longest emoji string a deck may carry: room for a joined emoji or two. */
+export const MAX_DECK_EMOJI_LENGTH = 16;
 
 /** Taboo mode lists up to this many forbidden words per card. */
 export const MAX_TABOO_WORDS = 5;

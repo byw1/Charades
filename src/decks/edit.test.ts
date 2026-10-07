@@ -12,6 +12,7 @@ import {
   parseBulkPaste,
   parseTabooInput,
   removeCard,
+  setDeckEmoji,
   setDeckFields,
   updateCard,
 } from './edit';
@@ -368,5 +369,17 @@ describe('photos and Taboo words on cards', () => {
     const id = deck.cards[0]!.id;
     expect(hasChanges(deck, updateCard(deck, id, { taboo: ['shark'] }, T))).toBe(true);
     expect(hasChanges(deck, updateCard(deck, id, { image: photo }, T))).toBe(true);
+  });
+});
+
+describe('setDeckEmoji', () => {
+  const T = '2026-10-07T22:00:00Z';
+
+  it('sets and clears the cover emoji, counting as a change', () => {
+    const deck = createDeck({ now: T });
+    const withEmoji = setDeckEmoji(deck, '🎸', T);
+    expect(withEmoji.emoji).toBe('🎸');
+    expect(hasChanges(deck, withEmoji)).toBe(true);
+    expect(setDeckEmoji(withEmoji, null, T)).not.toHaveProperty('emoji');
   });
 });

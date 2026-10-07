@@ -5,12 +5,14 @@ import { useLocalSearchParams, useRouter } from 'expo-router';
 import { useCallback, useEffect, useRef, useState } from 'react';
 import { Linking, ScrollView, StyleSheet, View } from 'react-native';
 import { collectQrPart, extractPayload, isQrPart, type QrCollection } from '@/decks/share';
+import { DEFAULT_DECK_EMOJI } from '@/decks/types';
 import { useDatabase } from '@/hooks/useDatabase';
 import { useDeckImport } from '@/hooks/useDeckImport';
 import { useHaptics } from '@/hooks/useHaptics';
 import { Button } from '@/ui/Button';
 import { Chip } from '@/ui/Chip';
 import { cardTextOn } from '@/ui/contrast';
+import { EmojiSticker } from '@/ui/EmojiSticker';
 import { Field } from '@/ui/Field';
 import { Mascot } from '@/ui/Mascot';
 import { PopIn } from '@/ui/motion';
@@ -153,6 +155,9 @@ export default function ImportDeckScreen() {
         <ScrollView contentContainerStyle={styles.body}>
           <PopIn>
             <View style={[styles.pad, styles.previewCard, { backgroundColor: deck.accentColor }]}>
+              <View style={styles.previewSticker}>
+                <EmojiSticker emoji={deck.emoji ?? DEFAULT_DECK_EMOJI} size={58} />
+              </View>
               <Text variant="display" style={{ color: onAccent }} numberOfLines={2}>
                 {deck.name}
               </Text>
@@ -370,6 +375,7 @@ const styles = StyleSheet.create({
   body: { paddingTop: space.sm, paddingBottom: space.lg, gap: space.md },
   pad: { marginHorizontal: gutter },
   previewCard: { minHeight: 160, justifyContent: 'flex-end', padding: space.lg, gap: 2, borderRadius: radius.xl },
+  previewSticker: { position: 'absolute', top: space.md, right: space.md },
   sample: { flexDirection: 'row', flexWrap: 'wrap', gap: space.sm },
   sampleChip: {
     paddingHorizontal: space.sm + 4,

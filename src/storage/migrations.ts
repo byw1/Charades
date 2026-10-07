@@ -105,6 +105,14 @@ export const migrations: readonly Migration[] = [
       ALTER TABLE cards ADD COLUMN image TEXT;
     `,
   },
+  {
+    version: 4,
+    name: 'deck cover emoji',
+    /** Nullable: a deck without one shows the default. */
+    up: `
+      ALTER TABLE decks ADD COLUMN emoji TEXT;
+    `,
+  },
 ];
 
 /**

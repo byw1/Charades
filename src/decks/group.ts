@@ -110,6 +110,7 @@ export function buildGroupDeck(input: GroupAnswers): Deck {
     author: '',
     language: 'en',
     accentColor: input.accentColor,
+    emoji: '👯',
     tags: ['group', 'custom'],
     createdAt: input.now,
     updatedAt: input.now,

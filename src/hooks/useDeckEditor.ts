@@ -22,6 +22,7 @@ export type DeckEditor = {
   setName(name: string): void;
   setDescription(description: string): void;
   setAccentColor(accentColor: string): void;
+  setEmoji(emoji: string | null): void;
   addCard(text: string): void;
   updateCard(cardId: string, fields: edit.CardFields): void;
   addPhotoCards(photos: readonly string[]): void;
@@ -56,6 +57,7 @@ export function useDeckEditor(initial: Deck): DeckEditor {
     setName: (name) => apply((d, at) => edit.setDeckFields(d, { name }, at)),
     setDescription: (description) => apply((d, at) => edit.setDeckFields(d, { description }, at)),
     setAccentColor: (accentColor) => apply((d, at) => edit.setDeckFields(d, { accentColor }, at)),
+    setEmoji: (emoji) => apply((d, at) => edit.setDeckEmoji(d, emoji, at)),
 
     addCard: (text) => apply((d, at) => edit.addCard(d, text, at)),
     updateCard: (cardId, fields) => apply((d, at) => edit.updateCard(d, cardId, fields, at)),

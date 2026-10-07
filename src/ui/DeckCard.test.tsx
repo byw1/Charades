@@ -15,9 +15,11 @@ function summary(overrides: Partial<DeckSummary> = {}): DeckSummary {
     description: 'Everyone has at least heard of it.',
     author: 'Deckhead',
     accentColor: '#FF3D6E',
+    emoji: '🍿',
     tags: ['film'],
     source: 'bundled',
     cardCount: 50,
+    sample: 'Jurassic Park',
     updatedAt: '2026-07-26T18:00:00Z',
     ...overrides,
   };
@@ -55,6 +57,17 @@ describe('DeckCard', () => {
     expect(onPress).toHaveBeenCalledTimes(1);
   });
 
+  it('shows the deck’s emoji and a peek at its first card', () => {
+    render(<DeckCard deck={summary()} onPress={jest.fn()} />);
+    expect(screen.getAllByText('🍿').length).toBeGreaterThan(0);
+    expect(screen.getByText('Jurassic Park')).toBeTruthy();
+  });
+
+  it('falls back to a card emoji for a deck without one', () => {
+    render(<DeckCard deck={summary({ emoji: null, sample: null })} onPress={jest.fn()} />);
+    expect(screen.getAllByText('🃏').length).toBeGreaterThan(0);
+  });
+
   it('labels itself for VoiceOver with the name and count', () => {
     render(<DeckCard deck={summary()} onPress={jest.fn()} />);
     expect(screen.getByLabelText('Films Everyone Knows, 50 cards')).toBeTruthy();
@@ -65,10 +78,8 @@ describe('DeckCard', () => {
     expect(screen.getByText('Films Everyone Knows')).toBeTruthy();
   });
 
-  it('takes the first character of an emoji name without splitting it', () => {
-    // [...name][0] rather than name[0], which would slice a surrogate pair and
-    // render a replacement character.
+  it('shows a name that starts with an emoji whole', () => {
     render(<DeckCard deck={summary({ name: '🎬 Films' })} onPress={jest.fn()} />);
-    expect(screen.getByText('🎬')).toBeTruthy();
+    expect(screen.getByText('🎬 Films')).toBeTruthy();
   });
 });

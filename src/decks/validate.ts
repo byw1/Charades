@@ -4,6 +4,7 @@ import {
   CURRENT_DECK_SCHEMA_VERSION,
   type Card,
   type Deck,
+  MAX_DECK_EMOJI_LENGTH,
   MAX_IMAGE_DATA_LENGTH,
   MAX_TABOO_WORD_LENGTH,
   MAX_TABOO_WORDS,
@@ -177,6 +178,17 @@ export function validateDeck(input: unknown): ValidationResult {
     fail('accentColor', `"${accentColor}" is not a colour the app can read. Use a hex value like #FF3D6E.`);
   }
 
+  // Cosmetic, so a bad one is dropped with a warning rather than failing the deck.
+  let emoji: string | null = null;
+  if (input.emoji !== undefined && input.emoji !== null) {
+    const raw = typeof input.emoji === 'string' ? input.emoji.trim() : '';
+    if (raw && raw.length <= MAX_DECK_EMOJI_LENGTH && /\p{Extended_Pictographic}/u.test(raw)) {
+      emoji = raw;
+    } else {
+      warn('emoji', 'This deck’s cover emoji could not be read, so it will use the default.');
+    }
+  }
+
   let tags: string[] = [];
   if (input.tags !== undefined) {
     if (!Array.isArray(input.tags) || input.tags.some((t) => typeof t !== 'string')) {
@@ -296,21 +308,20 @@ export function validateDeck(input: unknown): ValidationResult {
     );
   }
 
-  return {
-    ok: true,
-    warnings,
-    deck: {
-      schemaVersion,
-      id,
-      name,
-      description,
-      author,
-      language,
-      accentColor,
-      tags,
-      createdAt: input.createdAt as string,
-      updatedAt: input.updatedAt as string,
-      cards,
-    },
+  const deck: Deck = {
+    schemaVersion,
+    id,
+    name,
+    description,
+    author,
+    language,
+    accentColor,
+    tags,
+    createdAt: input.createdAt as string,
+    updatedAt: input.updatedAt as string,
+    cards,
   };
+  if (emoji) deck.emoji = emoji;
+
+  return { ok: true, warnings, deck };
 }

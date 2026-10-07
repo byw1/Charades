@@ -341,3 +341,24 @@ describe('photo cards', () => {
     expectFail(validateDeck(validDeck({ cards })));
   });
 });
+
+describe('cover emoji', () => {
+  it('keeps an emoji', () => {
+    const { deck } = expectOk(validateDeck(validDeck({ emoji: '🎸' })));
+    expect(deck.emoji).toBe('🎸');
+  });
+
+  it('keeps a joined emoji whole', () => {
+    expect(expectOk(validateDeck(validDeck({ emoji: '🧑‍🎤' }))).deck.emoji).toBe('🧑‍🎤');
+  });
+
+  it('drops something that is not an emoji, with a warning, and keeps the deck', () => {
+    const { deck, warnings } = expectOk(validateDeck(validDeck({ emoji: 'hello' })));
+    expect(deck).not.toHaveProperty('emoji');
+    expect(warnings.map((w) => w.path)).toContain('emoji');
+  });
+
+  it('leaves the field off a deck without one', () => {
+    expect(expectOk(validateDeck(validDeck())).deck).not.toHaveProperty('emoji');
+  });
+});

@@ -18,13 +18,14 @@ type DeckRow = {
   author: string;
   language: string;
   accentColor: string;
+  emoji: string | null;
   tags: string;
   source: DeckSource;
   createdAt: string;
   updatedAt: string;
 };
 
-type SummaryRow = Omit<DeckRow, 'schemaVersion' | 'language'> & { cardCount: number };
+type SummaryRow = Omit<DeckRow, 'schemaVersion' | 'language'> & { cardCount: number; sample: string | null };
 
 type CardRow = { id: string; text: string; note: string | null; taboo: string | null; image: string | null };
 
@@ -59,17 +60,20 @@ function toSummary(row: SummaryRow): DeckSummary {
     description: row.description,
     author: row.author,
     accentColor: row.accentColor,
+    emoji: row.emoji ?? null,
     tags: parseStringList(row.tags),
     source: row.source,
     cardCount: row.cardCount,
+    sample: row.sample ?? null,
     updatedAt: row.updatedAt,
   };
 }
 
 const SUMMARY_SELECT = `
-  SELECT d.id, d.name, d.description, d.author, d.accentColor, d.tags, d.source,
+  SELECT d.id, d.name, d.description, d.author, d.accentColor, d.emoji, d.tags, d.source,
          d.createdAt, d.updatedAt,
-         (SELECT COUNT(*) FROM cards c WHERE c.deckId = d.id) AS cardCount
+         (SELECT COUNT(*) FROM cards c WHERE c.deckId = d.id) AS cardCount,
+         (SELECT c.text FROM cards c WHERE c.deckId = d.id ORDER BY c.position LIMIT 1) AS sample
   FROM decks d
 `;
 
@@ -117,7 +121,7 @@ export async function getDeck(db: Sql, deckId: string): Promise<StoredDeck | nul
     [deckId],
   );
 
-  return {
+  const deck: StoredDeck = {
     schemaVersion: row.schemaVersion,
     id: row.id,
     name: row.name,
@@ -131,6 +135,8 @@ export async function getDeck(db: Sql, deckId: string): Promise<StoredDeck | nul
     updatedAt: row.updatedAt,
     cards: cards.map(toCard),
   };
+  if (row.emoji) deck.emoji = row.emoji;
+  return deck;
 }
 
 export async function getDeckSummary(db: Sql, deckId: string): Promise<DeckSummary | null> {
@@ -158,8 +164,8 @@ export async function countDecks(db: Sql, source?: DeckSource): Promise<number> 
 export async function upsertDeck(db: Sql, deck: Deck, source: DeckSource): Promise<void> {
   await db.withTransactionAsync(async () => {
     await db.runAsync(
-      `INSERT INTO decks (id, schemaVersion, name, description, author, language, accentColor, tags, source, createdAt, updatedAt)
-       VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+      `INSERT INTO decks (id, schemaVersion, name, description, author, language, accentColor, emoji, tags, source, createdAt, updatedAt)
+       VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
        ON CONFLICT(id) DO UPDATE SET
          schemaVersion = excluded.schemaVersion,
          name          = excluded.name,
@@ -167,6 +173,7 @@ export async function upsertDeck(db: Sql, deck: Deck, source: DeckSource): Promi
          author        = excluded.author,
          language      = excluded.language,
          accentColor   = excluded.accentColor,
+         emoji         = excluded.emoji,
          tags          = excluded.tags,
          source        = excluded.source,
          updatedAt     = excluded.updatedAt`,
@@ -178,6 +185,7 @@ export async function upsertDeck(db: Sql, deck: Deck, source: DeckSource): Promi
         deck.author,
         deck.language,
         deck.accentColor,
+        deck.emoji ?? null,
         JSON.stringify(deck.tags),
         source,
         deck.createdAt,

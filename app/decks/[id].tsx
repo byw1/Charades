@@ -2,7 +2,7 @@ import { useFocusEffect, useLocalSearchParams, useRouter } from 'expo-router';
 import { useCallback, useState } from 'react';
 import { ActivityIndicator, Alert, FlatList, Image, StyleSheet, View } from 'react-native';
 import { duplicateDeck } from '@/decks/edit';
-import { isPlayable, MIN_PLAYABLE_CARDS, type StoredDeck } from '@/decks/types';
+import { DEFAULT_DECK_EMOJI, isPlayable, MIN_PLAYABLE_CARDS, type StoredDeck } from '@/decks/types';
 import { useDatabase } from '@/hooks/useDatabase';
 import { useNewGameStore } from '@/hooks/useNewGameStore';
 import { deleteDeck, getDeck, upsertDeck } from '@/storage/deckRepo';
@@ -10,6 +10,7 @@ import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { Button } from '@/ui/Button';
 import { CircleButton } from '@/ui/CircleButton';
 import { cardTextOn } from '@/ui/contrast';
+import { EmojiSticker } from '@/ui/EmojiSticker';
 import { EmptyState } from '@/ui/EmptyState';
 import { Icon, type IconName } from '@/ui/Icon';
 import { Screen } from '@/ui/Screen';
@@ -135,9 +136,10 @@ export default function DeckDetailScreen() {
         ListHeaderComponent={
           <View style={styles.header}>
             <View style={[styles.hero, { backgroundColor: deck.accentColor, paddingTop: insets.top + 64 }]}>
-              <Text style={[styles.initial, { color: onAccent }]} accessible={false}>
-                {[...deck.name][0]?.toUpperCase() ?? '?'}
+              <Text style={styles.watermark} accessible={false} allowFontScaling={false}>
+                {deck.emoji ?? DEFAULT_DECK_EMOJI}
               </Text>
+              <EmojiSticker emoji={deck.emoji ?? DEFAULT_DECK_EMOJI} size={76} tilt={-8} />
               <Text style={[styles.title, { color: onAccent }]} numberOfLines={3} accessibilityRole="header">
                 {deck.name}
               </Text>
@@ -263,14 +265,14 @@ const styles = StyleSheet.create({
     minHeight: 300,
     justifyContent: 'flex-end',
   },
-  initial: {
+  watermark: {
     position: 'absolute',
-    right: -20,
-    top: -10,
-    fontFamily: font.display,
-    fontSize: 300,
-    lineHeight: 320,
-    opacity: 0.14,
+    right: -50,
+    top: 20,
+    fontSize: 230,
+    lineHeight: 270,
+    opacity: 0.2,
+    transform: [{ rotate: '-14deg' }],
   },
   title: { fontFamily: font.display, fontSize: 48, lineHeight: 50, letterSpacing: -1.8 },
   description: { fontFamily: font.bold, fontSize: 15, lineHeight: 21, opacity: 0.88 },

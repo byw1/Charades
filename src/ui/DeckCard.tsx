@@ -1,7 +1,7 @@
-import { StyleSheet, View, type StyleProp, type ViewStyle } from 'react-native';
-import type { DeckSummary } from '@/decks/types';
-import { summaryIsPlayable } from '@/decks/types';
+import { StyleSheet, Text as RNText, View, type StyleProp, type ViewStyle } from 'react-native';
+import { DEFAULT_DECK_EMOJI, summaryIsPlayable, type DeckSummary } from '@/decks/types';
 import { cardTextOn } from './contrast';
+import { EmojiSticker } from './EmojiSticker';
 import { Tap } from './Tap';
 import { Text } from './Text';
 import { color, font, radius, space } from './tokens';
@@ -13,14 +13,16 @@ export type DeckCardProps = {
 };
 
 /**
- * A deck as a cover tile: full colour, the first letter blown up as cover art,
- * the name set big at the bottom. Tall rather than wide, so two sit side by
- * side and the browser scrolls like a feed.
+ * A deck as a cover tile: full colour, the deck's emoji stuck on like a
+ * sticker with a giant faded copy behind it, and a little card peeking out
+ * with a real card from the deck on it — so you can tell what you are getting
+ * before you open it. Tall rather than wide, so two sit side by side and the
+ * browser scrolls like a feed.
  */
 export function DeckCard({ deck, onPress, style }: DeckCardProps) {
   const playable = summaryIsPlayable(deck);
   const ink = cardTextOn(deck.accentColor);
-  const initial = [...deck.name][0]?.toUpperCase() ?? '?';
+  const emoji = deck.emoji ?? DEFAULT_DECK_EMOJI;
   const count = `${deck.cardCount} ${deck.cardCount === 1 ? 'card' : 'cards'}`;
 
   return (
@@ -32,27 +34,40 @@ export function DeckCard({ deck, onPress, style }: DeckCardProps) {
       style={style}
       contentStyle={[styles.tile, { backgroundColor: deck.accentColor }]}
     >
-      <Text style={[styles.initial, { color: ink }]} accessible={false}>
-        {initial}
-      </Text>
+      <RNText style={styles.watermark} accessible={false} allowFontScaling={false}>
+        {emoji}
+      </RNText>
 
       <View style={styles.top}>
         <View style={[styles.pill, { backgroundColor: ink === color.bone ? 'rgba(0,0,0,0.22)' : 'rgba(255,255,255,0.35)' }]}>
           <Text style={[styles.pillText, { color: ink }]}>{count}</Text>
         </View>
+        <View style={styles.sticker}>
+          <EmojiSticker emoji={emoji} size={54} />
+        </View>
+      </View>
+
+      {deck.sample ? (
+        <View style={styles.peek} accessible={false}>
+          <RNText style={styles.peekText} numberOfLines={2} allowFontScaling={false}>
+            {deck.sample}
+          </RNText>
+        </View>
+      ) : (
+        <View />
+      )}
+
+      <View style={styles.bottom}>
         {playable ? null : (
           <View style={[styles.pill, styles.warn]}>
             <Text style={[styles.pillText, { color: color.ink }]}>too few to play</Text>
           </View>
         )}
-      </View>
-
-      <View style={styles.bottom}>
         <Text style={[styles.name, { color: ink }]} numberOfLines={2}>
           {deck.name}
         </Text>
         {deck.description ? (
-          <Text style={[styles.description, { color: ink }]} numberOfLines={2}>
+          <Text style={[styles.description, { color: ink }]} numberOfLines={1}>
             {deck.description}
           </Text>
         ) : null}
@@ -69,17 +84,32 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between',
     overflow: 'hidden',
   },
-  initial: {
+  watermark: {
     position: 'absolute',
-    right: -14,
-    top: -28,
-    fontFamily: font.display,
-    fontSize: 170,
-    lineHeight: 190,
-    opacity: 0.16,
+    right: -30,
+    bottom: -22,
+    fontSize: 130,
+    lineHeight: 150,
+    opacity: 0.22,
+    transform: [{ rotate: '-14deg' }],
   },
-  top: { flexDirection: 'row', flexWrap: 'wrap', gap: 6 },
-  pill: { borderRadius: radius.pill, paddingHorizontal: 9, paddingVertical: 3 },
+  top: { flexDirection: 'row', alignItems: 'flex-start', justifyContent: 'space-between' },
+  sticker: { marginTop: -2, marginRight: -2 },
+  peek: {
+    alignSelf: 'flex-start',
+    maxWidth: '86%',
+    backgroundColor: '#FFFFFF',
+    borderRadius: 10,
+    paddingHorizontal: 10,
+    paddingVertical: 6,
+    transform: [{ rotate: '-5deg' }],
+    shadowColor: '#000000',
+    shadowOpacity: 0.18,
+    shadowRadius: 6,
+    shadowOffset: { width: 0, height: 3 },
+  },
+  peekText: { fontFamily: font.display, fontSize: 15, lineHeight: 18, color: color.ink },
+  pill: { alignSelf: 'flex-start', borderRadius: radius.pill, paddingHorizontal: 9, paddingVertical: 3 },
   warn: { backgroundColor: color.bone },
   pillText: { fontFamily: font.heavy, fontSize: 12, lineHeight: 16 },
   bottom: { gap: 4 },

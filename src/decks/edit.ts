@@ -54,6 +54,13 @@ export function setDeckFields(
   return touch({ ...deck, ...fields }, now);
 }
 
+/** Sets the cover emoji, or clears it with null. */
+export function setDeckEmoji(deck: Deck, emoji: string | null, now: string): Deck {
+  const { emoji: _old, ...rest } = deck;
+  const trimmed = emoji?.trim();
+  return touch(trimmed ? { ...rest, emoji: trimmed } : rest, now);
+}
+
 export function addCard(deck: Deck, text: string, now: string, random?: RandomSource): Deck {
   const trimmed = text.trim();
   if (!trimmed) return deck;
@@ -239,7 +246,8 @@ export function hasChanges(original: Deck, draft: Deck): boolean {
     original.name !== draft.name ||
     original.description !== draft.description ||
     original.author !== draft.author ||
-    original.accentColor !== draft.accentColor
+    original.accentColor !== draft.accentColor ||
+    original.emoji !== draft.emoji
   ) {
     return true;
   }

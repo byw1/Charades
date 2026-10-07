@@ -46,6 +46,22 @@ describe('deck repository', () => {
   const save = (deck: Deck, source: DeckSource = 'custom') => upsertDeck(db, deck, source);
 
   describe('round trip', () => {
+    it('keeps the cover emoji, and summarises it with a peek at the first card', async () => {
+      const deck = makeDeck({ emoji: '🎸' });
+      await save(deck);
+
+      expect((await getDeck(db, deck.id))?.emoji).toBe('🎸');
+      const summary = await getDeckSummary(db, deck.id);
+      expect(summary).toMatchObject({ emoji: '🎸', sample: 'First' });
+    });
+
+    it('summarises a deck without an emoji or cards as null', async () => {
+      const deck = makeDeck({ cards: [] });
+      await save(deck);
+      expect(await getDeckSummary(db, deck.id)).toMatchObject({ emoji: null, sample: null });
+      expect(await getDeck(db, deck.id)).not.toHaveProperty('emoji');
+    });
+
     it('keeps Taboo words and photos, and leaves them off cards without', async () => {
       const deck = makeDeck({
         cards: [

@@ -1,8 +1,19 @@
 import { useLocalSearchParams, useRouter } from 'expo-router';
 import { useEffect, useState } from 'react';
-import { ActivityIndicator, Alert, FlatList, Image, KeyboardAvoidingView, Platform, Pressable, StyleSheet, View } from 'react-native';
+import {
+  ActivityIndicator,
+  Alert,
+  FlatList,
+  Image,
+  KeyboardAvoidingView,
+  Platform,
+  Pressable,
+  ScrollView,
+  StyleSheet,
+  View,
+} from 'react-native';
 import { createDeck, parseTabooInput } from '@/decks/edit';
-import { CARD_TEXT_SOFT_CAP, MIN_PLAYABLE_CARDS, type Deck } from '@/decks/types';
+import { CARD_TEXT_SOFT_CAP, DECK_EMOJI_CHOICES, DEFAULT_DECK_EMOJI, MIN_PLAYABLE_CARDS, type Deck } from '@/decks/types';
 import { useDatabase } from '@/hooks/useDatabase';
 import { useDeckEditor } from '@/hooks/useDeckEditor';
 import { useHaptics } from '@/hooks/useHaptics';
@@ -10,6 +21,7 @@ import { pickPhotos, takePhoto } from '@/media/photos';
 import { getDeck, upsertDeck } from '@/storage/deckRepo';
 import { Button } from '@/ui/Button';
 import { cardTextOn } from '@/ui/contrast';
+import { EmojiSticker } from '@/ui/EmojiSticker';
 import { EmptyState } from '@/ui/EmptyState';
 import { Field } from '@/ui/Field';
 import { Icon, type IconName } from '@/ui/Icon';
@@ -18,7 +30,7 @@ import { Tap } from '@/ui/Tap';
 import { Footer, Screen } from '@/ui/Screen';
 import { Text } from '@/ui/Text';
 import { TopBar } from '@/ui/TopBar';
-import { color, deckColors, font, gutter, radius, space } from '@/ui/tokens';
+import { color, deckColors, gutter, radius, space } from '@/ui/tokens';
 
 export default function DeckEditorScreen() {
   const { id } = useLocalSearchParams<{ id: string }>();
@@ -238,9 +250,12 @@ function Editor({ initial, isNew }: { initial: Deck; isNew: boolean }) {
             <View style={styles.meta}>
               {/* A live preview: this is what the deck will look like. */}
               <View style={[styles.preview, { backgroundColor: draft.accentColor }]}>
-                <Text style={[styles.previewInitial, { color: onAccent }]} accessible={false}>
-                  {[...(draft.name.trim() || 'Y')][0]?.toUpperCase()}
+                <Text style={styles.previewWatermark} accessible={false} allowFontScaling={false}>
+                  {draft.emoji ?? DEFAULT_DECK_EMOJI}
                 </Text>
+                <View style={styles.previewSticker}>
+                  <EmojiSticker emoji={draft.emoji ?? DEFAULT_DECK_EMOJI} size={58} />
+                </View>
                 <Text variant="display" style={{ color: onAccent }} numberOfLines={2}>
                   {draft.name.trim() || 'Your deck'}
                 </Text>
@@ -289,6 +304,40 @@ function Editor({ initial, isNew }: { initial: Deck; isNew: boolean }) {
                     </View>
                   );
                 })}
+              </View>
+
+              <View style={styles.emojiBlock}>
+                <Text variant="overline" tone="faint">
+                  COVER EMOJI
+                </Text>
+                <ScrollView
+                  horizontal
+                  showsHorizontalScrollIndicator={false}
+                  contentContainerStyle={styles.emojis}
+                  keyboardShouldPersistTaps="handled"
+                  accessibilityRole="radiogroup"
+                >
+                  {DECK_EMOJI_CHOICES.map((choice) => {
+                    const selected = (draft.emoji ?? null) === choice;
+                    return (
+                      <Pressable
+                        key={choice}
+                        onPress={() => {
+                          haptics.select();
+                          editor.setEmoji(selected ? null : choice);
+                        }}
+                        accessibilityRole="radio"
+                        accessibilityState={{ selected }}
+                        accessibilityLabel={`Cover emoji ${choice}`}
+                        style={[styles.emojiChoice, selected && { borderColor: draft.accentColor, backgroundColor: color.surfaceRaised }]}
+                      >
+                        <Text style={styles.emojiGlyph} allowFontScaling={false}>
+                          {choice}
+                        </Text>
+                      </Pressable>
+                    );
+                  })}
+                </ScrollView>
               </View>
 
               <View style={styles.progress}>
@@ -498,15 +547,29 @@ const styles = StyleSheet.create({
   list: { paddingBottom: space.lg, flexGrow: 1 },
   meta: { gap: space.md, paddingHorizontal: gutter, paddingBottom: space.sm },
   preview: { minHeight: 140, justifyContent: 'flex-end', padding: space.lg, gap: 2, borderRadius: radius.xl, overflow: 'hidden' },
-  previewInitial: {
+  previewWatermark: {
     position: 'absolute',
-    right: -10,
-    top: -30,
-    fontFamily: font.display,
-    fontSize: 200,
-    lineHeight: 220,
-    opacity: 0.16,
+    right: -30,
+    top: -20,
+    fontSize: 150,
+    lineHeight: 180,
+    opacity: 0.2,
+    transform: [{ rotate: '-14deg' }],
   },
+  previewSticker: { position: 'absolute', top: space.md, left: space.md },
+  emojiBlock: { gap: space.sm },
+  emojis: { gap: space.sm, paddingRight: space.md },
+  emojiChoice: {
+    width: 48,
+    height: 48,
+    borderRadius: 24,
+    alignItems: 'center',
+    justifyContent: 'center',
+    borderWidth: 3,
+    borderColor: 'transparent',
+    backgroundColor: color.surface,
+  },
+  emojiGlyph: { fontSize: 24, lineHeight: 30 },
   fieldGroup: { gap: space.sm },
   swatches: { flexDirection: 'row', flexWrap: 'wrap', rowGap: space.sm },
   swatchCell: { width: '25%', alignItems: 'center' },

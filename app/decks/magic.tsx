@@ -67,7 +67,7 @@ export default function DeckMakerScreen() {
       const name = theme.trim().replace(/^\w/, (c) => c.toUpperCase()).slice(0, 60);
       const accent = deckColors[cards.length % deckColors.length]!;
       const deck = appendCards(
-        { ...createDeck({ now, name, accentColor: accent }), description: 'Dreamed up on this iPhone.', tags: ['ai'] },
+        { ...createDeck({ now, name, accentColor: accent }), description: 'Dreamed up on this iPhone.', emoji: '✨', tags: ['ai'] },
         cards.map((text) => ({ id: makeCardId(), text, note: null })),
         now,
       );

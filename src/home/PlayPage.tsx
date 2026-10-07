@@ -1,10 +1,11 @@
 import { useEffect, useRef, type ReactNode } from 'react';
 import { ScrollView, StyleSheet, Text as RNText, useWindowDimensions, View } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
-import { MIN_PLAYABLE_CARDS } from '@/decks/types';
+import { DEFAULT_DECK_EMOJI, MIN_PLAYABLE_CARDS } from '@/decks/types';
 import type { GameMode } from '@/game/types';
 import { CircleButton } from '@/ui/CircleButton';
 import { cardTextOn } from '@/ui/contrast';
+import { EmojiSticker } from '@/ui/EmojiSticker';
 import { CARD_LETTER_SPACING, fitCardText } from '@/ui/fitText';
 import { Mascot } from '@/ui/Mascot';
 import { Tap } from '@/ui/Tap';
@@ -18,9 +19,24 @@ export type Lens = {
   accent: string;
   deckIds: string[];
   cardCount: number;
-  /** For "Mix", a glyph instead of the deck's initial. */
-  glyph?: string;
+  /** The deck's emoji: on its lens, and stuck all over the viewfinder. */
+  emoji: string;
+  /** Extra emoji scattered round the viewfinder. Mix uses its decks' emoji. */
+  stickers?: string[];
 };
+
+/**
+ * Where the scattered stickers sit, as fractions of the viewfinder. Fixed
+ * rather than random so the layout never jumps between renders, and kept to
+ * the edges so they never sit on the deck name.
+ */
+const STICKER_SPOTS = [
+  { top: 0.04, left: 0.06, size: 44, rotate: '-14deg' },
+  { top: 0.12, right: 0.08, size: 56, rotate: '12deg' },
+  { top: 0.72, left: 0.08, size: 52, rotate: '9deg' },
+  { top: 0.8, right: 0.1, size: 40, rotate: '-10deg' },
+  { top: 0.42, right: 0.02, size: 34, rotate: '18deg' },
+] as const;
 
 export type PlayPageProps = {
   lenses: Lens[];
@@ -140,6 +156,31 @@ export function PlayPage({
         {resume ? <View style={styles.resume}>{resume}</View> : null}
 
         <View style={styles.viewfinder} pointerEvents="none">
+          {STICKER_SPOTS.map((spot, i) => {
+            const sticker = (lens.stickers ?? [])[i % Math.max(1, lens.stickers?.length ?? 0)] ?? lens.emoji;
+            return (
+              <RNText
+                key={`${lens.key}-${i}`}
+                accessible={false}
+                allowFontScaling={false}
+                style={[
+                  styles.floating,
+                  {
+                    top: `${spot.top * 100}%`,
+                    ...('left' in spot ? { left: `${spot.left * 100}%` } : { right: `${spot.right * 100}%` }),
+                    fontSize: spot.size,
+                    lineHeight: spot.size * 1.2,
+                    transform: [{ rotate: spot.rotate }],
+                  },
+                ]}
+              >
+                {sticker}
+              </RNText>
+            );
+          })}
+          <View style={styles.badge}>
+            <EmojiSticker emoji={lens.emoji} size={88} tilt={-8} />
+          </View>
           <RNText
             style={[
               styles.deckName,
@@ -211,8 +252,8 @@ export function PlayPage({
                   accessibilityState={{ selected: index === selected }}
                   contentStyle={[styles.lens, { backgroundColor: item.accent }]}
                 >
-                  <RNText style={[styles.lensText, { color: cardTextOn(item.accent) }]} allowFontScaling={false}>
-                    {item.glyph ?? [...item.name][0]?.toUpperCase() ?? '?'}
+                  <RNText style={styles.lensEmoji} allowFontScaling={false}>
+                    {item.emoji}
                   </RNText>
                 </Tap>
               ))}
@@ -298,7 +339,9 @@ const styles = StyleSheet.create({
     borderWidth: 3,
     borderColor: 'rgba(0,0,0,0.25)',
   },
-  lensText: { fontFamily: font.display, fontSize: 26, lineHeight: 30 },
+  lensEmoji: { fontSize: 28, lineHeight: 34 },
+  floating: { position: 'absolute', opacity: 0.55 },
+  badge: { marginBottom: space.xs },
   ring: {
     position: 'absolute',
     width: RING,
@@ -310,7 +353,7 @@ const styles = StyleSheet.create({
 });
 
 /** The "everything" lens, first in the carousel. */
-export function mixLens(decks: { id: string; cardCount: number }[]): Lens {
+export function mixLens(decks: { id: string; cardCount: number; emoji: string | null }[]): Lens {
   const playable = decks.filter((d) => d.cardCount >= MIN_PLAYABLE_CARDS);
   return {
     key: 'mix',
@@ -318,6 +361,7 @@ export function mixLens(decks: { id: string; cardCount: number }[]): Lens {
     accent: palette.yellow,
     deckIds: playable.map((d) => d.id),
     cardCount: playable.reduce((sum, d) => sum + d.cardCount, 0),
-    glyph: '🔀',
+    emoji: '🎲',
+    stickers: playable.map((d) => d.emoji ?? DEFAULT_DECK_EMOJI).slice(0, STICKER_SPOTS.length),
   };
 }
