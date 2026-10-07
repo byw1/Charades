@@ -13,6 +13,7 @@ committed, with a check-in before the next one starts.
 | M6 | Polish: tilt mode, settings, accessibility, backgrounding, empty and error states | In progress |
 | M7 | Ship: EAS config, icons and splash, screenshots, privacy manifest, TestFlight | In progress |
 | Game night | Nine new decks with banned words, banned-words and three-round modes, chaos twists, forfeits, friends and rivalries, Wrapped, group deck builder, photo cards, multi-code sharing, open-in-Deckhead, round videos and highlight reel, voice referee, AI deck maker, streak reminders | Complete, needs a device pass |
+| Bigger decks | 100 cards in every deck, three new decks (Celebrities, Sports, Movie & TV Quotes), cover emoji and sticker-style previews, tilt as the default with a tap fallback, offline checks on the build itself | Complete, needs a device pass |
 
 ## Not in v1
 

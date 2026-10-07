@@ -4,8 +4,9 @@ A forehead-card party game. One player holds the phone against their forehead
 showing a card they can't see. Everyone else shouts clues. The holder guesses.
 Repeat until the timer runs out.
 
-Fully offline. No accounts, no ads, no tracking. Fourteen decks, all free from
-install. Swipe between your decks, a one-tap Play screen and your streak. Hosted
+Fully offline: no Wi-Fi or signal needed, ever. No accounts, no ads, no
+tracking. Seventeen decks of 100 cards each, all free from install. Tip the
+phone down for got it, up to pass. Swipe between your decks, a one-tap Play screen and your streak. Hosted
 by Dex, a sticker-style head with a card stuck to its forehead.
 
 Three ways to play (Classic, Banned words, and 3 Rounds), chaos twists and

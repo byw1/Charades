@@ -9,6 +9,7 @@ builds on the last, so start at the top.
 | Time | 5 minutes | ~30 minutes the first time | An afternoon, plus Apple's review |
 | Needs a Mac? | No | No | No |
 | Works without your computer? | No | Yes | Yes |
+| Works with no Wi-Fi or signal? | Once it's open | Yes, always | Yes, always |
 
 You need [Node.js](https://nodejs.org) 22 or newer on your computer for all of
 them. Then, once, in this folder:
@@ -35,6 +36,19 @@ or hotel Wi-Fi), run `npx expo start --tunnel` instead.
 This is the fastest way to play and to see changes live, but it runs inside
 Expo Go and needs your computer running. For a real app icon on your home
 screen, keep going.
+
+### Does it need Wi-Fi?
+
+**The real app (steps 2 and 3) never needs the internet.** Every deck, every
+game mode, your stats and your decks live on the phone. Airplane mode, a cabin,
+a basement with no bars: it all works, from the very first launch. There is no
+login, no download on first open and no update check.
+
+**Expo Go is the exception, and only while you're developing.** Expo Go loads
+the game from your computer, so the phone needs your Wi-Fi to *open* it. Once
+it's open you can switch Wi-Fi off and play; you only need it back to reload
+or to see a change you just made. Your friends never deal with this: once you
+install the real app, Wi-Fi isn't part of it.
 
 ### What works in Expo Go
 
@@ -103,21 +117,27 @@ To update it later, run `npm run phone` again and install the new link.
 > parts (camera recording, speech, notifications, Apple Intelligence), and an
 > app built before them can't use them. Run `npm run phone` once more.
 
-### Five things to check on a real iPhone
+### Seven things to check on a real iPhone
 
 Everything is tested, but these can only be checked on a phone. Each takes a
 minute.
 
-1. **Voice referee.** Settings → Extras → Voice referee. Start a Banned game and
+1. **No internet.** Swipe down Control Centre, turn on airplane mode (and make
+   sure Wi-Fi is off too), then force-close Deckhead and open it again. Play a
+   round: everything should work exactly the same.
+2. **Tilt.** Start a round and hold the phone sideways on your forehead. Tip
+   the screen down toward the floor for got it, up toward the ceiling to pass.
+   If you'd rather tap, switch it under Settings → How you answer.
+3. **Voice referee.** Settings → Extras → Voice referee. Start a Banned game and
    say the answer: it should flash green. Say a word from the red strip: it
    should flash "Busted!".
-2. **Dream one up.** On an iPhone with Apple Intelligence, Decks → Dream one up
+4. **Dream one up.** On an iPhone with Apple Intelligence, Decks → Dream one up
    → type a theme. Turn on airplane mode first: it should still work.
-3. **Film the room.** Settings → Extras → Film the room. Play a round, then
+5. **Film the room.** Settings → Extras → Film the room. Play a round, then
    tap "Watch the highlights" on the standings screen.
-4. **Streak reminders.** Settings → Extras → Streak reminders. With a streak
+6. **Streak reminders.** Settings → Extras → Streak reminders. With a streak
    going, don't play the next day: a nudge should arrive at 7pm.
-5. **AirDrop.** Share a deck as a file to another iPhone with Deckhead
+7. **AirDrop.** Share a deck as a file to another iPhone with Deckhead
    installed. It should offer to open in Deckhead and land on "Add this deck?".
 
 > **No paid account but you have a Mac?** Install Xcode, plug in your iPhone

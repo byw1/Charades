@@ -606,8 +606,10 @@ made tap the default because the incumbent's gyro controls are unreliable; the
 answer to that was in how tilt is built, not in hiding it: a trigger well past
 anything a phone does resting on a forehead, a return to upright before the
 next gesture, and a dwell plus a motion gate, so an excited jerk does nothing.
-Tilt still replaces tap during a round, so a palm on the screen cannot answer,
-and a phone with no accelerometer falls back to tap.
+Tilt still replaces tap during a round, so a palm on the screen cannot answer.
+Because it is the default, a round must never be left with no way to answer: a
+phone that reports no accelerometer, can't be subscribed to, or sends no reading
+in the first 1.5 seconds hands the round back to tap.
 
 expo-sensors passes CoreMotion's readings through unchanged on iOS, so the
 direction follows Apple's convention: a screen facing the floor reads +1 on z,
@@ -616,3 +618,32 @@ which is "tipped down", which is got it.
 Saved settings record every setting, so a new default would never reach a phone
 that had saved once. `settingsUpgrade.ts` switches such phones to tilt once and
 remembers it has, so anyone who then picks tap keeps tap.
+
+### A hundred cards a deck
+
+Thirty to fifty cards ran dry inside one evening, and some of the original
+decks (Around the House, Food & Drink, Act It Out) leaned on British household
+words that land flat with a college crowd. Every deck is now 100 cards. The
+flattest cards were swapped for things people actually argue about, the decks
+got names and cover emoji with more personality (Home Sweet Home, Movie Night),
+and three decks joined: Celebrities, Sports, and Movie & TV Quotes, where the
+card is a line and the room has to act it out.
+
+A retained card keeps its exact text, so its id, and the stats tied to it,
+survive. Dropped cards simply stop appearing; past games keep their own copy of
+what was played. Bundled decks' updatedAt moved forward so existing phones pick
+the new content up on the next launch.
+
+### Proving "no Wi-Fi needed"
+
+Offline was already enforced in source: a lint rule and a text scan reject any
+network call. That does not catch a build that reaches out on its own, so a
+second set of tests checks the build: no update service (expo-updates), no dev
+client that loads code from a computer, no analytics or crash-reporting SDKs,
+no over-the-air update URL, no web addresses in bundled decks, and on-device
+speech recognition only.
+
+It was also checked end to end: the web preview was played with the browser
+switched offline after the first load and every non-local request blocked and
+logged. It made none. The one place Wi-Fi matters is Expo Go during
+development, which loads the game from the computer; DEPLOY.md says so plainly.

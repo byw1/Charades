@@ -108,7 +108,7 @@ export default function SettingsScreen() {
           </View>
           {settings.inputMode === 'tilt' ? (
             <Text variant="caption" tone="muted" style={styles.note}>
-              Tilt replaces tap for the whole round, so a hand resting on the screen can’t answer for you.
+              Tilt replaces tap for the whole round, so a hand resting on the screen can’t answer for you. If the motion sensor doesn’t respond, tap takes over by itself.
             </Text>
           ) : null}
         </View>

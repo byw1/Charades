@@ -73,7 +73,7 @@ describe('useTilt', () => {
   });
 
   it('lets go of the sensor when switched off', () => {
-    const { rerender } = renderHook(({ enabled }) => useTilt({ enabled, onGesture: () => undefined }), {
+    const { rerender } = renderHook(({ enabled }: { enabled: boolean }) => useTilt({ enabled, onGesture: () => undefined }), {
       initialProps: { enabled: true },
     });
     expect(mockListener).not.toBeNull();
