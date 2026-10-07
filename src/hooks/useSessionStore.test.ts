@@ -281,3 +281,91 @@ describe('reset', () => {
     expect(store().deckNames).toEqual([]);
   });
 });
+
+describe('three-round mode through the store', () => {
+  /** Guesses everything left in the hat this turn, then commits. */
+  async function clearPhase() {
+    store().beginRound(`rnd_${store().session!.rounds.length + 1}`, '2026-10-07T20:00:00Z', 5);
+    store().start(0);
+    let at = 0;
+    while (store().roundState.phase === 'running') {
+      at += 100;
+      store().resolve('correct', at);
+    }
+    await store().commitRound(asDb(), '2026-10-07T20:01:00Z');
+  }
+
+  it('fills a hat of the chosen size and plays it three times to the end', async () => {
+    const session = start({ mode: 'threeRounds', hatSize: 12 });
+    expect(session.hat).toHaveLength(12);
+    expect(session.settings.winCondition).toEqual({ kind: 'allPhases' });
+    expect(store().pool).toHaveLength(12);
+
+    await clearPhase();
+    expect(store().roundState.cleared).toBe(true);
+    expect(store().session!.rounds[0]!.phase).toBe(1);
+
+    await clearPhase();
+    expect(store().session!.rounds[1]!.phase).toBe(2);
+    expect(sessionWinState(store().session!).over).toBe(false);
+
+    await clearPhase();
+    expect(store().session!.rounds[2]!.phase).toBe(3);
+    expect(sessionWinState(store().session!)).toMatchObject({ over: true, reason: 'allPhases' });
+  });
+
+  it('puts a passed card back in the hat for the next turn', async () => {
+    start({ mode: 'threeRounds', hatSize: 10 });
+    store().beginRound('rnd_1', '2026-10-07T20:00:00Z', 5);
+    store().start(0);
+    const passedKey = poolCardKey(store().roundState.card!);
+    store().resolve('pass', 100);
+    store().resolve('correct', 200);
+    store().endRound(300);
+    await store().commitRound(asDb(), '2026-10-07T20:01:00Z');
+
+    store().beginRound('rnd_2', '2026-10-07T20:02:00Z', 6);
+    const left = store().roundPool.map(poolCardKey);
+    expect(left).toHaveLength(9);
+    expect(left).toContain(passedKey);
+  });
+
+  it('resumes a three-round game with the same hat', async () => {
+    const session = start({ mode: 'threeRounds', hatSize: 10 });
+    await store().commitRound(asDb(), '2026-10-07T20:00:00Z');
+    const saved = await getSession(db, session.id);
+    store().reset();
+
+    store().resumeSession(saved!, decks, 99);
+    expect(store().pool.map(poolCardKey)).toEqual(session.hat);
+  });
+});
+
+describe('chaos through the store', () => {
+  it('stamps twists on some rounds, sizes speed rounds, and scores double points', async () => {
+    start({ chaos: true, roundSeconds: 60 });
+    const twists: (string | undefined)[] = [];
+
+    for (let i = 0; i < 12; i += 1) {
+      store().beginRound(`rnd_${i}`, '2026-10-07T20:00:00Z', 1000 + i);
+      const open = store().session!.rounds.at(-1)!;
+      twists.push(open.twist);
+      expect(store().roundState.durationMs).toBe(open.twist === 'speed' ? 30_000 : 60_000);
+      store().start(0);
+      store().resolve('correct', 100);
+      store().endRound(200);
+      await store().commitRound(asDb(), '2026-10-07T20:01:00Z');
+    }
+
+    expect(twists.some(Boolean)).toBe(true);
+    const doubled = store().session!.rounds.filter((r) => r.twist === 'double').length;
+    const total = standings(store().session!).reduce((sum, row) => sum + row.score, 0);
+    expect(total).toBe(12 + doubled);
+  });
+
+  it('never twists a round when chaos is off', async () => {
+    start({ chaos: false });
+    store().beginRound('rnd_1', '2026-10-07T20:00:00Z', 1);
+    expect(store().session!.rounds[0]).not.toHaveProperty('twist');
+  });
+});

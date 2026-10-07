@@ -1,8 +1,9 @@
 import { useRouter } from 'expo-router';
 import { useMemo, useState } from 'react';
 import { FlatList, StyleSheet, View } from 'react-native';
-import { countOutcomes, scoreRound } from '@/game/scoring';
+import { countOutcomes, roundScore } from '@/game/scoring';
 import { whoseTurn } from '@/game/session';
+import { twistById } from '@/game/twists';
 import type { Outcome } from '@/game/types';
 import { useDatabase } from '@/hooks/useDatabase';
 import { useRoundScreenMode } from '@/hooks/useRoundScreenMode';
@@ -32,7 +33,8 @@ export default function RoundRecapScreen() {
 
   const session = useSessionStore((s) => s.session);
   const results = useSessionStore((s) => s.roundState.results);
-  const reshuffled = useSessionStore((s) => s.roundState.reshuffled);
+  const reshuffled = useSessionStore((s) => s.roundState.reshuffled && !s.roundState.retireCorrect);
+  const cleared = useSessionStore((s) => s.roundState.cleared);
   const pool = useSessionStore((s) => s.pool);
   const overrideResult = useSessionStore((s) => s.overrideResult);
   const commitRound = useSessionStore((s) => s.commitRound);
@@ -44,7 +46,9 @@ export default function RoundRecapScreen() {
 
   const { correct, passed } = useMemo(() => countOutcomes(results), [results]);
   const penalty = session?.settings.passPenalty ?? 0;
-  const score = useMemo(() => scoreRound(results, penalty), [results, penalty]);
+  const openRound = session?.rounds.find((round) => round.endedAt === null);
+  const twist = twistById(openRound?.twist);
+  const score = useMemo(() => roundScore({ results, twist: twist?.id }, penalty), [results, twist, penalty]);
 
   // The round is still open, so whoseTurn points at whoever just played.
   const turn = session ? whoseTurn(session) : null;
@@ -89,6 +93,19 @@ export default function RoundRecapScreen() {
             <StatTile label="points" value={score} tint={color.brand} />
           </PopIn>
 
+          {twist ? (
+            <Text variant="caption" tone="muted">
+              {twist.emoji} {twist.title}
+              {twist.effect === 'double' ? ': every card counted twice.' : '.'}
+            </Text>
+          ) : null}
+
+          {cleared ? (
+            <Text variant="caption" tone="muted">
+              🎩 That cleared the hat{openRound?.phase === 3 ? '. Game over!' : ' for this phase.'}
+            </Text>
+          ) : null}
+
           {reshuffled ? (
             <Text variant="caption" tone="muted">
               The decks ran out and got reshuffled.
@@ -121,13 +138,13 @@ export default function RoundRecapScreen() {
               const card = findPoolCard(pool, item.cardId);
               const got = item.outcome === 'correct';
               const next: Outcome = got ? 'pass' : 'correct';
-              const tint = got ? color.correct : color.pass;
+              const tint = got ? color.correct : item.busted ? color.danger : color.pass;
 
               return (
                 <Tap
                   onPress={() => overrideResult(item.cardId, next)}
                   squish={0.98}
-                  accessibilityLabel={`${card?.text ?? 'Card'}, ${got ? 'got it' : 'passed'}. Tap to change to ${
+                  accessibilityLabel={`${card?.text ?? 'Card'}, ${got ? 'got it' : item.busted ? `busted on ${item.busted}` : 'passed'}. Tap to change to ${
                     next === 'correct' ? 'got it' : 'passed'
                   }.`}
                   contentStyle={styles.row}
@@ -138,7 +155,7 @@ export default function RoundRecapScreen() {
                       {card?.text ?? 'Card'}
                     </Text>
                     <Text style={[styles.status, { color: tint }]}>
-                      {got ? 'Got it' : 'Passed'}
+                      {got ? 'Got it' : item.busted ? `Busted: “${item.busted}”` : 'Passed'}
                       <Text style={styles.time}> · {clock(item.atMs)}</Text>
                       {/* The clue-giver hint. Shown here, never on the card. */}
                       {card?.note ? <Text style={styles.time}> · {card.note}</Text> : null}

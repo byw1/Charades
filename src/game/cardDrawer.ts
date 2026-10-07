@@ -91,15 +91,26 @@ export function buildPool(
 /**
  * Draws the next unseen card.
  *
- * Returns null only when the pool itself is empty — an exhausted pool recycles
- * rather than running out, because a round in progress must always have a next
- * card to show.
+ * Returns null only when there is nothing left to draw — an exhausted pool
+ * recycles rather than running out, because a round in progress must always
+ * have a next card to show.
+ *
+ * Retired cards never come back, recycled or not. Three-round mode retires a
+ * card once it is guessed, so a pass returns to the hat and a correct card
+ * does not; when every card is retired, the hat is empty and this returns
+ * null.
  */
-export function drawNext(pool: readonly PoolCard[], state: DrawerState): Draw | null {
-  if (pool.length === 0) return null;
+export function drawNext(
+  pool: readonly PoolCard[],
+  state: DrawerState,
+  retired: readonly string[] = [],
+): Draw | null {
+  const gone = new Set(retired);
+  const live = gone.size === 0 ? pool : pool.filter((card) => !gone.has(poolCardKey(card)));
+  if (live.length === 0) return null;
 
   const seen = new Set(state.seen);
-  const next = pool.find((card) => !seen.has(poolCardKey(card)));
+  const next = live.find((card) => !seen.has(poolCardKey(card)));
 
   if (next) {
     return {
@@ -110,7 +121,7 @@ export function drawNext(pool: readonly PoolCard[], state: DrawerState): Draw | 
   }
 
   // Pool exhausted. Clear the seen set and start again from the top.
-  const recycled = pool[0]!;
+  const recycled = live[0]!;
   return {
     card: recycled,
     state: { seen: [poolCardKey(recycled)], reshuffleCount: state.reshuffleCount + 1 },

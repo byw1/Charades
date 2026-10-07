@@ -2,6 +2,7 @@ import { useEffect, useRef, type ReactNode } from 'react';
 import { ScrollView, StyleSheet, Text as RNText, useWindowDimensions, View } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { MIN_PLAYABLE_CARDS } from '@/decks/types';
+import type { GameMode } from '@/game/types';
 import { CircleButton } from '@/ui/CircleButton';
 import { cardTextOn } from '@/ui/contrast';
 import { CARD_LETTER_SPACING, fitCardText } from '@/ui/fitText';
@@ -35,7 +36,16 @@ export type PlayPageProps = {
   resume?: ReactNode;
   starting: boolean;
   bottomInset: number;
+  mode: GameMode;
+  onMode: (mode: GameMode) => void;
 };
+
+/** The modes, in the order a camera app lists its modes: left to right. */
+export const MODES: readonly { mode: GameMode; label: string; hint: string }[] = [
+  { mode: 'classic', label: 'Classic', hint: 'Tap to play' },
+  { mode: 'taboo', label: 'Taboo', hint: 'Tap to play · the room can’t say the words under the card' },
+  { mode: 'threeRounds', label: '3 Rounds', hint: 'Tap to play · same cards, three ways' },
+];
 
 const LENS = 62;
 const GAP = 16;
@@ -63,6 +73,8 @@ export function PlayPage({
   resume,
   starting,
   bottomInset,
+  mode,
+  onMode,
 }: PlayPageProps) {
   const { width, height } = useWindowDimensions();
   const insets = useSafeAreaInsets();
@@ -146,8 +158,33 @@ export function PlayPage({
         </View>
 
         <View style={styles.bottom}>
-          <Text style={[styles.hint, { color: ink }]}>
-            {starting ? 'Starting…' : playable ? 'Tap to play' : `Needs ${MIN_PLAYABLE_CARDS} cards · tap to open`}
+          <View style={styles.modes} accessibilityRole="tablist">
+            {MODES.map((item) => {
+              const active = item.mode === mode;
+              return (
+                <Tap
+                  key={item.mode}
+                  onPress={() => onMode(item.mode)}
+                  squish={0.92}
+                  accessibilityRole="tab"
+                  accessibilityState={{ selected: active }}
+                  accessibilityLabel={`${item.label} mode`}
+                  contentStyle={[styles.mode, active && styles.modeActive]}
+                >
+                  <RNText style={[styles.modeText, active && styles.modeTextActive]} allowFontScaling={false}>
+                    {item.label}
+                  </RNText>
+                </Tap>
+              );
+            })}
+          </View>
+
+          <Text style={[styles.hint, { color: ink }]} numberOfLines={1} adjustsFontSizeToFit>
+            {starting
+              ? 'Starting…'
+              : playable
+                ? (MODES.find((m) => m.mode === mode)?.hint ?? 'Tap to play')
+                : `Needs ${MIN_PLAYABLE_CARDS} cards · tap to open`}
           </Text>
 
           <View style={styles.carouselWrap}>
@@ -239,7 +276,18 @@ const styles = StyleSheet.create({
   deckName: { fontFamily: font.display, textAlign: 'center' },
   meta: { fontFamily: font.bold, fontSize: 15, lineHeight: 20, opacity: 0.85 },
   bottom: { alignItems: 'center', gap: space.md, paddingBottom: space.md },
-  hint: { fontFamily: font.heavy, fontSize: 15, lineHeight: 20 },
+  hint: { fontFamily: font.heavy, fontSize: 15, lineHeight: 20, paddingHorizontal: gutter },
+  modes: {
+    flexDirection: 'row',
+    gap: 4,
+    padding: 4,
+    borderRadius: radius.pill,
+    backgroundColor: color.scrim,
+  },
+  mode: { paddingHorizontal: 14, paddingVertical: 7, borderRadius: radius.pill },
+  modeActive: { backgroundColor: color.bone },
+  modeText: { fontFamily: font.heavy, fontSize: 14, lineHeight: 18, color: 'rgba(255,255,255,0.85)' },
+  modeTextActive: { color: color.ink },
   carouselWrap: { width: '100%', height: RING + 8, justifyContent: 'center' },
   lens: {
     width: LENS,

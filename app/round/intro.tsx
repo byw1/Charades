@@ -4,6 +4,9 @@ import { Pressable, StyleSheet, Text, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { makeRoundId } from '@/game/ids';
 import { whoseTurn } from '@/game/session';
+import { phaseInfo } from '@/game/threeRounds';
+import { twistById } from '@/game/twists';
+import type { Session } from '@/game/types';
 import { useHaptics } from '@/hooks/useHaptics';
 import { useRoundScreenMode } from '@/hooks/useRoundScreenMode';
 import { useSessionStore } from '@/hooks/useSessionStore';
@@ -33,6 +36,7 @@ export default function RoundIntroScreen() {
   const settings = useSettings();
 
   const [count, setCount] = useState(COUNT_FROM);
+  const [ready, setReady] = useState(false);
 
   useRoundScreenMode({ landscape: true });
 
@@ -42,7 +46,14 @@ export default function RoundIntroScreen() {
     beginRound(makeRoundId(), new Date().toISOString());
   }, [beginRound]);
 
+  const opened = session?.rounds.some((round) => round.endedAt === null) ?? false;
+  const notice = session ? announcement(session) : null;
+  // A twist or a new phase is read out before the phone goes up, so the
+  // countdown waits for a tap rather than racing the room through the rule.
+  const counting = opened && (!notice || ready);
+
   useEffect(() => {
+    if (!counting) return;
     haptics.countdownTick();
 
     const id = setInterval(() => {
@@ -58,7 +69,7 @@ export default function RoundIntroScreen() {
     }, TICK_MS);
 
     return () => clearInterval(id);
-  }, [haptics, router]);
+  }, [counting, haptics, router]);
 
   const turn = session ? whoseTurn(session) : null;
   const teams = session?.teams.length ?? 0;
@@ -66,6 +77,40 @@ export default function RoundIntroScreen() {
   const ink = cardTextOn(background);
   const teamLabel = teams > 1 ? turn?.team.name : null;
   const who = turn?.playerName ? `${turn.playerName}, you’re up` : 'Phone on your forehead';
+
+  if (notice && !ready) {
+    return (
+      <Pressable
+        style={[styles.screen, { backgroundColor: color.ink }]}
+        onPress={() => {
+          haptics.select();
+          setReady(true);
+        }}
+        accessibilityRole="button"
+        accessibilityLabel={`${notice.overline}. ${notice.title}. ${notice.rule}. Tap when ready.`}
+      >
+        <SafeAreaView style={styles.safe} edges={['left', 'right']}>
+          <PopIn style={styles.noticeSticker}>
+            <Text style={styles.noticeEmoji} allowFontScaling={false}>
+              {notice.emoji}
+            </Text>
+          </PopIn>
+          <View style={styles.copy}>
+            <View style={[styles.teamPill, { backgroundColor: notice.tint }]}>
+              <Text style={[styles.team, { color: color.ink }]} allowFontScaling={false}>
+                {notice.overline}
+              </Text>
+            </View>
+            <Text style={[styles.who, { color: color.bone }]} allowFontScaling={false} numberOfLines={2}>
+              {notice.title}
+            </Text>
+            <Text style={[styles.rule, { color: color.bone }]}>{notice.rule}</Text>
+            <Text style={[styles.hint, { color: notice.tint }]}>Tap when you’re ready</Text>
+          </View>
+        </SafeAreaView>
+      </Pressable>
+    );
+  }
 
   return (
     <Pressable
@@ -114,6 +159,42 @@ export default function RoundIntroScreen() {
   );
 }
 
+type Notice = { emoji: string; overline: string; title: string; rule: string; tint: string };
+
+/**
+ * What the room needs to hear before this round, if anything: a new phase in
+ * three-round mode, a chaos twist, or the Taboo rule on the first round.
+ */
+function announcement(session: Session): Notice | null {
+  const open = session.rounds.find((round) => round.endedAt === null);
+  if (!open) return null;
+
+  if (open.phase) {
+    const firstOfPhase = !session.rounds.some((round) => round.endedAt !== null && round.phase === open.phase);
+    if (!firstOfPhase) return null;
+    const info = phaseInfo(open.phase);
+    return { emoji: info.emoji, overline: `PHASE ${info.phase} OF 3`, title: info.title, rule: info.rule, tint: palette.yellow };
+  }
+
+  const twist = twistById(open.twist);
+  if (twist) {
+    return { emoji: twist.emoji, overline: '🌀 CHAOS ROUND', title: twist.title, rule: twist.rule, tint: palette.pink };
+  }
+
+  const first = session.rounds.length === 1;
+  if (first && session.settings.mode === 'taboo') {
+    return {
+      emoji: '🚫',
+      overline: 'TABOO',
+      title: 'Don’t say the words',
+      rule: 'The room can’t say anything listed under the card. Slip up and it’s busted: the card’s gone and it costs a point.',
+      tint: palette.red,
+    };
+  }
+
+  return null;
+}
+
 const styles = StyleSheet.create({
   screen: { flex: 1, overflow: 'hidden' },
   blob: { position: 'absolute', width: 520, height: 520, borderRadius: 260, top: -260, right: -120 },
@@ -140,4 +221,7 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
   },
   count: { fontFamily: font.display, fontSize: 84, lineHeight: 96 },
+  noticeSticker: { transform: [{ rotate: '-8deg' }], width: 150, alignItems: 'center' },
+  noticeEmoji: { fontSize: 110, lineHeight: 130 },
+  rule: { fontFamily: font.bold, fontSize: 19, lineHeight: 26, opacity: 0.92 },
 });

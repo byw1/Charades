@@ -1,6 +1,7 @@
 import Storage from 'expo-sqlite/kv-store';
 import { create } from 'zustand';
 import { useShallow } from 'zustand/react/shallow';
+import type { GameMode } from '@/game/types';
 
 /**
  * App settings.
@@ -27,6 +28,18 @@ export type Settings = {
   boostBrightness: boolean;
   /** Whether the first-launch how-to-play has been seen. */
   onboarded: boolean;
+  /** The mode the one-tap shutter on the Play screen starts. */
+  quickMode: GameMode;
+  /** An evening nudge when a streak would otherwise end. Opt-in. */
+  streakReminders: boolean;
+  /**
+   * Listens during a round, on the phone only, for a Taboo word (busted) or
+   * the guesser saying the answer (got it). Opt-in: parties are loud, and a
+   * microphone is not something to switch on for anyone by default.
+   */
+  voiceReferee: boolean;
+  /** Films the room through the front camera during each round. Opt-in. */
+  recordRounds: boolean;
 };
 
 export const defaultAppSettings: Settings = {
@@ -35,7 +48,26 @@ export const defaultAppSettings: Settings = {
   inputMode: 'tap',
   boostBrightness: true,
   onboarded: false,
+  quickMode: 'classic',
+  streakReminders: false,
+  voiceReferee: false,
+  recordRounds: false,
 };
+
+const SETTING_KEYS = Object.keys(defaultAppSettings) as (keyof Settings)[];
+
+/** Keeps a stored value only when it has the type the default has. */
+function sanitise(stored: Partial<Record<keyof Settings, unknown>>): Settings {
+  const out: Record<string, unknown> = { ...defaultAppSettings };
+  for (const key of SETTING_KEYS) {
+    const value = stored[key];
+    if (value !== undefined && typeof value === typeof defaultAppSettings[key]) out[key] = value;
+  }
+  const settings = out as Settings;
+  if (!['classic', 'taboo', 'threeRounds'].includes(settings.quickMode)) settings.quickMode = 'classic';
+  if (settings.inputMode !== 'tilt') settings.inputMode = 'tap';
+  return settings;
+}
 
 const STORAGE_KEY = 'settings.v1';
 
@@ -50,7 +82,7 @@ function load(): Settings {
     // Merged over defaults rather than trusted wholesale, so a settings blob
     // written by an older build gains new keys instead of leaving them
     // undefined.
-    return { ...defaultAppSettings, ...(parsed as Partial<Settings>) };
+    return sanitise(parsed as Partial<Record<keyof Settings, unknown>>);
   } catch {
     return defaultAppSettings;
   }
@@ -77,12 +109,14 @@ export const useSettingsStore = create<SettingsStore>((set, get) => ({
   },
 }));
 
+function pick(settings: Settings): Settings {
+  const out: Record<string, unknown> = {};
+  for (const key of SETTING_KEYS) out[key] = settings[key];
+  return out as Settings;
+}
+
 function persist(settings: Settings): void {
-  const { haptics, sound, inputMode, boostBrightness, onboarded } = settings;
-  void Storage.setItem(
-    STORAGE_KEY,
-    JSON.stringify({ haptics, sound, inputMode, boostBrightness, onboarded }),
-  ).catch(() => undefined);
+  void Storage.setItem(STORAGE_KEY, JSON.stringify(pick(settings))).catch(() => undefined);
 }
 
 /**
@@ -92,13 +126,5 @@ function persist(settings: Settings): void {
  * building a fresh object every call would re-render forever without it.
  */
 export function useSettings(): Settings {
-  return useSettingsStore(
-    useShallow((s) => ({
-      haptics: s.haptics,
-      sound: s.sound,
-      inputMode: s.inputMode,
-      boostBrightness: s.boostBrightness,
-      onboarded: s.onboarded,
-    })),
-  );
+  return useSettingsStore(useShallow(pick));
 }

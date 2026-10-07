@@ -5,7 +5,7 @@ import type { DeckSummary } from '@/decks/types';
 import { playStats, type PlayStats } from '@/game/stats';
 import { standings } from '@/game/scoring';
 import { isJustPlay, makeJustPlayTeam } from '@/game/teams';
-import { defaultSettings, type Session } from '@/game/types';
+import { settingsForMode, type Session } from '@/game/types';
 import { DecksPage } from '@/home/DecksPage';
 import { MePage } from '@/home/MePage';
 import { mixLens, PlayPage, type Lens } from '@/home/PlayPage';
@@ -38,6 +38,9 @@ export default function HomeScreen() {
   const router = useRouter();
   const database = useDatabase();
   const onboarded = useSettingsStore((s) => s.onboarded);
+  const quickMode = useSettingsStore((s) => s.quickMode);
+  const setSetting = useSettingsStore((s) => s.set);
+  const setGameMode = useNewGameStore((s) => s.setGameMode);
   const { width } = useWindowDimensions();
   const pager = useRef<ScrollView>(null);
   const bar = useBottomBarHeight();
@@ -118,11 +121,12 @@ export default function HomeScreen() {
   };
 
   const quickPlay = (lens: Lens) => {
-    void start({ deckIds: lens.deckIds, teams: [makeJustPlayTeam()], settings: defaultSettings });
+    void start({ deckIds: lens.deckIds, teams: [makeJustPlayTeam()], settings: settingsForMode(quickMode) });
   };
 
   const setup = (lens: Lens) => {
     resetDraft();
+    setGameMode(quickMode);
     for (const id of lens.deckIds) toggleDeck(id);
     router.push(lens.key === 'mix' ? '/new/decks' : '/new/teams');
   };
@@ -185,6 +189,8 @@ export default function HomeScreen() {
           resume={saved ? <ResumeBanner session={saved} onPress={() => void resume()} /> : null}
           starting={starting}
           bottomInset={bar}
+          mode={quickMode}
+          onMode={(mode) => setSetting('quickMode', mode)}
         />
         <MePage
           stats={stats}

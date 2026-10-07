@@ -2,6 +2,8 @@ import { useRouter } from 'expo-router';
 import { useCallback, useEffect, useRef, useState } from 'react';
 import { AppState, Pressable, StyleSheet, Text, View } from 'react-native';
 import { remainingMs } from '@/game/round';
+import { phaseInfo } from '@/game/threeRounds';
+import { twistById } from '@/game/twists';
 import type { Outcome } from '@/game/types';
 import { WARNING_SECONDS } from '@/game/types';
 import { useHaptics } from '@/hooks/useHaptics';
@@ -33,6 +35,9 @@ export default function RoundPlayScreen() {
   const haptics = useHaptics();
 
   const state = useSessionStore((s) => s.roundState);
+  const mode = useSessionStore((s) => s.session?.settings.mode ?? 'classic');
+  const openRound = useSessionStore((s) => s.session?.rounds.find((round) => round.endedAt === null));
+  const hatLeft = useSessionStore((s) => s.roundPool.length);
   const begin = useSessionStore((s) => s.start);
   const resolve = useSessionStore((s) => s.resolve);
   const pauseRound = useSessionStore((s) => s.pauseRound);
@@ -156,13 +161,26 @@ export default function RoundPlayScreen() {
   const warning = left <= WARNING_SECONDS * 1_000;
   const got = state.results.filter((result) => result.outcome === 'correct').length;
   const onAccent = cardTextOn(accent);
+  const twist = twistById(openRound?.twist);
+  const phase = openRound?.phase ? phaseInfo(openRound.phase) : null;
+  const badge = phase
+    ? `${phase.emoji} ${phase.title} · ${Math.max(0, hatLeft - got)} left`
+    : twist
+      ? `${twist.emoji} ${twist.title}`
+      : null;
 
   return (
     <View style={styles.screen}>
       <View style={[styles.card, { backgroundColor: accent }]}>
         <TimerBar fraction={fraction} warning={warning} />
         {card ? (
-          <CardFace text={card.text} accentColor={accent} note={card.note} image={card.image} />
+          <CardFace
+            text={card.text}
+            accentColor={accent}
+            note={card.note}
+            image={card.image}
+            taboo={mode === 'taboo' ? card.taboo : undefined}
+          />
         ) : (
           <View style={styles.blank} />
         )}
@@ -175,6 +193,15 @@ export default function RoundPlayScreen() {
           {got}
         </Text>
       </View>
+
+      {/* The rule in force, for the room: a chaos twist or the hat's phase. */}
+      {badge ? (
+        <View style={styles.badge} pointerEvents="none" accessible={false}>
+          <Text style={[styles.badgeText, { color: onAccent }]} allowFontScaling={false} numberOfLines={1}>
+            {badge}
+          </Text>
+        </View>
+      ) : null}
 
       {/* Half the screen each. The holder is aiming by position, not by sight. */}
       {tilting ? null : (
@@ -203,7 +230,7 @@ export default function RoundPlayScreen() {
           </PopIn>
           <PopIn delay={80}>
             <Text style={styles.timeUpText} allowFontScaling={false}>
-              Time’s up!
+              {state.cleared ? 'Hat’s empty!' : 'Time’s up!'}
             </Text>
           </PopIn>
         </View>
@@ -234,6 +261,21 @@ const styles = StyleSheet.create({
     paddingVertical: 4,
     borderRadius: radius.pill,
     backgroundColor: 'rgba(0,0,0,0.22)',
+  },
+  badge: {
+    position: 'absolute',
+    top: 30,
+    left: 52,
+    maxWidth: '55%',
+    paddingHorizontal: space.sm + 4,
+    paddingVertical: 4,
+    borderRadius: radius.pill,
+    backgroundColor: 'rgba(0,0,0,0.22)',
+  },
+  badgeText: {
+    fontFamily: font.heavy,
+    fontSize: 15,
+    lineHeight: 22,
   },
   tallyText: {
     fontFamily: font.display,

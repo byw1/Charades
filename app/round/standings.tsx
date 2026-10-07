@@ -1,10 +1,12 @@
 import { useRouter } from 'expo-router';
 import { useEffect, useMemo, useState } from 'react';
 import { ScrollView, StyleSheet, View } from 'react-native';
+import { forfeitFor } from '@/game/forfeits';
 import { makeSessionId } from '@/game/ids';
 import { playerStandings, standings } from '@/game/scoring';
 import { rematch, sessionWinState, whoseTurn } from '@/game/session';
 import { isJustPlay } from '@/game/teams';
+import { hatProgress, phaseInfo } from '@/game/threeRounds';
 import { useDatabase } from '@/hooks/useDatabase';
 import { useRoundScreenMode } from '@/hooks/useRoundScreenMode';
 import { useSessionStore } from '@/hooks/useSessionStore';
@@ -54,6 +56,7 @@ export default function StandingsScreen() {
   const table = useMemo(() => (session ? standings(session) : []), [session]);
   const players = useMemo(() => (session ? playerStandings(session) : []), [session]);
   const solo = session ? isJustPlay(session.teams) : false;
+  const hat = useMemo(() => (session?.hat ? hatProgress(session) : null), [session]);
 
   // Stamp the session complete as soon as it is over, so quitting from here
   // does not leave a finished game offering to resume.
@@ -75,6 +78,7 @@ export default function StandingsScreen() {
 
   const turn = whoseTurn(session);
   const played = session.rounds.filter((r) => r.endedAt !== null).length;
+  const loser = winState.over && session.settings.forfeits ? lastPlace(table, players, solo) : null;
 
   const playAgain = async () => {
     if (database.status !== 'ready' || busy) return;
@@ -142,6 +146,34 @@ export default function StandingsScreen() {
             <ChatLine>{bubble}</ChatLine>
           </PopIn>
         </View>
+
+        {hat && !hat.done ? (
+          <PopIn from="rise" delay={120} style={styles.hat}>
+            <Text style={styles.hatEmoji} allowFontScaling={false}>
+              {phaseInfo(hat.phase).emoji}
+            </Text>
+            <View style={styles.rowBody}>
+              <Text variant="overline" tone="muted">
+                PHASE {hat.phase} OF 3 · {phaseInfo(hat.phase).title.toUpperCase()}
+              </Text>
+              <Text variant="heading">
+                {hat.remaining.length} of {hat.total} cards left in the hat
+              </Text>
+              <View style={styles.hatTrack}>
+                <View style={[styles.hatFill, { width: `${(hat.guessed / Math.max(1, hat.total)) * 100}%` }]} />
+              </View>
+            </View>
+          </PopIn>
+        ) : null}
+
+        {loser ? (
+          <PopIn from="rise" delay={140} style={styles.forfeit}>
+            <Text variant="overline" style={{ color: palette.pink }}>
+              😈 FORFEIT FOR {loser.toUpperCase()}
+            </Text>
+            <Text variant="heading">{forfeitFor(session.id)}</Text>
+          </PopIn>
+        ) : null}
 
         {/* With one team the team row is just the total, so the per-player
             table is the interesting one and goes first. */}
@@ -239,6 +271,24 @@ export default function StandingsScreen() {
   );
 }
 
+/**
+ * Who does the forfeit: the bottom team, or the bottom player when everyone
+ * played as one. Nobody when last place is shared with first — a tie at the
+ * top is not a loss.
+ */
+function lastPlace(
+  table: { teamName: string; score: number }[],
+  players: { playerName: string; score: number }[],
+  solo: boolean,
+): string | null {
+  const rows = solo
+    ? players.map((p) => ({ name: p.playerName, score: p.score }))
+    : table.map((t) => ({ name: t.teamName, score: t.score }));
+  if (rows.length < 2) return null;
+  const last = rows[rows.length - 1]!;
+  return last.score === rows[0]!.score ? null : last.name;
+}
+
 const PLAYER_TINTS = [palette.pink, palette.blue, palette.yellow, palette.purple, palette.teal, palette.red];
 
 /** The crown goes to the winner; second and third get the medals. */
@@ -268,4 +318,25 @@ const styles = StyleSheet.create({
   rowBody: { flex: 1, gap: 1 },
   score: { fontFamily: font.display, fontSize: 32, lineHeight: 36, color: color.text },
   note: { paddingHorizontal: gutter },
+  hat: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: space.md,
+    marginHorizontal: gutter,
+    padding: space.md,
+    borderRadius: radius.lg,
+    backgroundColor: color.surface,
+  },
+  hatEmoji: { fontSize: 40, lineHeight: 48 },
+  hatTrack: { height: 8, borderRadius: 4, backgroundColor: color.surfaceRaised, overflow: 'hidden', marginTop: 6 },
+  hatFill: { height: 8, borderRadius: 4, backgroundColor: color.brand },
+  forfeit: {
+    gap: space.xs,
+    marginHorizontal: gutter,
+    padding: space.md,
+    borderRadius: radius.lg,
+    borderWidth: 2,
+    borderColor: palette.pink,
+    backgroundColor: color.surface,
+  },
 });
