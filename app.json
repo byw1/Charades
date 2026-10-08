@@ -77,39 +77,22 @@
       [
         "expo-camera",
         {
-          "cameraPermission": "Deckhead uses the camera to scan deck codes, take photos for your own cards, and, if you turn it on, film the room during a round. Everything stays on your phone unless you share it.",
-          "microphonePermission": "Deckhead uses the microphone only for features you turn on: sound for the round videos you choose to film, and the voice referee, which recognises speech on your iPhone itself. Nothing is sent anywhere.",
-          "recordAudioAndroid": true
+          "cameraPermission": "Deckhead uses the camera to scan deck codes and to take photos for your own cards. Nothing leaves your phone unless you share it.",
+          "microphonePermission": false,
+          "recordAudioAndroid": false
         }
       ],
       [
         "expo-sensors",
         {
-          "motionPermission": "Deckhead uses motion only for the optional tilt controls, to tell when you tip the phone to answer. Nothing is recorded."
-        }
-      ],
-      [
-        "expo-video",
-        {
-          "supportsBackgroundPlayback": false,
-          "supportsPictureInPicture": false
-        }
-      ],
-      [
-        "expo-speech-recognition",
-        {
-          "microphonePermission": "Deckhead uses the microphone only for features you turn on: sound for the round videos you choose to film, and the voice referee, which recognises speech on your iPhone itself. Nothing is sent anywhere.",
-          "speechRecognitionPermission": "Deckhead’s optional voice referee listens for card words during a round. Speech is recognised on your iPhone itself and never sent anywhere.",
-          "androidSpeechServicePackages": [
-            "com.google.android.as"
-          ]
+          "motionPermission": "Deckhead uses motion for the tilt controls: tip the phone down for got it, up to pass. Nothing is recorded."
         }
       ],
       [
         "expo-image-picker",
         {
           "photosPermission": "Deckhead lets you pick photos for your own cards. They stay on your phone, inside your decks.",
-          "cameraPermission": "Deckhead uses the camera to scan deck codes, take photos for your own cards, and, if you turn it on, film the room during a round. Everything stays on your phone unless you share it.",
+          "cameraPermission": "Deckhead uses the camera to scan deck codes and to take photos for your own cards. Nothing leaves your phone unless you share it.",
           "microphonePermission": false
         }
       ]

@@ -42,16 +42,6 @@ export type Settings = {
   quickMode: GameMode;
   /** Round length for one-tap play, in seconds. */
   quickSeconds: number;
-  /** An evening nudge when a streak would otherwise end. Opt-in. */
-  streakReminders: boolean;
-  /**
-   * Listens during a round, on the phone only, for a Taboo word (busted) or
-   * the guesser saying the answer (got it). Opt-in: parties are loud, and a
-   * microphone is not something to switch on for anyone by default.
-   */
-  voiceReferee: boolean;
-  /** Films the room through the front camera during each round. Opt-in. */
-  recordRounds: boolean;
 };
 
 export type InputMode = 'tilt' | 'swipe' | 'tap';
@@ -68,9 +58,6 @@ export const defaultAppSettings: Settings = {
   onboarded: false,
   quickMode: 'classic',
   quickSeconds: 60,
-  streakReminders: false,
-  voiceReferee: false,
-  recordRounds: false,
 };
 
 const SETTING_KEYS = Object.keys(defaultAppSettings) as (keyof Settings)[];

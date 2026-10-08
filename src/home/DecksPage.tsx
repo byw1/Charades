@@ -25,7 +25,6 @@ export type DecksPageProps = {
   /** The "deck about your group" builder. */
   onGroup: () => void;
   /** The on-device AI deck maker, when this phone can run it. */
-  onMagic?: () => void;
   bottomInset: number;
 };
 
@@ -43,7 +42,7 @@ export function gridColumns(available: number): number {
  * Every deck, as a feed of cover tiles, two across upright and more sideways. Yours first — the decks you
  * made are the reason the app is worth keeping — then the free ones.
  */
-export function DecksPage({ decks, error, query, onQuery, onOpen, onNew, onImport, onGroup, onMagic, bottomInset }: DecksPageProps) {
+export function DecksPage({ decks, error, query, onQuery, onOpen, onNew, onImport, onGroup, bottomInset }: DecksPageProps) {
   const { width, short } = useLayout();
   const insets = useSafeAreaInsets();
   const available = width - insets.left - insets.right - gutter * 2;
@@ -122,17 +121,6 @@ export function DecksPage({ decks, error, query, onQuery, onOpen, onNew, onImpor
                     </Text>
                     <Text variant="caption" tone="muted" align="center">
                       Answer five questions, get a deck only you can play
-                    </Text>
-                  </Tap>
-                )}
-                {searching || !onMagic ? null : (
-                  <Tap onPress={onMagic} accessibilityLabel="Make a deck with on-device AI" style={{ width: tile }} contentStyle={styles.newTile}>
-                    <RNText style={styles.tileEmoji}>✨</RNText>
-                    <Text variant="heading" align="center">
-                      Dream one up
-                    </Text>
-                    <Text variant="caption" tone="muted" align="center">
-                      Type a theme. Apple Intelligence writes it, on this phone
                     </Text>
                   </Tap>
                 )}

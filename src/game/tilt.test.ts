@@ -1,161 +1,140 @@
-import {
-  initialTiltState,
-  stepTilt,
-  TILT_DWELL_MS,
-  TILT_NEUTRAL,
-  TILT_TRIGGER,
-  type Acceleration,
-  type TiltGesture,
-  type TiltState,
-} from './tilt';
-
-/** Upright on a forehead: gravity along the short edge, nothing on the normal. */
-const UPRIGHT: Acceleration = { x: -1, y: 0, z: 0 };
-/** Tipped past the trigger toward the floor. */
-const DOWN: Acceleration = { x: -0.5, y: 0, z: 0.86 };
-/** Tipped past the trigger toward the ceiling. */
-const UP: Acceleration = { x: -0.5, y: 0, z: -0.86 };
+import { initialTiltState, pitchOf, stepTilt, type GravityReading, type TiltGesture, type TiltState } from './tilt';
 
 /**
- * Feeds samples in and returns every gesture that came out, so tests can assert
- * on what a sequence of movement actually resolved.
+ * Motion traces, not single samples: a phone going up to a forehead, held,
+ * nodded, flicked, wobbled. Gravity is built from a pitch angle, upright or
+ * sideways, the way the fused sensor reports it (screen to the floor is +z).
  */
-function play(
-  samples: { reading: Acceleration; at: number }[],
-  from: TiltState = initialTiltState(),
-): { state: TiltState; gestures: TiltGesture[] } {
-  let state = from;
-  const gestures: TiltGesture[] = [];
 
-  for (const { reading, at } of samples) {
-    const step = stepTilt(state, reading, at);
+const STEP = 40; // ms between samples, as the hook asks for
+
+function gravity(pitchDeg: number, sideways = false): GravityReading {
+  const r = (pitchDeg * Math.PI) / 180;
+  const along = -Math.cos(r);
+  return sideways ? { x: along, y: 0, z: Math.sin(r) } : { x: 0, y: along, z: Math.sin(r) };
+}
+
+/** Feeds pitches through the machine; returns every gesture and the end state. */
+function play(pitches: number[], options: { sideways?: boolean; state?: TiltState; start?: number } = {}) {
+  let state = options.state ?? initialTiltState();
+  let now = options.start ?? 0;
+  const gestures: TiltGesture[] = [];
+  for (const pitch of pitches) {
+    const step = stepTilt(state, gravity(pitch, options.sideways), now);
     state = step.state;
     if (step.gesture) gestures.push(step.gesture);
+    now += STEP;
   }
-
-  return { state, gestures };
+  return { gestures, state, now };
 }
 
-/** Holds a reading still for long enough to clear the dwell. */
-function hold(reading: Acceleration, from = 0): { reading: Acceleration; at: number }[] {
-  return [
-    { reading, at: from },
-    { reading, at: from + TILT_DWELL_MS },
-  ];
-}
+const hold = (pitch: number, ms: number) => Array<number>(Math.ceil(ms / STEP)).fill(pitch);
+const ramp = (from: number, to: number, ms: number) => {
+  const n = Math.ceil(ms / STEP);
+  return Array.from({ length: n }, (_, i) => from + ((to - from) * (i + 1)) / n);
+};
 
-/** Upright long enough to arm, then a held tilt. */
-function armThen(reading: Acceleration): { reading: Acceleration; at: number }[] {
-  return [{ reading: UPRIGHT, at: 0 }, ...hold(reading, 100)];
-}
+/** Picked up off a table and held on a forehead, leaning back a little. */
+const ontoForehead = (rest = -10) => [...ramp(-85, rest, 400), ...hold(rest, 400)];
 
-describe('stepTilt', () => {
-  it('starts disarmed, so the trip to the forehead resolves nothing', () => {
-    const { gestures } = play(hold(DOWN));
-    expect(gestures).toEqual([]);
+describe('pitchOf', () => {
+  it('reads upright as 0, face down as +90 and face up as -90', () => {
+    expect(pitchOf(gravity(0))).toBeCloseTo(0);
+    expect(pitchOf(gravity(90))).toBeCloseTo(90);
+    expect(pitchOf(gravity(-90))).toBeCloseTo(-90);
   });
 
-  it('arms once the phone is seen near upright', () => {
-    const { state } = play([{ reading: UPRIGHT, at: 0 }]);
-    expect(state.armed).toBe(true);
+  it('does not care about units or which way up the phone is held', () => {
+    expect(pitchOf({ x: 0, y: -8.487, z: 4.9 })).toBeCloseTo(30, 1);
+    expect(pitchOf(gravity(30, true))).toBeCloseTo(30);
   });
 
-  it('resolves correct on a held tilt down', () => {
-    const { gestures } = play(armThen(DOWN));
-    expect(gestures).toEqual(['correct']);
+  it('has nothing to say about an empty reading', () => {
+    expect(pitchOf({ x: 0, y: 0, z: 0 })).toBeNull();
+  });
+});
+
+describe('tilt', () => {
+  it('fires nothing on the way up to the forehead', () => {
+    expect(play(ontoForehead()).gestures).toEqual([]);
   });
 
-  it('resolves pass on a held tilt up', () => {
-    const { gestures } = play(armThen(UP));
-    expect(gestures).toEqual(['pass']);
+  it('takes how you hold it as resting', () => {
+    const { state } = play(ontoForehead(-25));
+    expect(state.phase).toBe('armed');
+    expect(state.baseline).toBeCloseTo(-25, 0);
   });
 
-  it('does not fire until the tilt has been held for the dwell', () => {
-    const { gestures } = play([
-      { reading: UPRIGHT, at: 0 },
-      { reading: DOWN, at: 100 },
-      { reading: DOWN, at: 100 + TILT_DWELL_MS - 1 },
-    ]);
-    expect(gestures).toEqual([]);
+  it('never arms on a table', () => {
+    expect(play(hold(-88, 3000)).state.phase).toBe('settling');
   });
 
-  it('ignores a tilt that springs back before the dwell is up', () => {
-    const { gestures } = play([
-      { reading: UPRIGHT, at: 0 },
-      { reading: DOWN, at: 100 },
-      { reading: UPRIGHT, at: 100 + TILT_DWELL_MS - 20 },
-      { reading: UPRIGHT, at: 300 },
-    ]);
-    expect(gestures).toEqual([]);
+  it('reads a nod down as got it and a nod up as pass', () => {
+    const start = play(ontoForehead());
+    const down = play([...ramp(-10, 35, 160), ...hold(35, 120)], { state: start.state, start: start.now });
+    expect(down.gestures).toEqual(['correct']);
+
+    const up = play(ontoForehead());
+    expect(play([...ramp(-10, -55, 160), ...hold(-55, 120)], { state: up.state, start: up.now }).gestures).toEqual(['pass']);
   });
 
-  it('fires once for a tilt that is held, not once per sample', () => {
-    const { gestures } = play([
-      { reading: UPRIGHT, at: 0 },
-      ...hold(DOWN, 100),
-      { reading: DOWN, at: 500 },
-      { reading: DOWN, at: 900 },
-      { reading: DOWN, at: 1_500 },
-    ]);
-    expect(gestures).toEqual(['correct']);
+  it('works for someone who leans right back', () => {
+    // Resting at 25 degrees back: a nod to just past upright is got it.
+    const start = play(ontoForehead(-25));
+    const nod = play([...ramp(-25, 10, 160), ...hold(10, 120)], { state: start.state, start: start.now });
+    expect(nod.gestures).toEqual(['correct']);
   });
 
-  it('needs a return to neutral before the next card can resolve', () => {
-    const { gestures } = play([
-      { reading: UPRIGHT, at: 0 },
-      ...hold(DOWN, 100),
-      ...hold(DOWN, 400),
-      { reading: UPRIGHT, at: 800 },
-      ...hold(DOWN, 900),
-    ]);
-    expect(gestures).toEqual(['correct', 'correct']);
+  it('catches a quick flick down and back', () => {
+    const start = play(ontoForehead());
+    const flick = play([...ramp(-10, 40, 80), ...hold(40, 80), ...ramp(40, -10, 80)], { state: start.state, start: start.now });
+    expect(flick.gestures).toEqual(['correct']);
   });
 
-  it('will not resolve the other way either until it returns to neutral', () => {
-    const { gestures } = play([
-      { reading: UPRIGHT, at: 0 },
-      ...hold(DOWN, 100),
-      ...hold(UP, 400),
-    ]);
-    expect(gestures).toEqual(['correct']);
+  it('ignores a single spike', () => {
+    const start = play(ontoForehead());
+    expect(play([-10, 45, -10, -10], { state: start.state, start: start.now }).gestures).toEqual([]);
   });
 
-  it('ignores an excited jerk, however far past the trigger it swings', () => {
-    // Same direction as a tilt down, but at 2.4g it is a swing, not a hold.
-    const jerk: Acceleration = { x: -1.2, y: 0, z: 2.06 };
-    const { gestures } = play([{ reading: UPRIGHT, at: 0 }, ...hold(jerk, 100)]);
-    expect(gestures).toEqual([]);
+  it('ignores wobbling while someone gives clues', () => {
+    const start = play(ontoForehead());
+    const wobble = [-10, 5, -18, 8, -22, 2, -15, 10, -20, -5, 3, -12].flatMap((p) => hold(p, 80));
+    expect(play(wobble, { state: start.state, start: start.now }).gestures).toEqual([]);
   });
 
-  it('does not bank dwell across a jerk in the middle of a hold', () => {
-    const jerk: Acceleration = { x: -1.2, y: 0, z: 2.06 };
-    const { gestures } = play([
-      { reading: UPRIGHT, at: 0 },
-      { reading: DOWN, at: 100 },
-      { reading: jerk, at: 140 },
-      { reading: DOWN, at: 100 + TILT_DWELL_MS },
-    ]);
-    expect(gestures).toEqual([]);
+  it('counts one card for a tip that is held, then needs a return', () => {
+    const start = play(ontoForehead());
+    const held = play([...ramp(-10, 40, 120), ...hold(40, 2000)], { state: start.state, start: start.now });
+    expect(held.gestures).toEqual(['correct']);
+
+    const back = play([...ramp(40, -10, 160), ...hold(-10, 200), ...ramp(-10, 40, 120), ...hold(40, 200)], {
+      state: held.state,
+      start: held.now,
+    });
+    expect(back.gestures).toEqual(['correct']);
   });
 
-  it('restarts the dwell when the phone swings through one gesture into the other', () => {
-    const { gestures } = play([
-      { reading: UPRIGHT, at: 0 },
-      { reading: DOWN, at: 100 },
-      { reading: UP, at: 100 + TILT_DWELL_MS },
-    ]);
-    expect(gestures).toEqual([]);
+  it('does not let a slow sink over a round turn into a pass', () => {
+    const start = play(ontoForehead(-5));
+    // Forty degrees of droop over twenty seconds.
+    const sink = play(ramp(-5, -45, 20_000), { state: start.state, start: start.now });
+    expect(sink.gestures).toEqual([]);
   });
 
-  it('treats a wobble short of the trigger as nothing at all', () => {
-    const wobble: Acceleration = { x: -0.97, y: 0, z: TILT_TRIGGER - 0.05 };
-    const { gestures } = play([{ reading: UPRIGHT, at: 0 }, ...hold(wobble, 100)]);
-    expect(gestures).toEqual([]);
+  it('works the same held sideways', () => {
+    const start = play(ontoForehead(), { sideways: true });
+    const nods = play([...ramp(-10, 40, 120), ...hold(40, 120), ...ramp(40, -10, 120), ...hold(-10, 200), ...ramp(-10, -55, 120), ...hold(-55, 120)], {
+      sideways: true,
+      state: start.state,
+      start: start.now,
+    });
+    expect(nods.gestures).toEqual(['correct', 'pass']);
   });
 
-  it('does not re-arm on a lean that is still outside neutral', () => {
-    const lean: Acceleration = { x: -0.97, y: 0, z: TILT_NEUTRAL + 0.05 };
-    const { state } = play([...armThen(DOWN), { reading: lean, at: 600 }]);
-    expect(state.armed).toBe(false);
+  it('plays a quick run of cards', () => {
+    const start = play(ontoForehead());
+    const nod = (to: number) => [...ramp(-10, to, 120), ...hold(to, 100), ...ramp(to, -10, 120), ...hold(-10, 160)];
+    const run = play([...nod(40), ...nod(-50), ...nod(40), ...nod(40)], { state: start.state, start: start.now });
+    expect(run.gestures).toEqual(['correct', 'pass', 'correct', 'correct']);
   });
 });

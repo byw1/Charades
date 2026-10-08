@@ -1,20 +1,24 @@
-import { Accelerometer } from 'expo-sensors';
+import { DeviceMotion } from 'expo-sensors';
 import { useEffect, useRef, useState } from 'react';
 import { initialTiltState, stepTilt, type TiltGesture } from '@/game/tilt';
 
 /**
- * Tilt input, wired to the accelerometer.
+ * Tilt input, wired to the phone's fused motion sensor.
  *
- * The thresholds and the debouncing live in `@/game/tilt`, which is pure and
- * tested. This hook does the parts that need a device: subscribing, throttling,
- * and tearing the subscription down the moment tilt stops being the input mode.
+ * The rules live in `@/game/tilt`, which is pure and tested. This hook does
+ * the parts that need a device: subscribing, and tearing the subscription down
+ * the moment tilt stops being the input mode.
+ *
+ * DeviceMotion rather than the raw accelerometer: the phone blends gyro and
+ * accelerometer into a gravity direction that stays steady through jerks, and
+ * expo-sensors reports it the same way round on iPhone and Android.
  */
 
 /**
  * Sample rate. Fast enough that a gesture feels immediate against the 120ms
  * dwell, slow enough not to run the accelerometer flat out for a whole round.
  */
-const INTERVAL_MS = 50;
+const INTERVAL_MS = 40;
 
 /**
  * How long to wait for a first reading before handing the round back to tap.
@@ -53,7 +57,7 @@ export function useTilt({ enabled, onGesture }: UseTiltOptions): UseTiltResult {
 
     let cancelled = false;
 
-    void Accelerometer.isAvailableAsync()
+    void DeviceMotion.isAvailableAsync()
       .then((ok) => {
         if (!cancelled && !ok) setAvailable(false);
       })
@@ -62,19 +66,24 @@ export function useTilt({ enabled, onGesture }: UseTiltOptions): UseTiltResult {
       .catch(() => undefined);
 
     // Fresh state each time tilt is switched on, so a gesture cannot carry over
-    // from an earlier round and the phone has to be seen upright again first.
+    // from an earlier round and the phone has to settle on a forehead again.
     let state = initialTiltState();
     let heard = false;
 
     let subscription: { remove: () => void } | null = null;
     try {
-      Accelerometer.setUpdateInterval(INTERVAL_MS);
-      subscription = Accelerometer.addListener(({ x, y, z }) => {
+      DeviceMotion.setUpdateInterval(INTERVAL_MS);
+      subscription = DeviceMotion.addListener(({ accelerationIncludingGravity: total, acceleration: moving }) => {
+        if (!total) return;
         if (!heard) {
           heard = true;
           setAvailable(true);
         }
-        const step = stepTilt(state, { x, y, z }, Date.now());
+        // Gravity alone: everything the phone feels, minus the hand moving it.
+        const gravity = moving
+          ? { x: total.x - moving.x, y: total.y - moving.y, z: total.z - moving.z }
+          : { x: total.x, y: total.y, z: total.z };
+        const step = stepTilt(state, gravity, Date.now());
         state = step.state;
         if (step.gesture) handler.current(step.gesture);
       });

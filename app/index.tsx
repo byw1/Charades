@@ -3,7 +3,6 @@ import { useCallback, useMemo, useRef, useState } from 'react';
 import { Alert, ScrollView, StyleSheet, useWindowDimensions, View } from 'react-native';
 import { DEFAULT_DECK_EMOJI, MIN_PLAYABLE_CARDS, type DeckSummary } from '@/decks/types';
 import { friendBoard, topRivalry, type Friend, type Rivalry } from '@/game/friends';
-import { planStreakReminder } from '@/game/reminders';
 import { playStats, type PlayStats } from '@/game/stats';
 import { standings } from '@/game/scoring';
 import { isJustPlay, makeJustPlayTeam } from '@/game/teams';
@@ -19,8 +18,6 @@ import { useSessionStore } from '@/hooks/useSessionStore';
 import { useSettingsStore } from '@/hooks/useSettings';
 import { useStartGame } from '@/hooks/useStartGame';
 import { getDeck, listDeckSummaries, searchDeckSummaries, setFavorite } from '@/storage/deckRepo';
-import { deckMakerAvailable } from '@/media/ai';
-import { syncStreakReminder } from '@/media/reminders';
 import { getResumableSession, listSessions } from '@/storage/sessionRepo';
 import { BottomBar, useBottomBarHeight, type BottomTab } from '@/ui/BottomBar';
 import { Tap } from '@/ui/Tap';
@@ -69,9 +66,6 @@ export default function HomeScreen() {
   const [peeking, setPeeking] = useState<Lens | null>(null);
   const deckSort = useSettingsStore((s) => s.deckSort);
   const quickSeconds = useSettingsStore((s) => s.quickSeconds);
-  // Checked once: Apple Intelligence being on or off is not something that
-  // changes while the home screen is open.
-  const [canDream] = useState(() => deckMakerAvailable());
 
   // Everything is reloaded on focus, so coming back from a game, the editor or
   // an import shows what just changed.
@@ -94,9 +88,6 @@ export default function HomeScreen() {
         const now = new Date();
         const current = playStats(history, now);
         setStats(current);
-        // Re-planned on every return home, so a game just played moves the
-        // reminder on to tomorrow.
-        void syncStreakReminder(planStreakReminder(current, now), useSettingsStore.getState().streakReminders);
         setFriends({ board: friendBoard(history), rivalry: topRivalry(history) });
         setPlays(playCounts(history));
       })();
@@ -233,7 +224,6 @@ export default function HomeScreen() {
           onNew={() => router.push('/decks/edit/new')}
           onImport={() => router.push('/decks/import')}
           onGroup={() => router.push('/decks/group')}
-          onMagic={canDream ? () => router.push('/decks/magic') : undefined}
           bottomInset={bar}
         />
         <PlayPage

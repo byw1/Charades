@@ -9,7 +9,6 @@ import { isJustPlay } from '@/game/teams';
 import { nextRoundSeconds } from '@/game/types';
 import { hatProgress, phaseInfo } from '@/game/threeRounds';
 import { useDatabase } from '@/hooks/useDatabase';
-import { hasClips } from '@/media/reels';
 import { useRoundScreenMode } from '@/hooks/useRoundScreenMode';
 import { useSessionStore } from '@/hooks/useSessionStore';
 import { useSounds } from '@/hooks/useSounds';
@@ -50,17 +49,6 @@ export default function StandingsScreen() {
   const reset = useSessionStore((s) => s.reset);
 
   const [busy, setBusy] = useState(false);
-  // Clips are saved a moment after a round ends, so this checks once shortly
-  // after the screen opens rather than only on the first frame.
-  const [clips, setClips] = useState(false);
-  const sessionId = session?.id;
-  useEffect(() => {
-    if (!sessionId) return;
-    const check = () => setClips(hasClips(sessionId));
-    check();
-    const id = setTimeout(check, 1_500);
-    return () => clearTimeout(id);
-  }, [sessionId]);
 
   useRoundScreenMode();
   const { short } = useLayout();
@@ -300,9 +288,6 @@ export default function StandingsScreen() {
       </ScrollView>
 
       <Footer>
-        {clips ? (
-          <Button label="Watch the highlights" icon="play" onPress={() => router.push(`/reel?session=${session.id}`)} />
-        ) : null}
         {winState.over ? (
           <>
             <Button

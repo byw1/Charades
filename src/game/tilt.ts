@@ -1,88 +1,86 @@
 /**
- * Tilt input.
+ * Tilt input: tip the phone down for got it, up to pass.
  *
- * The default since October 2026, at the product owner's call: tip the phone
- * down for got it, up to pass. The single most common complaint about the
- * incumbent is unreliable gyro controls, so the bar here is that a gesture must
- * be harder to make by accident than it is to make on purpose. Tap remains a
- * setting.
+ * The rules, in plain terms:
  *
- * Three guards, because this is a party game and the phone gets waved about:
+ * 1. **It learns how you hold it.** Nobody holds a phone dead upright on a
+ *    forehead — it leans back, a little or a lot. Once the phone has been
+ *    steady and roughly upright for a moment, that angle becomes "resting",
+ *    and gestures are measured from it rather than from vertical.
+ * 2. **A clear tip counts.** About a third of a right angle down from resting
+ *    is got it; the same up is pass. A short, natural nod is enough — it does
+ *    not have to be held still at the far end.
+ * 3. **One tip, one card.** After a gesture the phone has to come back near
+ *    resting before the next one counts, so holding it down resolves one card,
+ *    not the deck.
+ * 4. **Slow drift is not a gesture.** While resting, the resting angle follows
+ *    the phone slowly, so sinking lower over a round does not end up as a pass.
  *
- * 1. **A deliberate threshold.** The screen has to swing well past vertical,
- *    not merely wobble on a forehead.
- * 2. **Return to neutral.** After a gesture the phone must come back near
- *    upright before another one registers, so holding it tilted resolves one
- *    card rather than the whole deck.
- * 3. **A dwell and a motion gate.** The tilt has to hold for a moment, and a
- *    sample whose magnitude is far from 1g is the phone being thrown around
- *    rather than held still at an angle. An excited jerk fails both.
+ * Input is the gravity vector from the phone's fused motion sensor (gyro and
+ * accelerometer together), which stays smooth through jerks and shakes, and
+ * which expo-sensors reports in the same convention on iPhone and Android:
+ * screen facing the floor reads +z. Units do not matter; it is normalised.
  *
- * Pure and frame-agnostic: samples in, gestures out. Nothing here knows about
- * expo-sensors or React, so the thresholds are unit-testable without a device.
+ * Pure: samples in, gestures out. Nothing here knows about sensors or React.
  */
 
 export type TiltGesture = 'correct' | 'pass';
 
-/** A raw accelerometer sample in g, in the device frame. */
-export type Acceleration = {
-  x: number;
-  y: number;
-  z: number;
-};
+/** Gravity in the device frame, any units. */
+export type GravityReading = { x: number; y: number; z: number };
+
+type Phase = 'settling' | 'armed' | 'returning';
 
 export type TiltState = {
-  /** Whether a gesture may fire. False until the phone is seen near upright. */
-  armed: boolean;
-  /** The gesture currently being held, if any. */
+  phase: Phase;
+  /** The resting angle, in degrees; positive is screen toward the floor. */
+  baseline: number | null;
+  /** Settling: where the steady stretch started, and when. */
+  anchor: number | null;
+  since: number | null;
+  /** Armed: the gesture being made and when it started. */
   pending: TiltGesture | null;
-  /** When the current hold began, for the dwell. */
   pendingSince: number | null;
 };
 
+/** How far from resting, in degrees, a tip has to go to count. */
+export const TILT_TRIGGER_DEG = 30;
+/** How long it has to stay past that, in ms. Short: a nod, not a hold. */
+export const TILT_DWELL_MS = 70;
+/** How close to resting it has to come back before the next gesture. */
+export const TILT_RETURN_DEG = 15;
+export const TILT_RETURN_MS = 100;
+/** How steady, for how long, before the resting angle is taken. */
+export const SETTLE_JITTER_DEG = 8;
+export const SETTLE_MS = 250;
+/** Further than this from upright is a phone on a table, not a forehead. */
+export const MAX_REST_DEG = 60;
+/** The resting angle is kept within this, so both gestures stay reachable. */
+export const MAX_BASELINE_DEG = 40;
+/** How quickly the resting angle follows a slow lean, per sample. */
+const DRIFT = 0.04;
+/** Inside this of resting, the phone is just being held. */
+const STILL_DEG = 10;
+
+const clamp = (value: number, limit: number) => Math.max(-limit, Math.min(limit, value));
+
 /**
- * How far the screen normal must swing from vertical to count, as a fraction of
- * gravity. 0.6 is about 37 degrees off upright — past anything a phone does
- * resting against a forehead.
+ * The phone's tip, in degrees: 0 with the screen vertical, +90 face down,
+ * -90 face up. The same whether it is held upright or sideways. Null for a
+ * reading with no direction (all zeros).
  */
-export const TILT_TRIGGER = 0.6;
+export function pitchOf(gravity: GravityReading): number | null {
+  const magnitude = Math.hypot(gravity.x, gravity.y, gravity.z);
+  if (!Number.isFinite(magnitude) || magnitude < 1e-6) return null;
+  return (Math.asin(Math.max(-1, Math.min(1, gravity.z / magnitude))) * 180) / Math.PI;
+}
 
 /**
- * How close to upright the phone must return before another gesture registers.
- * Well inside the trigger, so the two cannot chatter against each other.
- */
-export const TILT_NEUTRAL = 0.25;
-
-/** How long the tilt must hold past the trigger before it fires. */
-export const TILT_DWELL_MS = 120;
-
-/**
- * How far a sample's magnitude may stray from 1g and still be treated as the
- * phone being held rather than swung. Gravity alone reads 1g; a jerk does not.
- */
-export const TILT_MOTION_TOLERANCE = 0.35;
-
-/**
- * Which way "tilted down" reads on the screen-normal axis.
- *
- * The round is landscape with the screen vertical and facing the room, so
- * gravity sits almost entirely off this axis at rest and swings onto it as the
- * phone is tipped. On iOS a device lying screen-up reads z = -1, so a screen
- * tipped to face the floor reads z = +1 — which is the "down" of "tilt down for
- * got it". expo-sensors passes CoreMotion's readings through unchanged on iOS
- * (AccelerometerModule.swift), so this follows Apple's convention directly. If
- * a device ever reads inverted, this constant is the only line that needs to
- * change.
- */
-export const TILT_DOWN_SIGN = 1;
-
-/**
- * Disarmed to begin with, deliberately. The phone is still on its way to a
- * forehead when the round opens, and that journey passes through angles well
- * past the trigger. Nothing fires until it has been seen near upright once.
+ * Settling to begin with, deliberately. The phone is still on its way to a
+ * forehead when the round opens, and that journey passes every angle there is.
  */
 export function initialTiltState(): TiltState {
-  return { armed: false, pending: null, pendingSince: null };
+  return { phase: 'settling', baseline: null, anchor: null, since: null, pending: null, pendingSince: null };
 }
 
 export type TiltStep = {
@@ -91,51 +89,58 @@ export type TiltStep = {
   gesture: TiltGesture | null;
 };
 
-function gestureFor(axis: number): TiltGesture | null {
-  if (axis >= TILT_TRIGGER) return 'correct';
-  if (axis <= -TILT_TRIGGER) return 'pass';
-  return null;
-}
+const none = (state: TiltState): TiltStep => ({ state, gesture: null });
 
-function idle(state: TiltState): TiltStep {
-  return { state: { ...state, pending: null, pendingSince: null }, gesture: null };
-}
+/** Advances by one sample. Callers hold the state and feed it back in. */
+export function stepTilt(state: TiltState, gravity: GravityReading, now: number): TiltStep {
+  const pitch = pitchOf(gravity);
+  if (pitch === null) return none(state);
 
-/**
- * Advances the machine by one accelerometer sample.
- *
- * Returns the next state and, on the sample that completes a gesture, the
- * gesture itself. Callers hold the state and feed it back in.
- */
-export function stepTilt(state: TiltState, reading: Acceleration, now: number): TiltStep {
-  const magnitude = Math.hypot(reading.x, reading.y, reading.z);
-
-  // The phone is being moved, not held at an angle. Drop the hold rather than
-  // letting a swing accumulate dwell.
-  if (Math.abs(magnitude - 1) > TILT_MOTION_TOLERANCE) return idle(state);
-
-  const axis = reading.z * TILT_DOWN_SIGN;
-
-  if (!state.armed) {
-    // Back near upright re-arms. Until then nothing can fire, however far the
-    // phone is tilted.
-    if (Math.abs(axis) <= TILT_NEUTRAL) {
-      return { state: { armed: true, pending: null, pendingSince: null }, gesture: null };
+  switch (state.phase) {
+    case 'settling': {
+      if (Math.abs(pitch) > MAX_REST_DEG) return none({ ...state, anchor: null, since: null });
+      if (state.anchor === null || state.since === null || Math.abs(pitch - state.anchor) > SETTLE_JITTER_DEG) {
+        return none({ ...state, anchor: pitch, since: now });
+      }
+      if (now - state.since < SETTLE_MS) return none(state);
+      return none({ ...initialTiltState(), phase: 'armed', baseline: clamp(pitch, MAX_BASELINE_DEG) });
     }
-    return idle(state);
+
+    case 'returning': {
+      const baseline = state.baseline ?? 0;
+      if (Math.abs(pitch - baseline) > TILT_RETURN_DEG) return none({ ...state, since: null });
+      if (state.since === null) return none({ ...state, since: now });
+      if (now - state.since < TILT_RETURN_MS) return none(state);
+      // Back at rest: meet the phone halfway, in case it settled a bit off.
+      return none({
+        ...initialTiltState(),
+        phase: 'armed',
+        baseline: clamp((baseline + pitch) / 2, MAX_BASELINE_DEG),
+      });
+    }
+
+    case 'armed': {
+      const baseline = state.baseline ?? 0;
+      const delta = pitch - baseline;
+      const candidate: TiltGesture | null =
+        delta >= TILT_TRIGGER_DEG ? 'correct' : delta <= -TILT_TRIGGER_DEG ? 'pass' : null;
+
+      if (candidate === null) {
+        // Just being held: follow a slow lean so it never accumulates.
+        const next = Math.abs(delta) < STILL_DEG ? clamp(baseline + DRIFT * delta, MAX_BASELINE_DEG) : baseline;
+        return none({ ...state, baseline: next, pending: null, pendingSince: null });
+      }
+
+      // A new direction restarts the clock.
+      if (state.pending !== candidate || state.pendingSince === null) {
+        return none({ ...state, pending: candidate, pendingSince: now });
+      }
+      if (now - state.pendingSince < TILT_DWELL_MS) return none(state);
+
+      return {
+        state: { ...state, phase: 'returning', since: null, pending: null, pendingSince: null },
+        gesture: candidate,
+      };
+    }
   }
-
-  const candidate = gestureFor(axis);
-  if (candidate === null) return idle(state);
-
-  // A new direction restarts the clock, so swinging through one gesture on the
-  // way to the other does not bank time toward either.
-  if (state.pending !== candidate || state.pendingSince === null) {
-    return { state: { ...state, pending: candidate, pendingSince: now }, gesture: null };
-  }
-
-  if (now - state.pendingSince < TILT_DWELL_MS) return { state, gesture: null };
-
-  // Fires once, then waits for neutral before it will fire again.
-  return { state: { armed: false, pending: null, pendingSince: null }, gesture: candidate };
 }

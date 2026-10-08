@@ -2,7 +2,7 @@ import { useRouter } from 'expo-router';
 import { useCallback, useEffect, useRef, useState } from 'react';
 import { AppState, Pressable, StyleSheet, Text, View } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
-import { elapsedMs, remainingMs } from '@/game/round';
+import { remainingMs } from '@/game/round';
 import { swipeOutcome } from '@/game/swipe';
 import { phaseInfo } from '@/game/threeRounds';
 import { twistById } from '@/game/twists';
@@ -14,8 +14,6 @@ import { useSessionStore } from '@/hooks/useSessionStore';
 import { useSettings } from '@/hooks/useSettings';
 import { useSounds } from '@/hooks/useSounds';
 import { useTilt } from '@/hooks/useTilt';
-import { useVoiceReferee } from '@/hooks/useVoiceReferee';
-import { VOICE_REFEREE_LAUNCHED, voiceSupported } from '@/media/voice';
 import { Button } from '@/ui/Button';
 import { CardFace } from '@/ui/CardFace';
 import { CircleButton } from '@/ui/CircleButton';
@@ -25,7 +23,6 @@ import { Icon } from '@/ui/Icon';
 import { useLayout } from '@/ui/layout';
 import { Mascot } from '@/ui/Mascot';
 import { PopIn } from '@/ui/motion';
-import { RoundCamera } from '@/ui/RoundCamera';
 import { TimerBar } from '@/ui/TimerBar';
 import { color, flashMs, font, radius, space } from '@/ui/tokens';
 
@@ -48,7 +45,6 @@ export default function RoundPlayScreen() {
   const mode = useSessionStore((s) => s.session?.settings.mode ?? 'classic');
   const openRound = useSessionStore((s) => s.session?.rounds.find((round) => round.endedAt === null));
   const hatLeft = useSessionStore((s) => s.roundPool.length);
-  const sessionId = useSessionStore((s) => s.session?.id);
   const begin = useSessionStore((s) => s.start);
   const resolve = useSessionStore((s) => s.resolve);
   const pauseRound = useSessionStore((s) => s.pauseRound);
@@ -154,20 +150,6 @@ export default function RoundPlayScreen() {
   );
 
   /**
-   * The voice referee, when it is on and this phone can listen offline. It
-   * answers alongside tap or tilt rather than instead of them, so a missed
-   * word can still be scored by hand.
-   */
-  const [canListen] = useState(() => VOICE_REFEREE_LAUNCHED && settings.voiceReferee && voiceSupported());
-  useVoiceReferee({
-    enabled: canListen && state.phase === 'running',
-    card: state.card,
-    mode,
-    onCorrect: () => onResolve('correct'),
-    onBusted: (word) => onResolve('pass', word),
-  });
-
-  /**
    * Tilt replaces tap rather than joining it. The phone is pressed against skin
    * for the whole round, so leaving full-screen tap targets live underneath a
    * tilt game is a stray palm away from resolving a card nobody guessed.
@@ -247,7 +229,7 @@ export default function RoundPlayScreen() {
       ? `${twist.emoji} ${twist.title}`
       : null;
   // A microphone in use should never be a secret.
-  const badge = canListen ? [rule, '🎙️ Listening'].filter(Boolean).join(' · ') : rule;
+  const badge = rule;
 
   return (
     <View style={styles.screen}>
@@ -311,17 +293,6 @@ export default function RoundPlayScreen() {
           />
         </View>
       )}
-
-      {settings.recordRounds && sessionId && openRound ? (
-        <RoundCamera
-          active={state.phase === 'running'}
-          sessionId={sessionId}
-          roundId={openRound.id}
-          roundTimeNow={() => elapsedMs(useSessionStore.getState().roundState, Date.now())}
-          // The voice referee needs the microphone; the video goes silent.
-          mute={canListen}
-        />
-      ) : null}
 
       {flash ? <FlashOverlay key={flash.id} outcome={flash.outcome} busted={flash.busted} /> : null}
 

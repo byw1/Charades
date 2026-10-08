@@ -1,5 +1,6 @@
 import type { SQLiteDatabase } from 'expo-sqlite';
 import { useEffect, useState } from 'react';
+import { removeLeftovers } from '@/media/leftovers';
 import { openDatabase } from '@/storage/database';
 import { seedBundledDecks } from '@/storage/seed';
 
@@ -30,6 +31,7 @@ function start(): Promise<SQLiteDatabase> {
   startup ??= (async () => {
     const db = await openDatabase();
     const report = await seedBundledDecks(db);
+    removeLeftovers();
 
     if (report.rejected.length > 0) {
       // A build problem rather than a user problem, and the app still works

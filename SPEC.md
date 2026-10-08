@@ -29,16 +29,15 @@ These are product decisions, not preferences. Don't design around them.
 - No orientation lock anywhere: every screen, the round included, turns with the phone
 - **react-native-mmkv** for settings and small state, **expo-sqlite** for decks and session history
 - **zustand** for game state. No Redux.
-- **expo-camera** for QR scanning on deck import, and for round videos when switched on
+- **expo-camera** for QR scanning on deck import
 - **EAS Build** and **EAS Submit** for the iOS pipeline
 
-Added for game night (October 2026), every one of them on-device only:
-expo-image-picker and expo-image-manipulator (photo cards), expo-video (the
-highlight reel), react-native-view-shot (the Wrapped image), expo-notifications
-(local streak reminders), expo-speech-recognition (the voice referee,
-on-device recognition only) and @react-native-ai/apple (the AI deck maker,
-Apple Intelligence). Settings use `expo-sqlite/kv-store`, not mmkv; see
-ROADMAP.md.
+Also, every one of them on-device only: expo-image-picker and
+expo-image-manipulator (photo cards), react-native-view-shot (the Wrapped
+image), expo-sensors DeviceMotion (tilt) and expo-audio (sound effects).
+Settings use `expo-sqlite/kv-store`, not mmkv; see ROADMAP.md. Round videos,
+the voice referee, the AI deck maker and streak reminders were built and then
+taken out to keep the app small and simple; see spec/decisions.md.
 
 Verify current versions against Expo docs before installing. Do not pin from memory.
 
@@ -266,7 +265,7 @@ Copy: plain verbs, sentence case, no exclamation marks in UI chrome. "Got it" an
 
 Don't build these. Note them in a ROADMAP.md if useful.
 
-- ~~AI deck generation~~ — shipped in October 2026, on the phone with Apple Intelligence, so it needs no server. See spec/decisions.md, Game night.
+- AI deck generation — built in October 2026 and then taken out to keep the app simple. See spec/decisions.md.
 - Second-device / companion-phone mode — still deferred; see spec/decisions.md.
 - Apple Watch app
 - Localization beyond English

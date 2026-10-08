@@ -61,9 +61,6 @@ hidden, not broken.
 | All decks, Classic, Banned and 3 Rounds, chaos, forfeits | ✅ | ✅ |
 | Friends, Wrapped, group deck builder, photo cards | ✅ | ✅ |
 | Big decks over several QR codes | ✅ | ✅ |
-| Film the room and the highlight reel | ✅ | ✅ |
-| Streak reminders | ✅ | ✅ |
-| Dream one up (AI decks) | — | ✅ on iPhone 15 Pro or newer, iOS 26, Apple Intelligence on |
 | AirDrop a deck and it opens in Deckhead | — | ✅ |
 
 ---
@@ -116,11 +113,11 @@ To update it later, run `npm run phone` again and install the new link.
 > portrait-only, and that is baked into the installed app. Run `npm run phone`
 > once more so it can turn with the phone.
 
-> **After the game night update you need a fresh build.** It added new native
-> parts (camera recording, speech, notifications, Apple Intelligence), and an
-> app built before them can't use them. Run `npm run phone` once more.
+> **After any update that changes the app's native parts** (sound, tilt,
+> turning sideways, light mode), run `npm run phone` once more and install
+> the new link.
 
-### Seven things to check on a real iPhone
+### Five things to check on a real iPhone
 
 Everything is tested, but these can only be checked on a phone. Each takes a
 minute.
@@ -128,19 +125,18 @@ minute.
 1. **No internet.** Swipe down Control Centre, turn on airplane mode (and make
    sure Wi-Fi is off too), then force-close Deckhead and open it again. Play a
    round: everything should work exactly the same.
-2. **Tilt.** Start a round and hold the phone sideways on your forehead. Tip
-   the screen down toward the floor for got it, up toward the ceiling to pass.
-   If you'd rather tap, switch it under Settings → How you answer.
+2. **Tilt.** Start a round and hold the phone on your forehead however feels
+   natural, upright or sideways, leaning back a little is fine. Give it a
+   second to settle, then nod the screen down toward the floor for got it, up
+   toward the ceiling to pass. A quick nod is enough. If you'd rather tap or
+   swipe, switch it under Settings → How you answer.
 3. **Sound.** With the ring/silent switch on ring, play a round: a ding for got
    it, a whoosh for a pass, beeps on the countdown, a buzzer at the end. Flip
    the switch to silent and they stop.
-4. **Dream one up.** On an iPhone with Apple Intelligence, Decks → Dream one up
-   → type a theme. Turn on airplane mode first: it should still work.
-5. **Film the room.** Settings → Extras → Film the room. Play a round, then
-   tap "Watch the highlights" on the standings screen.
-6. **Streak reminders.** Settings → Extras → Streak reminders. With a streak
-   going, don't play the next day: a nudge should arrive at 7pm.
-7. **AirDrop.** Share a deck as a file to another iPhone with Deckhead
+4. **Turning and pausing.** Mid-round, turn the phone from upright to sideways
+   and back: the card should follow and the timer keep going. Tap the pause
+   button in the corner, wait, then tap to carry on.
+5. **AirDrop.** Share a deck as a file to another iPhone with Deckhead
    installed. It should offer to open in Deckhead and land on "Add this deck?".
 
 > **No paid account but you have a Mac?** Install Xcode, plug in your iPhone

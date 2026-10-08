@@ -97,9 +97,12 @@ describe('offline guarantee: how the app is built', () => {
     }
   });
 
-  it('keeps the voice referee on the phone', () => {
-    const voice = readFileSync(join(ROOT, 'src/media/voice.ts'), 'utf8');
-    expect(voice).toMatch(/requiresOnDeviceRecognition:\s*true/);
+  it('never asks for the microphone', () => {
+    const config = JSON.stringify(expo);
+    expect(config).not.toMatch(/speech|NSMicrophoneUsageDescription/i);
+    for (const plugin of expo.plugins as unknown[]) {
+      if (Array.isArray(plugin)) expect([plugin[0], (plugin[1] as { microphonePermission?: unknown }).microphonePermission ?? false]).toEqual([plugin[0], false]);
+    }
   });
 
   it('bundles every deck with nothing to download', () => {
