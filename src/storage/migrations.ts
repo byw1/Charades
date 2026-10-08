@@ -90,6 +90,45 @@ export const migrations: readonly Migration[] = [
       CREATE INDEX sessions_in_progress ON sessions (completedAt, createdAt DESC);
     `,
   },
+  {
+    version: 3,
+    name: 'taboo words and photo cards',
+    /**
+     * Both nullable, so every existing card is untouched: no Taboo words and no
+     * photo. Taboo words are a JSON array for the same reason tags are — read
+     * and written whole, never queried across. A photo is a JPEG data URI kept
+     * in the row rather than a file on disk, so it cannot be orphaned or lost
+     * when iOS moves the app's container, and a deck export carries it as is.
+     */
+    up: `
+      ALTER TABLE cards ADD COLUMN taboo TEXT;
+      ALTER TABLE cards ADD COLUMN image TEXT;
+    `,
+  },
+  {
+    version: 4,
+    name: 'deck cover emoji',
+    /** Nullable: a deck without one shows the default. */
+    up: `
+      ALTER TABLE decks ADD COLUMN emoji TEXT;
+    `,
+  },
+  {
+    version: 5,
+    name: 'your changes to free decks, and favourites',
+    /**
+     * A free deck can be made yours without copying it: cards you add are
+     * marked `mine`, and cards you'd rather not see are marked `hidden`
+     * instead of deleted. Seeding rewrites only the deck's own cards, keeps
+     * yours, and puts the hidden marks back, so an app update with new content
+     * never undoes your changes. Every existing card is neither.
+     */
+    up: `
+      ALTER TABLE cards ADD COLUMN mine INTEGER NOT NULL DEFAULT 0;
+      ALTER TABLE cards ADD COLUMN hidden INTEGER NOT NULL DEFAULT 0;
+      ALTER TABLE decks ADD COLUMN favorite INTEGER NOT NULL DEFAULT 0;
+    `,
+  },
 ];
 
 /**

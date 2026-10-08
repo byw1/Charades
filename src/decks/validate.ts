@@ -4,6 +4,10 @@ import {
   CURRENT_DECK_SCHEMA_VERSION,
   type Card,
   type Deck,
+  MAX_DECK_EMOJI_LENGTH,
+  MAX_IMAGE_DATA_LENGTH,
+  MAX_TABOO_WORD_LENGTH,
+  MAX_TABOO_WORDS,
   MIN_PLAYABLE_CARDS,
 } from './types';
 import { parseHexColor } from '@/ui/contrast';
@@ -46,6 +50,23 @@ const MAX_TAG_LENGTH = 24;
 const MAX_NOTE_LENGTH = 140;
 /** Guards against a decompression bomb arriving by QR or file in M5. */
 const MAX_CARDS = 2000;
+
+/** JPEG, PNG or WebP, base64-encoded. Nothing that could be fetched. */
+const IMAGE_DATA_URI = /^data:image\/(?:jpeg|png|webp);base64,[A-Za-z0-9+/]+={0,2}$/;
+
+/** Trims, drops blanks and de-duplicates case-insensitively. */
+export function normaliseTaboo(words: readonly string[]): string[] {
+  const seen = new Set<string>();
+  const out: string[] = [];
+  for (const raw of words) {
+    const word = raw.trim();
+    const key = word.toLocaleLowerCase();
+    if (!word || seen.has(key)) continue;
+    seen.add(key);
+    out.push(word);
+  }
+  return out;
+}
 
 function isRecord(value: unknown): value is Record<string, unknown> {
   return typeof value === 'object' && value !== null && !Array.isArray(value);
@@ -157,6 +178,17 @@ export function validateDeck(input: unknown): ValidationResult {
     fail('accentColor', `"${accentColor}" is not a colour the app can read. Use a hex value like #FF3D6E.`);
   }
 
+  // Cosmetic, so a bad one is dropped with a warning rather than failing the deck.
+  let emoji: string | null = null;
+  if (input.emoji !== undefined && input.emoji !== null) {
+    const raw = typeof input.emoji === 'string' ? input.emoji.trim() : '';
+    if (raw && raw.length <= MAX_DECK_EMOJI_LENGTH && /\p{Extended_Pictographic}/u.test(raw)) {
+      emoji = raw;
+    } else {
+      warn('emoji', 'This deck’s cover emoji could not be read, so it will use the default.');
+    }
+  }
+
   let tags: string[] = [];
   if (input.tags !== undefined) {
     if (!Array.isArray(input.tags) || input.tags.some((t) => typeof t !== 'string')) {
@@ -229,8 +261,36 @@ export function validateDeck(input: unknown): ValidationResult {
         }
       }
 
+      let taboo: string[] = [];
+      if (raw.taboo !== undefined && raw.taboo !== null) {
+        if (!Array.isArray(raw.taboo) || raw.taboo.some((t) => typeof t !== 'string')) {
+          fail(`${path}.taboo`, `The banned words on card ${index + 1} are not a list of text.`);
+        } else {
+          taboo = normaliseTaboo(raw.taboo as string[]);
+          if (taboo.length > MAX_TABOO_WORDS) {
+            fail(`${path}.taboo`, `Cards are limited to ${MAX_TABOO_WORDS} banned words.`);
+          } else if (taboo.some((t) => t.length > MAX_TABOO_WORD_LENGTH)) {
+            fail(`${path}.taboo`, `Banned words are limited to ${MAX_TABOO_WORD_LENGTH} characters.`);
+          }
+        }
+      }
+
+      let image: string | null = null;
+      if (raw.image !== undefined && raw.image !== null) {
+        if (typeof raw.image !== 'string' || !IMAGE_DATA_URI.test(raw.image)) {
+          fail(`${path}.image`, `The photo on card ${index + 1} is not a picture the app can show.`);
+        } else if (raw.image.length > MAX_IMAGE_DATA_LENGTH) {
+          fail(`${path}.image`, `The photo on card ${index + 1} is too large.`);
+        } else {
+          image = raw.image;
+        }
+      }
+
       if (cardId && text) {
-        cards.push({ id: cardId, text, note });
+        const card: Card = { id: cardId, text, note };
+        if (taboo.length > 0) card.taboo = taboo;
+        if (image) card.image = image;
+        cards.push(card);
       }
     });
   }
@@ -248,21 +308,20 @@ export function validateDeck(input: unknown): ValidationResult {
     );
   }
 
-  return {
-    ok: true,
-    warnings,
-    deck: {
-      schemaVersion,
-      id,
-      name,
-      description,
-      author,
-      language,
-      accentColor,
-      tags,
-      createdAt: input.createdAt as string,
-      updatedAt: input.updatedAt as string,
-      cards,
-    },
+  const deck: Deck = {
+    schemaVersion,
+    id,
+    name,
+    description,
+    author,
+    language,
+    accentColor,
+    tags,
+    createdAt: input.createdAt as string,
+    updatedAt: input.updatedAt as string,
+    cards,
   };
+  if (emoji) deck.emoji = emoji;
+
+  return { ok: true, warnings, deck };
 }

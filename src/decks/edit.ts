@@ -1,5 +1,6 @@
 import { makeCardId, makeDeckId, type RandomSource } from './ids';
 import { CARD_TEXT_SOFT_CAP, CURRENT_DECK_SCHEMA_VERSION, type Card, type Deck } from './types';
+import { normaliseTaboo } from './validate';
 
 /**
  * Deck editing.
@@ -53,6 +54,13 @@ export function setDeckFields(
   return touch({ ...deck, ...fields }, now);
 }
 
+/** Sets the cover emoji, or clears it with null. */
+export function setDeckEmoji(deck: Deck, emoji: string | null, now: string): Deck {
+  const { emoji: _old, ...rest } = deck;
+  const trimmed = emoji?.trim();
+  return touch(trimmed ? { ...rest, emoji: trimmed } : rest, now);
+}
+
 export function addCard(deck: Deck, text: string, now: string, random?: RandomSource): Deck {
   const trimmed = text.trim();
   if (!trimmed) return deck;
@@ -60,13 +68,22 @@ export function addCard(deck: Deck, text: string, now: string, random?: RandomSo
   return touch({ ...deck, cards: [...deck.cards, { id: makeCardId(random), text: trimmed, note: null }] }, now);
 }
 
-/** Edits text or note in place. The card id is untouched, deliberately. */
-export function updateCard(
-  deck: Deck,
-  cardId: string,
-  fields: { text?: string; note?: string | null },
-  now: string,
-): Deck {
+export type CardFields = {
+  text?: string;
+  note?: string | null;
+  /** Empty or null removes them. */
+  taboo?: readonly string[] | null;
+  /** Null removes the photo. */
+  image?: string | null;
+};
+
+/**
+ * Edits a card in place. The card id is untouched, deliberately.
+ *
+ * Taboo words and a photo are left off a card that has none rather than set
+ * empty, so a card looks the same whether it never had them or lost them.
+ */
+export function updateCard(deck: Deck, cardId: string, fields: CardFields, now: string): Deck {
   let changed = false;
 
   const cards = deck.cards.map((card) => {
@@ -77,10 +94,32 @@ export function updateCard(
     const note =
       fields.note === undefined ? card.note : fields.note === null ? null : fields.note.trim() || null;
 
-    return { ...card, text, note };
+    const { taboo: oldTaboo, image: oldImage, ...rest } = card;
+    const next: Card = { ...rest, text, note };
+
+    const taboo = fields.taboo === undefined ? oldTaboo : fields.taboo ? normaliseTaboo(fields.taboo) : [];
+    if (taboo && taboo.length > 0) next.taboo = taboo;
+
+    const image = fields.image === undefined ? oldImage : fields.image;
+    if (image) next.image = image;
+
+    return next;
   });
 
   return changed ? touch({ ...deck, cards }, now) : deck;
+}
+
+/** Splits "shark, beach, boat" into Taboo words. */
+export function parseTabooInput(input: string): string[] {
+  return normaliseTaboo(input.split(/[,\n]/));
+}
+
+/** A new card for each photo, numbered so the names are easy to fill in. */
+export function addPhotoCards(deck: Deck, photos: readonly string[], now: string, random?: RandomSource): Deck {
+  if (photos.length === 0) return deck;
+  const start = deck.cards.filter((card) => card.image).length;
+  const cards = photos.map((image, i): Card => ({ id: makeCardId(random), text: `Photo ${start + i + 1}`, note: null, image }));
+  return touch({ ...deck, cards: [...deck.cards, ...cards] }, now);
 }
 
 export function removeCard(deck: Deck, cardId: string, now: string): Deck {
@@ -185,7 +224,9 @@ export function duplicateDeck(deck: Deck, now: string, random?: RandomSource): D
     ...deck,
     id: makeDeckId(random),
     name: nextCopyName(deck.name),
-    cards: deck.cards.map((card) => ({ ...card, id: makeCardId(random) })),
+    // A copy is wholly yours: the free-deck marks don't come with it, and
+    // hidden cards stay behind.
+    cards: deck.cards.filter((card) => !card.hidden).map(({ mine: _mine, hidden: _hidden, ...card }) => ({ ...card, id: makeCardId(random) })),
     createdAt: now,
     updatedAt: now,
   };
@@ -207,7 +248,8 @@ export function hasChanges(original: Deck, draft: Deck): boolean {
     original.name !== draft.name ||
     original.description !== draft.description ||
     original.author !== draft.author ||
-    original.accentColor !== draft.accentColor
+    original.accentColor !== draft.accentColor ||
+    original.emoji !== draft.emoji
   ) {
     return true;
   }
@@ -216,6 +258,13 @@ export function hasChanges(original: Deck, draft: Deck): boolean {
 
   return original.cards.some((card, i) => {
     const other = draft.cards[i];
-    return !other || other.id !== card.id || other.text !== card.text || other.note !== card.note;
+    return (
+      !other ||
+      other.id !== card.id ||
+      other.text !== card.text ||
+      other.note !== card.note ||
+      other.image !== card.image ||
+      (other.taboo ?? []).join('\u0000') !== (card.taboo ?? []).join('\u0000')
+    );
   });
 }

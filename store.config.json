@@ -14,22 +14,22 @@
       "en-US": {
         "title": "Deckhead",
         "subtitle": "Charades Party Game",
-        "promoText": "Phone on your forehead. Your friends yell clues. One tap to play, every deck free, and streaks to keep alive.",
-        "description": "Hold the phone to your forehead. A word pops up that everyone can see except you. Your friends yell clues, act it out, hum it — anything but say the word — and you get as many as you can before time's up.\n\nONE TAP TO PLAY\nSwipe through decks like lenses and hit the button. You're playing. Want teams and house rules? They're one tap away.\n\nEVERY DECK IS FREE\nNo ads. No subscriptions. No in-app purchases. No account.\n\nMAKE YOUR OWN\nYour friend group's inside jokes. Your teachers. Your dorm. Type a few cards or paste a whole list.\n\nSHARE IN SECONDS\nShow a code and the whole room has your deck. Or send a link or a file — it all travels inside the code, so nothing gets uploaded anywhere.\n\nSTREAKS AND BADGES\nKeep your 🔥 streak alive, chase your best round, and unlock badges as you play.\n\nCONTROLS THAT WORK\nTap the top of the screen if you got it, the bottom to pass. Giant targets you can hit without looking. Prefer tilting? Turn it on — it's built to ignore an excited jerk of the phone.\n\nA GAME WITH AN ENDING\nPlay as one big group or split into teams. Pick a number of rounds, a target score, or play till the cards run out. Fix a mis-tap after every round.\n\nPRIVATE BY DESIGN\nDeckhead works fully offline and collects nothing. Your decks, games and streak stay on your phone.",
+        "promoText": "Phone on your forehead. Your friends yell clues. Banned-words mode, three-round mode, chaos twists and 17 free decks. No ads, no account, no Wi-Fi needed.",
+        "description": "Hold the phone to your forehead. A word pops up that everyone can see except you. Your friends yell clues, act it out, hum it — anything but say the word — and you get as many as you can before time's up.\n\nONE TAP TO PLAY\nSwipe through decks like lenses and hit the button. You're playing, for as long as you like. Peek at a deck's cards first, star your favourites so they come first, and set up teams and house rules when you want them.\n\n17 FREE DECKS, 1,700 CARDS\nCelebrities, Sports, Movie & TV Quotes, Gen Z Slang, Viral Internet, Reality TV, Music Icons, Anime & Gaming, 2010s Throwback, Emoji Charades and more, with 100 cards in every deck. Hide the cards you don't want and add your own to any of them. No ads. No subscriptions. No in-app purchases. No account.\n\nTHREE WAYS TO PLAY\nClassic. Banned Words, where the room can't say the words under the card. And 3 Rounds: the same cards come back three times — describe it, then one word, then act it out. It gets funnier every round.\n\nCHAOS AND FORFEITS\nTurn on chaos for a wild rule some rounds: accents only, hum it, double points, speed round. Turn on forfeits and last place gets a dare.\n\nMAKE YOUR OWN\nAnswer five questions about your friend group and get a deck only you can play. Add photos of faces to cards. Paste a whole list. On iPhones with Apple Intelligence, type a theme and the cards write themselves — on your phone, offline.\n\nSHARE IN SECONDS\nShow a code and the whole room has your deck. AirDrop it and it opens straight in Deckhead. Big decks travel as a quick flip of codes. Nothing gets uploaded anywhere.\n\nYOUR NIGHT, WRAPPED\nThe MVP, the fastest guess, the card nobody could get — one image to post. Film the room for a highlight reel, keep a friends leaderboard, and keep your streak alive.\n\nCONTROLS THAT WORK\nTip the phone down if you got it, up to pass. Or swipe up and down anywhere, or tap. Upright or sideways, it plays the way you hold it. A ding for every card you get, a buzzer when time's up.\n\nKEEP IT GOING\nEndless games for long lines and longer nights. Someone miles ahead? Start over in a tap. Bored of a deck? Swap it mid-game and the scores carry on.\n\nDAY OR NIGHT\nA dark look for parties and a light one you can read in the sun.\n\nPRIVATE BY DESIGN\nDeckhead works fully offline — on a plane, at a cabin, in a basement with no signal — and collects nothing. Your decks, photos, videos, games and streak stay on your phone. AI features run on your iPhone itself.",
         "keywords": [
           "charades",
           "party",
           "game",
           "forehead",
+          "words",
           "guess",
           "friends",
           "college",
           "group",
-          "cards",
           "offline",
           "teams"
         ],
-        "releaseNotes": "A whole new look. Swipe between your decks, Play and You, start a game in one tap, and keep your streak alive.",
+        "releaseNotes": "Game night update: nine new decks, Banned Words and 3 Rounds modes, chaos twists and forfeits, a friends leaderboard, Tonight Wrapped, photo cards, a deck-about-your-group builder, a voice referee, round videos with a highlight reel, and AI decks written on your iPhone.",
         "supportUrl": "https://github.com/byw1/Deckhead/issues",
         "privacyPolicyUrl": "https://github.com/byw1/Deckhead/blob/main/PRIVACY.md"
       }

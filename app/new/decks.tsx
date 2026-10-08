@@ -1,10 +1,14 @@
-import { useFocusEffect, useRouter } from 'expo-router';
+import { useFocusEffect, useLocalSearchParams, useRouter } from 'expo-router';
 import { useCallback, useState } from 'react';
-import { ActivityIndicator, FlatList, StyleSheet, View } from 'react-native';
+import { FlatList, StyleSheet, View } from 'react-native';
 import { MIN_PLAYABLE_CARDS, summaryIsPlayable, type DeckSummary } from '@/decks/types';
 import { useDatabase } from '@/hooks/useDatabase';
+import { withDecks } from '@/game/session';
 import { useNewGameStore } from '@/hooks/useNewGameStore';
-import { listDeckSummaries } from '@/storage/deckRepo';
+import { useSessionStore } from '@/hooks/useSessionStore';
+import { getDeck, listDeckSummaries } from '@/storage/deckRepo';
+import { saveSession } from '@/storage/sessionRepo';
+import { Loader } from '@/ui/Loader';
 import { Button } from '@/ui/Button';
 import { EmptyState } from '@/ui/EmptyState';
 import { Icon } from '@/ui/Icon';
@@ -15,13 +19,49 @@ import { Tap } from '@/ui/Tap';
 import { Text } from '@/ui/Text';
 import { color, gutter, space } from '@/ui/tokens';
 
-/** Step one of three: which decks are in play. Pick as many as you like. */
+/**
+ * Step one of three: which decks are in play. Pick as many as you like.
+ *
+ * Also used part way through a game (`?change=1`) to swap decks without
+ * losing the score: it starts from the game's decks and puts the new ones
+ * straight into play.
+ */
 export default function NewGameDecksScreen() {
   const router = useRouter();
   const database = useDatabase();
+  const { change } = useLocalSearchParams<{ change?: string }>();
+  const changing = change === '1';
 
-  const deckIds = useNewGameStore((s) => s.deckIds);
-  const toggleDeck = useNewGameStore((s) => s.toggleDeck);
+  const draftIds = useNewGameStore((s) => s.deckIds);
+  const toggleDraft = useNewGameStore((s) => s.toggleDeck);
+  const session = useSessionStore((s) => s.session);
+  const resumeSession = useSessionStore((s) => s.resumeSession);
+  const [picked, setPicked] = useState<string[]>(() => (changing ? [...(session?.deckIds ?? [])] : []));
+  const [applying, setApplying] = useState(false);
+
+  const deckIds = changing ? picked : draftIds;
+  const toggleDeck = (id: string) => {
+    if (!changing) return toggleDraft(id);
+    setPicked((current) => (current.includes(id) ? current.filter((d) => d !== id) : [...current, id]));
+  };
+
+  /** Puts the new decks into the game in progress and goes back to it. */
+  const applyChange = async () => {
+    if (!session || database.status !== 'ready' || applying) return;
+    setApplying(true);
+    try {
+      const loaded = await Promise.all(picked.map((id) => getDeck(database.db, id)));
+      const decks = loaded.flatMap((deck) =>
+        deck ? [{ id: deck.id, name: deck.name, accentColor: deck.accentColor, cards: deck.cards }] : [],
+      );
+      const next = withDecks(session, decks.map((deck) => deck.id));
+      resumeSession(next, decks, Date.now() >>> 0);
+      await saveSession(database.db, next);
+      router.back();
+    } finally {
+      setApplying(false);
+    }
+  };
 
   const [decks, setDecks] = useState<DeckSummary[] | null>(null);
 
@@ -48,7 +88,13 @@ export default function NewGameDecksScreen() {
   const enough = totalCards >= MIN_PLAYABLE_CARDS;
 
   const header = (
-    <StepHeader step={1} of={3} title="Pick your decks" subtitle="One, or mix a few." onClose={router.back} />
+    <StepHeader
+      step={1}
+      of={changing ? 1 : 3}
+      title={changing ? 'Change decks' : 'Pick your decks'}
+      subtitle={changing ? 'Scores carry on. Mix in new ones or swap them out.' : 'One, or mix a few.'}
+      onClose={router.back}
+    />
   );
 
   if (database.status === 'error') {
@@ -64,9 +110,7 @@ export default function NewGameDecksScreen() {
     return (
       <Screen>
         {header}
-        <View style={styles.centre}>
-          <ActivityIndicator color={color.brand} size="large" />
-        </View>
+        <Loader />
       </Screen>
     );
   }
@@ -123,13 +167,15 @@ export default function NewGameDecksScreen() {
               ? 'Pick at least one'
               : !enough
                 ? `${MIN_PLAYABLE_CARDS} cards needed`
-                : `Next · ${totalCards} cards`
+                : changing
+                  ? `Play these · ${totalCards} cards`
+                  : `Next · ${totalCards} cards`
           }
           variant="blue"
           size="lg"
-          icon={enough ? 'forward' : undefined}
-          disabled={!enough}
-          onPress={() => router.push('/new/teams')}
+          icon={enough ? (changing ? 'check' : 'forward') : undefined}
+          disabled={!enough || applying}
+          onPress={() => (changing ? void applyChange() : router.push('/new/teams'))}
         />
       </Footer>
     </Screen>

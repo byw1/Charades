@@ -1,6 +1,6 @@
 import { create } from 'zustand';
 import { makeJustPlayTeam, makeTeams, normalisePlayerNames } from '@/game/teams';
-import { defaultSettings, type SessionSettings, type Team, type WinCondition } from '@/game/types';
+import { clampHatSize, defaultSettings, type GameMode, type SessionSettings, type Team, type WinCondition } from '@/game/types';
 
 /**
  * Draft state for the three-step new game flow.
@@ -30,6 +30,11 @@ export type NewGameStore = {
   setPassPenalty(penalty: number): void;
   setWinCondition(condition: WinCondition): void;
   setShuffleAcrossDecks(shuffle: boolean): void;
+  /** Taboo makes passes cost a point; three rounds ends when the hat clears. */
+  setGameMode(mode: GameMode): void;
+  setChaos(on: boolean): void;
+  setForfeits(on: boolean): void;
+  setHatSize(size: number): void;
 
   /** The teams a session would actually be created with. */
   resolvedTeams(): Team[];
@@ -104,6 +109,31 @@ export const useNewGameStore = create<NewGameStore>((set, get) => ({
 
   setShuffleAcrossDecks(shuffleAcrossDecks) {
     set((s) => ({ settings: { ...s.settings, shuffleAcrossDecks } }));
+  },
+
+  setGameMode(mode) {
+    set((s) => {
+      const settings: SessionSettings = { ...s.settings, mode };
+      if (mode === 'taboo') settings.passPenalty = 1;
+      if (mode === 'threeRounds') settings.winCondition = { kind: 'allPhases' };
+      // Leaving three rounds puts back a win condition that means something.
+      if (mode !== 'threeRounds' && s.settings.winCondition.kind === 'allPhases') {
+        settings.winCondition = defaultSettings.winCondition;
+      }
+      return { settings };
+    });
+  },
+
+  setChaos(chaos) {
+    set((s) => ({ settings: { ...s.settings, chaos } }));
+  },
+
+  setForfeits(forfeits) {
+    set((s) => ({ settings: { ...s.settings, forfeits } }));
+  },
+
+  setHatSize(size) {
+    set((s) => ({ settings: { ...s.settings, hatSize: clampHatSize(size) } }));
   },
 
   resolvedTeams() {

@@ -1,5 +1,5 @@
-import type { Outcome, Round, RoundResult, Session, SessionSettings, Team, WinCondition } from '@/game/types';
-import { clampRoundSeconds } from '@/game/types';
+import type { GameMode, Outcome, Phase, Round, RoundResult, Session, SessionSettings, Team, WinCondition } from '@/game/types';
+import { clampHatSize, clampRoundSeconds, defaultSettings } from '@/game/types';
 
 /**
  * Session parsing.
@@ -46,6 +46,10 @@ function parseWinCondition(value: unknown): WinCondition | null {
         : null;
     case 'deckExhausted':
       return { kind: 'deckExhausted' };
+    case 'allPhases':
+      return { kind: 'allPhases' };
+    case 'endless':
+      return { kind: 'endless' };
     default:
       return null;
   }
@@ -57,7 +61,10 @@ function parseSettings(value: unknown): SessionSettings | null {
   const winCondition = parseWinCondition(value.winCondition);
   if (!winCondition) return null;
 
-  const inputMode = value.inputMode === 'tilt' ? 'tilt' : 'tap';
+  const inputMode = value.inputMode === 'tilt' || value.inputMode === 'swipe' ? value.inputMode : 'tap';
+  // Sessions written before game modes existed were all classic, with no
+  // twists and no forfeits, which is exactly what the defaults say.
+  const mode: GameMode = value.mode === 'taboo' || value.mode === 'threeRounds' ? value.mode : 'classic';
 
   return {
     roundSeconds: clampRoundSeconds(isFiniteNumber(value.roundSeconds) ? value.roundSeconds : 60),
@@ -66,6 +73,10 @@ function parseSettings(value: unknown): SessionSettings | null {
     inputMode,
     winCondition,
     shuffleAcrossDecks: value.shuffleAcrossDecks !== false,
+    mode,
+    chaos: value.chaos === true,
+    forfeits: value.forfeits === true,
+    hatSize: isFiniteNumber(value.hatSize) ? clampHatSize(value.hatSize) : defaultSettings.hatSize,
   };
 }
 
@@ -93,11 +104,13 @@ function parseResult(value: unknown): RoundResult | null {
   const outcome = parseOutcome(value.outcome);
   if (!outcome) return null;
 
-  return {
+  const result: RoundResult = {
     cardId: value.cardId,
     outcome,
     atMs: isFiniteNumber(value.atMs) ? Math.max(0, value.atMs) : 0,
   };
+  if (outcome === 'pass' && isString(value.busted) && value.busted) result.busted = value.busted;
+  return result;
 }
 
 function parseRound(value: unknown): Round | null {
@@ -112,7 +125,7 @@ function parseRound(value: unknown): Round | null {
   // rather than partially recovered.
   if (results.some((r) => r === null)) return null;
 
-  return {
+  const round: Round = {
     id: value.id,
     teamId: value.teamId,
     playerName: isString(value.playerName) ? value.playerName : null,
@@ -120,6 +133,9 @@ function parseRound(value: unknown): Round | null {
     endedAt: isString(value.endedAt) ? value.endedAt : null,
     results: results as RoundResult[],
   };
+  if (isString(value.twist) && value.twist) round.twist = value.twist;
+  if (value.phase === 1 || value.phase === 2 || value.phase === 3) round.phase = value.phase as Phase;
+  return round;
 }
 
 /** Returns null for anything this build cannot use as a session. */
@@ -146,7 +162,7 @@ export function parseSession(raw: string): Session | null {
   const rounds = value.rounds.map(parseRound);
   if (rounds.some((r) => r === null)) return null;
 
-  return {
+  const session: Session = {
     id: value.id,
     deckIds: Array.isArray(value.deckIds) ? value.deckIds.filter(isString) : [],
     settings,
@@ -156,4 +172,6 @@ export function parseSession(raw: string): Session | null {
     createdAt: value.createdAt,
     completedAt: isString(value.completedAt) ? value.completedAt : null,
   };
+  if (Array.isArray(value.hat)) session.hat = value.hat.filter(isString);
+  return session;
 }

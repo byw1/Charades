@@ -1,21 +1,29 @@
 import { Stack } from 'expo-router';
 import * as SplashScreen from 'expo-splash-screen';
 import { StatusBar } from 'expo-status-bar';
+import { Appearance } from 'react-native';
 import { useEffect } from 'react';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
 import { useAppFonts } from '@/hooks/useAppFonts';
-import { useDeckLinks } from '@/hooks/useDeckLinks';
-import { color } from '@/ui/tokens';
+import { color, scheme } from '@/ui/tokens';
 
 // Held until the typefaces are ready, so the first frame anyone sees is the
 // real one rather than a flash of system text.
 void SplashScreen.preventAutoHideAsync().catch(() => undefined);
 
+// Native pieces — the keyboard, alerts, pickers — follow the app's theme
+// rather than the phone's.
+try {
+  Appearance.setColorScheme(scheme);
+} catch {
+  // Older platforms without the override keep the phone's appearance.
+}
+
 export default function RootLayout() {
   const fontsReady = useAppFonts();
 
-  // A deckhead:// link lands on the import preview, never a silent install.
-  useDeckLinks();
+  // Deck links and .deckhead files are routed to the import preview by
+  // app/+native-intent.tsx, so neither can install a deck silently.
 
   useEffect(() => {
     if (fontsReady) void SplashScreen.hideAsync().catch(() => undefined);
@@ -25,7 +33,7 @@ export default function RootLayout() {
 
   return (
     <SafeAreaProvider>
-      <StatusBar style="light" />
+      <StatusBar style={scheme === 'light' ? 'dark' : 'light'} />
       <Stack
         screenOptions={{
           headerShown: false,
@@ -36,6 +44,8 @@ export default function RootLayout() {
         <Stack.Screen name="index" options={{ animation: 'fade' }} />
         <Stack.Screen name="welcome" options={{ animation: 'fade', gestureEnabled: false }} />
         <Stack.Screen name="settings" options={{ presentation: 'modal', animation: 'slide_from_bottom' }} />
+        <Stack.Screen name="wrapped" options={{ presentation: 'modal', animation: 'slide_from_bottom' }} />
+        <Stack.Screen name="reel" options={{ presentation: 'modal', animation: 'slide_from_bottom' }} />
         <Stack.Screen name="round" options={{ animation: 'fade', gestureEnabled: false }} />
       </Stack>
     </SafeAreaProvider>

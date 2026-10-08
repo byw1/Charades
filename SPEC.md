@@ -14,7 +14,7 @@ These are product decisions, not preferences. Don't design around them.
 2. **No analytics, no ads, no tracking SDKs.** No ATT prompt. This is a stated differentiator on the store listing.
 3. **All content free.** Every bundled deck is available from install. No IAP in v1.
 4. **Nothing the user creates can be lost.** Decks and sessions persist locally and survive updates. Migration paths for schema changes are mandatory, not optional.
-5. **Tap is the default input, not tilt.** Tilt is an opt-in setting. The single most common complaint about the incumbent is unreliable gyro controls.
+5. **Controls must be reliable.** The single most common complaint about the incumbent is unreliable gyro controls. Tap was the original default; since October 2026, at the product owner's call, tilt is the default (tip down for got it, up to pass), guarded against accidental gestures three ways (see `src/game/tilt.ts`), and tap stays one setting away. A phone without an accelerometer always falls back to tap.
 
 ---
 
@@ -26,11 +26,19 @@ These are product decisions, not preferences. Don't design around them.
 - **expo-haptics** for feedback
 - **expo-keep-awake** so the screen never sleeps mid-round
 - **expo-brightness** to boost during a round and restore after
-- **expo-screen-orientation** for per-screen orientation locking
+- **expo-screen-orientation** to hold the round's orientation steady while it runs
 - **react-native-mmkv** for settings and small state, **expo-sqlite** for decks and session history
 - **zustand** for game state. No Redux.
-- **expo-camera** for QR scanning on deck import only
+- **expo-camera** for QR scanning on deck import, and for round videos when switched on
 - **EAS Build** and **EAS Submit** for the iOS pipeline
+
+Added for game night (October 2026), every one of them on-device only:
+expo-image-picker and expo-image-manipulator (photo cards), expo-video (the
+highlight reel), react-native-view-shot (the Wrapped image), expo-notifications
+(local streak reminders), expo-speech-recognition (the voice referee,
+on-device recognition only) and @react-native-ai/apple (the AI deck maker,
+Apple Intelligence). Settings use `expo-sqlite/kv-store`, not mmkv; see
+ROADMAP.md.
 
 Verify current versions against Expo docs before installing. Do not pin from memory.
 
@@ -72,7 +80,9 @@ Verify current versions against Expo docs before installing. Do not pin from mem
   "createdAt": "2026-07-26T18:00:00Z",
   "updatedAt": "2026-07-26T18:00:00Z",
   "cards": [
-    { "id": "crd_a1b2c3d4", "text": "My Chemical Romance", "note": null }
+    { "id": "crd_a1b2c3d4", "text": "My Chemical Romance", "note": null },
+    { "id": "crd_b2c3d4e5", "text": "Paramore", "note": null, "taboo": ["Hayley", "Misery Business"] },
+    { "id": "crd_c3d4e5f6", "text": "Gerard", "note": null, "image": "data:image/jpeg;base64,…" }
   ]
 }
 ```
@@ -85,6 +95,9 @@ Rules:
 - `note` is an optional clue-giver hint, shown only in the recap screen. Never on the card.
 - A deck needs at least 10 cards to be playable. Fewer is allowed to exist, just not to start a round.
 - `accentColor` drives the card background for that deck.
+- `taboo` is optional: up to five words the room may not say in the banned-words mode (called "taboo" in code; never "Taboo" on screen, which is Hasbro's trademark). Left off a card that has none.
+- `image` is optional: a photo as a JPEG, PNG or WebP data URI, never a web address. Codes and links leave it out; files carry it.
+- A card whose text is only emoji is an emoji card: its `note` is the answer, shown under the emoji for the room.
 
 ### Session
 
@@ -170,17 +183,17 @@ Home
 
 | Screen | Orientation | Notes |
 |---|---|---|
-| Home | Portrait | Resume in-progress session if one exists |
-| Decks | Portrait | Bundled + custom, search, card counts |
-| Deck detail | Portrait | Card list, edit, duplicate, share, delete |
-| Deck editor | Portrait | Add/edit/reorder/bulk-paste cards |
-| Import deck | Portrait | QR scan, file, or paste JSON |
-| New game (3 steps) | Portrait | Decks → teams → settings |
-| Round intro | Landscape | Who's up, countdown |
-| Round | Landscape | The card screen |
-| Recap | Landscape | Editable results |
-| Standings | Portrait | Cumulative, per team and per player |
-| Settings | Portrait | Input mode, haptics, sound, brightness, reset |
+| Home | Either | Resume in-progress session if one exists |
+| Decks | Either | Bundled + custom, search, card counts |
+| Deck detail | Either | Card list, edit, duplicate, share, delete |
+| Deck editor | Either | Add/edit/reorder/bulk-paste cards |
+| Import deck | Either | QR scan, file, or paste JSON |
+| New game (3 steps) | Either | Decks → teams → settings |
+| Round intro | Either | Who's up, countdown |
+| Round | Either, held | The card screen. Holds whichever way it started |
+| Recap | Either | Editable results |
+| Standings | Either | Cumulative, per team and per player |
+| Settings | Either | Input mode, haptics, sound, brightness, reset |
 
 ---
 
@@ -198,7 +211,7 @@ Home
 
 Sound is **off by default**. When the phone dings for "correct," the guesser knows they got it before anyone speaks, and it leaks information across the room. Make this a setting with a one-line explanation of why it's off.
 
-**During a round:** keep-awake on, brightness pushed toward max, orientation locked landscape, notifications don't matter but incoming calls will interrupt so handle app backgrounding by pausing the timer and offering resume.
+**During a round:** keep-awake on, brightness pushed toward max, orientation held the way the round started (portrait or landscape), notifications don't matter but incoming calls will interrupt so handle app backgrounding by pausing the timer and offering resume.
 
 ---
 
@@ -211,6 +224,8 @@ This is the feature the whole product hangs on. The incumbent technically has cu
 - **Deep link:** `deckhead://deck?d=<base64>` and a universal-link equivalent once a domain exists.
 - **Import:** QR scan, file open, or paste. Always show a preview with deck name and card count and require a confirm tap. Never import silently.
 - **Collisions:** importing a deck whose `id` already exists prompts to replace or save as a copy. Never overwrite without asking.
+- **Big decks:** a deck too big for one code is shown as a sequence of smaller codes that the scanner collects in any order.
+- **Opening files:** `.deckhead` is a declared document type, so AirDrop, Files, Mail and Messages open it straight into the import preview.
 
 Target: someone builds a deck of inside jokes and seven people have it in under thirty seconds.
 
@@ -251,12 +266,12 @@ Copy: plain verbs, sentence case, no exclamation marks in UI chrome. "Got it" an
 
 Don't build these. Note them in a ROADMAP.md if useful.
 
-- AI deck generation
-- Second-device / companion-phone mode
+- ~~AI deck generation~~ — shipped in October 2026, on the phone with Apple Intelligence, so it needs no server. See spec/decisions.md, Game night.
+- Second-device / companion-phone mode — still deferred; see spec/decisions.md.
 - Apple Watch app
 - Localization beyond English
 - Community deck repository
-- Video recording of the guesser
+- ~~Video recording of the guesser~~ — shipped in October 2026 as opt-in video of the room, kept on the phone. See spec/decisions.md, Game night.
 - Any monetization
 
 ---
@@ -305,4 +320,4 @@ Don't write exhaustive component tests. A smoke test that the round screen rende
 - App Store name: `Deckhead`
 - Subtitle: `Charades Party Game` — the brand goes in the name field, the keywords go here
 - Privacy: declare no data collection. It's true and it's a selling point.
-- Orientation: portrait for menus, landscape locked for round screens
+- Orientation: every screen works upright and sideways and re-lays out when the phone turns; only a running round holds its orientation

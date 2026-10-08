@@ -1,8 +1,11 @@
 import { useRouter } from 'expo-router';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { KeyboardAvoidingView, Platform, ScrollView, StyleSheet, View } from 'react-native';
+import { recentPlayers } from '@/game/friends';
 import { areTeamsReady, MAX_TEAMS, MIN_TEAMS } from '@/game/teams';
+import { useDatabase } from '@/hooks/useDatabase';
 import { useNewGameStore } from '@/hooks/useNewGameStore';
+import { listSessions } from '@/storage/sessionRepo';
 import { Button } from '@/ui/Button';
 import { Chip } from '@/ui/Chip';
 import { cardTextOn } from '@/ui/contrast';
@@ -33,6 +36,26 @@ export default function NewGameTeamsScreen() {
   const setSoloPlayers = useNewGameStore((s) => s.setSoloPlayers);
 
   const ready = mode === 'justPlay' || areTeamsReady(teams);
+
+  // People from earlier games, one tap to add back. The same group plays
+  // together again and again, and retyping six names every night is a chore.
+  const database = useDatabase();
+  const [recent, setRecent] = useState<string[]>([]);
+  useEffect(() => {
+    if (database.status !== 'ready') return;
+    let cancelled = false;
+    void listSessions(database.db).then((sessions) => {
+      if (!cancelled) setRecent(recentPlayers(sessions));
+    });
+    return () => {
+      cancelled = true;
+    };
+  }, [database]);
+
+  const taken = new Set(
+    [...soloPlayers, ...teams.flatMap((team) => team.playerNames)].map((name) => name.toLocaleLowerCase()),
+  );
+  const suggestions = recent.filter((name) => !taken.has(name.toLocaleLowerCase()));
 
   return (
     <Screen>
@@ -71,7 +94,7 @@ export default function NewGameTeamsScreen() {
             <View style={styles.section}>
               <SectionLabel>Who’s here (optional)</SectionLabel>
               <View style={styles.pad}>
-                <PlayerList names={soloPlayers} onChange={setSoloPlayers} />
+                <PlayerList names={soloPlayers} onChange={setSoloPlayers} suggestions={suggestions} />
                 <Text variant="caption" tone="muted">
                   One name per line. I’ll rotate who holds the phone and keep everyone’s score.
                 </Text>
@@ -110,7 +133,11 @@ export default function NewGameTeamsScreen() {
                     />
                   </View>
                   <View style={styles.teamBody}>
-                    <PlayerList names={team.playerNames} onChange={(names) => setTeamPlayers(team.id, names)} />
+                    <PlayerList
+                      names={team.playerNames}
+                      onChange={(names) => setTeamPlayers(team.id, names)}
+                      suggestions={suggestions}
+                    />
                   </View>
                 </View>
               ))}
@@ -145,23 +172,47 @@ export default function NewGameTeamsScreen() {
  * A row of add-a-name fields is more taps and more chrome. People setting this
  * up are usually reading names off a room, and a single box keeps up with them.
  */
-function PlayerList({ names, onChange }: { names: string[]; onChange: (names: string[]) => void }) {
+function PlayerList({
+  names,
+  onChange,
+  suggestions = [],
+}: {
+  names: string[];
+  onChange: (names: string[]) => void;
+  suggestions?: string[];
+}) {
   const [draft, setDraft] = useState(names.join('\n'));
 
+  const update = (text: string) => {
+    setDraft(text);
+    onChange(text.split('\n'));
+  };
+
+  const add = (name: string) => {
+    const lines = draft.split('\n').filter((line) => line.trim());
+    update([...lines, name].join('\n'));
+  };
+
   return (
-    <Field
-      value={draft}
-      onChangeText={(text) => {
-        setDraft(text);
-        onChange(text.split('\n'));
-      }}
-      placeholder={'Sam\nAlex\nJo'}
-      accessibilityLabel="Player names, one per line"
-      multiline
-      autoCapitalize="words"
-      autoCorrect={false}
-      style={styles.players}
-    />
+    <View style={styles.list}>
+      <Field
+        value={draft}
+        onChangeText={update}
+        placeholder={'Sam\nAlex\nJo'}
+        accessibilityLabel="Player names, one per line"
+        multiline
+        autoCapitalize="words"
+        autoCorrect={false}
+        style={styles.players}
+      />
+      {suggestions.length > 0 ? (
+        <ScrollView horizontal showsHorizontalScrollIndicator={false} contentContainerStyle={styles.suggestions} keyboardShouldPersistTaps="handled">
+          {suggestions.map((name) => (
+            <Chip key={name} label={`+ ${name}`} selected={false} onPress={() => add(name)} accessibilityLabel={`Add ${name}`} />
+          ))}
+        </ScrollView>
+      ) : null}
+    </View>
   );
 }
 
@@ -187,4 +238,6 @@ const styles = StyleSheet.create({
   },
   teamBody: { padding: space.sm },
   players: { minHeight: 104, backgroundColor: color.background, borderColor: color.background },
+  list: { gap: space.sm },
+  suggestions: { gap: space.sm },
 });

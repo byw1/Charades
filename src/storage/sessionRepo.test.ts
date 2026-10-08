@@ -296,3 +296,77 @@ describe('session parsing', () => {
     expect(parsed?.completedAt).toBeNull();
   });
 });
+
+describe('session parsing: game modes', () => {
+  const base = {
+    id: 'ses_modes',
+    createdAt: '2026-10-07T20:00:00Z',
+    completedAt: null,
+    deckIds: ['dck_1'],
+    seenCardIds: [],
+    teams: [{ id: 't1', name: 'Everyone', color: '#FF3B47', playerNames: [], nextPlayerIndex: 0 }],
+    rounds: [],
+  };
+
+  it('reads a session from before game modes as a classic game', () => {
+    const parsed = parseSession(
+      JSON.stringify({
+        ...base,
+        settings: { roundSeconds: 60, passPenalty: 0, inputMode: 'tap', winCondition: { kind: 'rounds', count: 4 }, shuffleAcrossDecks: true },
+      }),
+    );
+    expect(parsed?.settings).toMatchObject({ mode: 'classic', chaos: false, forfeits: false, hatSize: 30 });
+    expect(parsed).not.toHaveProperty('hat');
+  });
+
+  it('keeps the mode, twists, phases, busted words and hat', () => {
+    const parsed = parseSession(
+      JSON.stringify({
+        ...base,
+        hat: ['dck_1/crd_1', 'dck_1/crd_2'],
+        settings: {
+          roundSeconds: 60,
+          passPenalty: 1,
+          inputMode: 'tap',
+          winCondition: { kind: 'allPhases' },
+          shuffleAcrossDecks: true,
+          mode: 'threeRounds',
+          chaos: true,
+          forfeits: true,
+          hatSize: 999,
+        },
+        rounds: [
+          {
+            id: 'r1',
+            teamId: 't1',
+            playerName: null,
+            startedAt: '2026-10-07T20:00:00Z',
+            endedAt: '2026-10-07T20:01:00Z',
+            twist: 'double',
+            phase: 2,
+            results: [{ cardId: 'dck_1/crd_1', outcome: 'pass', atMs: 100, busted: 'shark' }],
+          },
+        ],
+      }),
+    );
+
+    expect(parsed?.settings).toMatchObject({ mode: 'threeRounds', chaos: true, forfeits: true, hatSize: 60 });
+    expect(parsed?.settings.winCondition).toEqual({ kind: 'allPhases' });
+    expect(parsed?.hat).toEqual(['dck_1/crd_1', 'dck_1/crd_2']);
+    expect(parsed?.rounds[0]).toMatchObject({ twist: 'double', phase: 2 });
+    expect(parsed?.rounds[0]!.results[0]).toMatchObject({ busted: 'shark' });
+  });
+
+  it('ignores a phase that does not exist', () => {
+    const parsed = parseSession(
+      JSON.stringify({
+        ...base,
+        settings: { roundSeconds: 60, passPenalty: 0, inputMode: 'tap', winCondition: { kind: 'rounds', count: 4 } },
+        rounds: [
+          { id: 'r1', teamId: 't1', playerName: null, startedAt: 'x', endedAt: 'y', phase: 7, results: [] },
+        ],
+      }),
+    );
+    expect(parsed?.rounds[0]).not.toHaveProperty('phase');
+  });
+});

@@ -1,0 +1,1118 @@
+{
+  "schemaVersion": 1,
+  "id": "dck_55b0838d",
+  "name": "Viral Internet",
+  "description": "Memes, challenges and the videos everyone sent to the group chat.",
+  "author": "Deckhead",
+  "language": "en",
+  "accentColor": "#5B5BFF",
+  "emoji": "📱",
+  "tags": [
+    "memes",
+    "internet"
+  ],
+  "createdAt": "2026-10-07T20:00:00Z",
+  "updatedAt": "2026-10-07T22:00:00Z",
+  "cards": [
+    {
+      "id": "crd_461a94b4",
+      "text": "Rickroll",
+      "note": null,
+      "taboo": [
+        "never gonna give you up",
+        "trick",
+        "link",
+        "Rick Astley"
+      ]
+    },
+    {
+      "id": "crd_db5eacf2",
+      "text": "Distracted boyfriend",
+      "note": null,
+      "taboo": [
+        "meme",
+        "girlfriend",
+        "looking",
+        "stock photo"
+      ]
+    },
+    {
+      "id": "crd_40af2435",
+      "text": "Ice Bucket Challenge",
+      "note": null,
+      "taboo": [
+        "cold water",
+        "ALS",
+        "nominate",
+        "pour"
+      ]
+    },
+    {
+      "id": "crd_8936d997",
+      "text": "Mannequin Challenge",
+      "note": null,
+      "taboo": [
+        "freeze",
+        "still",
+        "video",
+        "pose"
+      ]
+    },
+    {
+      "id": "crd_d61690c2",
+      "text": "Harlem Shake",
+      "note": null,
+      "taboo": [
+        "dance",
+        "helmet",
+        "drop",
+        "chaos"
+      ]
+    },
+    {
+      "id": "crd_63784a96",
+      "text": "Gangnam Style",
+      "note": null,
+      "taboo": [
+        "PSY",
+        "horse dance",
+        "K-pop",
+        "oppa"
+      ]
+    },
+    {
+      "id": "crd_c46c86d4",
+      "text": "Planking",
+      "note": null,
+      "taboo": [
+        "lie down",
+        "flat",
+        "board",
+        "photo"
+      ]
+    },
+    {
+      "id": "crd_06ab2ea4",
+      "text": "Dab",
+      "note": null,
+      "taboo": [
+        "dance move",
+        "arm",
+        "sneeze",
+        "pose"
+      ]
+    },
+    {
+      "id": "crd_65ad635f",
+      "text": "Floss dance",
+      "note": null,
+      "taboo": [
+        "Fortnite",
+        "swing",
+        "arms",
+        "hips"
+      ]
+    },
+    {
+      "id": "crd_08bfa157",
+      "text": "Unboxing video",
+      "note": null,
+      "taboo": [
+        "package",
+        "open",
+        "YouTube",
+        "new"
+      ]
+    },
+    {
+      "id": "crd_3a217409",
+      "text": "ASMR",
+      "note": null,
+      "taboo": [
+        "whisper",
+        "tingles",
+        "sounds",
+        "relax"
+      ]
+    },
+    {
+      "id": "crd_145b8d92",
+      "text": "Mukbang",
+      "note": null,
+      "taboo": [
+        "eating",
+        "video",
+        "lots of food",
+        "Korea"
+      ]
+    },
+    {
+      "id": "crd_2804f05f",
+      "text": "Get ready with me",
+      "note": null,
+      "taboo": [
+        "GRWM",
+        "makeup",
+        "morning",
+        "talk"
+      ]
+    },
+    {
+      "id": "crd_aa71dcc4",
+      "text": "Day in my life",
+      "note": null,
+      "taboo": [
+        "vlog",
+        "routine",
+        "morning",
+        "video"
+      ]
+    },
+    {
+      "id": "crd_ecd54aac",
+      "text": "Doge",
+      "note": null,
+      "taboo": [
+        "Shiba Inu",
+        "dog",
+        "wow",
+        "much"
+      ]
+    },
+    {
+      "id": "crd_1a2d587a",
+      "text": "Grumpy Cat",
+      "note": null,
+      "taboo": [
+        "frown",
+        "angry",
+        "meme",
+        "no"
+      ]
+    },
+    {
+      "id": "crd_7560e458",
+      "text": "Nyan Cat",
+      "note": null,
+      "taboo": [
+        "rainbow",
+        "Pop-Tart",
+        "flying",
+        "song"
+      ]
+    },
+    {
+      "id": "crd_b501ab30",
+      "text": "Chill guy",
+      "note": null,
+      "taboo": [
+        "dog",
+        "sweater",
+        "relaxed",
+        "meme"
+      ]
+    },
+    {
+      "id": "crd_1137930e",
+      "text": "Charlie bit my finger",
+      "note": null,
+      "taboo": [
+        "baby",
+        "brother",
+        "ouch",
+        "British"
+      ]
+    },
+    {
+      "id": "crd_6fb4ec60",
+      "text": "Demure",
+      "note": null,
+      "taboo": [
+        "very mindful",
+        "cutesy",
+        "modest",
+        "TikTok"
+      ]
+    },
+    {
+      "id": "crd_dddccade",
+      "text": "The dress",
+      "note": null,
+      "taboo": [
+        "blue and black",
+        "white and gold",
+        "colour",
+        "argument"
+      ]
+    },
+    {
+      "id": "crd_3cb2bd2c",
+      "text": "Yanny or Laurel",
+      "note": null,
+      "taboo": [
+        "audio",
+        "hear",
+        "debate",
+        "name"
+      ]
+    },
+    {
+      "id": "crd_a1ae42fe",
+      "text": "Salt Bae",
+      "note": null,
+      "taboo": [
+        "sprinkle",
+        "steak",
+        "chef",
+        "elbow"
+      ]
+    },
+    {
+      "id": "crd_ca23824f",
+      "text": "This is fine",
+      "note": null,
+      "taboo": [
+        "dog",
+        "fire",
+        "coffee",
+        "room"
+      ]
+    },
+    {
+      "id": "crd_b529ccb2",
+      "text": "Surprised Pikachu",
+      "note": null,
+      "taboo": [
+        "Pokémon",
+        "face",
+        "shocked",
+        "mouth"
+      ]
+    },
+    {
+      "id": "crd_73c28891",
+      "text": "Woman yelling at cat",
+      "note": null,
+      "taboo": [
+        "table",
+        "salad",
+        "meme",
+        "Housewives"
+      ]
+    },
+    {
+      "id": "crd_6722fefe",
+      "text": "Doomscrolling",
+      "note": null,
+      "taboo": [
+        "phone",
+        "news",
+        "endless",
+        "bad"
+      ]
+    },
+    {
+      "id": "crd_477bfaae",
+      "text": "Going live",
+      "note": null,
+      "taboo": [
+        "stream",
+        "broadcast",
+        "real time",
+        "Instagram"
+      ]
+    },
+    {
+      "id": "crd_57445da8",
+      "text": "Hashtag",
+      "note": null,
+      "taboo": [
+        "pound",
+        "symbol",
+        "trending",
+        "#"
+      ]
+    },
+    {
+      "id": "crd_9c461cd3",
+      "text": "Trending sound",
+      "note": null,
+      "taboo": [
+        "TikTok",
+        "audio",
+        "viral",
+        "dance"
+      ]
+    },
+    {
+      "id": "crd_fd8cad97",
+      "text": "Duet",
+      "note": null,
+      "taboo": [
+        "TikTok",
+        "side by side",
+        "reply",
+        "video"
+      ]
+    },
+    {
+      "id": "crd_945dfbfe",
+      "text": "Influencer",
+      "note": null,
+      "taboo": [
+        "sponsor",
+        "followers",
+        "brand",
+        "content"
+      ]
+    },
+    {
+      "id": "crd_b8f7097b",
+      "text": "Clickbait",
+      "note": null,
+      "taboo": [
+        "thumbnail",
+        "title",
+        "YouTube",
+        "misleading"
+      ]
+    },
+    {
+      "id": "crd_d56326a0",
+      "text": "Photo dump",
+      "note": null,
+      "taboo": [
+        "carousel",
+        "Instagram",
+        "random",
+        "pictures"
+      ]
+    },
+    {
+      "id": "crd_dc9e975d",
+      "text": "Snap streak",
+      "note": null,
+      "taboo": [
+        "fire emoji",
+        "days",
+        "Snapchat",
+        "keep"
+      ]
+    },
+    {
+      "id": "crd_9ffb36c8",
+      "text": "Blue tick",
+      "note": null,
+      "taboo": [
+        "verified",
+        "check mark",
+        "Twitter",
+        "account"
+      ]
+    },
+    {
+      "id": "crd_936b9654",
+      "text": "Read receipts",
+      "note": null,
+      "taboo": [
+        "seen",
+        "message",
+        "texts",
+        "ignored"
+      ]
+    },
+    {
+      "id": "crd_8240e2e7",
+      "text": "Copypasta",
+      "note": null,
+      "taboo": [
+        "copy",
+        "paste",
+        "text",
+        "repeat"
+      ]
+    },
+    {
+      "id": "crd_6ce08b71",
+      "text": "Speedrun",
+      "note": null,
+      "taboo": [
+        "fast",
+        "game",
+        "world record",
+        "glitch"
+      ]
+    },
+    {
+      "id": "crd_3bc54032",
+      "text": "Reaction video",
+      "note": null,
+      "taboo": [
+        "watch",
+        "face",
+        "react",
+        "YouTube"
+      ]
+    },
+    {
+      "id": "crd_c9a97ff2",
+      "text": "Stonks",
+      "note": null,
+      "taboo": [
+        "stocks",
+        "meme",
+        "man",
+        "chart"
+      ]
+    },
+    {
+      "id": "crd_ebb47182",
+      "text": "Bernie mittens",
+      "note": null,
+      "taboo": [
+        "inauguration",
+        "chair",
+        "gloves",
+        "sitting"
+      ]
+    },
+    {
+      "id": "crd_246574b3",
+      "text": "Hide the Pain Harold",
+      "note": null,
+      "taboo": [
+        "old man",
+        "smile",
+        "stock photo",
+        "meme"
+      ]
+    },
+    {
+      "id": "crd_dbfe248e",
+      "text": "Success Kid",
+      "note": null,
+      "taboo": [
+        "fist",
+        "beach",
+        "baby",
+        "sand"
+      ]
+    },
+    {
+      "id": "crd_0c2ff7be",
+      "text": "Among Us",
+      "note": null,
+      "taboo": [
+        "sus",
+        "crewmate",
+        "impostor",
+        "game"
+      ]
+    },
+    {
+      "id": "crd_ca966ae4",
+      "text": "Wordle",
+      "note": null,
+      "taboo": [
+        "five letters",
+        "green",
+        "yellow",
+        "daily"
+      ]
+    },
+    {
+      "id": "crd_625f5b6f",
+      "text": "Bottle flip",
+      "note": null,
+      "taboo": [
+        "water",
+        "land",
+        "table",
+        "toss"
+      ]
+    },
+    {
+      "id": "crd_8225df2a",
+      "text": "Hot Ones",
+      "note": null,
+      "taboo": [
+        "wings",
+        "spicy",
+        "interview",
+        "sauce"
+      ]
+    },
+    {
+      "id": "crd_28e53ee0",
+      "text": "Ok boomer",
+      "note": null,
+      "taboo": [
+        "old",
+        "dismiss",
+        "Gen Z",
+        "generation"
+      ]
+    },
+    {
+      "id": "crd_30abf3bd",
+      "text": "Moo Deng",
+      "note": null,
+      "taboo": [
+        "baby hippo",
+        "Thailand",
+        "bite",
+        "zoo"
+      ]
+    },
+    {
+      "id": "crd_0c4669ab",
+      "text": "It’s corn",
+      "note": null,
+      "taboo": [
+        "kid",
+        "big lump with knobs",
+        "song",
+        "juice"
+      ]
+    },
+    {
+      "id": "crd_8deb33de",
+      "text": "Grimace Shake",
+      "note": null,
+      "taboo": [
+        "McDonald’s",
+        "purple",
+        "TikTok",
+        "birthday"
+      ]
+    },
+    {
+      "id": "crd_e4eba261",
+      "text": "Barbenheimer",
+      "note": null,
+      "taboo": [
+        "Barbie",
+        "Oppenheimer",
+        "double feature",
+        "summer"
+      ]
+    },
+    {
+      "id": "crd_74ffd3e2",
+      "text": "Kermit sipping tea",
+      "note": null,
+      "taboo": [
+        "none of my business",
+        "frog",
+        "meme",
+        "drink"
+      ]
+    },
+    {
+      "id": "crd_0f6c555e",
+      "text": "Drake meme",
+      "note": null,
+      "taboo": [
+        "no",
+        "yes",
+        "Hotline Bling",
+        "two panels"
+      ]
+    },
+    {
+      "id": "crd_d6e49655",
+      "text": "Galaxy brain",
+      "note": null,
+      "taboo": [
+        "genius",
+        "smart",
+        "glowing",
+        "meme"
+      ]
+    },
+    {
+      "id": "crd_0fc43e7e",
+      "text": "Change my mind",
+      "note": null,
+      "taboo": [
+        "sign",
+        "table",
+        "debate",
+        "meme"
+      ]
+    },
+    {
+      "id": "crd_442ced9e",
+      "text": "Is this a pigeon?",
+      "note": null,
+      "taboo": [
+        "butterfly",
+        "anime",
+        "meme",
+        "confused"
+      ]
+    },
+    {
+      "id": "crd_742ae83e",
+      "text": "Disaster girl",
+      "note": null,
+      "taboo": [
+        "fire",
+        "house",
+        "smirk",
+        "meme"
+      ]
+    },
+    {
+      "id": "crd_04684a34",
+      "text": "Bad Luck Brian",
+      "note": null,
+      "taboo": [
+        "braces",
+        "school photo",
+        "unlucky",
+        "meme"
+      ]
+    },
+    {
+      "id": "crd_1d887479",
+      "text": "Mocking SpongeBob",
+      "note": null,
+      "taboo": [
+        "alternating caps",
+        "chicken",
+        "meme",
+        "sarcastic"
+      ]
+    },
+    {
+      "id": "crd_c682ee54",
+      "text": "Confused math lady",
+      "note": null,
+      "taboo": [
+        "equations",
+        "thinking",
+        "meme",
+        "numbers"
+      ]
+    },
+    {
+      "id": "crd_4e13ebbe",
+      "text": "Kombucha girl",
+      "note": null,
+      "taboo": [
+        "disgust",
+        "drink",
+        "TikTok",
+        "reaction"
+      ]
+    },
+    {
+      "id": "crd_772c617b",
+      "text": "Leave Britney alone",
+      "note": null,
+      "taboo": [
+        "crying",
+        "YouTube",
+        "fan",
+        "makeup"
+      ]
+    },
+    {
+      "id": "crd_f00397f8",
+      "text": "Double rainbow",
+      "note": null,
+      "taboo": [
+        "all the way",
+        "crying",
+        "YouTube",
+        "sky"
+      ]
+    },
+    {
+      "id": "crd_2cefb675",
+      "text": "Renegade dance",
+      "note": null,
+      "taboo": [
+        "TikTok",
+        "Charli D'Amelio",
+        "choreography",
+        "moves"
+      ]
+    },
+    {
+      "id": "crd_30bd0f9f",
+      "text": "Hit the griddy",
+      "note": null,
+      "taboo": [
+        "dance",
+        "football",
+        "touchdown",
+        "celebration"
+      ]
+    },
+    {
+      "id": "crd_3fc6d6a5",
+      "text": "Shoot dance",
+      "note": null,
+      "taboo": [
+        "arms",
+        "BlocBoy JB",
+        "moves",
+        "celebration"
+      ]
+    },
+    {
+      "id": "crd_815c2c7c",
+      "text": "Running Man challenge",
+      "note": null,
+      "taboo": [
+        "dance",
+        "basketball players",
+        "shuffle",
+        "video"
+      ]
+    },
+    {
+      "id": "crd_1274b4ba",
+      "text": "Milk crate challenge",
+      "note": null,
+      "taboo": [
+        "stack",
+        "climb",
+        "fall",
+        "boxes"
+      ]
+    },
+    {
+      "id": "crd_6098e549",
+      "text": "Haul video",
+      "note": null,
+      "taboo": [
+        "shopping",
+        "bags",
+        "try-on",
+        "YouTube"
+      ]
+    },
+    {
+      "id": "crd_68f1bcad",
+      "text": "Storytime",
+      "note": null,
+      "taboo": [
+        "YouTube",
+        "tale",
+        "talking",
+        "drama"
+      ]
+    },
+    {
+      "id": "crd_c1aefacd",
+      "text": "POV",
+      "note": null,
+      "taboo": [
+        "point of view",
+        "TikTok",
+        "acting",
+        "camera"
+      ]
+    },
+    {
+      "id": "crd_1b928fa9",
+      "text": "Green screen",
+      "note": null,
+      "taboo": [
+        "background",
+        "TikTok",
+        "effect",
+        "behind"
+      ]
+    },
+    {
+      "id": "crd_fc44311a",
+      "text": "Face reveal",
+      "note": null,
+      "taboo": [
+        "streamer",
+        "mask",
+        "finally",
+        "YouTuber"
+      ]
+    },
+    {
+      "id": "crd_bacf02f6",
+      "text": "Vlogmas",
+      "note": null,
+      "taboo": [
+        "December",
+        "daily vlogs",
+        "Christmas",
+        "YouTube"
+      ]
+    },
+    {
+      "id": "crd_d106af02",
+      "text": "Duolingo owl",
+      "note": null,
+      "taboo": [
+        "green bird",
+        "language",
+        "threatening",
+        "streak"
+      ]
+    },
+    {
+      "id": "crd_ab7d4b97",
+      "text": "BeReal",
+      "note": null,
+      "taboo": [
+        "dual camera",
+        "notification",
+        "two minutes",
+        "authentic"
+      ]
+    },
+    {
+      "id": "crd_f9769024",
+      "text": "Labubu",
+      "note": null,
+      "taboo": [
+        "monster doll",
+        "Pop Mart",
+        "keychain",
+        "teeth"
+      ]
+    },
+    {
+      "id": "crd_56f39eab",
+      "text": "Crumbl cookie",
+      "note": null,
+      "taboo": [
+        "pink box",
+        "weekly flavors",
+        "review",
+        "giant"
+      ]
+    },
+    {
+      "id": "crd_34c46826",
+      "text": "Stanley cup craze",
+      "note": null,
+      "taboo": [
+        "tumbler",
+        "Target",
+        "water",
+        "viral"
+      ]
+    },
+    {
+      "id": "crd_93c37081",
+      "text": "Tube girl",
+      "note": null,
+      "taboo": [
+        "subway",
+        "dancing",
+        "filming",
+        "confidence"
+      ]
+    },
+    {
+      "id": "crd_63cee29d",
+      "text": "Little treat",
+      "note": null,
+      "taboo": [
+        "reward",
+        "coffee",
+        "snack",
+        "deserve"
+      ]
+    },
+    {
+      "id": "crd_dc466dc2",
+      "text": "The Rock eyebrow",
+      "note": null,
+      "taboo": [
+        "raise",
+        "sus",
+        "Dwayne",
+        "look"
+      ]
+    },
+    {
+      "id": "crd_ebdf9a94",
+      "text": "Side-eye Chloe",
+      "note": null,
+      "taboo": [
+        "toddler",
+        "look",
+        "Disneyland",
+        "meme"
+      ]
+    },
+    {
+      "id": "crd_1e9eb887",
+      "text": "Crying Jordan",
+      "note": null,
+      "taboo": [
+        "tears",
+        "basketball",
+        "meme",
+        "sad"
+      ]
+    },
+    {
+      "id": "crd_0e831b47",
+      "text": "Blinking guy",
+      "note": null,
+      "taboo": [
+        "double take",
+        "surprised",
+        "meme",
+        "eyes"
+      ]
+    },
+    {
+      "id": "crd_68387712",
+      "text": "Gru’s plan",
+      "note": null,
+      "taboo": [
+        "whiteboard",
+        "four panels",
+        "Despicable Me",
+        "meme"
+      ]
+    },
+    {
+      "id": "crd_35b40d30",
+      "text": "Bonk",
+      "note": null,
+      "taboo": [
+        "dog",
+        "bat",
+        "Cheems",
+        "meme"
+      ]
+    },
+    {
+      "id": "crd_3ff17c45",
+      "text": "Big Chungus",
+      "note": null,
+      "taboo": [
+        "Bugs Bunny",
+        "fat",
+        "rabbit",
+        "meme"
+      ]
+    },
+    {
+      "id": "crd_9be539e3",
+      "text": "Raygun",
+      "note": null,
+      "taboo": [
+        "breakdancing",
+        "Olympics",
+        "kangaroo",
+        "Australia"
+      ]
+    },
+    {
+      "id": "crd_010cb005",
+      "text": "Pesto the penguin",
+      "note": null,
+      "taboo": [
+        "giant",
+        "baby",
+        "aquarium",
+        "fluffy"
+      ]
+    },
+    {
+      "id": "crd_1ea0fc4c",
+      "text": "Vine boom",
+      "note": null,
+      "taboo": [
+        "sound effect",
+        "bass",
+        "dramatic",
+        "meme"
+      ]
+    },
+    {
+      "id": "crd_3386aa17",
+      "text": "Bruh sound effect",
+      "note": null,
+      "taboo": [
+        "disappointed",
+        "voice",
+        "meme",
+        "audio"
+      ]
+    },
+    {
+      "id": "crd_ed7f862a",
+      "text": "Roblox oof",
+      "note": null,
+      "taboo": [
+        "death sound",
+        "game",
+        "ouch",
+        "noise"
+      ]
+    },
+    {
+      "id": "crd_c836aea9",
+      "text": "Apple dance",
+      "note": null,
+      "taboo": [
+        "Charli xcx",
+        "brat",
+        "TikTok",
+        "choreography"
+      ]
+    },
+    {
+      "id": "crd_a2b6b4e8",
+      "text": "Tell me without telling me",
+      "note": null,
+      "taboo": [
+        "TikTok",
+        "trend",
+        "hint",
+        "challenge"
+      ]
+    },
+    {
+      "id": "crd_d1703d74",
+      "text": "Main character energy",
+      "note": null,
+      "taboo": [
+        "protagonist",
+        "confident",
+        "TikTok",
+        "star"
+      ]
+    },
+    {
+      "id": "crd_2a492839",
+      "text": "Skibidi Toilet",
+      "note": null,
+      "taboo": [
+        "heads",
+        "YouTube",
+        "singing",
+        "brainrot"
+      ]
+    },
+    {
+      "id": "crd_289f0431",
+      "text": "Fortnite dance",
+      "note": null,
+      "taboo": [
+        "emote",
+        "floss",
+        "game",
+        "victory"
+      ]
+    }
+  ]
+}

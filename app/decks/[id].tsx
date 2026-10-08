@@ -1,16 +1,20 @@
 import { useFocusEffect, useLocalSearchParams, useRouter } from 'expo-router';
 import { useCallback, useState } from 'react';
-import { ActivityIndicator, Alert, FlatList, StyleSheet, View } from 'react-native';
+import { Alert, FlatList, Image, StyleSheet, View } from 'react-native';
 import { duplicateDeck } from '@/decks/edit';
-import { isPlayable, MIN_PLAYABLE_CARDS, type StoredDeck } from '@/decks/types';
+import { DEFAULT_DECK_EMOJI, isPlayable, MIN_PLAYABLE_CARDS, type StoredDeck } from '@/decks/types';
 import { useDatabase } from '@/hooks/useDatabase';
+import { useHaptics } from '@/hooks/useHaptics';
 import { useNewGameStore } from '@/hooks/useNewGameStore';
-import { deleteDeck, getDeck, upsertDeck } from '@/storage/deckRepo';
+import { deleteDeck, getDeck, getDeckSummary, setFavorite, upsertDeck } from '@/storage/deckRepo';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
+import { Loader } from '@/ui/Loader';
 import { Button } from '@/ui/Button';
 import { CircleButton } from '@/ui/CircleButton';
 import { cardTextOn } from '@/ui/contrast';
+import { EmojiSticker } from '@/ui/EmojiSticker';
 import { EmptyState } from '@/ui/EmptyState';
+import { READABLE_WIDTH, useLayout } from '@/ui/layout';
 import { Icon, type IconName } from '@/ui/Icon';
 import { Screen } from '@/ui/Screen';
 import { SectionLabel } from '@/ui/Section';
@@ -31,8 +35,11 @@ export default function DeckDetailScreen() {
   const resetDraft = useNewGameStore((s) => s.reset);
   const toggleDeck = useNewGameStore((s) => s.toggleDeck);
   const insets = useSafeAreaInsets();
+  const haptics = useHaptics();
+  const { short } = useLayout();
   const [state, setState] = useState<LoadState>({ status: 'loading' });
   const [busy, setBusy] = useState(false);
+  const [favorite, setFavoriteState] = useState(false);
 
   // Reloads on focus so returning from the editor shows the saved deck.
   useFocusEffect(
@@ -43,9 +50,10 @@ export default function DeckDetailScreen() {
       const { db } = database;
 
       void (async () => {
-        const deck = await getDeck(db, id);
+        const [deck, summary] = await Promise.all([getDeck(db, id), getDeckSummary(db, id)]);
         if (cancelled) return;
         setState(deck ? { status: 'ready', deck } : { status: 'missing' });
+        setFavoriteState(summary?.favorite ?? false);
       })();
 
       return () => {
@@ -60,9 +68,7 @@ export default function DeckDetailScreen() {
     return (
       <Screen>
         {top}
-        <View style={styles.centre}>
-          <ActivityIndicator color={color.brand} size="large" />
-        </View>
+        <Loader />
       </Screen>
     );
   }
@@ -105,6 +111,14 @@ export default function DeckDetailScreen() {
     }
   };
 
+  const toggleFavorite = async () => {
+    if (database.status !== 'ready') return;
+    const next = !favorite;
+    setFavoriteState(next);
+    haptics.select();
+    await setFavorite(database.db, deck.id, next);
+  };
+
   const confirmDelete = () => {
     Alert.alert(
       `Delete ${deck.name}?`,
@@ -131,14 +145,24 @@ export default function DeckDetailScreen() {
       <FlatList
         data={deck.cards}
         keyExtractor={(card) => card.id}
-        contentContainerStyle={[styles.list, { paddingBottom: insets.bottom + space.xl }]}
+        contentContainerStyle={[
+          styles.list,
+          { paddingBottom: insets.bottom + space.xl, paddingLeft: insets.left, paddingRight: insets.right },
+        ]}
         ListHeaderComponent={
           <View style={styles.header}>
-            <View style={[styles.hero, { backgroundColor: deck.accentColor, paddingTop: insets.top + 64 }]}>
-              <Text style={[styles.initial, { color: onAccent }]} accessible={false}>
-                {[...deck.name][0]?.toUpperCase() ?? '?'}
+            <View
+              style={[
+                styles.hero,
+                short && styles.heroShort,
+                { backgroundColor: deck.accentColor, paddingTop: insets.top + (short ? 56 : 64) },
+              ]}
+            >
+              <Text style={styles.watermark} accessible={false} allowFontScaling={false}>
+                {deck.emoji ?? DEFAULT_DECK_EMOJI}
               </Text>
-              <Text style={[styles.title, { color: onAccent }]} numberOfLines={3} accessibilityRole="header">
+              <EmojiSticker emoji={deck.emoji ?? DEFAULT_DECK_EMOJI} size={short ? 56 : 76} tilt={-8} />
+              <Text style={[styles.title, short && styles.titleShort, { color: onAccent }]} numberOfLines={3} accessibilityRole="header">
                 {deck.name}
               </Text>
               {deck.description ? (
@@ -151,7 +175,7 @@ export default function DeckDetailScreen() {
               </View>
             </View>
 
-            <View style={styles.actions}>
+            <View style={[styles.actions, short && styles.readable]}>
               {playable ? (
                 <Button label="Play this deck" variant="primary" size="lg" icon="play" onPress={play} />
               ) : (
@@ -163,8 +187,17 @@ export default function DeckDetailScreen() {
 
               <View style={styles.row}>
                 <Action icon="share" label="Share" onPress={() => router.push(`/decks/share/${deck.id}`)} />
+                <Action
+                  icon={favorite ? 'heartFilled' : 'heart'}
+                  label={favorite ? 'Favourited' : 'Favourite'}
+                  tint={favorite ? color.danger : undefined}
+                  onPress={() => void toggleFavorite()}
+                />
                 {bundled ? (
-                  <Action icon="copy" label={busy ? 'Copying' : 'Copy & edit'} onPress={() => void duplicate()} />
+                  <>
+                    <Action icon="edit" label="Edit" onPress={() => router.push(`/decks/edit/${deck.id}`)} />
+                    <Action icon="copy" label={busy ? 'Copying' : 'Copy'} onPress={() => void duplicate()} />
+                  </>
                 ) : (
                   <>
                     <Action icon="edit" label="Edit" onPress={() => router.push(`/decks/edit/${deck.id}`)} />
@@ -176,7 +209,7 @@ export default function DeckDetailScreen() {
 
               {bundled ? (
                 <Text variant="caption" tone="faint" align="center">
-                  Free decks stay as they are so updates never wipe your changes. Copy one to make it yours.
+                  Edit to hide cards or add your own; your changes stay when the app updates this deck. Copy it to change everything.
                 </Text>
               ) : null}
             </View>
@@ -187,13 +220,28 @@ export default function DeckDetailScreen() {
         renderItem={({ item, index }) => (
           <View style={styles.cardRow}>
             <Text style={styles.cardIndex}>{index + 1}</Text>
+            {item.image ? <Image source={{ uri: item.image }} style={styles.cardPhoto} accessible={false} /> : null}
             <View style={styles.cardBody}>
-              <Text variant="heading">{item.text}</Text>
+              <View style={styles.cardTitle}>
+                <Text variant="heading" style={styles.cardText}>
+                  {item.text}
+                </Text>
+                {item.mine ? (
+                  <View style={styles.yours}>
+                    <Text style={styles.yoursText}>YOURS</Text>
+                  </View>
+                ) : null}
+              </View>
               {/* Notes are a clue-giver hint. They belong here and in the recap,
                   never on the card itself during a round. */}
               {item.note ? (
                 <Text variant="caption" tone="muted">
                   {item.note}
+                </Text>
+              ) : null}
+              {item.taboo ? (
+                <Text variant="caption" tone="faint">
+                  🚫 {item.taboo.join(' · ')}
                 </Text>
               ) : null}
             </View>
@@ -202,7 +250,7 @@ export default function DeckDetailScreen() {
         ListEmptyComponent={<EmptyState title="This deck is empty" body="There are no cards in it yet." />}
       />
 
-      <View style={[styles.floating, { top: insets.top + space.sm }]}>
+      <View style={[styles.floating, { top: insets.top + space.sm, left: insets.left + gutter - 4 }]}>
         <CircleButton icon="back" label="Back to decks" tone="scrim" onPress={router.back} />
       </View>
     </View>
@@ -215,16 +263,18 @@ function Action({
   label,
   onPress,
   danger = false,
+  tint,
 }: {
   icon: IconName;
   label: string;
   onPress: () => void;
   danger?: boolean;
+  tint?: string;
 }) {
   return (
     <Tap onPress={onPress} accessibilityLabel={label} style={styles.action} contentStyle={styles.actionInner}>
       <View style={styles.actionCircle}>
-        <Icon name={icon} size={22} color={danger ? color.danger : color.text} weight={2.75} />
+        <Icon name={icon} size={22} color={tint ?? (danger ? color.danger : color.text)} weight={2.75} />
       </View>
       <Text variant="caption" style={{ color: danger ? color.danger : color.textMuted }}>
         {label}
@@ -257,16 +307,19 @@ const styles = StyleSheet.create({
     minHeight: 300,
     justifyContent: 'flex-end',
   },
-  initial: {
+  watermark: {
     position: 'absolute',
-    right: -20,
-    top: -10,
-    fontFamily: font.display,
-    fontSize: 300,
-    lineHeight: 320,
-    opacity: 0.14,
+    right: -50,
+    top: 20,
+    fontSize: 230,
+    lineHeight: 270,
+    opacity: 0.2,
+    transform: [{ rotate: '-14deg' }],
   },
+  heroShort: { minHeight: 0, paddingBottom: space.md },
   title: { fontFamily: font.display, fontSize: 48, lineHeight: 50, letterSpacing: -1.8 },
+  titleShort: { fontSize: 36, lineHeight: 38 },
+  readable: { width: '100%', maxWidth: READABLE_WIDTH, alignSelf: 'center' },
   description: { fontFamily: font.bold, fontSize: 15, lineHeight: 21, opacity: 0.88 },
   pills: { flexDirection: 'row', flexWrap: 'wrap', gap: space.sm, paddingTop: space.xs },
   pill: { borderWidth: 2, borderRadius: radius.pill, paddingHorizontal: 12, paddingVertical: 3 },
@@ -293,6 +346,11 @@ const styles = StyleSheet.create({
     borderBottomColor: color.line,
   },
   cardIndex: { fontFamily: font.heavy, fontSize: 13, lineHeight: 18, color: color.textFaint, minWidth: 22, textAlign: 'right' },
+  cardPhoto: { width: 44, height: 44, borderRadius: 10 },
   cardBody: { flex: 1, gap: 2 },
+  cardTitle: { flexDirection: 'row', alignItems: 'center', gap: space.sm },
+  cardText: { flexShrink: 1 },
+  yours: { backgroundColor: color.brand, borderRadius: radius.pill, paddingHorizontal: 8, paddingVertical: 2 },
+  yoursText: { fontFamily: font.heavy, fontSize: 10, lineHeight: 14, color: color.ink, letterSpacing: 0.6 },
   centre: { flex: 1, alignItems: 'center', justifyContent: 'center' },
 });

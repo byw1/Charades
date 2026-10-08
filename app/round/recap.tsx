@@ -1,16 +1,19 @@
 import { useRouter } from 'expo-router';
 import { useMemo, useState } from 'react';
 import { FlatList, StyleSheet, View } from 'react-native';
-import { countOutcomes, scoreRound } from '@/game/scoring';
+import { countOutcomes, roundScore } from '@/game/scoring';
 import { whoseTurn } from '@/game/session';
+import { twistById } from '@/game/twists';
 import type { Outcome } from '@/game/types';
 import { useDatabase } from '@/hooks/useDatabase';
 import { useRoundScreenMode } from '@/hooks/useRoundScreenMode';
 import { findPoolCard, useSessionStore } from '@/hooks/useSessionStore';
 import { Button } from '@/ui/Button';
+import { Confetti } from '@/ui/Confetti';
 import { Mascot, type MascotMood } from '@/ui/Mascot';
 import { PopIn } from '@/ui/motion';
-import { Screen } from '@/ui/Screen';
+import { useLayout } from '@/ui/layout';
+import { Footer, Screen } from '@/ui/Screen';
 import { StatTile } from '@/ui/StatTile';
 import { Tap } from '@/ui/Tap';
 import { Text } from '@/ui/Text';
@@ -32,19 +35,25 @@ export default function RoundRecapScreen() {
 
   const session = useSessionStore((s) => s.session);
   const results = useSessionStore((s) => s.roundState.results);
-  const reshuffled = useSessionStore((s) => s.roundState.reshuffled);
+  const reshuffled = useSessionStore((s) => s.roundState.reshuffled && !s.roundState.retireCorrect);
+  const cleared = useSessionStore((s) => s.roundState.cleared);
   const pool = useSessionStore((s) => s.pool);
   const overrideResult = useSessionStore((s) => s.overrideResult);
   const commitRound = useSessionStore((s) => s.commitRound);
 
   const [saving, setSaving] = useState(false);
 
-  // Stays landscape: the phone is still sideways from the round.
-  useRoundScreenMode({ landscape: true });
+  useRoundScreenMode();
+  // Sideways: summary left, cards right. Upright: summary on top, cards
+  // below, and the button pinned at the bottom where a thumb is.
+  const { landscape } = useLayout();
+  const upright = !landscape;
 
   const { correct, passed } = useMemo(() => countOutcomes(results), [results]);
   const penalty = session?.settings.passPenalty ?? 0;
-  const score = useMemo(() => scoreRound(results, penalty), [results, penalty]);
+  const openRound = session?.rounds.find((round) => round.endedAt === null);
+  const twist = twistById(openRound?.twist);
+  const score = useMemo(() => roundScore({ results, twist: twist?.id }, penalty), [results, twist, penalty]);
 
   // The round is still open, so whoseTurn points at whoever just played.
   const turn = session ? whoseTurn(session) : null;
@@ -65,13 +74,17 @@ export default function RoundRecapScreen() {
     }
   };
 
+  const continueButton = (
+    <Button label={saving ? 'Saving…' : 'Continue'} variant="primary" size="lg" disabled={saving} onPress={() => void done()} />
+  );
+
   return (
     <Screen edges={['top', 'bottom', 'left', 'right']}>
-      <View style={styles.panes}>
-        <View style={styles.summary}>
+      <View style={[styles.panes, upright && styles.panesUpright]}>
+        <View style={[styles.summary, upright && styles.summaryUpright]}>
           <View style={styles.hero}>
             <PopIn style={styles.sticker}>
-              <Mascot size={84} mood={mood} />
+              <Mascot size={84} mood={mood} poke />
             </PopIn>
             <View style={styles.heroCopy}>
               {who ? (
@@ -89,17 +102,34 @@ export default function RoundRecapScreen() {
             <StatTile label="points" value={score} tint={color.brand} />
           </PopIn>
 
+          {twist ? (
+            <Text variant="caption" tone="muted">
+              {twist.emoji} {twist.title}
+              {twist.effect === 'double' ? ': every card counted twice.' : '.'}
+            </Text>
+          ) : null}
+
+          {cleared ? (
+            <Text variant="caption" tone="muted">
+              🎩 That cleared the hat{openRound?.phase === 3 ? '. Game over!' : ' for this phase.'}
+            </Text>
+          ) : null}
+
           {reshuffled ? (
             <Text variant="caption" tone="muted">
               The decks ran out and got reshuffled.
             </Text>
           ) : null}
 
-          <View style={styles.spacer} />
-          <Button label={saving ? 'Saving…' : 'Continue'} variant="primary" size="lg" disabled={saving} onPress={() => void done()} />
+          {upright ? null : (
+            <>
+              <View style={styles.spacer} />
+              {continueButton}
+            </>
+          )}
         </View>
 
-        <View style={styles.listPane}>
+        <View style={[styles.listPane, upright && styles.listPaneUpright]}>
           <Text variant="overline" tone="faint" style={styles.listLabel}>
             {results.length > 0 ? 'TAP ONE TO FIX A MIS-TAP' : 'THIS ROUND'}
           </Text>
@@ -121,13 +151,13 @@ export default function RoundRecapScreen() {
               const card = findPoolCard(pool, item.cardId);
               const got = item.outcome === 'correct';
               const next: Outcome = got ? 'pass' : 'correct';
-              const tint = got ? color.correct : color.pass;
+              const tint = got ? color.correct : item.busted ? color.danger : color.pass;
 
               return (
                 <Tap
                   onPress={() => overrideResult(item.cardId, next)}
                   squish={0.98}
-                  accessibilityLabel={`${card?.text ?? 'Card'}, ${got ? 'got it' : 'passed'}. Tap to change to ${
+                  accessibilityLabel={`${card?.text ?? 'Card'}, ${got ? 'got it' : item.busted ? `busted on ${item.busted}` : 'passed'}. Tap to change to ${
                     next === 'correct' ? 'got it' : 'passed'
                   }.`}
                   contentStyle={styles.row}
@@ -138,7 +168,7 @@ export default function RoundRecapScreen() {
                       {card?.text ?? 'Card'}
                     </Text>
                     <Text style={[styles.status, { color: tint }]}>
-                      {got ? 'Got it' : 'Passed'}
+                      {got ? 'Got it' : item.busted ? `Busted: “${item.busted}”` : 'Passed'}
                       <Text style={styles.time}> · {clock(item.atMs)}</Text>
                       {/* The clue-giver hint. Shown here, never on the card. */}
                       {card?.note ? <Text style={styles.time}> · {card.note}</Text> : null}
@@ -150,6 +180,9 @@ export default function RoundRecapScreen() {
           />
         </View>
       </View>
+      {upright ? <Footer>{continueButton}</Footer> : null}
+      {/* A great round gets a little party of its own. */}
+      {correct >= 5 ? <Confetti count={40} /> : null}
     </Screen>
   );
 }
@@ -177,6 +210,9 @@ const styles = StyleSheet.create({
   stats: { flexDirection: 'row', gap: space.sm },
   spacer: { flex: 1 },
   listPane: { flex: 1, backgroundColor: color.surface, borderTopLeftRadius: 24, borderBottomLeftRadius: 24 },
+  panesUpright: { flexDirection: 'column' },
+  summaryUpright: { width: '100%' },
+  listPaneUpright: { marginHorizontal: space.sm, borderRadius: 24 },
   listLabel: { paddingHorizontal: space.lg, paddingTop: space.md, paddingBottom: space.sm },
   list: { paddingHorizontal: space.md, paddingBottom: space.lg, flexGrow: 1 },
   row: { flexDirection: 'row', alignItems: 'center', gap: space.md - 2, paddingHorizontal: space.sm, paddingVertical: 10, borderRadius: 14 },

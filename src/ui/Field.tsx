@@ -1,6 +1,6 @@
 import { forwardRef, useState } from 'react';
 import { StyleSheet, TextInput, type TextInputProps } from 'react-native';
-import { color, radius, space, type as typeScale } from './tokens';
+import { color, radius, scheme, space, type as typeScale } from './tokens';
 
 export type FieldProps = TextInputProps & {
   size?: 'body' | 'heading';
@@ -21,7 +21,7 @@ export const Field = forwardRef<TextInput, FieldProps>(function Field(
       ref={ref}
       placeholderTextColor={color.textFaint}
       selectionColor={color.brand}
-      keyboardAppearance="dark"
+      keyboardAppearance={scheme}
       multiline={multiline}
       onFocus={(event) => {
         setFocused(true);

@@ -3,13 +3,14 @@ import { File, Paths } from 'expo-file-system';
 import { useLocalSearchParams, useRouter } from 'expo-router';
 import * as Sharing from 'expo-sharing';
 import { useEffect, useMemo, useState } from 'react';
-import { ActivityIndicator, ScrollView, StyleSheet, useWindowDimensions, View } from 'react-native';
+import { Pressable, ScrollView, StyleSheet, useWindowDimensions, View } from 'react-native';
 import QRCode from 'react-native-qrcode-svg';
 import { deckFileName, deckLink, measure, QR_ERROR_CORRECTION, type ShareSize } from '@/decks/share';
 import type { StoredDeck } from '@/decks/types';
 import { useDatabase } from '@/hooks/useDatabase';
 import { useHaptics } from '@/hooks/useHaptics';
 import { getDeck } from '@/storage/deckRepo';
+import { Loader } from '@/ui/Loader';
 import { Button } from '@/ui/Button';
 import { EmptyState } from '@/ui/EmptyState';
 import { Mascot } from '@/ui/Mascot';
@@ -72,9 +73,7 @@ export default function ShareDeckScreen() {
     return (
       <Screen>
         {top}
-        <View style={styles.centre}>
-          <ActivityIndicator color={color.brand} size="large" />
-        </View>
+        <Loader />
       </Screen>
     );
   }
@@ -89,13 +88,14 @@ export default function ShareDeckScreen() {
       const file = new File(Paths.cache, deckFileName(deck));
       if (file.exists) file.delete();
       file.create();
-      file.write(size.payload);
+      // The file carries photos; codes and links cannot.
+      file.write(size.filePayload);
 
       if (await Sharing.isAvailableAsync()) {
         await Sharing.shareAsync(file.uri, {
-          mimeType: 'application/octet-stream',
+          mimeType: 'application/x-deckhead',
           dialogTitle: `Share ${deck.name}`,
-          UTI: 'public.data',
+          UTI: 'com.deckhead.deck',
         });
       }
     } finally {
@@ -122,7 +122,11 @@ export default function ShareDeckScreen() {
           <Mascot size={72} mood={size.fitsQr ? 'wink' : 'thinking'} />
           <ChatLine style={styles.grow}>
             <Text variant="heading">
-              {size.fitsQr ? 'Point a friend’s camera at this.' : 'Too big for a code. Send it as a file.'}
+              {size.fitsQr
+                ? 'Point a friend’s camera at this.'
+                : size.qrParts
+                  ? 'Big deck! Hold their camera on this till it’s got every code.'
+                  : 'Too big for a code. Send it as a file.'}
             </Text>
             <Text variant="caption" tone="muted">
               {deck.name} · {deck.cards.length} {deck.cards.length === 1 ? 'card' : 'cards'}
@@ -144,12 +148,23 @@ export default function ShareDeckScreen() {
               />
             </View>
           </PopIn>
+        ) : size.qrParts ? (
+          <PopIn>
+            <QrFlipbook parts={size.qrParts} size={qrSize} />
+          </PopIn>
         ) : (
           <Text variant="body" tone="muted" style={styles.pad}>
-            This deck has {deck.cards.length} cards, which is more than a scannable code holds. A file works
+            This deck has {deck.cards.length} cards, which is more than a few codes can hold. A file works
             exactly the same at the other end.
           </Text>
         )}
+
+        {size.photos > 0 ? (
+          <Text variant="caption" tone="muted" align="center" style={styles.pad}>
+            📷 {size.photos} {size.photos === 1 ? 'photo' : 'photos'} only travel in the file. Codes and links carry
+            the words.
+          </Text>
+        ) : null}
 
         <View style={styles.actions}>
           <Button
@@ -176,6 +191,47 @@ export default function ShareDeckScreen() {
   );
 }
 
+/** How long each code in a sequence stays up. Long enough for one clean scan. */
+const FLIP_MS = 900;
+
+/**
+ * A big deck as a flipbook of codes. Each one shows for under a second and the
+ * scanning phone collects them in any order, so the person sharing just holds
+ * still. Tapping pauses on the current code, for a stubborn camera.
+ */
+function QrFlipbook({ parts, size }: { parts: string[]; size: number }) {
+  const [index, setIndex] = useState(0);
+  const [paused, setPaused] = useState(false);
+
+  useEffect(() => {
+    if (paused) return;
+    const id = setInterval(() => setIndex((i) => (i + 1) % parts.length), FLIP_MS);
+    return () => clearInterval(id);
+  }, [parts.length, paused]);
+
+  return (
+    <View style={styles.flipbook}>
+      <Pressable
+        onPress={() => setPaused((p) => !p)}
+        accessibilityRole="button"
+        accessibilityLabel={`Code ${index + 1} of ${parts.length}. ${paused ? 'Paused. Tap to carry on.' : 'Tap to pause.'}`}
+        style={styles.qrFrame}
+      >
+        <QRCode value={parts[index]!} size={size} ecl={QR_ERROR_CORRECTION} backgroundColor={color.bone} color={color.ink} />
+      </Pressable>
+      <View style={styles.dots}>
+        {parts.map((part, i) => (
+          <View key={part.slice(0, 24)} style={[styles.dot, i === index && styles.dotOn]} />
+        ))}
+      </View>
+      <Text variant="caption" tone="muted" align="center">
+        Code {index + 1} of {parts.length}
+        {paused ? ' · paused, tap to carry on' : ' · tap to pause'}
+      </Text>
+    </View>
+  );
+}
+
 const styles = StyleSheet.create({
   body: { paddingBottom: space.xl, gap: space.lg },
   hello: { flexDirection: 'row', alignItems: 'center', gap: space.md, paddingHorizontal: gutter },
@@ -189,6 +245,10 @@ const styles = StyleSheet.create({
     backgroundColor: color.bone,
   },
   actions: { gap: space.sm + 4, paddingHorizontal: gutter },
+  flipbook: { alignItems: 'center', gap: space.sm },
+  dots: { flexDirection: 'row', gap: 6 },
+  dot: { width: 8, height: 8, borderRadius: 4, backgroundColor: color.line },
+  dotOn: { backgroundColor: color.brand, width: 20 },
   pad: { paddingHorizontal: gutter },
   centre: { flex: 1, alignItems: 'center', justifyContent: 'center' },
 });

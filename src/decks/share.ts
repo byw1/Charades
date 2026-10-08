@@ -51,7 +51,7 @@ export const QR_PAYLOAD_LIMIT = 2100;
 export const QR_ERROR_CORRECTION = 'L' as const;
 
 export function encodeDeck(deck: Deck): string {
-  const json = JSON.stringify(deck);
+  const json = JSON.stringify(forSharing(deck));
   const compressed = deflate(utf8Encode(json), { level: 9 });
   return PAYLOAD_PREFIX + encodeBase64Url(compressed);
 }
@@ -123,9 +123,44 @@ export function decodeDeck(payload: string): DecodeResult {
   return { ok: true, deck: result.deck, warnings: result.warnings };
 }
 
-/** `deckhead://deck?d=<payload>`. */
+/**
+ * The deck as the person receiving it should get it: hidden cards left out,
+ * and no storage marks. Whatever source a card came from, it is theirs now.
+ */
+export function forSharing(deck: Deck): Deck {
+  if (!deck.cards.some((card) => card.mine || card.hidden)) return deck;
+  return {
+    ...deck,
+    cards: deck.cards.filter((card) => !card.hidden).map(({ mine: _mine, hidden: _hidden, ...card }) => card),
+  };
+}
+
+/**
+ * The deck without its photos.
+ *
+ * A single photo is bigger than a whole QR code can hold, so codes and links
+ * carry the words only. A photo card still works without its photo: its text
+ * is the answer. Files carry everything.
+ */
+export function withoutPhotos(deck: Deck): Deck {
+  if (!deck.cards.some((card) => card.image)) return deck;
+  return {
+    ...deck,
+    cards: deck.cards.map((card) => {
+      if (!card.image) return card;
+      const { image: _photo, ...rest } = card;
+      return rest;
+    }),
+  };
+}
+
+export function photoCount(deck: Deck): number {
+  return deck.cards.filter((card) => card.image).length;
+}
+
+/** `deckhead://deck?d=<payload>`, without photos. */
 export function deckLink(deck: Deck): string {
-  return `${DECK_LINK_SCHEME}://deck?d=${encodeDeck(deck)}`;
+  return `${DECK_LINK_SCHEME}://deck?d=${encodeDeck(withoutPhotos(deck))}`;
 }
 
 /** Pulls a payload out of a deep link, or returns null. */
@@ -141,6 +176,28 @@ export function payloadFromLink(url: string): string | null {
   } catch {
     return match[1]!;
   }
+}
+
+/**
+ * Where an incoming URL should land.
+ *
+ * Two things open the app from outside: a deckhead:// link, which carries a
+ * deck, and a .deckhead file from AirDrop, Files, Mail or Messages, which iOS
+ * hands over as a file:// URL. Both go to the import preview — never a silent
+ * install. Anything else is left to the router.
+ */
+export function routeForIncoming(url: string): string | null {
+  const trimmed = url.trim();
+  if (!trimmed) return null;
+
+  const isFile =
+    /^file:/i.test(trimmed) || new RegExp(`\\.${DECK_FILE_EXTENSION}$`, 'i').test(trimmed.split('?')[0] ?? '');
+  if (isFile) return `/decks/import?file=${encodeURIComponent(trimmed)}`;
+
+  const payload = payloadFromLink(trimmed);
+  if (payload) return `/decks/import?payload=${encodeURIComponent(payload)}`;
+
+  return null;
 }
 
 /**
@@ -179,21 +236,113 @@ export function deckFileName(deck: Deck): string {
 }
 
 export type ShareSize = {
+  /** What a code or link carries: the deck without photos. */
   payload: string;
+  /** What a file carries: everything, photos included. */
+  filePayload: string;
   bytes: number;
   fitsQr: boolean;
+  /**
+   * When the deck is too big for one code: the sequence of codes that carry
+   * it, shown one after another. Null when one code is enough, or when even a
+   * sequence would be too long to scan comfortably.
+   */
+  qrParts: string[] | null;
+  photos: number;
   /** Roughly how much smaller the compressed form is, for the export screen. */
   compressionRatio: number;
 };
 
 export function measure(deck: Deck): ShareSize {
-  const payload = encodeDeck(deck);
-  const raw = JSON.stringify(deck).length;
+  const lean = withoutPhotos(deck);
+  const payload = encodeDeck(lean);
+  const photos = photoCount(deck);
+  const raw = JSON.stringify(lean).length;
+  const fits = fitsInQr(payload);
+  const parts = fits ? null : splitForQr(payload);
 
   return {
     payload,
+    filePayload: photos > 0 ? encodeDeck(deck) : payload,
     bytes: payload.length,
-    fitsQr: fitsInQr(payload),
+    fitsQr: fits,
+    qrParts: parts && parts.length <= MAX_QR_PARTS ? parts : null,
+    photos,
     compressionRatio: raw === 0 ? 1 : payload.length / raw,
   };
+}
+
+/**
+ * Big decks over a sequence of codes.
+ *
+ * The payload is cut into pieces and each piece goes in its own code, tagged
+ * with which deck it belongs to and where it goes: `DQ1.<deck>.<n>.<of>.<piece>`.
+ * The sharing phone flips through them; the scanning phone collects them in
+ * any order and puts the deck back together once it has them all. Smaller
+ * codes than the single-code limit, because a code that is on screen for a
+ * second has to scan on the first try.
+ */
+export const QR_PART_PREFIX = 'DQ1';
+export const QR_PART_LIMIT = 1200;
+/** Past this many codes, holding a camera steady gets tedious: send a file. */
+export const MAX_QR_PARTS = 12;
+
+/** A short tag for a payload, so pieces of two decks can never be mixed. */
+function payloadTag(payload: string): string {
+  let hash = 0x811c9dc5;
+  for (let i = 0; i < payload.length; i += 1) {
+    hash ^= payload.charCodeAt(i);
+    hash = Math.imul(hash, 0x01000193);
+  }
+  return (hash >>> 0).toString(36);
+}
+
+export function splitForQr(payload: string, limit = QR_PART_LIMIT): string[] {
+  const tag = payloadTag(payload);
+  // Room for the header, generously: "DQ1.<tag>.<nn>.<nn>."
+  const size = Math.max(1, limit - (QR_PART_PREFIX.length + tag.length + 10));
+  const total = Math.max(1, Math.ceil(payload.length / size));
+  return Array.from(
+    { length: total },
+    (_, i) => `${QR_PART_PREFIX}.${tag}.${i + 1}.${total}.${payload.slice(i * size, (i + 1) * size)}`,
+  );
+}
+
+export function isQrPart(data: string): boolean {
+  return data.startsWith(`${QR_PART_PREFIX}.`);
+}
+
+export type QrCollection = { tag: string; total: number; pieces: Record<number, string> };
+
+export type CollectResult =
+  | { status: 'collecting'; collection: QrCollection; have: number; total: number; isNew: boolean }
+  | { status: 'complete'; payload: string }
+  | { status: 'invalid' };
+
+/**
+ * Adds a scanned piece. A piece from a different deck starts over, since the
+ * person has evidently moved on to another code.
+ */
+export function collectQrPart(collection: QrCollection | null, data: string): CollectResult {
+  const match = /^DQ1\.([0-9a-z]+)\.(\d+)\.(\d+)\.(.*)$/s.exec(data.trim());
+  if (!match) return { status: 'invalid' };
+
+  const tag = match[1]!;
+  const index = Number(match[2]);
+  const total = Number(match[3]);
+  const piece = match[4]!;
+  if (!Number.isInteger(total) || total < 1 || total > 99 || index < 1 || index > total) {
+    return { status: 'invalid' };
+  }
+
+  const current = collection && collection.tag === tag && collection.total === total ? collection : { tag, total, pieces: {} };
+  const isNew = current.pieces[index] === undefined;
+  const next: QrCollection = { ...current, pieces: { ...current.pieces, [index]: piece } };
+  const have = Object.keys(next.pieces).length;
+
+  if (have < total) return { status: 'collecting', collection: next, have, total, isNew };
+
+  const payload = Array.from({ length: total }, (_, i) => next.pieces[i + 1] ?? '').join('');
+  // The tag doubles as a checksum: a mangled piece shows up here.
+  return payloadTag(payload) === tag ? { status: 'complete', payload } : { status: 'invalid' };
 }

@@ -29,9 +29,20 @@ export type RoundState = {
   runningSince: number | null;
   /** Set when the pool recycled mid-round, so the recap can mention it. */
   reshuffled: boolean;
+  /**
+   * Three-round mode: a correct card leaves the hat for the rest of the
+   * phase, rather than coming back when the pool recycles.
+   */
+  retireCorrect: boolean;
+  /** Set when retiring emptied the hat, which ends the round early. */
+  cleared: boolean;
 };
 
-export function createRound(durationMs: number, drawer: DrawerState): RoundState {
+export function createRound(
+  durationMs: number,
+  drawer: DrawerState,
+  options: { retireCorrect?: boolean } = {},
+): RoundState {
   return {
     phase: 'intro',
     card: null,
@@ -41,7 +52,14 @@ export function createRound(durationMs: number, drawer: DrawerState): RoundState
     bankedMs: 0,
     runningSince: null,
     reshuffled: false,
+    retireCorrect: options.retireCorrect ?? false,
+    cleared: false,
   };
+}
+
+/** Cards that may not be drawn again this round. */
+function retiredKeys(state: Pick<RoundState, 'retireCorrect'>, results: readonly RoundResult[]): string[] {
+  return state.retireCorrect ? results.filter((r) => r.outcome === 'correct').map((r) => r.cardId) : [];
 }
 
 /** Milliseconds elapsed into the round at the given moment. */
@@ -86,11 +104,14 @@ export function resolveCard(
   pool: readonly PoolCard[],
   outcome: Outcome,
   now: number,
+  extra: { busted?: string } = {},
 ): RoundState {
   if (state.phase !== 'running' || !state.card) return state;
 
   const at = elapsedMs(state, now);
   const result: RoundResult = { cardId: poolCardKey(state.card), outcome, atMs: at };
+  // A busted card is a pass with a reason, so it can only ever be a pass.
+  if (extra.busted && outcome === 'pass') result.busted = extra.busted;
   const results = [...state.results, result];
 
   // The card counts even if the clock ran out while it was on screen — the
@@ -99,9 +120,17 @@ export function resolveCard(
     return { ...state, phase: 'ended', results, card: null, bankedMs: state.durationMs, runningSince: null };
   }
 
-  const draw = drawNext(pool, state.drawer);
+  const draw = drawNext(pool, state.drawer, retiredKeys(state, results));
   if (!draw) {
-    return { ...state, phase: 'ended', results, card: null, bankedMs: at, runningSince: null };
+    return {
+      ...state,
+      phase: 'ended',
+      results,
+      card: null,
+      bankedMs: at,
+      runningSince: null,
+      cleared: state.retireCorrect,
+    };
   }
 
   return {

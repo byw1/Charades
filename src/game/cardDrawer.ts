@@ -19,6 +19,15 @@ export type PoolCard = {
   note: string | null;
   /** Carried on the card so the round screen does not have to look up the deck. */
   accentColor: string;
+  taboo?: readonly string[];
+  image?: string;
+};
+
+/** The parts of a deck the pool is built from. */
+export type PoolSourceDeck = {
+  id: string;
+  accentColor: string;
+  cards: readonly { id: string; text: string; note: string | null; taboo?: readonly string[]; image?: string }[];
 };
 
 export type DrawerState = {
@@ -54,19 +63,22 @@ export const emptyDrawerState: DrawerState = { seen: [], reshuffleCount: 0 };
  * not "blend them", and interleaving makes the card colours flicker.
  */
 export function buildPool(
-  decks: readonly { id: string; accentColor: string; cards: readonly { id: string; text: string; note: string | null }[] }[],
+  decks: readonly PoolSourceDeck[],
   options: { shuffleAcrossDecks: boolean; random: Random },
 ): PoolCard[] {
   const byDeck = decks.map((deck) =>
-    deck.cards.map(
-      (card): PoolCard => ({
+    deck.cards.map((card): PoolCard => {
+      const pooled: PoolCard = {
         deckId: deck.id,
         cardId: card.id,
         text: card.text,
         note: card.note,
         accentColor: deck.accentColor,
-      }),
-    ),
+      };
+      if (card.taboo && card.taboo.length > 0) pooled.taboo = card.taboo;
+      if (card.image) pooled.image = card.image;
+      return pooled;
+    }),
   );
 
   if (options.shuffleAcrossDecks) {
@@ -79,15 +91,26 @@ export function buildPool(
 /**
  * Draws the next unseen card.
  *
- * Returns null only when the pool itself is empty — an exhausted pool recycles
- * rather than running out, because a round in progress must always have a next
- * card to show.
+ * Returns null only when there is nothing left to draw — an exhausted pool
+ * recycles rather than running out, because a round in progress must always
+ * have a next card to show.
+ *
+ * Retired cards never come back, recycled or not. Three-round mode retires a
+ * card once it is guessed, so a pass returns to the hat and a correct card
+ * does not; when every card is retired, the hat is empty and this returns
+ * null.
  */
-export function drawNext(pool: readonly PoolCard[], state: DrawerState): Draw | null {
-  if (pool.length === 0) return null;
+export function drawNext(
+  pool: readonly PoolCard[],
+  state: DrawerState,
+  retired: readonly string[] = [],
+): Draw | null {
+  const gone = new Set(retired);
+  const live = gone.size === 0 ? pool : pool.filter((card) => !gone.has(poolCardKey(card)));
+  if (live.length === 0) return null;
 
   const seen = new Set(state.seen);
-  const next = pool.find((card) => !seen.has(poolCardKey(card)));
+  const next = live.find((card) => !seen.has(poolCardKey(card)));
 
   if (next) {
     return {
@@ -98,7 +121,7 @@ export function drawNext(pool: readonly PoolCard[], state: DrawerState): Draw | 
   }
 
   // Pool exhausted. Clear the seen set and start again from the top.
-  const recycled = pool[0]!;
+  const recycled = live[0]!;
   return {
     card: recycled,
     state: { seen: [poolCardKey(recycled)], reshuffleCount: state.reshuffleCount + 1 },
@@ -114,7 +137,7 @@ export function remainingInPool(pool: readonly PoolCard[], state: DrawerState): 
 
 /** Convenience for a single round with no session around it. */
 export function createPool(
-  decks: readonly { id: string; accentColor: string; cards: readonly { id: string; text: string; note: string | null }[] }[],
+  decks: readonly PoolSourceDeck[],
   options: { shuffleAcrossDecks?: boolean; seed: number },
 ): PoolCard[] {
   return buildPool(decks, {

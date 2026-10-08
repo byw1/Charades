@@ -1,0 +1,1118 @@
+{
+  "schemaVersion": 1,
+  "id": "dck_5f19a58b",
+  "name": "Snacks & Fast Food",
+  "description": "Gas station runs, drive-thru orders and the snacks you buy for the group.",
+  "author": "Deckhead",
+  "language": "en",
+  "accentColor": "#FFE500",
+  "emoji": "🍟",
+  "tags": [
+    "food",
+    "snacks"
+  ],
+  "createdAt": "2026-10-07T20:00:00Z",
+  "updatedAt": "2026-10-07T22:00:00Z",
+  "cards": [
+    {
+      "id": "crd_c3a0316f",
+      "text": "Takis",
+      "note": null,
+      "taboo": [
+        "rolled",
+        "spicy",
+        "purple bag",
+        "lime"
+      ]
+    },
+    {
+      "id": "crd_eb27dd65",
+      "text": "Flamin' Hot Cheetos",
+      "note": null,
+      "taboo": [
+        "red",
+        "spicy",
+        "dust",
+        "fingers"
+      ]
+    },
+    {
+      "id": "crd_b94ceb4a",
+      "text": "Doritos",
+      "note": null,
+      "taboo": [
+        "Cool Ranch",
+        "nacho cheese",
+        "triangle",
+        "chips"
+      ]
+    },
+    {
+      "id": "crd_af027029",
+      "text": "Oreos",
+      "note": null,
+      "taboo": [
+        "cookie",
+        "twist",
+        "lick",
+        "dunk"
+      ]
+    },
+    {
+      "id": "crd_d7e1ff3c",
+      "text": "Pringles",
+      "note": null,
+      "taboo": [
+        "can",
+        "stack",
+        "duck lips",
+        "chips"
+      ]
+    },
+    {
+      "id": "crd_29559fde",
+      "text": "Goldfish",
+      "note": null,
+      "taboo": [
+        "crackers",
+        "smile",
+        "orange",
+        "cheddar"
+      ]
+    },
+    {
+      "id": "crd_0463d7f9",
+      "text": "Pop-Tarts",
+      "note": null,
+      "taboo": [
+        "toaster",
+        "frosted",
+        "breakfast",
+        "pastry"
+      ]
+    },
+    {
+      "id": "crd_b9841eec",
+      "text": "Lunchables",
+      "note": null,
+      "taboo": [
+        "crackers",
+        "ham",
+        "cheese",
+        "kids"
+      ]
+    },
+    {
+      "id": "crd_74a4c39a",
+      "text": "Cup Noodles",
+      "note": null,
+      "taboo": [
+        "instant",
+        "ramen",
+        "hot water",
+        "styrofoam"
+      ]
+    },
+    {
+      "id": "crd_e5dede68",
+      "text": "Big Mac",
+      "note": null,
+      "taboo": [
+        "McDonald's",
+        "two patties",
+        "special sauce",
+        "sesame"
+      ]
+    },
+    {
+      "id": "crd_81eb7fb4",
+      "text": "Chicken nuggets",
+      "note": null,
+      "taboo": [
+        "McNuggets",
+        "dip",
+        "dino",
+        "fried"
+      ]
+    },
+    {
+      "id": "crd_0f1567ba",
+      "text": "Baja Blast",
+      "note": null,
+      "taboo": [
+        "Mountain Dew",
+        "Taco Bell",
+        "teal",
+        "soda"
+      ]
+    },
+    {
+      "id": "crd_7b721ff6",
+      "text": "Crunchwrap Supreme",
+      "note": null,
+      "taboo": [
+        "Taco Bell",
+        "hexagon",
+        "tortilla",
+        "folded"
+      ]
+    },
+    {
+      "id": "crd_d812565a",
+      "text": "Frosty",
+      "note": null,
+      "taboo": [
+        "Wendy's",
+        "fries",
+        "chocolate",
+        "cold"
+      ]
+    },
+    {
+      "id": "crd_8bb5efee",
+      "text": "Whopper",
+      "note": null,
+      "taboo": [
+        "Burger King",
+        "flame grilled",
+        "big",
+        "king"
+      ]
+    },
+    {
+      "id": "crd_cd95290d",
+      "text": "In-N-Out",
+      "note": null,
+      "taboo": [
+        "Animal Style",
+        "Double-Double",
+        "California",
+        "palm trees"
+      ]
+    },
+    {
+      "id": "crd_5d9d355b",
+      "text": "Chick-fil-A",
+      "note": null,
+      "taboo": [
+        "Sundays",
+        "waffle fries",
+        "my pleasure",
+        "chicken"
+      ]
+    },
+    {
+      "id": "crd_e0b31d89",
+      "text": "Dunkin'",
+      "note": null,
+      "taboo": [
+        "donuts",
+        "Boston",
+        "iced coffee",
+        "America runs"
+      ]
+    },
+    {
+      "id": "crd_1a4a911b",
+      "text": "Pumpkin spice latte",
+      "note": null,
+      "taboo": [
+        "PSL",
+        "autumn",
+        "Starbucks",
+        "fall"
+      ]
+    },
+    {
+      "id": "crd_6c4353c4",
+      "text": "Starbucks",
+      "note": null,
+      "taboo": [
+        "coffee",
+        "Frappuccino",
+        "name on cup",
+        "mermaid"
+      ]
+    },
+    {
+      "id": "crd_7a0d1727",
+      "text": "Energy drink",
+      "note": null,
+      "taboo": [
+        "Red Bull",
+        "Monster",
+        "caffeine",
+        "buzz"
+      ]
+    },
+    {
+      "id": "crd_328f9cbe",
+      "text": "Gatorade",
+      "note": null,
+      "taboo": [
+        "sports drink",
+        "electrolytes",
+        "orange",
+        "thirst"
+      ]
+    },
+    {
+      "id": "crd_71405f85",
+      "text": "Slurpee",
+      "note": null,
+      "taboo": [
+        "7-Eleven",
+        "frozen",
+        "brain freeze",
+        "slush"
+      ]
+    },
+    {
+      "id": "crd_0b850af4",
+      "text": "Sour Patch Kids",
+      "note": null,
+      "taboo": [
+        "sweet",
+        "gummies",
+        "candy",
+        "sugar coated"
+      ]
+    },
+    {
+      "id": "crd_07718a62",
+      "text": "Gummy bears",
+      "note": null,
+      "taboo": [
+        "Haribo",
+        "chewy",
+        "candy",
+        "colours"
+      ]
+    },
+    {
+      "id": "crd_0b026d27",
+      "text": "Kit Kat",
+      "note": null,
+      "taboo": [
+        "break",
+        "wafer",
+        "chocolate",
+        "fingers"
+      ]
+    },
+    {
+      "id": "crd_b2934dae",
+      "text": "Reese's",
+      "note": null,
+      "taboo": [
+        "peanut butter",
+        "cups",
+        "chocolate",
+        "orange"
+      ]
+    },
+    {
+      "id": "crd_de8bf82a",
+      "text": "Skittles",
+      "note": null,
+      "taboo": [
+        "rainbow",
+        "taste the rainbow",
+        "candy",
+        "colours"
+      ]
+    },
+    {
+      "id": "crd_cf5543d1",
+      "text": "M&M's",
+      "note": null,
+      "taboo": [
+        "candy",
+        "shell",
+        "colours",
+        "characters"
+      ]
+    },
+    {
+      "id": "crd_17bd18d6",
+      "text": "Twizzlers",
+      "note": null,
+      "taboo": [
+        "licorice",
+        "red",
+        "twist",
+        "chewy"
+      ]
+    },
+    {
+      "id": "crd_d671325e",
+      "text": "Rice Krispies Treat",
+      "note": null,
+      "taboo": [
+        "marshmallow",
+        "cereal",
+        "square",
+        "gooey"
+      ]
+    },
+    {
+      "id": "crd_5e241b96",
+      "text": "Pizza Rolls",
+      "note": null,
+      "taboo": [
+        "Totino's",
+        "bites",
+        "oven",
+        "molten"
+      ]
+    },
+    {
+      "id": "crd_197d070a",
+      "text": "Hot Pocket",
+      "note": null,
+      "taboo": [
+        "microwave",
+        "lava",
+        "sandwich",
+        "frozen"
+      ]
+    },
+    {
+      "id": "crd_c1306717",
+      "text": "Mac and cheese",
+      "note": null,
+      "taboo": [
+        "Kraft",
+        "pasta",
+        "orange",
+        "box"
+      ]
+    },
+    {
+      "id": "crd_28ae40c1",
+      "text": "Mozzarella sticks",
+      "note": null,
+      "taboo": [
+        "cheese pull",
+        "fried",
+        "marinara",
+        "appetizer"
+      ]
+    },
+    {
+      "id": "crd_1d84a843",
+      "text": "Curly fries",
+      "note": null,
+      "taboo": [
+        "Arby's",
+        "spiral",
+        "seasoned",
+        "potato"
+      ]
+    },
+    {
+      "id": "crd_82a6f6f9",
+      "text": "Onion rings",
+      "note": null,
+      "taboo": [
+        "battered",
+        "circles",
+        "Burger King",
+        "fried"
+      ]
+    },
+    {
+      "id": "crd_fb639711",
+      "text": "Milkshake",
+      "note": null,
+      "taboo": [
+        "ice cream",
+        "straw",
+        "thick",
+        "Shake Shack"
+      ]
+    },
+    {
+      "id": "crd_fba0e16e",
+      "text": "Churro",
+      "note": null,
+      "taboo": [
+        "cinnamon",
+        "sugar",
+        "Mexican",
+        "Disneyland"
+      ]
+    },
+    {
+      "id": "crd_5c55cd6b",
+      "text": "Soft pretzel",
+      "note": null,
+      "taboo": [
+        "twist",
+        "salt",
+        "mall",
+        "Auntie Anne's"
+      ]
+    },
+    {
+      "id": "crd_16e06dd6",
+      "text": "Krispy Kreme",
+      "note": null,
+      "taboo": [
+        "glazed",
+        "hot light",
+        "doughnuts",
+        "dozen"
+      ]
+    },
+    {
+      "id": "crd_e01dd46c",
+      "text": "Happy Meal",
+      "note": null,
+      "taboo": [
+        "toy",
+        "kids",
+        "McDonald's",
+        "box"
+      ]
+    },
+    {
+      "id": "crd_16858a1c",
+      "text": "Chipotle",
+      "note": null,
+      "taboo": [
+        "burrito bowl",
+        "guac is extra",
+        "Mexican",
+        "line"
+      ]
+    },
+    {
+      "id": "crd_244d8c04",
+      "text": "Wingstop",
+      "note": null,
+      "taboo": [
+        "wings",
+        "lemon pepper",
+        "flavours",
+        "ranch"
+      ]
+    },
+    {
+      "id": "crd_f0f1b123",
+      "text": "Subway",
+      "note": null,
+      "taboo": [
+        "footlong",
+        "Eat Fresh",
+        "sandwich artist",
+        "sub"
+      ]
+    },
+    {
+      "id": "crd_aded69ad",
+      "text": "Domino's",
+      "note": null,
+      "taboo": [
+        "pizza",
+        "delivery",
+        "tracker",
+        "dominoes"
+      ]
+    },
+    {
+      "id": "crd_71e4884a",
+      "text": "Orange chicken",
+      "note": null,
+      "taboo": [
+        "Panda Express",
+        "Chinese",
+        "sweet",
+        "sticky"
+      ]
+    },
+    {
+      "id": "crd_8e709963",
+      "text": "Uncrustables",
+      "note": null,
+      "taboo": [
+        "crustless",
+        "PB&J",
+        "frozen",
+        "sealed"
+      ]
+    },
+    {
+      "id": "crd_51e0ba32",
+      "text": "Cheez-Its",
+      "note": null,
+      "taboo": [
+        "crackers",
+        "square",
+        "cheddar",
+        "Grooves"
+      ]
+    },
+    {
+      "id": "crd_82552f95",
+      "text": "Trail mix",
+      "note": null,
+      "taboo": [
+        "nuts",
+        "raisins",
+        "M&M's",
+        "hiking"
+      ]
+    },
+    {
+      "id": "crd_cc14e6a9",
+      "text": "Lay’s",
+      "note": null,
+      "taboo": [
+        "potato chips",
+        "bag",
+        "classic",
+        "betcha can’t eat one"
+      ]
+    },
+    {
+      "id": "crd_33cb65d8",
+      "text": "Ruffles",
+      "note": null,
+      "taboo": [
+        "ridges",
+        "potato chips",
+        "cheddar",
+        "sour cream"
+      ]
+    },
+    {
+      "id": "crd_27543eb9",
+      "text": "Fritos",
+      "note": null,
+      "taboo": [
+        "corn chips",
+        "chili",
+        "bag",
+        "salty"
+      ]
+    },
+    {
+      "id": "crd_6ae2ab5d",
+      "text": "Funyuns",
+      "note": null,
+      "taboo": [
+        "onion rings",
+        "snack",
+        "crunchy",
+        "bag"
+      ]
+    },
+    {
+      "id": "crd_f6265a74",
+      "text": "Chex Mix",
+      "note": null,
+      "taboo": [
+        "party",
+        "pretzels",
+        "rye chips",
+        "bag"
+      ]
+    },
+    {
+      "id": "crd_d436137d",
+      "text": "McFlurry",
+      "note": null,
+      "taboo": [
+        "McDonald’s",
+        "Oreo",
+        "ice cream machine",
+        "spoon"
+      ]
+    },
+    {
+      "id": "crd_d8e1ba98",
+      "text": "Shamrock Shake",
+      "note": null,
+      "taboo": [
+        "McDonald’s",
+        "green",
+        "mint",
+        "St. Patrick’s Day"
+      ]
+    },
+    {
+      "id": "crd_90829b36",
+      "text": "Chicken tenders",
+      "note": null,
+      "taboo": [
+        "strips",
+        "dip",
+        "kids menu",
+        "fried"
+      ]
+    },
+    {
+      "id": "crd_6a14e128",
+      "text": "Popeyes chicken sandwich",
+      "note": null,
+      "taboo": [
+        "spicy",
+        "brioche",
+        "sold out",
+        "Louisiana"
+      ]
+    },
+    {
+      "id": "crd_cff09318",
+      "text": "Doritos Locos Tacos",
+      "note": null,
+      "taboo": [
+        "fast food",
+        "nacho cheese shell",
+        "crunchy",
+        "orange"
+      ]
+    },
+    {
+      "id": "crd_fa7bd79f",
+      "text": "Cinnabon",
+      "note": null,
+      "taboo": [
+        "cinnamon rolls",
+        "mall",
+        "airport",
+        "icing"
+      ]
+    },
+    {
+      "id": "crd_5dc48dd0",
+      "text": "Wendy’s",
+      "note": null,
+      "taboo": [
+        "Frosty",
+        "red hair",
+        "square burgers",
+        "Twitter roasts"
+      ]
+    },
+    {
+      "id": "crd_4fea02f0",
+      "text": "Raising Cane’s",
+      "note": null,
+      "taboo": [
+        "chicken fingers",
+        "dipping sauce",
+        "Texas toast",
+        "dog"
+      ]
+    },
+    {
+      "id": "crd_f63a7c7d",
+      "text": "Shake Shack",
+      "note": null,
+      "taboo": [
+        "ShackBurger",
+        "New York",
+        "crinkle fries",
+        "milkshake"
+      ]
+    },
+    {
+      "id": "crd_f795d96d",
+      "text": "Five Guys",
+      "note": null,
+      "taboo": [
+        "peanuts",
+        "fries",
+        "burgers",
+        "bag"
+      ]
+    },
+    {
+      "id": "crd_105b9a65",
+      "text": "Whataburger",
+      "note": null,
+      "taboo": [
+        "Texas",
+        "orange stripes",
+        "burgers",
+        "spicy ketchup"
+      ]
+    },
+    {
+      "id": "crd_c04e14f4",
+      "text": "Jersey Mike’s",
+      "note": null,
+      "taboo": [
+        "subs",
+        "Subway",
+        "sandwich",
+        "sliced"
+      ]
+    },
+    {
+      "id": "crd_e14dd084",
+      "text": "Little Caesars",
+      "note": null,
+      "taboo": [
+        "Pizza! Pizza!",
+        "Hot-N-Ready",
+        "five dollars",
+        "cheap"
+      ]
+    },
+    {
+      "id": "crd_fe2da684",
+      "text": "Pizza Hut",
+      "note": null,
+      "taboo": [
+        "red roof",
+        "stuffed crust",
+        "Book It",
+        "pan"
+      ]
+    },
+    {
+      "id": "crd_e48611dd",
+      "text": "Olive Garden",
+      "note": null,
+      "taboo": [
+        "breadsticks",
+        "unlimited",
+        "Italian",
+        "salad"
+      ]
+    },
+    {
+      "id": "crd_7ffcf07c",
+      "text": "IHOP",
+      "note": null,
+      "taboo": [
+        "pancakes",
+        "house",
+        "breakfast",
+        "blue roof"
+      ]
+    },
+    {
+      "id": "crd_045d8f2a",
+      "text": "Waffle House",
+      "note": null,
+      "taboo": [
+        "open 24 hours",
+        "hash browns",
+        "South",
+        "yellow sign"
+      ]
+    },
+    {
+      "id": "crd_2496cf14",
+      "text": "Dairy Queen Blizzard",
+      "note": null,
+      "taboo": [
+        "upside down",
+        "ice cream",
+        "DQ",
+        "mix-ins"
+      ]
+    },
+    {
+      "id": "crd_cf5e2894",
+      "text": "Ben & Jerry’s",
+      "note": null,
+      "taboo": [
+        "ice cream",
+        "Vermont",
+        "Cherry Garcia",
+        "pints"
+      ]
+    },
+    {
+      "id": "crd_63670d4c",
+      "text": "Popcorn chicken",
+      "note": null,
+      "taboo": [
+        "KFC",
+        "bite-sized",
+        "nuggets",
+        "crispy"
+      ]
+    },
+    {
+      "id": "crd_c3e6039c",
+      "text": "Dutch Bros",
+      "note": null,
+      "taboo": [
+        "coffee",
+        "drive-thru",
+        "Oregon",
+        "energy drinks"
+      ]
+    },
+    {
+      "id": "crd_02f67908",
+      "text": "Jolly Rancher",
+      "note": null,
+      "taboo": [
+        "hard candy",
+        "watermelon",
+        "sour apple",
+        "wrapper"
+      ]
+    },
+    {
+      "id": "crd_6aea796e",
+      "text": "Starburst",
+      "note": null,
+      "taboo": [
+        "chewy",
+        "squares",
+        "pink",
+        "juicy"
+      ]
+    },
+    {
+      "id": "crd_dd05a79c",
+      "text": "Nerds",
+      "note": null,
+      "taboo": [
+        "tiny candy",
+        "box",
+        "rainbow",
+        "gummy clusters"
+      ]
+    },
+    {
+      "id": "crd_b963d21d",
+      "text": "Warheads",
+      "note": null,
+      "taboo": [
+        "extreme sour",
+        "candy",
+        "face",
+        "challenge"
+      ]
+    },
+    {
+      "id": "crd_1270a2d8",
+      "text": "Airheads",
+      "note": null,
+      "taboo": [
+        "taffy",
+        "mystery flavor",
+        "chewy",
+        "colours"
+      ]
+    },
+    {
+      "id": "crd_d8152f81",
+      "text": "Hi-Chew",
+      "note": null,
+      "taboo": [
+        "Japanese candy",
+        "chewy",
+        "fruity",
+        "sticks"
+      ]
+    },
+    {
+      "id": "crd_145f8ee8",
+      "text": "Swedish Fish",
+      "note": null,
+      "taboo": [
+        "red",
+        "gummy",
+        "candy",
+        "chewy"
+      ]
+    },
+    {
+      "id": "crd_3d2abd2d",
+      "text": "Gushers",
+      "note": null,
+      "taboo": [
+        "fruit snacks",
+        "burst",
+        "juicy",
+        "center"
+      ]
+    },
+    {
+      "id": "crd_291f28f1",
+      "text": "Fruit by the Foot",
+      "note": null,
+      "taboo": [
+        "roll",
+        "long",
+        "unroll",
+        "lunchbox"
+      ]
+    },
+    {
+      "id": "crd_72699fd6",
+      "text": "Capri Sun",
+      "note": null,
+      "taboo": [
+        "pouch",
+        "straw",
+        "juice",
+        "stab"
+      ]
+    },
+    {
+      "id": "crd_bed4e290",
+      "text": "Arizona iced tea",
+      "note": null,
+      "taboo": [
+        "99 cents",
+        "tall can",
+        "honey",
+        "cheap"
+      ]
+    },
+    {
+      "id": "crd_210ebbb5",
+      "text": "Prime",
+      "note": null,
+      "taboo": [
+        "Logan Paul",
+        "KSI",
+        "sports drink",
+        "hype"
+      ]
+    },
+    {
+      "id": "crd_15a09849",
+      "text": "Celsius",
+      "note": null,
+      "taboo": [
+        "energy drink",
+        "fitness",
+        "can",
+        "caffeine"
+      ]
+    },
+    {
+      "id": "crd_835edee3",
+      "text": "Mountain Dew",
+      "note": null,
+      "taboo": [
+        "green",
+        "gamer",
+        "soda",
+        "Baja Blast"
+      ]
+    },
+    {
+      "id": "crd_83bdc0a1",
+      "text": "Dr Pepper",
+      "note": null,
+      "taboo": [
+        "23 flavors",
+        "soda",
+        "maroon can",
+        "Texas"
+      ]
+    },
+    {
+      "id": "crd_ec1002aa",
+      "text": "Coca-Cola",
+      "note": null,
+      "taboo": [
+        "Coke",
+        "soda",
+        "red can",
+        "polar bears"
+      ]
+    },
+    {
+      "id": "crd_11e4b904",
+      "text": "Root beer float",
+      "note": null,
+      "taboo": [
+        "ice cream",
+        "soda",
+        "A&W",
+        "foam"
+      ]
+    },
+    {
+      "id": "crd_0c87c71e",
+      "text": "Nutella",
+      "note": null,
+      "taboo": [
+        "hazelnut",
+        "chocolate spread",
+        "jar",
+        "toast"
+      ]
+    },
+    {
+      "id": "crd_1f8fb4ef",
+      "text": "Pocky",
+      "note": null,
+      "taboo": [
+        "sticks",
+        "Japanese",
+        "chocolate",
+        "biscuit"
+      ]
+    },
+    {
+      "id": "crd_fc8c8c9d",
+      "text": "Chips Ahoy!",
+      "note": null,
+      "taboo": [
+        "chocolate",
+        "cookies",
+        "blue bag",
+        "crunchy"
+      ]
+    },
+    {
+      "id": "crd_d88665bd",
+      "text": "Beef jerky",
+      "note": null,
+      "taboo": [
+        "dried meat",
+        "chewy",
+        "Slim Jim",
+        "gas station"
+      ]
+    },
+    {
+      "id": "crd_b2cf3305",
+      "text": "String cheese",
+      "note": null,
+      "taboo": [
+        "peel",
+        "mozzarella",
+        "snack",
+        "kids"
+      ]
+    },
+    {
+      "id": "crd_609df1c7",
+      "text": "Bagel Bites",
+      "note": null,
+      "taboo": [
+        "mini pizzas",
+        "freezer",
+        "pizza in the morning",
+        "snack"
+      ]
+    },
+    {
+      "id": "crd_eaf2bfd1",
+      "text": "Twinkies",
+      "note": null,
+      "taboo": [
+        "Hostess",
+        "cream filled",
+        "sponge cake",
+        "yellow"
+      ]
+    }
+  ]
+}

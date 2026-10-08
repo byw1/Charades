@@ -1,267 +1,1118 @@
 {
   "schemaVersion": 1,
   "id": "dck_ffde7880",
-  "name": "Around the House",
-  "description": "Ordinary objects, which turn out to be the hardest ones to describe.",
+  "name": "Home Sweet Home",
+  "description": "Air fryers, ring lights, Stanley cups and the junk drawer. Ordinary stuff is weirdly hard to describe.",
   "author": "Deckhead",
   "language": "en",
   "accentColor": "#2EA8FF",
+  "emoji": "🏠",
   "tags": [
     "objects",
     "easy"
   ],
   "createdAt": "2026-07-26T18:00:00Z",
-  "updatedAt": "2026-10-07T18:00:00Z",
+  "updatedAt": "2026-10-07T22:00:00Z",
   "cards": [
+    {
+      "id": "crd_1e3f711b",
+      "text": "Air fryer",
+      "note": null,
+      "taboo": [
+        "crispy",
+        "kitchen",
+        "gadget",
+        "fries"
+      ]
+    },
     {
       "id": "crd_9846f929",
       "text": "Kettle",
-      "note": null
+      "note": null,
+      "taboo": [
+        "boil",
+        "tea",
+        "water",
+        "whistle"
+      ]
     },
     {
       "id": "crd_e8bdcc1e",
       "text": "Doorbell",
-      "note": null
-    },
-    {
-      "id": "crd_53b78973",
-      "text": "Radiator",
-      "note": null
+      "note": null,
+      "taboo": [
+        "ring",
+        "ding dong",
+        "door",
+        "visitor"
+      ]
     },
     {
       "id": "crd_765f0686",
       "text": "Colander",
-      "note": null
+      "note": null,
+      "taboo": [
+        "pasta",
+        "holes",
+        "drain",
+        "strainer"
+      ]
     },
     {
       "id": "crd_3cc48497",
       "text": "Hairdryer",
-      "note": null
+      "note": null,
+      "taboo": [
+        "hair",
+        "hot air",
+        "blow",
+        "wet"
+      ]
     },
     {
       "id": "crd_fade728d",
       "text": "Doormat",
-      "note": null
-    },
-    {
-      "id": "crd_a0c19460",
-      "text": "Tea towel",
-      "note": null
-    },
-    {
-      "id": "crd_55966687",
-      "text": "Bin bag",
-      "note": null
+      "note": null,
+      "taboo": [
+        "welcome",
+        "wipe",
+        "feet",
+        "door"
+      ]
     },
     {
       "id": "crd_4d13b5cf",
       "text": "Coat hanger",
-      "note": null
-    },
-    {
-      "id": "crd_6e541148",
-      "text": "Plug socket",
-      "note": null
-    },
-    {
-      "id": "crd_1446f407",
-      "text": "Chest of drawers",
-      "note": null
+      "note": null,
+      "taboo": [
+        "closet",
+        "hook",
+        "clothes",
+        "hang"
+      ]
     },
     {
       "id": "crd_eac3e4e0",
       "text": "Ironing board",
-      "note": null
+      "note": null,
+      "taboo": [
+        "iron",
+        "creases",
+        "shirt",
+        "flat"
+      ]
     },
     {
       "id": "crd_42449ba7",
       "text": "Toaster",
-      "note": null
-    },
-    {
-      "id": "crd_1b303ee7",
-      "text": "Curtain rail",
-      "note": null
-    },
-    {
-      "id": "crd_8f4f3abf",
-      "text": "Bath plug",
-      "note": null
-    },
-    {
-      "id": "crd_179bb11f",
-      "text": "Corkscrew",
-      "note": null
-    },
-    {
-      "id": "crd_25267002",
-      "text": "Dustpan",
-      "note": null
+      "note": null,
+      "taboo": [
+        "bread",
+        "pop up",
+        "toast",
+        "slots"
+      ]
     },
     {
       "id": "crd_5111f181",
       "text": "Fridge magnet",
-      "note": null
-    },
-    {
-      "id": "crd_e96427b4",
-      "text": "Letterbox",
-      "note": null
-    },
-    {
-      "id": "crd_e60d5d2d",
-      "text": "Extension lead",
-      "note": null
+      "note": null,
+      "taboo": [
+        "stick",
+        "souvenir",
+        "metal",
+        "kitchen"
+      ]
     },
     {
       "id": "crd_ca4c7177",
       "text": "Shoe rack",
-      "note": null
-    },
-    {
-      "id": "crd_9c8c8578",
-      "text": "Washing line",
-      "note": null
+      "note": null,
+      "taboo": [
+        "sneakers",
+        "hallway",
+        "store",
+        "boots"
+      ]
     },
     {
       "id": "crd_da21c4fd",
       "text": "Tape measure",
-      "note": null
-    },
-    {
-      "id": "crd_2519dd3d",
-      "text": "Spirit level",
-      "note": null
-    },
-    {
-      "id": "crd_a954d352",
-      "text": "Draught excluder",
-      "note": null
-    },
-    {
-      "id": "crd_bb7239f4",
-      "text": "Bedside lamp",
-      "note": null
-    },
-    {
-      "id": "crd_746eac6d",
-      "text": "Wardrobe",
-      "note": null
-    },
-    {
-      "id": "crd_fc07b075",
-      "text": "Loo roll holder",
-      "note": null
-    },
-    {
-      "id": "crd_af61ed2c",
-      "text": "Chopping board",
-      "note": null
+      "note": null,
+      "taboo": [
+        "inches",
+        "length",
+        "roll",
+        "builder"
+      ]
     },
     {
       "id": "crd_1c34c4e8",
       "text": "Fire alarm",
-      "note": null
-    },
-    {
-      "id": "crd_415a2fb3",
-      "text": "Sofa cushion",
-      "note": null
+      "note": null,
+      "taboo": [
+        "smoke",
+        "beep",
+        "battery",
+        "ceiling"
+      ]
     },
     {
       "id": "crd_ae26420f",
       "text": "Mirror",
-      "note": null
-    },
-    {
-      "id": "crd_57e2b64f",
-      "text": "Wheelie bin",
-      "note": null
-    },
-    {
-      "id": "crd_304efab5",
-      "text": "Stepladder",
-      "note": null
+      "note": null,
+      "taboo": [
+        "reflection",
+        "glass",
+        "look",
+        "selfie"
+      ]
     },
     {
       "id": "crd_b52b1eb5",
       "text": "Watering can",
-      "note": null
-    },
-    {
-      "id": "crd_9186d48f",
-      "text": "Sellotape",
-      "note": null
+      "note": null,
+      "taboo": [
+        "plants",
+        "garden",
+        "water",
+        "flowers"
+      ]
     },
     {
       "id": "crd_7f2fb82e",
       "text": "Light switch",
-      "note": null
-    },
-    {
-      "id": "crd_c5cdf83f",
-      "text": "Oven glove",
-      "note": null
-    },
-    {
-      "id": "crd_ad00090f",
-      "text": "Egg cup",
-      "note": null
+      "note": null,
+      "taboo": [
+        "on",
+        "off",
+        "lamp",
+        "wall"
+      ]
     },
     {
       "id": "crd_4168ce80",
       "text": "Bookshelf",
-      "note": null
+      "note": null,
+      "taboo": [
+        "books",
+        "read",
+        "library",
+        "wall"
+      ]
     },
     {
       "id": "crd_717fe598",
       "text": "Vacuum cleaner",
-      "note": null
+      "note": null,
+      "taboo": [
+        "hoover",
+        "suck",
+        "dust",
+        "carpet"
+      ]
     },
     {
       "id": "crd_292bb02e",
       "text": "Picture frame",
-      "note": null
+      "note": null,
+      "taboo": [
+        "photo",
+        "wall",
+        "hang",
+        "glass"
+      ]
     },
     {
       "id": "crd_794e04b2",
       "text": "Blender",
-      "note": null
+      "note": null,
+      "taboo": [
+        "smoothie",
+        "blend",
+        "whizz",
+        "jug"
+      ]
     },
     {
       "id": "crd_539e7867",
       "text": "Doorstop",
-      "note": null
-    },
-    {
-      "id": "crd_6b5114e2",
-      "text": "Peg",
-      "note": null
+      "note": null,
+      "taboo": [
+        "wedge",
+        "hold",
+        "open",
+        "floor"
+      ]
     },
     {
       "id": "crd_0a2f6cdc",
       "text": "Remote control",
-      "note": null
+      "note": null,
+      "taboo": [
+        "TV",
+        "channel",
+        "buttons",
+        "couch"
+      ]
     },
     {
       "id": "crd_befd435b",
       "text": "Rolling pin",
-      "note": null
+      "note": null,
+      "taboo": [
+        "dough",
+        "pastry",
+        "baking",
+        "flat"
+      ]
     },
     {
       "id": "crd_b62f8f7f",
       "text": "Shower curtain",
-      "note": null
+      "note": null,
+      "taboo": [
+        "bathroom",
+        "water",
+        "wet",
+        "hooks"
+      ]
     },
     {
       "id": "crd_99f9e4c3",
       "text": "Thermostat",
-      "note": null
+      "note": null,
+      "taboo": [
+        "temperature",
+        "heating",
+        "dial",
+        "warm"
+      ]
     },
     {
       "id": "crd_2af3f3b6",
       "text": "Screwdriver",
-      "note": null
+      "note": null,
+      "taboo": [
+        "turn",
+        "tool",
+        "flathead",
+        "DIY"
+      ]
+    },
+    {
+      "id": "crd_6a99e2c1",
+      "text": "Ring light",
+      "note": null,
+      "taboo": [
+        "selfie",
+        "TikTok",
+        "circle",
+        "glow"
+      ]
+    },
+    {
+      "id": "crd_57a4a30a",
+      "text": "LED strip lights",
+      "note": null,
+      "taboo": [
+        "colours",
+        "bedroom",
+        "remote",
+        "glow"
+      ]
+    },
+    {
+      "id": "crd_24778ffc",
+      "text": "Robot vacuum",
+      "note": null,
+      "taboo": [
+        "Roomba",
+        "floor",
+        "bumps",
+        "cleaning"
+      ]
+    },
+    {
+      "id": "crd_a612a46d",
+      "text": "Phone charger",
+      "note": null,
+      "taboo": [
+        "cable",
+        "battery",
+        "plug",
+        "iPhone"
+      ]
+    },
+    {
+      "id": "crd_86e055ef",
+      "text": "Stanley cup",
+      "note": null,
+      "taboo": [
+        "tumbler",
+        "water",
+        "viral",
+        "straw"
+      ]
+    },
+    {
+      "id": "crd_755bf735",
+      "text": "Bean bag",
+      "note": null,
+      "taboo": [
+        "squishy",
+        "seat",
+        "chair",
+        "flop"
+      ]
+    },
+    {
+      "id": "crd_d3c4ad1a",
+      "text": "Lava lamp",
+      "note": null,
+      "taboo": [
+        "blobs",
+        "groovy",
+        "retro",
+        "glow"
+      ]
+    },
+    {
+      "id": "crd_3ff281ed",
+      "text": "Weighted blanket",
+      "note": null,
+      "taboo": [
+        "heavy",
+        "sleep",
+        "anxiety",
+        "cozy"
+      ]
+    },
+    {
+      "id": "crd_f711fdab",
+      "text": "Humidifier",
+      "note": null,
+      "taboo": [
+        "mist",
+        "dry air",
+        "steam",
+        "bedroom"
+      ]
+    },
+    {
+      "id": "crd_51f3aaa2",
+      "text": "Space heater",
+      "note": null,
+      "taboo": [
+        "warm",
+        "cold room",
+        "plug",
+        "glow"
+      ]
+    },
+    {
+      "id": "crd_65deb4a7",
+      "text": "Bluetooth speaker",
+      "note": null,
+      "taboo": [
+        "music",
+        "wireless",
+        "JBL",
+        "loud"
+      ]
+    },
+    {
+      "id": "crd_d46a9623",
+      "text": "Microwave",
+      "note": null,
+      "taboo": [
+        "heat",
+        "beep",
+        "popcorn",
+        "spin"
+      ]
+    },
+    {
+      "id": "crd_ffdb477e",
+      "text": "Dishwasher",
+      "note": null,
+      "taboo": [
+        "plates",
+        "clean",
+        "kitchen",
+        "load"
+      ]
+    },
+    {
+      "id": "crd_dccf7870",
+      "text": "Washing machine",
+      "note": null,
+      "taboo": [
+        "laundry",
+        "spin",
+        "clothes",
+        "detergent"
+      ]
+    },
+    {
+      "id": "crd_0436af5a",
+      "text": "Hair straightener",
+      "note": null,
+      "taboo": [
+        "flat iron",
+        "hot",
+        "frizz",
+        "smooth"
+      ]
+    },
+    {
+      "id": "crd_1562a696",
+      "text": "Curling iron",
+      "note": null,
+      "taboo": [
+        "curls",
+        "hot",
+        "hair",
+        "waves"
+      ]
+    },
+    {
+      "id": "crd_7be7d615",
+      "text": "Electric toothbrush",
+      "note": null,
+      "taboo": [
+        "teeth",
+        "buzz",
+        "brush",
+        "charge"
+      ]
+    },
+    {
+      "id": "crd_21b23d19",
+      "text": "Rubber duck",
+      "note": null,
+      "taboo": [
+        "bath",
+        "yellow",
+        "squeak",
+        "float"
+      ]
+    },
+    {
+      "id": "crd_13ff7d3f",
+      "text": "Plunger",
+      "note": null,
+      "taboo": [
+        "toilet",
+        "clog",
+        "suction",
+        "unclog"
+      ]
+    },
+    {
+      "id": "crd_e2ea82fe",
+      "text": "Toilet paper",
+      "note": null,
+      "taboo": [
+        "roll",
+        "bathroom",
+        "wipe",
+        "soft"
+      ]
+    },
+    {
+      "id": "crd_5ac49483",
+      "text": "Bath bomb",
+      "note": null,
+      "taboo": [
+        "fizz",
+        "Lush",
+        "colourful",
+        "tub"
+      ]
+    },
+    {
+      "id": "crd_3ae4dcaa",
+      "text": "Scented candle",
+      "note": null,
+      "taboo": [
+        "smell",
+        "wax",
+        "flame",
+        "Yankee"
+      ]
+    },
+    {
+      "id": "crd_114a8aa2",
+      "text": "Fairy lights",
+      "note": null,
+      "taboo": [
+        "twinkle",
+        "string",
+        "bedroom",
+        "Christmas"
+      ]
+    },
+    {
+      "id": "crd_af808054",
+      "text": "Polaroid camera",
+      "note": null,
+      "taboo": [
+        "instant photo",
+        "shake it",
+        "print",
+        "retro"
+      ]
+    },
+    {
+      "id": "crd_d6be7b8c",
+      "text": "Record player",
+      "note": null,
+      "taboo": [
+        "vinyl",
+        "spin",
+        "needle",
+        "music"
+      ]
+    },
+    {
+      "id": "crd_60d0560e",
+      "text": "Game console",
+      "note": null,
+      "taboo": [
+        "PlayStation",
+        "Xbox",
+        "controller",
+        "gaming"
+      ]
+    },
+    {
+      "id": "crd_eb8f44f7",
+      "text": "Gaming chair",
+      "note": null,
+      "taboo": [
+        "gamer",
+        "RGB",
+        "desk",
+        "seat"
+      ]
+    },
+    {
+      "id": "crd_369599ab",
+      "text": "Smart speaker",
+      "note": null,
+      "taboo": [
+        "Alexa",
+        "voice",
+        "Siri",
+        "assistant"
+      ]
+    },
+    {
+      "id": "crd_2d6a5a7f",
+      "text": "Alarm clock",
+      "note": null,
+      "taboo": [
+        "wake up",
+        "snooze",
+        "ring",
+        "morning"
+      ]
+    },
+    {
+      "id": "crd_2e7865a0",
+      "text": "Night light",
+      "note": null,
+      "taboo": [
+        "dark",
+        "glow",
+        "kids",
+        "scared"
+      ]
+    },
+    {
+      "id": "crd_e5f49cdf",
+      "text": "Yoga mat",
+      "note": null,
+      "taboo": [
+        "stretch",
+        "roll",
+        "exercise",
+        "floor"
+      ]
+    },
+    {
+      "id": "crd_c905e7de",
+      "text": "Dumbbells",
+      "note": null,
+      "taboo": [
+        "weights",
+        "gym",
+        "lift",
+        "muscles"
+      ]
+    },
+    {
+      "id": "crd_d241c959",
+      "text": "Coffee maker",
+      "note": null,
+      "taboo": [
+        "brew",
+        "morning",
+        "pot",
+        "caffeine"
+      ]
+    },
+    {
+      "id": "crd_e4b6be84",
+      "text": "Water bottle",
+      "note": null,
+      "taboo": [
+        "drink",
+        "reusable",
+        "Hydro Flask",
+        "refill"
+      ]
+    },
+    {
+      "id": "crd_9e75b368",
+      "text": "Backpack",
+      "note": null,
+      "taboo": [
+        "school",
+        "straps",
+        "zipper",
+        "books"
+      ]
+    },
+    {
+      "id": "crd_ee4aa6fe",
+      "text": "Umbrella",
+      "note": null,
+      "taboo": [
+        "rain",
+        "open",
+        "wet",
+        "handle"
+      ]
+    },
+    {
+      "id": "crd_8885bb2f",
+      "text": "Flip-flops",
+      "note": null,
+      "taboo": [
+        "sandals",
+        "beach",
+        "toes",
+        "slap"
+      ]
+    },
+    {
+      "id": "crd_2e5547da",
+      "text": "Crocs",
+      "note": null,
+      "taboo": [
+        "holes",
+        "clogs",
+        "Jibbitz",
+        "ugly"
+      ]
+    },
+    {
+      "id": "crd_d63fd2b0",
+      "text": "Slippers",
+      "note": null,
+      "taboo": [
+        "fluffy",
+        "feet",
+        "indoors",
+        "cozy"
+      ]
+    },
+    {
+      "id": "crd_609553a7",
+      "text": "Pillow",
+      "note": null,
+      "taboo": [
+        "sleep",
+        "bed",
+        "head",
+        "soft"
+      ]
+    },
+    {
+      "id": "crd_e93d33c4",
+      "text": "Hammock",
+      "note": null,
+      "taboo": [
+        "swing",
+        "tree",
+        "nap",
+        "relax"
+      ]
+    },
+    {
+      "id": "crd_e8fb4eb7",
+      "text": "Ceiling fan",
+      "note": null,
+      "taboo": [
+        "spin",
+        "blades",
+        "breeze",
+        "cool"
+      ]
+    },
+    {
+      "id": "crd_016eb20e",
+      "text": "Air conditioner",
+      "note": null,
+      "taboo": [
+        "cold",
+        "summer",
+        "AC",
+        "cool"
+      ]
+    },
+    {
+      "id": "crd_c44fa332",
+      "text": "Extension cord",
+      "note": null,
+      "taboo": [
+        "plug",
+        "outlet",
+        "cable",
+        "power"
+      ]
+    },
+    {
+      "id": "crd_61d4e7a9",
+      "text": "Trash can",
+      "note": null,
+      "taboo": [
+        "garbage",
+        "bin",
+        "lid",
+        "kitchen"
+      ]
+    },
+    {
+      "id": "crd_28279d5f",
+      "text": "Oven mitt",
+      "note": null,
+      "taboo": [
+        "hot",
+        "hand",
+        "glove",
+        "tray"
+      ]
+    },
+    {
+      "id": "crd_d9798112",
+      "text": "Mailbox",
+      "note": null,
+      "taboo": [
+        "letters",
+        "post office",
+        "flag",
+        "deliver"
+      ]
+    },
+    {
+      "id": "crd_8f7dc4c2",
+      "text": "Cutting board",
+      "note": null,
+      "taboo": [
+        "knife",
+        "chop",
+        "wood",
+        "kitchen"
+      ]
+    },
+    {
+      "id": "crd_500852c4",
+      "text": "Dresser",
+      "note": null,
+      "taboo": [
+        "drawers",
+        "clothes",
+        "bedroom",
+        "furniture"
+      ]
+    },
+    {
+      "id": "crd_38e178b9",
+      "text": "Closet",
+      "note": null,
+      "taboo": [
+        "clothes",
+        "hang",
+        "doors",
+        "Narnia"
+      ]
+    },
+    {
+      "id": "crd_08224127",
+      "text": "Ladder",
+      "note": null,
+      "taboo": [
+        "climb",
+        "steps",
+        "reach",
+        "high"
+      ]
+    },
+    {
+      "id": "crd_d9f08e0e",
+      "text": "Broom",
+      "note": null,
+      "taboo": [
+        "sweep",
+        "witch",
+        "floor",
+        "dust"
+      ]
+    },
+    {
+      "id": "crd_1329fdd3",
+      "text": "Bathtub",
+      "note": null,
+      "taboo": [
+        "bubbles",
+        "soak",
+        "bathroom",
+        "water"
+      ]
+    },
+    {
+      "id": "crd_763a2f9c",
+      "text": "Curtains",
+      "note": null,
+      "taboo": [
+        "window",
+        "close",
+        "fabric",
+        "drapes"
+      ]
+    },
+    {
+      "id": "crd_70f127ff",
+      "text": "Duct tape",
+      "note": null,
+      "taboo": [
+        "silver",
+        "sticky",
+        "fix",
+        "roll"
+      ]
+    },
+    {
+      "id": "crd_8535ca9b",
+      "text": "Junk drawer",
+      "note": null,
+      "taboo": [
+        "random stuff",
+        "kitchen",
+        "mess",
+        "batteries"
+      ]
+    },
+    {
+      "id": "crd_c1061de3",
+      "text": "Lint roller",
+      "note": null,
+      "taboo": [
+        "sticky",
+        "fluff",
+        "clothes",
+        "pet hair"
+      ]
+    },
+    {
+      "id": "crd_ea1cc204",
+      "text": "Nail clippers",
+      "note": null,
+      "taboo": [
+        "toes",
+        "trim",
+        "clip",
+        "fingers"
+      ]
+    },
+    {
+      "id": "crd_4ecc13e8",
+      "text": "Hand sanitizer",
+      "note": null,
+      "taboo": [
+        "germs",
+        "clean",
+        "gel",
+        "pump"
+      ]
+    },
+    {
+      "id": "crd_dd599e80",
+      "text": "Band-Aid",
+      "note": null,
+      "taboo": [
+        "cut",
+        "bandage",
+        "sticky",
+        "ouch"
+      ]
+    },
+    {
+      "id": "crd_e2d926de",
+      "text": "Tissue box",
+      "note": null,
+      "taboo": [
+        "sneeze",
+        "Kleenex",
+        "nose",
+        "pull"
+      ]
+    },
+    {
+      "id": "crd_1acadb9f",
+      "text": "Keychain",
+      "note": null,
+      "taboo": [
+        "keys",
+        "ring",
+        "cute",
+        "charm"
+      ]
+    },
+    {
+      "id": "crd_f8655e89",
+      "text": "Spatula",
+      "note": null,
+      "taboo": [
+        "flip",
+        "pancakes",
+        "kitchen",
+        "flat"
+      ]
+    },
+    {
+      "id": "crd_700faa53",
+      "text": "Whisk",
+      "note": null,
+      "taboo": [
+        "eggs",
+        "beat",
+        "baking",
+        "wire"
+      ]
+    },
+    {
+      "id": "crd_cd6f7359",
+      "text": "Ice cube tray",
+      "note": null,
+      "taboo": [
+        "freezer",
+        "water",
+        "frozen",
+        "drink"
+      ]
+    },
+    {
+      "id": "crd_4bfc65e6",
+      "text": "Pizza cutter",
+      "note": null,
+      "taboo": [
+        "wheel",
+        "slice",
+        "roll",
+        "blade"
+      ]
+    },
+    {
+      "id": "crd_3cb01301",
+      "text": "Can opener",
+      "note": null,
+      "taboo": [
+        "tin",
+        "lid",
+        "kitchen",
+        "crank"
+      ]
+    },
+    {
+      "id": "crd_64de49cf",
+      "text": "Mousetrap",
+      "note": null,
+      "taboo": [
+        "cheese",
+        "snap",
+        "rodent",
+        "catch"
+      ]
+    },
+    {
+      "id": "crd_824b1d2e",
+      "text": "Fly swatter",
+      "note": null,
+      "taboo": [
+        "bug",
+        "swat",
+        "flies",
+        "smack"
+      ]
+    },
+    {
+      "id": "crd_7f5c831f",
+      "text": "Snow globe",
+      "note": null,
+      "taboo": [
+        "shake",
+        "glitter",
+        "winter",
+        "souvenir"
+      ]
+    },
+    {
+      "id": "crd_8c4f7b84",
+      "text": "Piggy bank",
+      "note": null,
+      "taboo": [
+        "coins",
+        "savings",
+        "pig",
+        "money"
+      ]
+    },
+    {
+      "id": "crd_09d9a033",
+      "text": "Sticky notes",
+      "note": null,
+      "taboo": [
+        "Post-it",
+        "yellow",
+        "reminder",
+        "paper"
+      ]
+    },
+    {
+      "id": "crd_68846549",
+      "text": "Fire extinguisher",
+      "note": null,
+      "taboo": [
+        "spray",
+        "red",
+        "emergency",
+        "foam"
+      ]
+    },
+    {
+      "id": "crd_d15377f9",
+      "text": "Wi-Fi router",
+      "note": null,
+      "taboo": [
+        "internet",
+        "password",
+        "blinking lights",
+        "signal"
+      ]
     }
   ]
 }

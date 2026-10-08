@@ -434,3 +434,305 @@ one promise per launch.
 On a dark theme the code had inherited the canvas colour as its background,
 which would have produced dark modules on a dark background — a code nothing
 can scan. It is now pinned to ink on white, inside a yellow frame.
+
+## Game night
+
+The third round of features, asked for by the product owner: more decks for a
+college crowd, new ways to play, things people share, and the "smart"
+features that once seemed to need a server. Everything still runs on the
+phone. Two items from the "Not in v1" list, AI decks and video, now ship,
+because both can be done without a network after all; the reasoning is below.
+
+### The offline rule is enforced by the build, not by memory
+
+`eslint.config.js` bans `fetch`, `XMLHttpRequest`, `WebSocket`, `EventSource`,
+download and upload helpers, and network libraries (including `expo-updates`,
+which calls home). `src/noNetwork.test.ts` scans every source file for the same
+things plus hard-coded web addresses, and fails the suite if any appear. A
+feature that needs the internet now fails CI rather than waiting for review.
+
+### New decks are generated, and existing ids are byte-identical
+
+Nine new decks (450 cards) and four Taboo words on every word card, old and
+new. The generator reads one data file per deck from `spec/decks/`. Its id
+hash joins slug and text with a NUL byte; an early rewrite used a space and
+would have changed all 250 existing card ids, which a comparison against the
+committed JSON caught. Decks that gained Taboo words moved their `updatedAt`
+forward so installed copies re-seed. The generator refuses a Taboo word that
+repeats a word of its own card, since the card's own words are always off
+limits anyway.
+
+### Taboo words and photos are optional card fields, not a new schema version
+
+`taboo` and `image` are left off a card that has none, so every existing deck
+is still a valid deck, unchanged. An older build reading a newer deck simply
+drops the two fields (the validator builds a fresh object), which is the
+graceful outcome; a schemaVersion bump would have made older builds refuse
+the whole deck. Migration 3 adds two nullable columns.
+
+### A photo is a data URI in the row, not a file on disk
+
+Photos are cropped square, shrunk to 640px and stored as JPEG data URIs in the
+cards table. A file beside the database would need its own clean-up, would be
+orphaned by a crash between two writes, and would break when iOS moves the app
+container. In the row, it goes when the card goes and travels with an exported
+deck. The validator accepts only `data:image/(jpeg|png|webp);base64`, so a deck
+can never make the app fetch an image, and caps the size. QR codes and links
+carry the words only; a photo card still works as words.
+
+### "Banned", not "Taboo"
+
+Taboo is a Hasbro trademark, and App Review rejects apps that use other
+people's marks (guideline 5.2.1), the same reason the spec avoids "Heads Up!".
+Players see the mode as "Banned" and the words as banned words; the code and
+the deck format call them `taboo`, which nobody sees. The App Store listing
+and keywords never use the word.
+
+### Three game modes, all forehead-first
+
+Classic, Taboo and three-round mode all keep the phone on the guesser's
+forehead, so the controls never change. In Taboo the forbidden words show under
+the card for the room; a pass costs a point by default. In three-round mode
+one hat of cards is played three times (say anything, one word, act it out);
+the current phase is derived from the rounds, like score, and never slides back
+after a recap edit. A busted card is a pass with a reason (`busted` on the
+result), not a third outcome, so scoring and every screen that counts outcomes
+stayed as they were.
+
+### Twists and forfeits are seeded, so a game can be replayed
+
+A chaos twist is picked when a round begins and stamped on the round, so the
+recap, standings and a resumed game agree on it. Only two twists touch the
+rules engine: double points and the speed round. The forfeit is seeded from
+the session id, so the loser cannot reroll it by backing out, and the list is
+dares in the room only: nothing to drink (17+ rating), post or send.
+
+### Friends, rivalries and Wrapped are derived, like streaks
+
+There is no friends list. A name typed into a game is a friend from then on,
+matched regardless of capitals, and every number is computed from saved games.
+The Wrapped image is drawn on the phone and captured with
+react-native-view-shot, the version Expo Go ships, then handed to the share
+sheet.
+
+### Native modules are looked up optionally
+
+The voice referee and the AI deck maker use native modules that Expo Go does
+not include. Their packages' entry points throw when the module is missing, so
+Deckhead never imports them. It looks the modules up with
+`requireOptionalNativeModule` and `TurboModuleRegistry.get`, which return null.
+In Expo Go, on Android and on unsupported iPhones, those features grey out or
+disappear rather than crash the app.
+
+### The voice referee judges by mode, and never goes online
+
+A phone cannot tell voices apart. In every mode, hearing the answer means got
+it. In Taboo, hearing a forbidden word first means busted. A bust needs the
+recogniser's best guess, while got it accepts any alternative guess, because a
+false bust costs a point and a missed got it is only annoying. Every
+recognition request sets `requiresOnDeviceRecognition`, and a phone that
+cannot recognise speech offline does not get the feature: Apple's servers are
+never a fallback. While the referee has the microphone, round videos record
+silently, so the two never fight over the audio session.
+
+### AI decks are on-device or absent
+
+The roadmap ruled out AI decks because they needed a server. Apple's
+Foundation Models framework (iOS 26, Apple Intelligence) runs a language model
+on the phone, so the deck maker uses that through `@react-native-ai/apple`,
+pinned at 0.12.0. The Decks page tile appears only where the model is
+available. Rejected: `expo-ai-kit`'s cross-platform option, which downloads
+model weights on first use, and any hosted model. The model's output is
+parsed defensively (`parseGeneratedCards`), because a small model numbers its
+lines and explains itself however it is asked.
+
+### Video is of the room, and it never leaves the phone by itself
+
+The idea pitched was "record the guesser". With the phone on a forehead, the
+screen and the front camera face the room, so what the camera actually sees
+is the clue-givers. That turns out to be the better video. Clips are saved
+under the app's documents folder, keyed by session and round, with a note of
+where in the round each clip began, so the reel can stamp "Got it: Jaws" over
+the right moment. A live bubble with a red dot shows whenever the camera is on.
+
+### Reminders are local notifications, loaded on demand
+
+One evening nudge when a streak would end, re-planned on every return to the
+home screen. No push token is ever requested. `expo-notifications` is
+imported dynamically, so nothing about notifications runs for anyone who has
+not switched reminders on.
+
+### Opening a deck from outside goes through Expo Router's native intent
+
+`.deckhead` is declared as a document type, so AirDrop, Files, Mail and
+Messages offer to open it in Deckhead, and `app/+native-intent.tsx` sends the
+file to the import preview. Deck links go the same way. This replaced the old
+link listener, which pushed the import screen on top of an "unmatched route"
+screen the router had already opened.
+
+### Big decks travel as a flipbook of codes
+
+A deck too big for one code is cut into pieces of 1,200 characters, each
+tagged `DQ1.<tag>.<n>.<of>`, and shown about once a second. The scanner keeps
+pieces in any order, buzzes once per new piece, and rebuilds the payload when
+it has them all. The tag is a hash of the whole payload, so pieces from two
+decks cannot mix and a damaged piece is caught before decoding. Past twelve
+codes the screen says to send a file.
+
+### Deferred: nearby phones and a home-screen widget
+
+Both need native iOS code that cannot be compiled or run in this environment,
+and a native module that fails to compile breaks the whole build.
+
+- Nearby phones (MultipeerConnectivity) has no maintained React Native
+  package. The one candidate is a single 2023 release that predates the New
+  Architecture, which React Native 0.86 requires. The honest version is a small
+  Expo module written in Swift, plus `NSLocalNetworkUsageDescription` and
+  Bonjour service entries, built and tested on two real iPhones.
+- A widget is a separate WidgetKit extension in SwiftUI, with an app group so
+  the app can hand it the streak. `@bacons/apple-targets` can generate the
+  target, and EAS can provision it, but the Swift needs a Mac and a device to
+  get right.
+
+Neither is ruled out. Both wait until there is a way to build and test them.
+
+## Bigger decks, tilt by default
+
+### Tilt is the default now
+
+The product owner asked for the phone-sideways, tip-up-or-down controls by
+default, which is how people expect a forehead game to work. The original spec
+made tap the default because the incumbent's gyro controls are unreliable; the
+answer to that was in how tilt is built, not in hiding it: a trigger well past
+anything a phone does resting on a forehead, a return to upright before the
+next gesture, and a dwell plus a motion gate, so an excited jerk does nothing.
+Tilt still replaces tap during a round, so a palm on the screen cannot answer.
+Because it is the default, a round must never be left with no way to answer: a
+phone that reports no accelerometer, can't be subscribed to, or sends no reading
+in the first 1.5 seconds hands the round back to tap.
+
+expo-sensors passes CoreMotion's readings through unchanged on iOS, so the
+direction follows Apple's convention: a screen facing the floor reads +1 on z,
+which is "tipped down", which is got it.
+
+Saved settings record every setting, so a new default would never reach a phone
+that had saved once. `settingsUpgrade.ts` switches such phones to tilt once and
+remembers it has, so anyone who then picks tap keeps tap.
+
+### A hundred cards a deck
+
+Thirty to fifty cards ran dry inside one evening, and some of the original
+decks (Around the House, Food & Drink, Act It Out) leaned on British household
+words that land flat with a college crowd. Every deck is now 100 cards. The
+flattest cards were swapped for things people actually argue about, the decks
+got names and cover emoji with more personality (Home Sweet Home, Movie Night),
+and three decks joined: Celebrities, Sports, and Movie & TV Quotes, where the
+card is a line and the room has to act it out.
+
+A retained card keeps its exact text, so its id, and the stats tied to it,
+survive. Dropped cards simply stop appearing; past games keep their own copy of
+what was played. Bundled decks' updatedAt moved forward so existing phones pick
+the new content up on the next launch.
+
+### Proving "no Wi-Fi needed"
+
+Offline was already enforced in source: a lint rule and a text scan reject any
+network call. That does not catch a build that reaches out on its own, so a
+second set of tests checks the build: no update service (expo-updates), no dev
+client that loads code from a computer, no analytics or crash-reporting SDKs,
+no over-the-air update URL, no web addresses in bundled decks, and on-device
+speech recognition only.
+
+It was also checked end to end: the web preview was played with the browser
+switched offline after the first load and every non-local request blocked and
+logged. It made none. The one place Wi-Fi matters is Expo Go during
+development, which loads the game from the computer; DEPLOY.md says so plainly.
+
+## Both ways up, and a livelier Dex
+
+### Every screen works upright and sideways
+
+The product owner wanted the app usable whichever way the phone is held, and
+turning it mid-screen was breaking layouts (the Play screen's title ran into
+its controls, round screens squeezed into a one-letter-wide column). The app
+no longer locks orientation anywhere except a running round.
+
+- `useLayout()` (src/ui/layout.ts) re-reads the screen's shape on every turn.
+  "Short" (under 500pt tall) means a phone on its side, and screens switch to
+  side-by-side layouts there: Play puts the deck on the left and the modes and
+  carousel on the right; the intro stories put Dex beside the words; the
+  decks grid goes to three or four across; step headers fold into the top bar;
+  footers put their buttons side by side; the tab bar slims down.
+- Upright, the round screens stack: the intro, recap, pause and "time's up"
+  were all written for landscape and now read top to bottom too. The card
+  pads for the Dynamic Island upright and for the notch sideways, and a photo
+  card puts the photo above the word.
+- Sideways, menu screens respect the side safe areas and hold their content to
+  a readable column instead of stretching edge to edge.
+- A running round holds the orientation it started in. The holder is tipping
+  the phone against their forehead, and a sideways wobble must not spin the
+  card under them. Tilt reads the screen-normal axis, so it works the same in
+  either orientation.
+
+### A loader with a personality, and a Dex that moves
+
+Spinners became `Loader`: Dex hopping on the spot with squash and stretch, a
+shadow that shrinks as it rises, the forehead card flipping to a new emoji on
+every hop, bouncing dots and a rotating line of copy. Dex itself now bounces
+with squash and stretch, glances left and right, and every so often the card
+on its forehead wobbles; sleepy Dex breathes slowly with z's drifting off.
+Where Dex isn't inside another button it can be poked for a boing and a spin
+of the card. The Play screen's stickers float and pop in on every swipe, and
+a round of five or more gets confetti. All of it is off under reduced motion.
+
+## Making it yours: themes, controls, sound, and free decks you can edit
+
+### A light theme, chosen at launch
+
+Played outside, a near-black screen is a mirror. The light theme flips the
+canvas, surfaces, text and hairlines; deck colours, the round and the accent
+stay. Every style in the app is a static StyleSheet built when its file loads,
+so the colours are picked once at launch from the saved setting (or the phone's
+appearance for "Auto") and switching reloads the app with `reloadAppAsync`.
+That keeps every component as it was instead of threading a theme through
+dozens of files, at the cost of a one-second restart on a setting people
+change rarely. Accents used as text are darkened on the light canvas until
+they read (`onCanvas`), selected chips fill with the text colour, and native
+pieces (keyboard, alerts) follow via `Appearance.setColorScheme`.
+
+### Swipe, and the voice referee parked
+
+Swipe joins tilt and tap: up anywhere for got it, down to pass. Up and down
+because the holder's hand is on a screen facing away from them, where left and
+right swap but up stays up. The rule is in /src/game/swipe and needs distance
+or a flick, mostly vertical, so a resting palm or a tap does nothing. The voice
+referee is shown as "coming soon" and switched off in rounds
+(`VOICE_REFEREE_LAUNCHED`) until it has had a proper run at real parties.
+
+### Sound effects, after all
+
+The original call was no sound: a ding tells the guesser they got it, and it
+leaks. The product owner wants the party feel, and the room already shouts
+when someone gets it, so it is on by default. Seven sounds are synthesised by
+spec/generate-sounds.js (no downloaded or licensed audio) and bundled, so they
+play offline. They mix with music and respect the silent switch.
+
+### Editing a free deck without forking it
+
+People want to drop the cards they don't like from a free deck and add their
+own, without losing app updates to it. So a free deck is edited in place: its
+own cards can be hidden (a `hidden` mark, not a delete) and cards you add are
+stored marked `mine`. Seeding rewrites only the deck's own cards, leaves yours,
+and re-applies the hidden marks by id, so an update that improves a deck keeps
+your changes on top. Your cards show a "Yours" tag. Sharing sends what you see
+— hidden cards out, marks stripped. Copy is still there for a deck that is
+entirely yours. Favourites are a column on the deck and survive reseeding too.
+
+### Endless games, starting over, changing decks
+
+Waiting in a line, nobody wants the game to end at round four, and nobody wants
+to keep playing when one team is twenty points clear. Games can now be endless
+(and one-tap play is). Standings offer Start over — scores to zero, same
+players — and Change decks, which swaps the decks in place: scores, turns and
+seen cards carry on. Three-round mode can't change decks, since its hat was
+filled from the old ones.

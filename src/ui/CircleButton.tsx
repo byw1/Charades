@@ -18,7 +18,8 @@ export type CircleButtonProps = {
  */
 export function CircleButton({ icon, label, onPress, tone = 'glass', size = minTapTarget }: CircleButtonProps) {
   const background = tone === 'brand' ? color.brand : tone === 'scrim' ? color.scrim : color.glass;
-  const tint = tone === 'brand' ? color.ink : color.text;
+  // A scrim is always dark, whatever the theme, so its icon is always light.
+  const tint = tone === 'brand' ? color.ink : tone === 'scrim' ? color.bone : color.text;
 
   return (
     <Tap

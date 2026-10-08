@@ -1,14 +1,30 @@
 import { useLocalSearchParams, useRouter } from 'expo-router';
 import { useEffect, useState } from 'react';
-import { ActivityIndicator, Alert, FlatList, KeyboardAvoidingView, Platform, Pressable, StyleSheet, View } from 'react-native';
-import { createDeck } from '@/decks/edit';
-import { CARD_TEXT_SOFT_CAP, MIN_PLAYABLE_CARDS, type Deck } from '@/decks/types';
+import {
+  Alert,
+  FlatList,
+  Image,
+  KeyboardAvoidingView,
+  Platform,
+  Pressable,
+  StyleSheet,
+  View,
+} from 'react-native';
+import { createDeck, parseTabooInput } from '@/decks/edit';
+import { CARD_TEXT_SOFT_CAP, DEFAULT_DECK_EMOJI, MIN_PLAYABLE_CARDS, type Deck, type StoredDeck } from '@/decks/types';
 import { useDatabase } from '@/hooks/useDatabase';
 import { useDeckEditor } from '@/hooks/useDeckEditor';
 import { useHaptics } from '@/hooks/useHaptics';
+import { pickPhotos, takePhoto } from '@/media/photos';
 import { getDeck, upsertDeck } from '@/storage/deckRepo';
+import { fitCardText } from '@/ui/fitText';
+import { READABLE_WIDTH, useLayout } from '@/ui/layout';
+import { Loader } from '@/ui/Loader';
 import { Button } from '@/ui/Button';
 import { cardTextOn } from '@/ui/contrast';
+import { FreeDeckEditor } from '@/editor/FreeDeckEditor';
+import { EmojiPicker } from '@/ui/EmojiPicker';
+import { EmojiSticker } from '@/ui/EmojiSticker';
 import { EmptyState } from '@/ui/EmptyState';
 import { Field } from '@/ui/Field';
 import { Icon, type IconName } from '@/ui/Icon';
@@ -17,7 +33,7 @@ import { Tap } from '@/ui/Tap';
 import { Footer, Screen } from '@/ui/Screen';
 import { Text } from '@/ui/Text';
 import { TopBar } from '@/ui/TopBar';
-import { color, deckColors, font, gutter, radius, space } from '@/ui/tokens';
+import { color, deckColors, gutter, radius, space } from '@/ui/tokens';
 
 export default function DeckEditorScreen() {
   const { id } = useLocalSearchParams<{ id: string }>();
@@ -39,7 +55,7 @@ export default function DeckEditorScreen() {
     let cancelled = false;
 
     void (async () => {
-      const deck = await getDeck(database.db, id);
+      const deck = await getDeck(database.db, id, { withHidden: true });
       if (cancelled) return;
       if (deck) setLoaded(deck);
       else setMissing(true);
@@ -63,12 +79,13 @@ export default function DeckEditorScreen() {
     return (
       <Screen>
         <TopBar leading="close" onLeading={router.back} />
-        <View style={styles.centre}>
-          <ActivityIndicator color={color.brand} size="large" />
-        </View>
+        <Loader />
       </Screen>
     );
   }
+
+  // A free deck is made yours in place: hide its cards, add your own.
+  if ('source' in loaded && loaded.source === 'bundled') return <FreeDeckEditor deck={loaded as StoredDeck} />;
 
   return <Editor initial={loaded} isNew={isNew} />;
 }
@@ -83,8 +100,59 @@ function Editor({ initial, isNew }: { initial: Deck; isNew: boolean }) {
   const [pasting, setPasting] = useState(false);
   const [pasteText, setPasteText] = useState('');
   const [saving, setSaving] = useState(false);
+  const [tabooOpen, setTabooOpen] = useState<ReadonlySet<string>>(() => new Set());
+  const [busyPhoto, setBusyPhoto] = useState(false);
+  const [pickingEmoji, setPickingEmoji] = useState(false);
+  const { width } = useLayout();
 
   const { draft } = editor;
+
+  const withPhotoBusy = async (task: () => Promise<void>) => {
+    if (busyPhoto) return;
+    setBusyPhoto(true);
+    try {
+      await task();
+    } finally {
+      setBusyPhoto(false);
+    }
+  };
+
+  const addPhotoCards = () =>
+    withPhotoBusy(async () => {
+      const photos = await pickPhotos({ multiple: true });
+      if (photos.length === 0) return;
+      editor.addPhotoCards(photos);
+      haptics.correct();
+      Alert.alert(
+        photos.length === 1 ? 'Photo added' : `${photos.length} photos added`,
+        'Give each one a name: that’s what the room has to get the guesser to say.',
+      );
+    });
+
+  const photoFor = (cardId: string, hasPhoto: boolean) => {
+    const set = (source: 'library' | 'camera') =>
+      void withPhotoBusy(async () => {
+        const image = source === 'camera' ? await takePhoto() : (await pickPhotos())[0];
+        if (image) editor.updateCard(cardId, { image });
+      });
+
+    Alert.alert(hasPhoto ? 'Card photo' : 'Add a photo', undefined, [
+      { text: 'Choose from library', onPress: () => set('library') },
+      { text: 'Take a photo', onPress: () => set('camera') },
+      ...(hasPhoto
+        ? [{ text: 'Remove photo', style: 'destructive' as const, onPress: () => editor.updateCard(cardId, { image: null }) }]
+        : []),
+      { text: 'Cancel', style: 'cancel' as const },
+    ]);
+  };
+
+  const toggleTaboo = (cardId: string) =>
+    setTabooOpen((open) => {
+      const next = new Set(open);
+      if (next.has(cardId)) next.delete(cardId);
+      else next.add(cardId);
+      return next;
+    });
 
   const save = async () => {
     if (database.status !== 'ready' || !editor.canSave || saving) return;
@@ -172,6 +240,11 @@ function Editor({ initial, isNew }: { initial: Deck; isNew: boolean }) {
   const count = draft.cards.length;
   const needed = Math.max(0, MIN_PLAYABLE_CARDS - count);
   const onAccent = cardTextOn(draft.accentColor);
+  // The name is sized to the room beside the sticker, so a long one gets
+  // smaller rather than cut off. Sideways the screen's content is held to a
+  // readable column, so that is the width to fit.
+  const bannerWidth = Math.min(width, READABLE_WIDTH) - gutter * 2 - space.lg * 2 - 68 - space.md;
+  const nameFit = fitCardText(draft.name.trim() || 'Your deck', bannerWidth, 84, { maxSize: 32, minSize: 16, maxLines: 3 });
 
   return (
     <Screen>
@@ -187,16 +260,39 @@ function Editor({ initial, isNew }: { initial: Deck; isNew: boolean }) {
           ListHeaderComponent={
             <View style={styles.meta}>
               {/* A live preview: this is what the deck will look like. */}
+              {/* The sticker sits beside the name, never on it, so a long
+                  name wraps or shrinks instead of being covered. Tap the
+                  sticker to change it. */}
               <View style={[styles.preview, { backgroundColor: draft.accentColor }]}>
-                <Text style={[styles.previewInitial, { color: onAccent }]} accessible={false}>
-                  {[...(draft.name.trim() || 'Y')][0]?.toUpperCase()}
+                <Text style={styles.previewWatermark} accessible={false} allowFontScaling={false}>
+                  {draft.emoji ?? DEFAULT_DECK_EMOJI}
                 </Text>
-                <Text variant="display" style={{ color: onAccent }} numberOfLines={2}>
-                  {draft.name.trim() || 'Your deck'}
-                </Text>
-                <Text variant="label" style={{ color: onAccent, opacity: 0.9 }}>
-                  {count} {count === 1 ? 'card' : 'cards'}
-                </Text>
+                <Pressable
+                  onPress={() => setPickingEmoji(true)}
+                  accessibilityRole="button"
+                  accessibilityLabel="Change the cover emoji"
+                  style={styles.previewSticker}
+                >
+                  <EmojiSticker emoji={draft.emoji ?? DEFAULT_DECK_EMOJI} size={64} />
+                  <View style={styles.stickerEdit}>
+                    <Icon name="edit" size={12} color={color.ink} weight={3} />
+                  </View>
+                </Pressable>
+                <View style={styles.previewCopy}>
+                  <Text
+                    variant="display"
+                    style={[
+                      styles.previewName,
+                      { color: onAccent, fontSize: nameFit.fontSize, lineHeight: nameFit.lineHeight },
+                    ]}
+                    numberOfLines={nameFit.lines.length}
+                  >
+                    {nameFit.lines.join('\n')}
+                  </Text>
+                  <Text variant="label" style={{ color: onAccent, opacity: 0.9 }}>
+                    {count} {count === 1 ? 'card' : 'cards'}
+                  </Text>
+                </View>
               </View>
 
               <View style={styles.fieldGroup}>
@@ -241,6 +337,24 @@ function Editor({ initial, isNew }: { initial: Deck; isNew: boolean }) {
                 })}
               </View>
 
+              <Tap
+                onPress={() => setPickingEmoji(true)}
+                squish={0.98}
+                accessibilityLabel="Cover emoji. Type one or search."
+                contentStyle={styles.emojiButton}
+              >
+                <Text style={styles.emojiGlyph} allowFontScaling={false}>
+                  {draft.emoji ?? DEFAULT_DECK_EMOJI}
+                </Text>
+                <View style={styles.grow}>
+                  <Text variant="heading">Cover emoji</Text>
+                  <Text variant="caption" tone="muted">
+                    Type any emoji, or search for one
+                  </Text>
+                </View>
+                <Icon name="forward" size={18} color={color.textFaint} weight={3} />
+              </Tap>
+
               <View style={styles.progress}>
                 <View style={styles.progressText}>
                   <Text variant="heading">
@@ -276,7 +390,17 @@ function Editor({ initial, isNew }: { initial: Deck; isNew: boolean }) {
                 </Tap>
               </View>
 
-              <Button label="Paste a whole list" icon="paste" size="sm" onPress={() => setPasting(true)} />
+              <View style={styles.bulkRow}>
+                <Button label="Paste a list" icon="paste" size="sm" onPress={() => setPasting(true)} style={styles.grow} />
+                <Button
+                  label={busyPhoto ? 'Adding…' : 'Photo cards'}
+                  icon="camera"
+                  size="sm"
+                  disabled={busyPhoto}
+                  onPress={() => void addPhotoCards()}
+                  style={styles.grow}
+                />
+              </View>
 
               {count > 0 ? (
                 <Text variant="overline" tone="faint">
@@ -287,9 +411,19 @@ function Editor({ initial, isNew }: { initial: Deck; isNew: boolean }) {
           }
           renderItem={({ item, index }) => {
             const tooLong = item.text.length > CARD_TEXT_SOFT_CAP;
+            const showTaboo = tabooOpen.has(item.id) || (item.taboo?.length ?? 0) > 0;
 
             return (
               <View style={styles.cardRow}>
+                {item.image ? (
+                  <Pressable
+                    onPress={() => photoFor(item.id, true)}
+                    accessibilityRole="button"
+                    accessibilityLabel={`Photo on card ${index + 1}. Change or remove it.`}
+                  >
+                    <Image source={{ uri: item.image }} style={styles.thumb} />
+                  </Pressable>
+                ) : null}
                 <View style={styles.cardBody}>
                   <Field
                     value={item.text}
@@ -303,6 +437,21 @@ function Editor({ initial, isNew }: { initial: Deck; isNew: boolean }) {
                       {item.text.length} characters — small at arm’s length
                     </Text>
                   ) : null}
+                  {showTaboo ? (
+                    <TabooField
+                      initial={item.taboo ?? []}
+                      onChange={(taboo) => editor.updateCard(item.id, { taboo })}
+                      label={`Banned words for card ${index + 1}`}
+                    />
+                  ) : null}
+                  <View style={styles.extras}>
+                    {item.image ? null : (
+                      <Extra label="+ Photo" hint={`Add a photo to card ${index + 1}`} onPress={() => photoFor(item.id, false)} />
+                    )}
+                    {showTaboo ? null : (
+                      <Extra label="+ Banned words" hint={`Add banned words to card ${index + 1}`} onPress={() => toggleTaboo(item.id)} />
+                    )}
+                  </View>
                 </View>
 
                 <View style={styles.cardActions}>
@@ -325,6 +474,17 @@ function Editor({ initial, isNew }: { initial: Deck; isNew: boolean }) {
           }}
         />
 
+        <EmojiPicker
+          visible={pickingEmoji}
+          value={draft.emoji ?? null}
+          tint={draft.accentColor}
+          onPick={(emoji) => {
+            haptics.select();
+            editor.setEmoji(emoji);
+          }}
+          onClose={() => setPickingEmoji(false)}
+        />
+
         <Footer>
           {editor.errors.length > 0 && count > 0 ? (
             <Text variant="caption" tone="pass" align="center">
@@ -342,6 +502,41 @@ function Editor({ initial, isNew }: { initial: Deck; isNew: boolean }) {
         </Footer>
       </KeyboardAvoidingView>
     </Screen>
+  );
+}
+
+/** Banned words (the `taboo` field) as a comma-separated line, parsed as it is typed. */
+function TabooField({ initial, onChange, label }: { initial: readonly string[]; onChange: (taboo: string[]) => void; label: string }) {
+  const [text, setText] = useState(initial.join(', '));
+  return (
+    <Field
+      value={text}
+      onChangeText={(next) => {
+        setText(next);
+        onChange(parseTabooInput(next));
+      }}
+      placeholder="🚫 Words the room can’t say, separated by commas"
+      accessibilityLabel={label}
+      autoCapitalize="none"
+      autoCorrect={false}
+      style={styles.tabooInput}
+    />
+  );
+}
+
+function Extra({ label, hint, onPress }: { label: string; hint: string; onPress: () => void }) {
+  return (
+    <Pressable
+      onPress={onPress}
+      accessibilityRole="button"
+      accessibilityLabel={hint}
+      hitSlop={6}
+      style={({ pressed }) => [styles.extra, pressed && styles.iconPressed]}
+    >
+      <Text variant="caption" tone="muted">
+        {label}
+      </Text>
+    </Pressable>
   );
 }
 
@@ -377,16 +572,48 @@ const styles = StyleSheet.create({
   fill: { flex: 1 },
   list: { paddingBottom: space.lg, flexGrow: 1 },
   meta: { gap: space.md, paddingHorizontal: gutter, paddingBottom: space.sm },
-  preview: { minHeight: 140, justifyContent: 'flex-end', padding: space.lg, gap: 2, borderRadius: radius.xl, overflow: 'hidden' },
-  previewInitial: {
-    position: 'absolute',
-    right: -10,
-    top: -30,
-    fontFamily: font.display,
-    fontSize: 200,
-    lineHeight: 220,
-    opacity: 0.16,
+  preview: {
+    minHeight: 120,
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: space.md,
+    padding: space.lg,
+    borderRadius: radius.xl,
+    overflow: 'hidden',
   },
+  previewCopy: { flex: 1, gap: 2 },
+  previewName: { flexShrink: 1 },
+  stickerEdit: {
+    position: 'absolute',
+    right: -2,
+    bottom: -2,
+    width: 22,
+    height: 22,
+    borderRadius: 11,
+    backgroundColor: color.bone,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  emojiButton: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: space.md,
+    backgroundColor: color.surface,
+    borderRadius: radius.md,
+    paddingHorizontal: space.md,
+    paddingVertical: space.sm + 2,
+  },
+  previewWatermark: {
+    position: 'absolute',
+    right: -30,
+    top: -20,
+    fontSize: 150,
+    lineHeight: 180,
+    opacity: 0.2,
+    transform: [{ rotate: '-14deg' }],
+  },
+  previewSticker: { padding: 2 },
+  emojiGlyph: { fontSize: 32, lineHeight: 40 },
   fieldGroup: { gap: space.sm },
   swatches: { flexDirection: 'row', flexWrap: 'wrap', rowGap: space.sm },
   swatchCell: { width: '25%', alignItems: 'center' },
@@ -420,6 +647,11 @@ const styles = StyleSheet.create({
   },
   cardBody: { flex: 1, gap: 2 },
   cardInput: { paddingVertical: space.sm + 2 },
+  thumb: { width: 52, height: 52, borderRadius: radius.sm, marginTop: 2 },
+  extras: { flexDirection: 'row', gap: space.md, paddingTop: 2 },
+  extra: { paddingVertical: 2, borderRadius: radius.sm },
+  tabooInput: { paddingVertical: space.xs + 2, fontSize: 15 },
+  bulkRow: { flexDirection: 'row', gap: space.sm },
   cardActions: { flexDirection: 'row', gap: 2, paddingTop: 6 },
   icon: {
     width: 36,

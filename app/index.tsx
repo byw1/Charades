@@ -1,11 +1,15 @@
 import { Redirect, useFocusEffect, useRouter } from 'expo-router';
 import { useCallback, useMemo, useRef, useState } from 'react';
-import { ScrollView, StyleSheet, useWindowDimensions, View } from 'react-native';
-import type { DeckSummary } from '@/decks/types';
+import { Alert, ScrollView, StyleSheet, useWindowDimensions, View } from 'react-native';
+import { DEFAULT_DECK_EMOJI, MIN_PLAYABLE_CARDS, type DeckSummary } from '@/decks/types';
+import { friendBoard, topRivalry, type Friend, type Rivalry } from '@/game/friends';
+import { planStreakReminder } from '@/game/reminders';
 import { playStats, type PlayStats } from '@/game/stats';
 import { standings } from '@/game/scoring';
 import { isJustPlay, makeJustPlayTeam } from '@/game/teams';
-import { defaultSettings, type Session } from '@/game/types';
+import { settingsForMode, type Session } from '@/game/types';
+import { CardPreview } from '@/home/CardPreview';
+import { DECK_SORTS, orderDecks, playCounts } from '@/home/deckOrder';
 import { DecksPage } from '@/home/DecksPage';
 import { MePage } from '@/home/MePage';
 import { mixLens, PlayPage, type Lens } from '@/home/PlayPage';
@@ -14,7 +18,9 @@ import { useNewGameStore } from '@/hooks/useNewGameStore';
 import { useSessionStore } from '@/hooks/useSessionStore';
 import { useSettingsStore } from '@/hooks/useSettings';
 import { useStartGame } from '@/hooks/useStartGame';
-import { getDeck, listDeckSummaries, searchDeckSummaries } from '@/storage/deckRepo';
+import { getDeck, listDeckSummaries, searchDeckSummaries, setFavorite } from '@/storage/deckRepo';
+import { deckMakerAvailable } from '@/media/ai';
+import { syncStreakReminder } from '@/media/reminders';
 import { getResumableSession, listSessions } from '@/storage/sessionRepo';
 import { BottomBar, useBottomBarHeight, type BottomTab } from '@/ui/BottomBar';
 import { Tap } from '@/ui/Tap';
@@ -38,6 +44,9 @@ export default function HomeScreen() {
   const router = useRouter();
   const database = useDatabase();
   const onboarded = useSettingsStore((s) => s.onboarded);
+  const quickMode = useSettingsStore((s) => s.quickMode);
+  const setSetting = useSettingsStore((s) => s.set);
+  const setGameMode = useNewGameStore((s) => s.setGameMode);
   const { width } = useWindowDimensions();
   const pager = useRef<ScrollView>(null);
   const bar = useBottomBarHeight();
@@ -53,7 +62,14 @@ export default function HomeScreen() {
   const [query, setQuery] = useState('');
   const [saved, setSaved] = useState<Session | null>(null);
   const [stats, setStats] = useState<PlayStats | null>(null);
+  const [friends, setFriends] = useState<{ board: Friend[]; rivalry: Rivalry | null }>({ board: [], rivalry: null });
   const [lensIndex, setLensIndex] = useState(0);
+  const [plays, setPlays] = useState<ReadonlyMap<string, number>>(() => new Map());
+  const [peeking, setPeeking] = useState<Lens | null>(null);
+  const deckSort = useSettingsStore((s) => s.deckSort);
+  // Checked once: Apple Intelligence being on or off is not something that
+  // changes while the home screen is open.
+  const [canDream] = useState(() => deckMakerAvailable());
 
   // Everything is reloaded on focus, so coming back from a game, the editor or
   // an import shows what just changed.
@@ -73,7 +89,14 @@ export default function HomeScreen() {
         if (cancelled) return;
         setAll(decks);
         setSaved(session);
-        setStats(playStats(history, new Date()));
+        const now = new Date();
+        const current = playStats(history, now);
+        setStats(current);
+        // Re-planned on every return home, so a game just played moves the
+        // reminder on to tomorrow.
+        void syncStreakReminder(planStreakReminder(current, now), useSettingsStore.getState().streakReminders);
+        setFriends({ board: friendBoard(history), rivalry: topRivalry(history) });
+        setPlays(playCounts(history));
       })();
 
       return () => {
@@ -98,17 +121,23 @@ export default function HomeScreen() {
     }, [database, query]),
   );
 
+  // Favourites first, then the chosen sort, on the carousel and in the grid.
+  const ordered = useMemo(() => (all ? orderDecks(all, deckSort, plays) : null), [all, deckSort, plays]);
+  const orderedFound = useMemo(() => (found ? orderDecks(found, deckSort, plays) : null), [found, deckSort, plays]);
+
   const lenses = useMemo<Lens[]>(() => {
-    if (!all) return [];
-    const decks = all.map((d) => ({
+    if (!ordered) return [];
+    const decks = ordered.map((d) => ({
       key: d.id,
       name: d.name,
       accent: d.accentColor,
       deckIds: [d.id],
       cardCount: d.cardCount,
+      emoji: d.emoji ?? DEFAULT_DECK_EMOJI,
+      favorite: d.favorite,
     }));
-    return [mixLens(all), ...decks];
-  }, [all]);
+    return [mixLens(ordered), ...decks];
+  }, [ordered]);
 
   if (!onboarded) return <Redirect href="/welcome" />;
 
@@ -117,15 +146,47 @@ export default function HomeScreen() {
     setPage(index);
   };
 
+  // One tap plays an endless game: keep passing the phone round until you
+  // stop. Three-round mode still ends when the hat is cleared.
   const quickPlay = (lens: Lens) => {
-    void start({ deckIds: lens.deckIds, teams: [makeJustPlayTeam()], settings: defaultSettings });
+    const settings = settingsForMode(quickMode);
+    void start({
+      deckIds: lens.deckIds,
+      teams: [makeJustPlayTeam()],
+      settings: quickMode === 'threeRounds' ? settings : { ...settings, winCondition: { kind: 'endless' } },
+    });
   };
 
   const setup = (lens: Lens) => {
     resetDraft();
+    setGameMode(quickMode);
     for (const id of lens.deckIds) toggleDeck(id);
     router.push(lens.key === 'mix' ? '/new/decks' : '/new/teams');
   };
+
+  const favorite = async (lens: Lens) => {
+    const id = lens.deckIds[0];
+    if (!id || database.status !== 'ready' || !all) return;
+    await setFavorite(database.db, id, !lens.favorite);
+    const next = all.map((d) => (d.id === id ? { ...d, favorite: !lens.favorite } : d));
+    setAll(next);
+    // The deck moves in the order; keep it under the shutter as it does.
+    // Mix is lens 0, so a deck's lens is its place in the order plus one.
+    setLensIndex(orderDecks(next, deckSort, plays).findIndex((d) => d.id === id) + 1);
+  };
+
+  const chooseSort = () =>
+    Alert.alert(
+      'Order decks by',
+      'Favourites always come first.',
+      [
+        ...DECK_SORTS.map((option) => ({
+          text: option.key === deckSort ? `${option.label} ✓` : option.label,
+          onPress: () => setSetting('deckSort', option.key),
+        })),
+        { text: 'Cancel', style: 'cancel' as const },
+      ],
+    );
 
   const resume = async () => {
     if (!saved || database.status !== 'ready') return;
@@ -160,13 +221,15 @@ export default function HomeScreen() {
         }}
       >
         <DecksPage
-          decks={query.trim() ? found : all}
+          decks={query.trim() ? orderedFound : ordered}
           error={database.status === 'error' ? database.message : undefined}
           query={query}
           onQuery={setQuery}
           onOpen={(id) => router.push(`/decks/${id}`)}
           onNew={() => router.push('/decks/edit/new')}
           onImport={() => router.push('/decks/import')}
+          onGroup={() => router.push('/decks/group')}
+          onMagic={canDream ? () => router.push('/decks/magic') : undefined}
           bottomInset={bar}
         />
         <PlayPage
@@ -185,9 +248,22 @@ export default function HomeScreen() {
           resume={saved ? <ResumeBanner session={saved} onPress={() => void resume()} /> : null}
           starting={starting}
           bottomInset={bar}
+          mode={quickMode}
+          onMode={(mode) => setSetting('quickMode', mode)}
+          onPreview={setPeeking}
+          onFavorite={(lens) => void favorite(lens)}
+          onEdit={(lens) => {
+            const id = lens.deckIds[0];
+            if (id) router.push(`/decks/edit/${id}`);
+          }}
+          sortLabel={DECK_SORTS.find((option) => option.key === deckSort)?.label ?? 'Sort'}
+          onSort={chooseSort}
         />
         <MePage
           stats={stats}
+          friends={friends.board}
+          rivalry={friends.rivalry}
+          onWrapped={() => router.push('/wrapped')}
           onSettings={() => router.push('/settings')}
           onRules={() => router.push('/welcome?replay=1')}
           bottomInset={bar}
@@ -197,6 +273,32 @@ export default function HomeScreen() {
       <View style={styles.bar}>
         <BottomBar tabs={TABS} active={page} onSelect={goTo} />
       </View>
+
+      <CardPreview
+        visible={peeking !== null}
+        title={peeking?.name ?? ''}
+        deckIds={peeking?.deckIds ?? []}
+        shuffle={peeking?.key === 'mix'}
+        onClose={() => setPeeking(null)}
+        onPlay={
+          peeking && peeking.cardCount >= MIN_PLAYABLE_CARDS
+            ? () => {
+                const lens = peeking;
+                setPeeking(null);
+                quickPlay(lens);
+              }
+            : undefined
+        }
+        onEdit={
+          peeking && peeking.key !== 'mix'
+            ? () => {
+                const id = peeking.deckIds[0];
+                setPeeking(null);
+                if (id) router.push(`/decks/edit/${id}`);
+              }
+            : undefined
+        }
+      />
     </View>
   );
 }
@@ -231,7 +333,7 @@ function ResumeBanner({ session, onPress }: { session: Session; onPress: () => v
 }
 
 const styles = StyleSheet.create({
-  screen: { flex: 1, backgroundColor: '#000000' },
+  screen: { flex: 1, backgroundColor: color.chrome },
   bar: { position: 'absolute', left: 0, right: 0, bottom: 0 },
   banner: {
     flexDirection: 'row',

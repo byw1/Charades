@@ -1,0 +1,1118 @@
+{
+  "schemaVersion": 1,
+  "id": "dck_7f210d51",
+  "name": "College Life",
+  "description": "Dorms, deadlines and the dining hall. Everyone has a story for at least half of these.",
+  "author": "Deckhead",
+  "language": "en",
+  "accentColor": "#FFE500",
+  "emoji": "🎓",
+  "tags": [
+    "college",
+    "school"
+  ],
+  "createdAt": "2026-10-07T20:00:00Z",
+  "updatedAt": "2026-10-07T22:00:00Z",
+  "cards": [
+    {
+      "id": "crd_79f3f752",
+      "text": "Dorm room",
+      "note": null,
+      "taboo": [
+        "bed",
+        "roommate",
+        "residence",
+        "small"
+      ]
+    },
+    {
+      "id": "crd_e5485adf",
+      "text": "Roommate",
+      "note": null,
+      "taboo": [
+        "share",
+        "room",
+        "live with",
+        "dorm"
+      ]
+    },
+    {
+      "id": "crd_eed4ac97",
+      "text": "All-nighter",
+      "note": null,
+      "taboo": [
+        "stay up",
+        "sleep",
+        "study",
+        "coffee"
+      ]
+    },
+    {
+      "id": "crd_73c1beac",
+      "text": "Group project",
+      "note": null,
+      "taboo": [
+        "team",
+        "assignment",
+        "lazy",
+        "slides"
+      ]
+    },
+    {
+      "id": "crd_7c226e17",
+      "text": "Ramen noodles",
+      "note": null,
+      "taboo": [
+        "cheap",
+        "instant",
+        "packet",
+        "broke"
+      ]
+    },
+    {
+      "id": "crd_cccb9fc1",
+      "text": "Dining hall",
+      "note": null,
+      "taboo": [
+        "food",
+        "cafeteria",
+        "meal plan",
+        "trays"
+      ]
+    },
+    {
+      "id": "crd_fae7e0b3",
+      "text": "Office hours",
+      "note": null,
+      "taboo": [
+        "professor",
+        "visit",
+        "questions",
+        "time"
+      ]
+    },
+    {
+      "id": "crd_43596d6d",
+      "text": "Syllabus",
+      "note": null,
+      "taboo": [
+        "course",
+        "outline",
+        "first day",
+        "schedule"
+      ]
+    },
+    {
+      "id": "crd_1685d74e",
+      "text": "Spring break",
+      "note": null,
+      "taboo": [
+        "vacation",
+        "beach",
+        "March",
+        "holiday"
+      ]
+    },
+    {
+      "id": "crd_88b0c6af",
+      "text": "Finals week",
+      "note": null,
+      "taboo": [
+        "exams",
+        "stress",
+        "study",
+        "end of term"
+      ]
+    },
+    {
+      "id": "crd_bc4b4516",
+      "text": "Lecture hall",
+      "note": null,
+      "taboo": [
+        "big",
+        "room",
+        "seats",
+        "professor"
+      ]
+    },
+    {
+      "id": "crd_4da69b5d",
+      "text": "Student loans",
+      "note": null,
+      "taboo": [
+        "debt",
+        "money",
+        "borrow",
+        "pay back"
+      ]
+    },
+    {
+      "id": "crd_473973ec",
+      "text": "Graduation",
+      "note": null,
+      "taboo": [
+        "cap",
+        "gown",
+        "diploma",
+        "ceremony"
+      ]
+    },
+    {
+      "id": "crd_8cce3147",
+      "text": "Homecoming",
+      "note": null,
+      "taboo": [
+        "football",
+        "dance",
+        "alumni",
+        "king"
+      ]
+    },
+    {
+      "id": "crd_86656735",
+      "text": "Laundry day",
+      "note": null,
+      "taboo": [
+        "wash",
+        "clothes",
+        "quarters",
+        "machine"
+      ]
+    },
+    {
+      "id": "crd_6d1e79c6",
+      "text": "Campus tour",
+      "note": null,
+      "taboo": [
+        "guide",
+        "walk",
+        "backwards",
+        "visit"
+      ]
+    },
+    {
+      "id": "crd_16002fed",
+      "text": "Freshman year",
+      "note": null,
+      "taboo": [
+        "first",
+        "new",
+        "orientation",
+        "start"
+      ]
+    },
+    {
+      "id": "crd_c26c532e",
+      "text": "Textbook",
+      "note": null,
+      "taboo": [
+        "expensive",
+        "read",
+        "heavy",
+        "class"
+      ]
+    },
+    {
+      "id": "crd_63f8b856",
+      "text": "Library",
+      "note": null,
+      "taboo": [
+        "books",
+        "quiet",
+        "study",
+        "shush"
+      ]
+    },
+    {
+      "id": "crd_71b2c6bb",
+      "text": "Coffee run",
+      "note": null,
+      "taboo": [
+        "Starbucks",
+        "caffeine",
+        "order",
+        "walk"
+      ]
+    },
+    {
+      "id": "crd_e348cb6c",
+      "text": "Meal plan",
+      "note": null,
+      "taboo": [
+        "swipes",
+        "dining hall",
+        "food",
+        "card"
+      ]
+    },
+    {
+      "id": "crd_92efffb7",
+      "text": "Study abroad",
+      "note": null,
+      "taboo": [
+        "country",
+        "semester",
+        "travel",
+        "exchange"
+      ]
+    },
+    {
+      "id": "crd_32aa4731",
+      "text": "Club fair",
+      "note": null,
+      "taboo": [
+        "sign up",
+        "societies",
+        "tables",
+        "join"
+      ]
+    },
+    {
+      "id": "crd_4fc65a9f",
+      "text": "Resident advisor",
+      "note": null,
+      "taboo": [
+        "RA",
+        "floor",
+        "dorm",
+        "rules"
+      ]
+    },
+    {
+      "id": "crd_90c60b9e",
+      "text": "Move-in day",
+      "note": null,
+      "taboo": [
+        "boxes",
+        "parents",
+        "dorm",
+        "carry"
+      ]
+    },
+    {
+      "id": "crd_5cff7372",
+      "text": "Pop quiz",
+      "note": null,
+      "taboo": [
+        "surprise",
+        "test",
+        "short",
+        "teacher"
+      ]
+    },
+    {
+      "id": "crd_a43c9ada",
+      "text": "GPA",
+      "note": null,
+      "taboo": [
+        "grades",
+        "average",
+        "4.0",
+        "transcript"
+      ]
+    },
+    {
+      "id": "crd_bc60975a",
+      "text": "Major",
+      "note": null,
+      "taboo": [
+        "subject",
+        "degree",
+        "study",
+        "choose"
+      ]
+    },
+    {
+      "id": "crd_33f6d573",
+      "text": "Study group",
+      "note": null,
+      "taboo": [
+        "together",
+        "exam",
+        "notes",
+        "friends"
+      ]
+    },
+    {
+      "id": "crd_eada61ad",
+      "text": "Internship",
+      "note": null,
+      "taboo": [
+        "job",
+        "summer",
+        "experience",
+        "unpaid"
+      ]
+    },
+    {
+      "id": "crd_da69e2f3",
+      "text": "Career fair",
+      "note": null,
+      "taboo": [
+        "jobs",
+        "booths",
+        "resume",
+        "recruiters"
+      ]
+    },
+    {
+      "id": "crd_11e19420",
+      "text": "Tuition",
+      "note": null,
+      "taboo": [
+        "fees",
+        "pay",
+        "expensive",
+        "college"
+      ]
+    },
+    {
+      "id": "crd_f4a4f446",
+      "text": "Professor",
+      "note": null,
+      "taboo": [
+        "teacher",
+        "lecture",
+        "PhD",
+        "class"
+      ]
+    },
+    {
+      "id": "crd_8d647350",
+      "text": "Thesis",
+      "note": null,
+      "taboo": [
+        "essay",
+        "long",
+        "research",
+        "final"
+      ]
+    },
+    {
+      "id": "crd_3156f1b7",
+      "text": "Bunk beds",
+      "note": null,
+      "taboo": [
+        "top",
+        "bottom",
+        "ladder",
+        "sleep"
+      ]
+    },
+    {
+      "id": "crd_9c20aa72",
+      "text": "Mini fridge",
+      "note": null,
+      "taboo": [
+        "small",
+        "cold",
+        "dorm",
+        "drinks"
+      ]
+    },
+    {
+      "id": "crd_6303a037",
+      "text": "Microwave dinner",
+      "note": null,
+      "taboo": [
+        "heat up",
+        "ready meal",
+        "quick",
+        "frozen"
+      ]
+    },
+    {
+      "id": "crd_c1b22e2c",
+      "text": "Fire drill",
+      "note": null,
+      "taboo": [
+        "alarm",
+        "outside",
+        "evacuate",
+        "practice"
+      ]
+    },
+    {
+      "id": "crd_91d7c474",
+      "text": "8 a.m. class",
+      "note": null,
+      "taboo": [
+        "early",
+        "morning",
+        "tired",
+        "alarm"
+      ]
+    },
+    {
+      "id": "crd_5289d542",
+      "text": "Skipping class",
+      "note": null,
+      "taboo": [
+        "miss",
+        "lecture",
+        "sleep in",
+        "attendance"
+      ]
+    },
+    {
+      "id": "crd_6ae79164",
+      "text": "Cramming",
+      "note": null,
+      "taboo": [
+        "study",
+        "last minute",
+        "exam",
+        "memorise"
+      ]
+    },
+    {
+      "id": "crd_dd1ea61a",
+      "text": "Plagiarism",
+      "note": null,
+      "taboo": [
+        "copy",
+        "cheating",
+        "essay",
+        "sources"
+      ]
+    },
+    {
+      "id": "crd_3e9be5b2",
+      "text": "Extension",
+      "note": null,
+      "taboo": [
+        "deadline",
+        "more time",
+        "essay",
+        "ask"
+      ]
+    },
+    {
+      "id": "crd_39f99b1f",
+      "text": "Rate My Professor",
+      "note": null,
+      "taboo": [
+        "reviews",
+        "website",
+        "chili pepper",
+        "grades"
+      ]
+    },
+    {
+      "id": "crd_f8cd46d1",
+      "text": "Student ID",
+      "note": null,
+      "taboo": [
+        "card",
+        "photo",
+        "campus",
+        "swipe"
+      ]
+    },
+    {
+      "id": "crd_b2058e74",
+      "text": "Campus squirrel",
+      "note": null,
+      "taboo": [
+        "tree",
+        "nuts",
+        "bold",
+        "fluffy"
+      ]
+    },
+    {
+      "id": "crd_2230b81b",
+      "text": "Laptop sticker",
+      "note": null,
+      "taboo": [
+        "decal",
+        "cover",
+        "stick",
+        "Mac"
+      ]
+    },
+    {
+      "id": "crd_911047c0",
+      "text": "Hoodie",
+      "note": null,
+      "taboo": [
+        "sweatshirt",
+        "hood",
+        "university",
+        "merch"
+      ]
+    },
+    {
+      "id": "crd_3143fec3",
+      "text": "Scantron",
+      "note": null,
+      "taboo": [
+        "bubble",
+        "pencil",
+        "test",
+        "scan"
+      ]
+    },
+    {
+      "id": "crd_7d70a64a",
+      "text": "Hackathon",
+      "note": null,
+      "taboo": [
+        "coding",
+        "overnight",
+        "team",
+        "build"
+      ]
+    },
+    {
+      "id": "crd_3509edc8",
+      "text": "Midterms",
+      "note": null,
+      "taboo": [
+        "exams",
+        "middle",
+        "semester",
+        "stress"
+      ]
+    },
+    {
+      "id": "crd_51dca12c",
+      "text": "Group chat",
+      "note": null,
+      "taboo": [
+        "texts",
+        "friends",
+        "messages",
+        "muted"
+      ]
+    },
+    {
+      "id": "crd_1468371e",
+      "text": "Zoom class",
+      "note": null,
+      "taboo": [
+        "online",
+        "camera off",
+        "mute",
+        "remote"
+      ]
+    },
+    {
+      "id": "crd_c5c0d4fd",
+      "text": "Dropping a class",
+      "note": null,
+      "taboo": [
+        "withdraw",
+        "deadline",
+        "course",
+        "quit"
+      ]
+    },
+    {
+      "id": "crd_65a33bd8",
+      "text": "Financial aid",
+      "note": null,
+      "taboo": [
+        "FAFSA",
+        "money",
+        "grants",
+        "tuition"
+      ]
+    },
+    {
+      "id": "crd_cf31fef4",
+      "text": "Scholarship",
+      "note": null,
+      "taboo": [
+        "money",
+        "award",
+        "essay",
+        "free"
+      ]
+    },
+    {
+      "id": "crd_ad3b80e1",
+      "text": "Campus job",
+      "note": null,
+      "taboo": [
+        "work-study",
+        "paycheck",
+        "part-time",
+        "library"
+      ]
+    },
+    {
+      "id": "crd_f4645bce",
+      "text": "Sorority",
+      "note": null,
+      "taboo": [
+        "Greek life",
+        "sisters",
+        "rush",
+        "letters"
+      ]
+    },
+    {
+      "id": "crd_81a575eb",
+      "text": "Fraternity",
+      "note": null,
+      "taboo": [
+        "Greek life",
+        "brothers",
+        "house",
+        "letters"
+      ]
+    },
+    {
+      "id": "crd_4e1dfd43",
+      "text": "Rush week",
+      "note": null,
+      "taboo": [
+        "Greek life",
+        "recruitment",
+        "bid",
+        "pledge"
+      ]
+    },
+    {
+      "id": "crd_22cd5eb8",
+      "text": "Intramurals",
+      "note": null,
+      "taboo": [
+        "sports",
+        "teams",
+        "dodgeball",
+        "league"
+      ]
+    },
+    {
+      "id": "crd_97ea6df5",
+      "text": "The quad",
+      "note": null,
+      "taboo": [
+        "lawn",
+        "center",
+        "frisbee",
+        "grass"
+      ]
+    },
+    {
+      "id": "crd_51c9385d",
+      "text": "Student union",
+      "note": null,
+      "taboo": [
+        "food court",
+        "center",
+        "hangout",
+        "building"
+      ]
+    },
+    {
+      "id": "crd_490bd801",
+      "text": "Campus bookstore",
+      "note": null,
+      "taboo": [
+        "textbooks",
+        "hoodies",
+        "merch",
+        "overpriced"
+      ]
+    },
+    {
+      "id": "crd_f7791434",
+      "text": "Parking ticket",
+      "note": null,
+      "taboo": [
+        "car",
+        "fine",
+        "meter",
+        "campus police"
+      ]
+    },
+    {
+      "id": "crd_f13d9edf",
+      "text": "Shower shoes",
+      "note": null,
+      "taboo": [
+        "flip-flops",
+        "dorm bathroom",
+        "feet",
+        "gross"
+      ]
+    },
+    {
+      "id": "crd_bf82d450",
+      "text": "Communal bathroom",
+      "note": null,
+      "taboo": [
+        "shared",
+        "dorm",
+        "showers",
+        "floor"
+      ]
+    },
+    {
+      "id": "crd_7292b1f6",
+      "text": "Quiet hours",
+      "note": null,
+      "taboo": [
+        "noise",
+        "dorm",
+        "RA",
+        "silence"
+      ]
+    },
+    {
+      "id": "crd_a15f81fb",
+      "text": "Care package",
+      "note": null,
+      "taboo": [
+        "mom",
+        "snacks",
+        "box",
+        "mail"
+      ]
+    },
+    {
+      "id": "crd_86e22abc",
+      "text": "Flashcards",
+      "note": null,
+      "taboo": [
+        "study",
+        "memorise",
+        "cards",
+        "Quizlet"
+      ]
+    },
+    {
+      "id": "crd_7f668834",
+      "text": "Highlighter",
+      "note": null,
+      "taboo": [
+        "yellow",
+        "marker",
+        "textbook",
+        "notes"
+      ]
+    },
+    {
+      "id": "crd_253cf8ef",
+      "text": "Canvas",
+      "note": null,
+      "taboo": [
+        "assignments",
+        "portal",
+        "grades",
+        "online"
+      ]
+    },
+    {
+      "id": "crd_0179ca4e",
+      "text": "Turnitin",
+      "note": null,
+      "taboo": [
+        "plagiarism",
+        "essay",
+        "upload",
+        "checker"
+      ]
+    },
+    {
+      "id": "crd_9f4304e9",
+      "text": "Word count",
+      "note": null,
+      "taboo": [
+        "essay",
+        "minimum",
+        "pages",
+        "padding"
+      ]
+    },
+    {
+      "id": "crd_654ecfc8",
+      "text": "Due at midnight",
+      "note": null,
+      "taboo": [
+        "deadline",
+        "11:59",
+        "submit",
+        "last minute"
+      ]
+    },
+    {
+      "id": "crd_a6ef68ba",
+      "text": "Teaching assistant",
+      "note": null,
+      "taboo": [
+        "TA",
+        "grader",
+        "section",
+        "grad student"
+      ]
+    },
+    {
+      "id": "crd_503779dd",
+      "text": "Lab partner",
+      "note": null,
+      "taboo": [
+        "science",
+        "experiment",
+        "goggles",
+        "team"
+      ]
+    },
+    {
+      "id": "crd_1793ef78",
+      "text": "Organic chemistry",
+      "note": null,
+      "taboo": [
+        "orgo",
+        "pre-med",
+        "hard",
+        "molecules"
+      ]
+    },
+    {
+      "id": "crd_e50b9746",
+      "text": "Pre-med",
+      "note": null,
+      "taboo": [
+        "doctor",
+        "MCAT",
+        "biology",
+        "hospital"
+      ]
+    },
+    {
+      "id": "crd_9c4ae1b0",
+      "text": "Gap year",
+      "note": null,
+      "taboo": [
+        "travel",
+        "break",
+        "before college",
+        "backpacking"
+      ]
+    },
+    {
+      "id": "crd_863bf9be",
+      "text": "Commuter student",
+      "note": null,
+      "taboo": [
+        "drive",
+        "home",
+        "parking",
+        "bus"
+      ]
+    },
+    {
+      "id": "crd_76858e70",
+      "text": "Transfer student",
+      "note": null,
+      "taboo": [
+        "new school",
+        "credits",
+        "switch",
+        "community college"
+      ]
+    },
+    {
+      "id": "crd_5db5b8dd",
+      "text": "Graduation cap",
+      "note": null,
+      "taboo": [
+        "mortarboard",
+        "decorate",
+        "tassel",
+        "toss"
+      ]
+    },
+    {
+      "id": "crd_b9c0f0ba",
+      "text": "LinkedIn",
+      "note": null,
+      "taboo": [
+        "network",
+        "jobs",
+        "profile",
+        "connections"
+      ]
+    },
+    {
+      "id": "crd_10805376",
+      "text": "Networking event",
+      "note": null,
+      "taboo": [
+        "business cards",
+        "handshake",
+        "recruiters",
+        "jobs"
+      ]
+    },
+    {
+      "id": "crd_78f9e97d",
+      "text": "Alumni",
+      "note": null,
+      "taboo": [
+        "graduates",
+        "donate",
+        "reunion",
+        "old students"
+      ]
+    },
+    {
+      "id": "crd_02698a01",
+      "text": "Tailgate",
+      "note": null,
+      "taboo": [
+        "parking lot",
+        "football",
+        "grill",
+        "game day"
+      ]
+    },
+    {
+      "id": "crd_f1b37862",
+      "text": "College mascot",
+      "note": null,
+      "taboo": [
+        "costume",
+        "school spirit",
+        "cheer",
+        "game"
+      ]
+    },
+    {
+      "id": "crd_64c61e83",
+      "text": "College acceptance letter",
+      "note": null,
+      "taboo": [
+        "admitted",
+        "envelope",
+        "congrats",
+        "dream school"
+      ]
+    },
+    {
+      "id": "crd_210b119c",
+      "text": "Waitlist",
+      "note": null,
+      "taboo": [
+        "maybe",
+        "admissions",
+        "wait",
+        "pending"
+      ]
+    },
+    {
+      "id": "crd_f4bccf91",
+      "text": "Campus visit",
+      "note": null,
+      "taboo": [
+        "tour",
+        "prospective",
+        "parents",
+        "admissions"
+      ]
+    },
+    {
+      "id": "crd_885a96fa",
+      "text": "Late-night pizza",
+      "note": null,
+      "taboo": [
+        "delivery",
+        "2am",
+        "study fuel",
+        "dorm"
+      ]
+    },
+    {
+      "id": "crd_e21b81d5",
+      "text": "Thanksgiving break",
+      "note": null,
+      "taboo": [
+        "home",
+        "turkey",
+        "November",
+        "family"
+      ]
+    },
+    {
+      "id": "crd_39647ebc",
+      "text": "Winter break",
+      "note": null,
+      "taboo": [
+        "holidays",
+        "home",
+        "December",
+        "no classes"
+      ]
+    },
+    {
+      "id": "crd_056cab80",
+      "text": "Move-out day",
+      "note": null,
+      "taboo": [
+        "boxes",
+        "dorm",
+        "end of year",
+        "parents"
+      ]
+    },
+    {
+      "id": "crd_1b5d4682",
+      "text": "Off-campus apartment",
+      "note": null,
+      "taboo": [
+        "rent",
+        "roommates",
+        "landlord",
+        "lease"
+      ]
+    },
+    {
+      "id": "crd_6a7c773f",
+      "text": "Sublet",
+      "note": null,
+      "taboo": [
+        "summer",
+        "rent",
+        "apartment",
+        "lease"
+      ]
+    },
+    {
+      "id": "crd_00b276f9",
+      "text": "Professor’s pet",
+      "note": null,
+      "taboo": [
+        "teacher",
+        "favourite",
+        "suck-up",
+        "front row"
+      ]
+    },
+    {
+      "id": "crd_312ce537",
+      "text": "Front row",
+      "note": null,
+      "taboo": [
+        "seats",
+        "eager",
+        "lecture",
+        "close"
+      ]
+    },
+    {
+      "id": "crd_9bcb0a1d",
+      "text": "Bluebook",
+      "note": null,
+      "taboo": [
+        "exam",
+        "essay",
+        "blue",
+        "handwritten"
+      ]
+    }
+  ]
+}

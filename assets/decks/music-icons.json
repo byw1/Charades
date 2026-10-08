@@ -1,0 +1,1118 @@
+{
+  "schemaVersion": 1,
+  "id": "dck_b5a8aab1",
+  "name": "Music Icons",
+  "description": "Pop stars, rappers and legends. Humming is allowed. Singing the chorus is cheating, but everyone does it.",
+  "author": "Deckhead",
+  "language": "en",
+  "accentColor": "#00C2B2",
+  "emoji": "🎤",
+  "tags": [
+    "music",
+    "pop culture"
+  ],
+  "createdAt": "2026-10-07T20:00:00Z",
+  "updatedAt": "2026-10-07T22:00:00Z",
+  "cards": [
+    {
+      "id": "crd_68da12fe",
+      "text": "Taylor Swift",
+      "note": null,
+      "taboo": [
+        "Swifties",
+        "Eras Tour",
+        "Shake It Off",
+        "Love Story"
+      ]
+    },
+    {
+      "id": "crd_4abfb6f6",
+      "text": "Beyoncé",
+      "note": null,
+      "taboo": [
+        "Queen B",
+        "Single Ladies",
+        "Destiny's Child",
+        "Beyhive"
+      ]
+    },
+    {
+      "id": "crd_8d297ca2",
+      "text": "Drake",
+      "note": null,
+      "taboo": [
+        "Toronto",
+        "Hotline Bling",
+        "OVO",
+        "rapper"
+      ]
+    },
+    {
+      "id": "crd_10e8d51f",
+      "text": "Bad Bunny",
+      "note": null,
+      "taboo": [
+        "Puerto Rico",
+        "reggaeton",
+        "Spanish",
+        "Benito"
+      ]
+    },
+    {
+      "id": "crd_543e288f",
+      "text": "Billie Eilish",
+      "note": null,
+      "taboo": [
+        "bad guy",
+        "Finneas",
+        "whisper",
+        "Ocean Eyes"
+      ]
+    },
+    {
+      "id": "crd_2af183bd",
+      "text": "Harry Styles",
+      "note": null,
+      "taboo": [
+        "One Direction",
+        "Watermelon Sugar",
+        "As It Was",
+        "British"
+      ]
+    },
+    {
+      "id": "crd_7dae3082",
+      "text": "Ariana Grande",
+      "note": null,
+      "taboo": [
+        "ponytail",
+        "Wicked",
+        "high notes",
+        "thank u next"
+      ]
+    },
+    {
+      "id": "crd_36c14339",
+      "text": "Olivia Rodrigo",
+      "note": null,
+      "taboo": [
+        "drivers license",
+        "Sour",
+        "Disney",
+        "Guts"
+      ]
+    },
+    {
+      "id": "crd_88b05fa5",
+      "text": "The Weeknd",
+      "note": null,
+      "taboo": [
+        "Blinding Lights",
+        "Abel",
+        "Super Bowl",
+        "Canadian"
+      ]
+    },
+    {
+      "id": "crd_49c8612d",
+      "text": "Rihanna",
+      "note": null,
+      "taboo": [
+        "Umbrella",
+        "Barbados",
+        "Fenty",
+        "Diamonds"
+      ]
+    },
+    {
+      "id": "crd_43b8a67b",
+      "text": "Kendrick Lamar",
+      "note": null,
+      "taboo": [
+        "Compton",
+        "Not Like Us",
+        "Pulitzer",
+        "rapper"
+      ]
+    },
+    {
+      "id": "crd_b5292f63",
+      "text": "Doja Cat",
+      "note": null,
+      "taboo": [
+        "Say So",
+        "Planet Her",
+        "rapper",
+        "Mooo"
+      ]
+    },
+    {
+      "id": "crd_100d37fa",
+      "text": "SZA",
+      "note": null,
+      "taboo": [
+        "Kill Bill",
+        "SOS",
+        "Snooze",
+        "R&B"
+      ]
+    },
+    {
+      "id": "crd_42a52df7",
+      "text": "Dua Lipa",
+      "note": null,
+      "taboo": [
+        "Levitating",
+        "New Rules",
+        "Barbie",
+        "British"
+      ]
+    },
+    {
+      "id": "crd_9716fa82",
+      "text": "Ed Sheeran",
+      "note": null,
+      "taboo": [
+        "ginger",
+        "Shape of You",
+        "guitar",
+        "loop pedal"
+      ]
+    },
+    {
+      "id": "crd_8f91b75c",
+      "text": "Bruno Mars",
+      "note": null,
+      "taboo": [
+        "Uptown Funk",
+        "Silk Sonic",
+        "24K Magic",
+        "Hawaii"
+      ]
+    },
+    {
+      "id": "crd_3088c14a",
+      "text": "Lady Gaga",
+      "note": null,
+      "taboo": [
+        "Bad Romance",
+        "Little Monsters",
+        "meat dress",
+        "A Star Is Born"
+      ]
+    },
+    {
+      "id": "crd_1fa7dac9",
+      "text": "Post Malone",
+      "note": null,
+      "taboo": [
+        "face tattoos",
+        "Circles",
+        "Sunflower",
+        "Posty"
+      ]
+    },
+    {
+      "id": "crd_59b7ae20",
+      "text": "Justin Bieber",
+      "note": null,
+      "taboo": [
+        "Baby",
+        "Beliebers",
+        "Canada",
+        "YouTube"
+      ]
+    },
+    {
+      "id": "crd_74624134",
+      "text": "Adele",
+      "note": null,
+      "taboo": [
+        "Hello",
+        "Someone Like You",
+        "British",
+        "ballads"
+      ]
+    },
+    {
+      "id": "crd_745defaa",
+      "text": "BTS",
+      "note": null,
+      "taboo": [
+        "K-pop",
+        "ARMY",
+        "Dynamite",
+        "Korean"
+      ]
+    },
+    {
+      "id": "crd_fe943a8b",
+      "text": "BLACKPINK",
+      "note": null,
+      "taboo": [
+        "K-pop",
+        "Jennie",
+        "Lisa",
+        "Blinks"
+      ]
+    },
+    {
+      "id": "crd_ea20d5ac",
+      "text": "Sabrina Carpenter",
+      "note": null,
+      "taboo": [
+        "Espresso",
+        "Please Please Please",
+        "Short n' Sweet",
+        "Disney"
+      ]
+    },
+    {
+      "id": "crd_8138a3f2",
+      "text": "Chappell Roan",
+      "note": null,
+      "taboo": [
+        "Pink Pony Club",
+        "HOT TO GO",
+        "Midwest Princess",
+        "Good Luck Babe"
+      ]
+    },
+    {
+      "id": "crd_fcb4567e",
+      "text": "Nicki Minaj",
+      "note": null,
+      "taboo": [
+        "Barbz",
+        "Super Bass",
+        "Starships",
+        "rapper"
+      ]
+    },
+    {
+      "id": "crd_07fafa59",
+      "text": "Eminem",
+      "note": null,
+      "taboo": [
+        "Slim Shady",
+        "Lose Yourself",
+        "8 Mile",
+        "Detroit"
+      ]
+    },
+    {
+      "id": "crd_7c008845",
+      "text": "Megan Thee Stallion",
+      "note": null,
+      "taboo": [
+        "Hotties",
+        "Savage",
+        "Houston",
+        "rapper"
+      ]
+    },
+    {
+      "id": "crd_13235420",
+      "text": "Lil Nas X",
+      "note": null,
+      "taboo": [
+        "Old Town Road",
+        "cowboy",
+        "horses",
+        "Montero"
+      ]
+    },
+    {
+      "id": "crd_7c9de705",
+      "text": "Shakira",
+      "note": null,
+      "taboo": [
+        "Colombia",
+        "Waka Waka",
+        "Hips Don't Lie",
+        "World Cup"
+      ]
+    },
+    {
+      "id": "crd_fd808767",
+      "text": "Miley Cyrus",
+      "note": null,
+      "taboo": [
+        "Hannah Montana",
+        "Flowers",
+        "Wrecking Ball",
+        "Disney"
+      ]
+    },
+    {
+      "id": "crd_bc818271",
+      "text": "Selena Gomez",
+      "note": null,
+      "taboo": [
+        "Disney",
+        "Wizards of Waverly Place",
+        "Rare Beauty",
+        "Only Murders"
+      ]
+    },
+    {
+      "id": "crd_042456d8",
+      "text": "Katy Perry",
+      "note": null,
+      "taboo": [
+        "Firework",
+        "Roar",
+        "Teenage Dream",
+        "American Idol"
+      ]
+    },
+    {
+      "id": "crd_3b6e043c",
+      "text": "Britney Spears",
+      "note": null,
+      "taboo": [
+        "Toxic",
+        "Baby One More Time",
+        "Oops",
+        "pop princess"
+      ]
+    },
+    {
+      "id": "crd_87b0abb0",
+      "text": "Mariah Carey",
+      "note": null,
+      "taboo": [
+        "All I Want for Christmas",
+        "whistle notes",
+        "December",
+        "diva"
+      ]
+    },
+    {
+      "id": "crd_e3551244",
+      "text": "Whitney Houston",
+      "note": null,
+      "taboo": [
+        "I Will Always Love You",
+        "The Bodyguard",
+        "diva",
+        "ballad"
+      ]
+    },
+    {
+      "id": "crd_a148ed2c",
+      "text": "ABBA",
+      "note": null,
+      "taboo": [
+        "Mamma Mia",
+        "Sweden",
+        "Dancing Queen",
+        "Eurovision"
+      ]
+    },
+    {
+      "id": "crd_ebcb7d52",
+      "text": "Queen",
+      "note": null,
+      "taboo": [
+        "Freddie Mercury",
+        "Bohemian Rhapsody",
+        "We Will Rock You",
+        "band"
+      ]
+    },
+    {
+      "id": "crd_72f42437",
+      "text": "The Beatles",
+      "note": null,
+      "taboo": [
+        "Liverpool",
+        "Paul",
+        "John",
+        "Yellow Submarine"
+      ]
+    },
+    {
+      "id": "crd_feef1eca",
+      "text": "Elvis Presley",
+      "note": null,
+      "taboo": [
+        "King",
+        "rock and roll",
+        "Graceland",
+        "hips"
+      ]
+    },
+    {
+      "id": "crd_f0feeb2d",
+      "text": "Madonna",
+      "note": null,
+      "taboo": [
+        "Material Girl",
+        "Vogue",
+        "Queen of Pop",
+        "Like a Prayer"
+      ]
+    },
+    {
+      "id": "crd_95151705",
+      "text": "Bob Marley",
+      "note": null,
+      "taboo": [
+        "reggae",
+        "Jamaica",
+        "dreadlocks",
+        "One Love"
+      ]
+    },
+    {
+      "id": "crd_0039280a",
+      "text": "Frank Ocean",
+      "note": null,
+      "taboo": [
+        "Blonde",
+        "Channel Orange",
+        "R&B",
+        "mysterious"
+      ]
+    },
+    {
+      "id": "crd_8d7db1f1",
+      "text": "Tyler, the Creator",
+      "note": null,
+      "taboo": [
+        "Odd Future",
+        "IGOR",
+        "Golf",
+        "rapper"
+      ]
+    },
+    {
+      "id": "crd_5a3ac6b5",
+      "text": "Lana Del Rey",
+      "note": null,
+      "taboo": [
+        "sad",
+        "Summertime Sadness",
+        "Video Games",
+        "vintage"
+      ]
+    },
+    {
+      "id": "crd_d4ea5195",
+      "text": "Charli xcx",
+      "note": null,
+      "taboo": [
+        "brat",
+        "green",
+        "360",
+        "Von Dutch"
+      ]
+    },
+    {
+      "id": "crd_aaa066ff",
+      "text": "One Direction",
+      "note": null,
+      "taboo": [
+        "boy band",
+        "Harry",
+        "Niall",
+        "X Factor"
+      ]
+    },
+    {
+      "id": "crd_dcad5e45",
+      "text": "Coldplay",
+      "note": null,
+      "taboo": [
+        "Chris Martin",
+        "Yellow",
+        "Viva la Vida",
+        "wristbands"
+      ]
+    },
+    {
+      "id": "crd_cb459f5a",
+      "text": "Imagine Dragons",
+      "note": null,
+      "taboo": [
+        "Radioactive",
+        "Believer",
+        "Las Vegas",
+        "band"
+      ]
+    },
+    {
+      "id": "crd_6eb403a9",
+      "text": "Ice Spice",
+      "note": null,
+      "taboo": [
+        "Munch",
+        "Bronx",
+        "orange hair",
+        "rapper"
+      ]
+    },
+    {
+      "id": "crd_e337ffe3",
+      "text": "Noah Kahan",
+      "note": null,
+      "taboo": [
+        "Stick Season",
+        "Vermont",
+        "folk",
+        "guitar"
+      ]
+    },
+    {
+      "id": "crd_5c469812",
+      "text": "Prince",
+      "note": null,
+      "taboo": [
+        "Purple Rain",
+        "Minneapolis",
+        "symbol",
+        "purple"
+      ]
+    },
+    {
+      "id": "crd_cc564f4b",
+      "text": "Elton John",
+      "note": null,
+      "taboo": [
+        "Rocket Man",
+        "glasses",
+        "piano",
+        "Tiny Dancer"
+      ]
+    },
+    {
+      "id": "crd_1e66ab61",
+      "text": "David Bowie",
+      "note": null,
+      "taboo": [
+        "Ziggy Stardust",
+        "lightning bolt",
+        "Starman",
+        "glam"
+      ]
+    },
+    {
+      "id": "crd_55929b3f",
+      "text": "Stevie Wonder",
+      "note": null,
+      "taboo": [
+        "Superstition",
+        "harmonica",
+        "Motown",
+        "sunglasses"
+      ]
+    },
+    {
+      "id": "crd_c5bedb95",
+      "text": "Aretha Franklin",
+      "note": null,
+      "taboo": [
+        "Respect",
+        "Queen of Soul",
+        "Detroit",
+        "gospel"
+      ]
+    },
+    {
+      "id": "crd_add9d797",
+      "text": "Dolly Parton",
+      "note": null,
+      "taboo": [
+        "Jolene",
+        "country",
+        "9 to 5",
+        "Dollywood"
+      ]
+    },
+    {
+      "id": "crd_a4a34f89",
+      "text": "Johnny Cash",
+      "note": null,
+      "taboo": [
+        "Man in Black",
+        "country",
+        "Ring of Fire",
+        "Folsom"
+      ]
+    },
+    {
+      "id": "crd_6f91aefa",
+      "text": "Frank Sinatra",
+      "note": null,
+      "taboo": [
+        "Ol’ Blue Eyes",
+        "My Way",
+        "crooner",
+        "Fly Me to the Moon"
+      ]
+    },
+    {
+      "id": "crd_8c4448aa",
+      "text": "Tupac",
+      "note": null,
+      "taboo": [
+        "2Pac",
+        "California Love",
+        "West Coast",
+        "rapper"
+      ]
+    },
+    {
+      "id": "crd_bdbb81da",
+      "text": "Snoop Dogg",
+      "note": null,
+      "taboo": [
+        "Drop It Like It’s Hot",
+        "Martha Stewart",
+        "Long Beach",
+        "rapper"
+      ]
+    },
+    {
+      "id": "crd_0cbfcc2a",
+      "text": "Jay-Z",
+      "note": null,
+      "taboo": [
+        "Hova",
+        "Beyoncé",
+        "Brooklyn",
+        "Empire State of Mind"
+      ]
+    },
+    {
+      "id": "crd_d0916309",
+      "text": "Lil Wayne",
+      "note": null,
+      "taboo": [
+        "Weezy",
+        "Lollipop",
+        "New Orleans",
+        "rapper"
+      ]
+    },
+    {
+      "id": "crd_6a0efc5a",
+      "text": "Pharrell",
+      "note": null,
+      "taboo": [
+        "Happy",
+        "hat",
+        "Neptunes",
+        "Get Lucky"
+      ]
+    },
+    {
+      "id": "crd_1314bf7f",
+      "text": "Missy Elliott",
+      "note": null,
+      "taboo": [
+        "Get Ur Freak On",
+        "Work It",
+        "Virginia",
+        "rapper"
+      ]
+    },
+    {
+      "id": "crd_da4ae064",
+      "text": "Usher",
+      "note": null,
+      "taboo": [
+        "Yeah!",
+        "Confessions",
+        "Super Bowl",
+        "R&B"
+      ]
+    },
+    {
+      "id": "crd_f294b2c4",
+      "text": "Alicia Keys",
+      "note": null,
+      "taboo": [
+        "Fallin'",
+        "piano",
+        "Empire State of Mind",
+        "New York"
+      ]
+    },
+    {
+      "id": "crd_9d889a66",
+      "text": "Celine Dion",
+      "note": null,
+      "taboo": [
+        "My Heart Will Go On",
+        "Titanic",
+        "Canada",
+        "ballad"
+      ]
+    },
+    {
+      "id": "crd_871be0d6",
+      "text": "Shania Twain",
+      "note": null,
+      "taboo": [
+        "Man! I Feel Like a Woman!",
+        "country",
+        "Canada",
+        "That Don't Impress Me Much"
+      ]
+    },
+    {
+      "id": "crd_d6503289",
+      "text": "Avril Lavigne",
+      "note": null,
+      "taboo": [
+        "Complicated",
+        "Sk8er Boi",
+        "pop punk",
+        "Canada"
+      ]
+    },
+    {
+      "id": "crd_8724d980",
+      "text": "Paramore",
+      "note": null,
+      "taboo": [
+        "Hayley Williams",
+        "Misery Business",
+        "pop punk",
+        "band"
+      ]
+    },
+    {
+      "id": "crd_d88643fb",
+      "text": "Green Day",
+      "note": null,
+      "taboo": [
+        "American Idiot",
+        "Billie Joe",
+        "punk",
+        "Basket Case"
+      ]
+    },
+    {
+      "id": "crd_611641f6",
+      "text": "Linkin Park",
+      "note": null,
+      "taboo": [
+        "In the End",
+        "Numb",
+        "Chester",
+        "band"
+      ]
+    },
+    {
+      "id": "crd_666fa738",
+      "text": "Nirvana",
+      "note": null,
+      "taboo": [
+        "Kurt Cobain",
+        "Smells Like Teen Spirit",
+        "grunge",
+        "Seattle"
+      ]
+    },
+    {
+      "id": "crd_f33396a3",
+      "text": "Fall Out Boy",
+      "note": null,
+      "taboo": [
+        "Sugar We’re Goin Down",
+        "Patrick Stump",
+        "emo",
+        "band"
+      ]
+    },
+    {
+      "id": "crd_9ed5b673",
+      "text": "My Chemical Romance",
+      "note": null,
+      "taboo": [
+        "emo",
+        "Welcome to the Black Parade",
+        "Gerard Way",
+        "band"
+      ]
+    },
+    {
+      "id": "crd_b68f148f",
+      "text": "Panic! at the Disco",
+      "note": null,
+      "taboo": [
+        "Brendon Urie",
+        "I Write Sins",
+        "emo",
+        "High Hopes"
+      ]
+    },
+    {
+      "id": "crd_a1c1d885",
+      "text": "Arctic Monkeys",
+      "note": null,
+      "taboo": [
+        "Do I Wanna Know",
+        "Alex Turner",
+        "British",
+        "band"
+      ]
+    },
+    {
+      "id": "crd_22c297d4",
+      "text": "Maroon 5",
+      "note": null,
+      "taboo": [
+        "Adam Levine",
+        "Moves Like Jagger",
+        "band",
+        "Payphone"
+      ]
+    },
+    {
+      "id": "crd_480b6316",
+      "text": "Jonas Brothers",
+      "note": null,
+      "taboo": [
+        "Nick",
+        "Joe",
+        "Kevin",
+        "Disney"
+      ]
+    },
+    {
+      "id": "crd_37cc2063",
+      "text": "Backstreet Boys",
+      "note": null,
+      "taboo": [
+        "I Want It That Way",
+        "Nick Carter",
+        "90s",
+        "Everybody"
+      ]
+    },
+    {
+      "id": "crd_2a1922fe",
+      "text": "NSYNC",
+      "note": null,
+      "taboo": [
+        "Justin Timberlake",
+        "boy band",
+        "Bye Bye Bye",
+        "It's Gonna Be Me"
+      ]
+    },
+    {
+      "id": "crd_ade69c39",
+      "text": "Spice Girls",
+      "note": null,
+      "taboo": [
+        "Posh",
+        "Scary",
+        "Wannabe",
+        "Baby"
+      ]
+    },
+    {
+      "id": "crd_4c726918",
+      "text": "Camila Cabello",
+      "note": null,
+      "taboo": [
+        "Havana",
+        "Fifth Harmony",
+        "Señorita",
+        "Cuba"
+      ]
+    },
+    {
+      "id": "crd_7ee0fcf2",
+      "text": "Shawn Mendes",
+      "note": null,
+      "taboo": [
+        "Canada",
+        "Stitches",
+        "Señorita",
+        "guitar"
+      ]
+    },
+    {
+      "id": "crd_9962ac3b",
+      "text": "Lorde",
+      "note": null,
+      "taboo": [
+        "Royals",
+        "New Zealand",
+        "Melodrama",
+        "teenager"
+      ]
+    },
+    {
+      "id": "crd_7da361bc",
+      "text": "Hozier",
+      "note": null,
+      "taboo": [
+        "Take Me to Church",
+        "Irish",
+        "Too Sweet",
+        "deep voice"
+      ]
+    },
+    {
+      "id": "crd_f4e78fc4",
+      "text": "Sam Smith",
+      "note": null,
+      "taboo": [
+        "Stay With Me",
+        "Unholy",
+        "British",
+        "ballad"
+      ]
+    },
+    {
+      "id": "crd_06df74e2",
+      "text": "Daddy Yankee",
+      "note": null,
+      "taboo": [
+        "Gasolina",
+        "reggaeton",
+        "Despacito",
+        "Puerto Rico"
+      ]
+    },
+    {
+      "id": "crd_9b71fc07",
+      "text": "Karol G",
+      "note": null,
+      "taboo": [
+        "Bichota",
+        "Colombia",
+        "reggaeton",
+        "blue hair"
+      ]
+    },
+    {
+      "id": "crd_e449c5b7",
+      "text": "Rosalía",
+      "note": null,
+      "taboo": [
+        "Spain",
+        "flamenco",
+        "Motomami",
+        "Despechá"
+      ]
+    },
+    {
+      "id": "crd_3c1ee1c1",
+      "text": "Pitbull",
+      "note": null,
+      "taboo": [
+        "Mr. Worldwide",
+        "bald",
+        "dale",
+        "Miami"
+      ]
+    },
+    {
+      "id": "crd_00853f06",
+      "text": "Calvin Harris",
+      "note": null,
+      "taboo": [
+        "DJ",
+        "Scotland",
+        "Summer",
+        "This Is What You Came For"
+      ]
+    },
+    {
+      "id": "crd_f0180bc6",
+      "text": "Avicii",
+      "note": null,
+      "taboo": [
+        "Wake Me Up",
+        "DJ",
+        "Levels",
+        "Sweden"
+      ]
+    },
+    {
+      "id": "crd_4b453325",
+      "text": "Daft Punk",
+      "note": null,
+      "taboo": [
+        "helmets",
+        "robots",
+        "French",
+        "Get Lucky"
+      ]
+    },
+    {
+      "id": "crd_799a1258",
+      "text": "The Chainsmokers",
+      "note": null,
+      "taboo": [
+        "Closer",
+        "DJ duo",
+        "Roses",
+        "EDM"
+      ]
+    },
+    {
+      "id": "crd_a3a23d07",
+      "text": "Kesha",
+      "note": null,
+      "taboo": [
+        "TiK ToK",
+        "glitter",
+        "party",
+        "dollar sign"
+      ]
+    },
+    {
+      "id": "crd_6ec0ca67",
+      "text": "Gwen Stefani",
+      "note": null,
+      "taboo": [
+        "No Doubt",
+        "Hollaback Girl",
+        "The Voice",
+        "bananas"
+      ]
+    },
+    {
+      "id": "crd_894010f3",
+      "text": "OutKast",
+      "note": null,
+      "taboo": [
+        "Hey Ya!",
+        "André 3000",
+        "Atlanta",
+        "duo"
+      ]
+    },
+    {
+      "id": "crd_4e691d5e",
+      "text": "Childish Gambino",
+      "note": null,
+      "taboo": [
+        "Donald Glover",
+        "This Is America",
+        "Redbone",
+        "rapper"
+      ]
+    },
+    {
+      "id": "crd_f25a08ec",
+      "text": "Cardi B",
+      "note": null,
+      "taboo": [
+        "Bodak Yellow",
+        "Bronx",
+        "okurrr",
+        "rapper"
+      ]
+    }
+  ]
+}

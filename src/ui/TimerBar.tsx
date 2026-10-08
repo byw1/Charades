@@ -6,6 +6,8 @@ export type TimerBarProps = {
   fraction: number;
   /** Turns the bar yellow in the closing seconds. */
   warning?: boolean;
+  /** Distance from the top edge. Upright it has to clear the Dynamic Island. */
+  top?: number;
 };
 
 /**
@@ -15,11 +17,11 @@ export type TimerBarProps = {
  * across the room without anyone parsing digits, and the holder cannot see it
  * anyway.
  */
-export function TimerBar({ fraction, warning = false }: TimerBarProps) {
+export function TimerBar({ fraction, warning = false, top }: TimerBarProps) {
   const clamped = Math.min(1, Math.max(0, fraction));
 
   return (
-    <View style={styles.wrap} pointerEvents="none">
+    <View style={[styles.wrap, top !== undefined && { top }]} pointerEvents="none">
       <View style={styles.track}>
         <View style={[styles.fill, { width: `${clamped * 100}%`, backgroundColor: warning ? color.brand : color.bone }]} />
       </View>

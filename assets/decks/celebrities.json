@@ -1,0 +1,1118 @@
+{
+  "schemaVersion": 1,
+  "id": "dck_703a8f29",
+  "name": "Celebrities",
+  "description": "Movie stars, comedians, creators and icons. Do the impression; everyone will know.",
+  "author": "Deckhead",
+  "language": "en",
+  "accentColor": "#9B5CFF",
+  "emoji": "⭐",
+  "tags": [
+    "celebrities",
+    "pop culture"
+  ],
+  "createdAt": "2026-10-07T22:00:00Z",
+  "updatedAt": "2026-10-07T22:00:00Z",
+  "cards": [
+    {
+      "id": "crd_9afa56ad",
+      "text": "Zendaya",
+      "note": null,
+      "taboo": [
+        "Euphoria",
+        "Spider-Man",
+        "Dune",
+        "Disney"
+      ]
+    },
+    {
+      "id": "crd_cf4771ad",
+      "text": "Timothée Chalamet",
+      "note": null,
+      "taboo": [
+        "Dune",
+        "Wonka",
+        "Call Me by Your Name",
+        "French"
+      ]
+    },
+    {
+      "id": "crd_98967598",
+      "text": "Tom Holland",
+      "note": null,
+      "taboo": [
+        "Spider-Man",
+        "British",
+        "Zendaya",
+        "Uncharted"
+      ]
+    },
+    {
+      "id": "crd_592dc156",
+      "text": "Margot Robbie",
+      "note": null,
+      "taboo": [
+        "Barbie",
+        "Australian",
+        "Harley Quinn",
+        "Wolf of Wall Street"
+      ]
+    },
+    {
+      "id": "crd_b78fd282",
+      "text": "Ryan Gosling",
+      "note": null,
+      "taboo": [
+        "Ken",
+        "Barbie",
+        "The Notebook",
+        "La La Land"
+      ]
+    },
+    {
+      "id": "crd_6372d238",
+      "text": "Ryan Reynolds",
+      "note": null,
+      "taboo": [
+        "Deadpool",
+        "Canadian",
+        "sarcastic",
+        "Wrexham"
+      ]
+    },
+    {
+      "id": "crd_e95fe485",
+      "text": "Dwayne Johnson",
+      "note": null,
+      "taboo": [
+        "The Rock",
+        "eyebrow",
+        "wrestler",
+        "Moana"
+      ]
+    },
+    {
+      "id": "crd_d95e414a",
+      "text": "Kevin Hart",
+      "note": null,
+      "taboo": [
+        "short",
+        "comedian",
+        "Philadelphia",
+        "Jumanji"
+      ]
+    },
+    {
+      "id": "crd_c796ab88",
+      "text": "Keanu Reeves",
+      "note": null,
+      "taboo": [
+        "John Wick",
+        "Matrix",
+        "nice guy",
+        "Neo"
+      ]
+    },
+    {
+      "id": "crd_c5bed923",
+      "text": "Leonardo DiCaprio",
+      "note": null,
+      "taboo": [
+        "Titanic",
+        "Oscar",
+        "Inception",
+        "Jack"
+      ]
+    },
+    {
+      "id": "crd_c29f17f1",
+      "text": "Brad Pitt",
+      "note": null,
+      "taboo": [
+        "Fight Club",
+        "Ocean’s Eleven",
+        "Angelina",
+        "handsome"
+      ]
+    },
+    {
+      "id": "crd_0f8ddaa4",
+      "text": "Jennifer Aniston",
+      "note": null,
+      "taboo": [
+        "Friends",
+        "Rachel",
+        "haircut",
+        "Brad"
+      ]
+    },
+    {
+      "id": "crd_02ef7c11",
+      "text": "Jennifer Lopez",
+      "note": null,
+      "taboo": [
+        "J.Lo",
+        "Jenny from the Block",
+        "Bronx",
+        "Super Bowl"
+      ]
+    },
+    {
+      "id": "crd_427bcf83",
+      "text": "Oprah",
+      "note": null,
+      "taboo": [
+        "talk show",
+        "you get a car",
+        "Winfrey",
+        "book club"
+      ]
+    },
+    {
+      "id": "crd_92fdbf76",
+      "text": "Jimmy Fallon",
+      "note": null,
+      "taboo": [
+        "Tonight Show",
+        "late night",
+        "SNL",
+        "laughing"
+      ]
+    },
+    {
+      "id": "crd_cdb72788",
+      "text": "Gordon Ramsay",
+      "note": null,
+      "taboo": [
+        "chef",
+        "idiot sandwich",
+        "Hell’s Kitchen",
+        "shouting"
+      ]
+    },
+    {
+      "id": "crd_95ed89f0",
+      "text": "Martha Stewart",
+      "note": null,
+      "taboo": [
+        "homemaking",
+        "Snoop Dogg",
+        "crafts",
+        "baking"
+      ]
+    },
+    {
+      "id": "crd_d5e27706",
+      "text": "Kim Kardashian",
+      "note": null,
+      "taboo": [
+        "Kris Jenner",
+        "Skims",
+        "reality star",
+        "law school"
+      ]
+    },
+    {
+      "id": "crd_127ba02c",
+      "text": "Kylie Jenner",
+      "note": null,
+      "taboo": [
+        "lip kits",
+        "Kardashians",
+        "makeup",
+        "billionaire"
+      ]
+    },
+    {
+      "id": "crd_cd3f8a31",
+      "text": "Kris Jenner",
+      "note": null,
+      "taboo": [
+        "momager",
+        "Kardashians",
+        "mom",
+        "you’re doing amazing sweetie"
+      ]
+    },
+    {
+      "id": "crd_b0be58d6",
+      "text": "Paris Hilton",
+      "note": null,
+      "taboo": [
+        "that’s hot",
+        "heiress",
+        "Simple Life",
+        "chihuahua"
+      ]
+    },
+    {
+      "id": "crd_e3659f76",
+      "text": "Pedro Pascal",
+      "note": null,
+      "taboo": [
+        "Mandalorian",
+        "The Last of Us",
+        "Narcos",
+        "Chilean"
+      ]
+    },
+    {
+      "id": "crd_6787cc7f",
+      "text": "Sydney Sweeney",
+      "note": null,
+      "taboo": [
+        "Euphoria",
+        "Anyone But You",
+        "White Lotus",
+        "Cassie"
+      ]
+    },
+    {
+      "id": "crd_36f4d670",
+      "text": "Jenna Ortega",
+      "note": null,
+      "taboo": [
+        "Wednesday",
+        "Addams",
+        "Scream",
+        "dance"
+      ]
+    },
+    {
+      "id": "crd_9e9fd321",
+      "text": "Millie Bobby Brown",
+      "note": null,
+      "taboo": [
+        "Eleven",
+        "Stranger Things",
+        "Enola Holmes",
+        "British"
+      ]
+    },
+    {
+      "id": "crd_2c3ec74f",
+      "text": "Florence Pugh",
+      "note": null,
+      "taboo": [
+        "Midsommar",
+        "Little Women",
+        "Black Widow",
+        "British"
+      ]
+    },
+    {
+      "id": "crd_b873f75d",
+      "text": "Austin Butler",
+      "note": null,
+      "taboo": [
+        "Elvis",
+        "Dune",
+        "accent",
+        "Baz Luhrmann"
+      ]
+    },
+    {
+      "id": "crd_e1a5951a",
+      "text": "Jacob Elordi",
+      "note": null,
+      "taboo": [
+        "Euphoria",
+        "Saltburn",
+        "Elvis",
+        "Australian"
+      ]
+    },
+    {
+      "id": "crd_9cdac3a4",
+      "text": "Glen Powell",
+      "note": null,
+      "taboo": [
+        "Top Gun",
+        "Hit Man",
+        "Twisters",
+        "Anyone But You"
+      ]
+    },
+    {
+      "id": "crd_22d08a90",
+      "text": "Pete Davidson",
+      "note": null,
+      "taboo": [
+        "SNL",
+        "Staten Island",
+        "tattoos",
+        "comedian"
+      ]
+    },
+    {
+      "id": "crd_ba29b6ce",
+      "text": "Adam Sandler",
+      "note": null,
+      "taboo": [
+        "basketball shorts",
+        "Happy Gilmore",
+        "Grown Ups",
+        "Netflix"
+      ]
+    },
+    {
+      "id": "crd_bb6e91ce",
+      "text": "Will Ferrell",
+      "note": null,
+      "taboo": [
+        "Elf",
+        "Anchorman",
+        "SNL",
+        "Step Brothers"
+      ]
+    },
+    {
+      "id": "crd_2afec035",
+      "text": "Steve Carell",
+      "note": null,
+      "taboo": [
+        "Michael Scott",
+        "The Office",
+        "Despicable Me",
+        "Gru"
+      ]
+    },
+    {
+      "id": "crd_0e5e40e9",
+      "text": "Jim Carrey",
+      "note": null,
+      "taboo": [
+        "The Mask",
+        "Ace Ventura",
+        "rubber face",
+        "Grinch"
+      ]
+    },
+    {
+      "id": "crd_4cc9c9e7",
+      "text": "Jack Black",
+      "note": null,
+      "taboo": [
+        "School of Rock",
+        "Tenacious D",
+        "Kung Fu Panda",
+        "Steve"
+      ]
+    },
+    {
+      "id": "crd_97142448",
+      "text": "John Cena",
+      "note": null,
+      "taboo": [
+        "you can’t see me",
+        "wrestler",
+        "Peacemaker",
+        "invisible"
+      ]
+    },
+    {
+      "id": "crd_e0d1aeb5",
+      "text": "Danny DeVito",
+      "note": null,
+      "taboo": [
+        "Frank Reynolds",
+        "short",
+        "It’s Always Sunny",
+        "Penguin"
+      ]
+    },
+    {
+      "id": "crd_8dd2801e",
+      "text": "Jason Momoa",
+      "note": null,
+      "taboo": [
+        "Aquaman",
+        "Khal Drogo",
+        "tall",
+        "Hawaiian"
+      ]
+    },
+    {
+      "id": "crd_de4c03aa",
+      "text": "Chris Hemsworth",
+      "note": null,
+      "taboo": [
+        "Thor",
+        "Australian",
+        "hammer",
+        "Marvel"
+      ]
+    },
+    {
+      "id": "crd_577ac1db",
+      "text": "Chris Evans",
+      "note": null,
+      "taboo": [
+        "Captain America",
+        "Marvel",
+        "shield",
+        "Knives Out sweater"
+      ]
+    },
+    {
+      "id": "crd_a7f96d42",
+      "text": "Chris Pratt",
+      "note": null,
+      "taboo": [
+        "Star-Lord",
+        "Parks and Rec",
+        "Andy",
+        "Jurassic World"
+      ]
+    },
+    {
+      "id": "crd_0be7ffa3",
+      "text": "Scarlett Johansson",
+      "note": null,
+      "taboo": [
+        "Black Widow",
+        "Marvel",
+        "Lost in Translation",
+        "Her"
+      ]
+    },
+    {
+      "id": "crd_67582030",
+      "text": "Robert Downey Jr.",
+      "note": null,
+      "taboo": [
+        "Iron Man",
+        "Tony Stark",
+        "Sherlock",
+        "Oppenheimer"
+      ]
+    },
+    {
+      "id": "crd_1c85b131",
+      "text": "Tom Cruise",
+      "note": null,
+      "taboo": [
+        "Top Gun",
+        "Mission Impossible",
+        "stunts",
+        "running"
+      ]
+    },
+    {
+      "id": "crd_6090a6ee",
+      "text": "Tom Hanks",
+      "note": null,
+      "taboo": [
+        "Forrest Gump",
+        "Woody",
+        "Cast Away",
+        "Wilson"
+      ]
+    },
+    {
+      "id": "crd_9516e27b",
+      "text": "Morgan Freeman",
+      "note": null,
+      "taboo": [
+        "voice",
+        "narrator",
+        "God",
+        "Shawshank"
+      ]
+    },
+    {
+      "id": "crd_fb8a04b7",
+      "text": "Samuel L. Jackson",
+      "note": null,
+      "taboo": [
+        "Nick Fury",
+        "Pulp Fiction",
+        "snakes",
+        "Marvel"
+      ]
+    },
+    {
+      "id": "crd_e707a49e",
+      "text": "Denzel Washington",
+      "note": null,
+      "taboo": [
+        "Training Day",
+        "Oscar",
+        "Equalizer",
+        "actor"
+      ]
+    },
+    {
+      "id": "crd_a40f2379",
+      "text": "Meryl Streep",
+      "note": null,
+      "taboo": [
+        "Devil Wears Prada",
+        "Mamma Mia",
+        "Oscars",
+        "Miranda"
+      ]
+    },
+    {
+      "id": "crd_e3e4d264",
+      "text": "Emma Watson",
+      "note": null,
+      "taboo": [
+        "Hermione",
+        "Harry Potter",
+        "Belle",
+        "British"
+      ]
+    },
+    {
+      "id": "crd_5bae42fb",
+      "text": "Daniel Radcliffe",
+      "note": null,
+      "taboo": [
+        "Harry Potter",
+        "glasses",
+        "scar",
+        "British"
+      ]
+    },
+    {
+      "id": "crd_4c5be6ac",
+      "text": "Hailey Bieber",
+      "note": null,
+      "taboo": [
+        "Rhode",
+        "Justin",
+        "glazed donut skin",
+        "model"
+      ]
+    },
+    {
+      "id": "crd_ae91b2f1",
+      "text": "Gigi Hadid",
+      "note": null,
+      "taboo": [
+        "model",
+        "Bella",
+        "runway",
+        "Zayn"
+      ]
+    },
+    {
+      "id": "crd_c7c55976",
+      "text": "Bella Hadid",
+      "note": null,
+      "taboo": [
+        "model",
+        "Gigi",
+        "runway",
+        "sister"
+      ]
+    },
+    {
+      "id": "crd_980af510",
+      "text": "Kendall Jenner",
+      "note": null,
+      "taboo": [
+        "model",
+        "Kardashians",
+        "runway",
+        "818"
+      ]
+    },
+    {
+      "id": "crd_2dfb09da",
+      "text": "Bob Ross",
+      "note": null,
+      "taboo": [
+        "happy little trees",
+        "painter",
+        "afro",
+        "Joy of Painting"
+      ]
+    },
+    {
+      "id": "crd_ec1d54df",
+      "text": "Mr. Rogers",
+      "note": null,
+      "taboo": [
+        "neighbourhood",
+        "cardigan",
+        "kind",
+        "won’t you be my neighbor"
+      ]
+    },
+    {
+      "id": "crd_21b66b8f",
+      "text": "Steve Irwin",
+      "note": null,
+      "taboo": [
+        "Crocodile Hunter",
+        "crikey",
+        "Australia",
+        "khaki"
+      ]
+    },
+    {
+      "id": "crd_e7e38ddf",
+      "text": "Bill Nye",
+      "note": null,
+      "taboo": [
+        "Science Guy",
+        "bow tie",
+        "experiments",
+        "TV"
+      ]
+    },
+    {
+      "id": "crd_6b4646cd",
+      "text": "David Attenborough",
+      "note": null,
+      "taboo": [
+        "nature documentaries",
+        "voice",
+        "Planet Earth",
+        "British"
+      ]
+    },
+    {
+      "id": "crd_e7358a05",
+      "text": "Guy Fieri",
+      "note": null,
+      "taboo": [
+        "Flavortown",
+        "frosted tips",
+        "Diners Drive-Ins and Dives",
+        "flames"
+      ]
+    },
+    {
+      "id": "crd_3f1d9a43",
+      "text": "Simon Cowell",
+      "note": null,
+      "taboo": [
+        "judge",
+        "American Idol",
+        "X Factor",
+        "mean"
+      ]
+    },
+    {
+      "id": "crd_689600b0",
+      "text": "Ryan Seacrest",
+      "note": null,
+      "taboo": [
+        "host",
+        "American Idol",
+        "New Year’s Eve",
+        "radio"
+      ]
+    },
+    {
+      "id": "crd_2c89da02",
+      "text": "Jimmy Kimmel",
+      "note": null,
+      "taboo": [
+        "late night",
+        "Oscars host",
+        "mean tweets",
+        "talk show"
+      ]
+    },
+    {
+      "id": "crd_0aa3af29",
+      "text": "Conan O’Brien",
+      "note": null,
+      "taboo": [
+        "red hair",
+        "late night",
+        "tall",
+        "podcast"
+      ]
+    },
+    {
+      "id": "crd_521e24ff",
+      "text": "Tina Fey",
+      "note": null,
+      "taboo": [
+        "Mean Girls",
+        "30 Rock",
+        "SNL",
+        "Liz Lemon"
+      ]
+    },
+    {
+      "id": "crd_3f0d0421",
+      "text": "Amy Poehler",
+      "note": null,
+      "taboo": [
+        "Leslie Knope",
+        "SNL",
+        "Parks and Rec",
+        "Inside Out"
+      ]
+    },
+    {
+      "id": "crd_7d877a6d",
+      "text": "Mindy Kaling",
+      "note": null,
+      "taboo": [
+        "The Office",
+        "Kelly Kapoor",
+        "Never Have I Ever",
+        "writer"
+      ]
+    },
+    {
+      "id": "crd_26dcb3e5",
+      "text": "Jennifer Lawrence",
+      "note": null,
+      "taboo": [
+        "Katniss",
+        "Hunger Games",
+        "falling at the Oscars",
+        "J-Law"
+      ]
+    },
+    {
+      "id": "crd_05d9eb6c",
+      "text": "Anne Hathaway",
+      "note": null,
+      "taboo": [
+        "Princess Diaries",
+        "Devil Wears Prada",
+        "Andy",
+        "Genovia"
+      ]
+    },
+    {
+      "id": "crd_80013235",
+      "text": "Sandra Bullock",
+      "note": null,
+      "taboo": [
+        "Speed",
+        "Miss Congeniality",
+        "Gravity",
+        "The Blind Side"
+      ]
+    },
+    {
+      "id": "crd_2c1dcf49",
+      "text": "Julia Roberts",
+      "note": null,
+      "taboo": [
+        "Pretty Woman",
+        "smile",
+        "Notting Hill",
+        "Erin Brockovich"
+      ]
+    },
+    {
+      "id": "crd_83073005",
+      "text": "Reese Witherspoon",
+      "note": null,
+      "taboo": [
+        "Elle Woods",
+        "Legally Blonde",
+        "book club",
+        "Big Little Lies"
+      ]
+    },
+    {
+      "id": "crd_19b4b5c7",
+      "text": "Angelina Jolie",
+      "note": null,
+      "taboo": [
+        "Maleficent",
+        "Lara Croft",
+        "Brad Pitt",
+        "lips"
+      ]
+    },
+    {
+      "id": "crd_1c1c5117",
+      "text": "Viola Davis",
+      "note": null,
+      "taboo": [
+        "Annalise",
+        "Oscar",
+        "The Help",
+        "EGOT"
+      ]
+    },
+    {
+      "id": "crd_fe962eea",
+      "text": "Michael B. Jordan",
+      "note": null,
+      "taboo": [
+        "Creed",
+        "Killmonger",
+        "Black Panther",
+        "boxing"
+      ]
+    },
+    {
+      "id": "crd_3bef6e09",
+      "text": "Idris Elba",
+      "note": null,
+      "taboo": [
+        "Luther",
+        "British",
+        "DJ",
+        "The Wire"
+      ]
+    },
+    {
+      "id": "crd_72a3eb94",
+      "text": "Vin Diesel",
+      "note": null,
+      "taboo": [
+        "Fast & Furious",
+        "family",
+        "bald",
+        "Groot"
+      ]
+    },
+    {
+      "id": "crd_7d638020",
+      "text": "Jackie Chan",
+      "note": null,
+      "taboo": [
+        "kung fu",
+        "stunts",
+        "Rush Hour",
+        "Hong Kong"
+      ]
+    },
+    {
+      "id": "crd_8e48e2f9",
+      "text": "Arnold Schwarzenegger",
+      "note": null,
+      "taboo": [
+        "Terminator",
+        "I’ll be back",
+        "bodybuilder",
+        "governor"
+      ]
+    },
+    {
+      "id": "crd_db52b549",
+      "text": "Harrison Ford",
+      "note": null,
+      "taboo": [
+        "Indiana Jones",
+        "Han Solo",
+        "grumpy",
+        "whip"
+      ]
+    },
+    {
+      "id": "crd_6acaabe9",
+      "text": "Hugh Jackman",
+      "note": null,
+      "taboo": [
+        "Wolverine",
+        "Greatest Showman",
+        "Australian",
+        "claws"
+      ]
+    },
+    {
+      "id": "crd_7581feeb",
+      "text": "Melissa McCarthy",
+      "note": null,
+      "taboo": [
+        "Bridesmaids",
+        "comedian",
+        "Spy",
+        "Ursula"
+      ]
+    },
+    {
+      "id": "crd_22e60b6d",
+      "text": "MrBeast",
+      "note": null,
+      "taboo": [
+        "YouTube",
+        "challenges",
+        "Jimmy",
+        "Feastables"
+      ]
+    },
+    {
+      "id": "crd_e05a24e9",
+      "text": "IShowSpeed",
+      "note": null,
+      "taboo": [
+        "streamer",
+        "Ronaldo",
+        "barking",
+        "backflips"
+      ]
+    },
+    {
+      "id": "crd_2c78696e",
+      "text": "Kai Cenat",
+      "note": null,
+      "taboo": [
+        "streamer",
+        "Twitch",
+        "Mafiathon",
+        "Bronx"
+      ]
+    },
+    {
+      "id": "crd_b3282e80",
+      "text": "Charli D’Amelio",
+      "note": null,
+      "taboo": [
+        "TikTok",
+        "dancer",
+        "Renegade",
+        "Dunkin"
+      ]
+    },
+    {
+      "id": "crd_57f79a66",
+      "text": "Addison Rae",
+      "note": null,
+      "taboo": [
+        "TikTok",
+        "dancer",
+        "He’s All That",
+        "pop"
+      ]
+    },
+    {
+      "id": "crd_da21f8b6",
+      "text": "Emma Chamberlain",
+      "note": null,
+      "taboo": [
+        "YouTube",
+        "coffee",
+        "vlogs",
+        "Met Gala"
+      ]
+    },
+    {
+      "id": "crd_e1f7c757",
+      "text": "Alix Earle",
+      "note": null,
+      "taboo": [
+        "TikTok",
+        "Miami",
+        "GRWM",
+        "influencer"
+      ]
+    },
+    {
+      "id": "crd_45536fa5",
+      "text": "Khaby Lame",
+      "note": null,
+      "taboo": [
+        "TikTok",
+        "shrug",
+        "hands",
+        "life hacks"
+      ]
+    },
+    {
+      "id": "crd_d7278a19",
+      "text": "PewDiePie",
+      "note": null,
+      "taboo": [
+        "YouTube",
+        "Swedish",
+        "gaming",
+        "subscribe"
+      ]
+    },
+    {
+      "id": "crd_50be7f70",
+      "text": "Markiplier",
+      "note": null,
+      "taboo": [
+        "YouTube",
+        "gaming",
+        "mustache",
+        "FNAF"
+      ]
+    },
+    {
+      "id": "crd_6ca061b0",
+      "text": "Dude Perfect",
+      "note": null,
+      "taboo": [
+        "trick shots",
+        "YouTube",
+        "bottle flip",
+        "Texas"
+      ]
+    },
+    {
+      "id": "crd_8b3e5ca0",
+      "text": "Ninja",
+      "note": null,
+      "taboo": [
+        "Fortnite",
+        "Twitch",
+        "blue hair",
+        "headband"
+      ]
+    },
+    {
+      "id": "crd_c3ff303b",
+      "text": "Queen Elizabeth II",
+      "note": null,
+      "taboo": [
+        "crown",
+        "corgis",
+        "Buckingham Palace",
+        "monarch"
+      ]
+    },
+    {
+      "id": "crd_1323704b",
+      "text": "Prince Harry",
+      "note": null,
+      "taboo": [
+        "Meghan",
+        "Spare",
+        "ginger",
+        "royal"
+      ]
+    },
+    {
+      "id": "crd_09034b1c",
+      "text": "Albert Einstein",
+      "note": null,
+      "taboo": [
+        "E=mc²",
+        "genius",
+        "crazy hair",
+        "relativity"
+      ]
+    },
+    {
+      "id": "crd_492efec5",
+      "text": "Marilyn Monroe",
+      "note": null,
+      "taboo": [
+        "white dress",
+        "blonde",
+        "Happy Birthday Mr. President",
+        "icon"
+      ]
+    },
+    {
+      "id": "crd_7c7dc3a7",
+      "text": "Leonardo da Vinci",
+      "note": null,
+      "taboo": [
+        "Mona Lisa",
+        "painter",
+        "inventor",
+        "Renaissance"
+      ]
+    }
+  ]
+}

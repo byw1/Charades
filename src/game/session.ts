@@ -1,6 +1,6 @@
 import { cardKey } from './cardDrawer';
 import { evaluateWinCondition, type WinState } from './scoring';
-import type { Round, RoundResult, Session, SessionSettings, Team } from './types';
+import type { Phase, Round, RoundResult, Session, SessionSettings, Team } from './types';
 
 /**
  * Session lifecycle.
@@ -16,10 +16,12 @@ export type NewSessionInput = {
   teams: Team[];
   settings: SessionSettings;
   now: string;
+  /** Three-round mode: the cards in the hat. */
+  hat?: string[];
 };
 
 export function createSession(input: NewSessionInput): Session {
-  return {
+  const session: Session = {
     id: input.id,
     deckIds: input.deckIds,
     settings: input.settings,
@@ -29,6 +31,8 @@ export function createSession(input: NewSessionInput): Session {
     createdAt: input.now,
     completedAt: null,
   };
+  if (input.hat) session.hat = input.hat;
+  return session;
 }
 
 /**
@@ -50,8 +54,18 @@ export function whoseTurn(session: Session): { team: Team; playerName: string | 
   return { team, playerName };
 }
 
-/** Appends a round for whoever is up. Not persisted until the round completes. */
-export function beginRound(session: Session, roundId: string, now: string): Session {
+/**
+ * Appends a round for whoever is up. Not persisted until the round completes.
+ *
+ * The twist and phase are decided by the caller and stamped on the round, so
+ * the recap, the standings and a resumed game all agree on what was played.
+ */
+export function beginRound(
+  session: Session,
+  roundId: string,
+  now: string,
+  extras: { twist?: string | null; phase?: Phase } = {},
+): Session {
   const turn = whoseTurn(session);
   if (!turn) return session;
 
@@ -63,8 +77,16 @@ export function beginRound(session: Session, roundId: string, now: string): Sess
     endedAt: null,
     results: [],
   };
+  if (extras.twist) round.twist = extras.twist;
+  if (extras.phase) round.phase = extras.phase;
 
   return { ...session, rounds: [...session.rounds, round] };
+}
+
+/** The twist of the most recent completed round, so the next can differ. */
+export function previousTwist(session: Session): string | null {
+  const last = [...session.rounds].reverse().find((round) => round.endedAt !== null);
+  return last?.twist ?? null;
 }
 
 /**
@@ -154,7 +176,23 @@ export function rematch(session: Session, id: string, now: string): Session {
     teams: session.teams,
     settings: session.settings,
     now,
+    // No hat: in three-round mode the old cards have just been played three
+    // times, so the rematch draws a fresh one when it starts.
   });
+}
+
+/**
+ * The same game with different decks: scores, players and turns carry on, and
+ * the cards already seen stay seen. Not offered in three-round mode, where the
+ * hat was filled from the old decks.
+ */
+export function withDecks(session: Session, deckIds: readonly string[]): Session {
+  return { ...session, deckIds: [...new Set(deckIds)] };
+}
+
+/** Whether a game can swap decks part way through. */
+export function canChangeDecks(session: Session): boolean {
+  return !session.hat && session.settings.mode !== 'threeRounds' && session.completedAt === null;
 }
 
 /** Turns drawer keys into the session's seen list. Composite deckId/cardId. */

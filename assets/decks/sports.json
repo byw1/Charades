@@ -1,0 +1,1118 @@
+{
+  "schemaVersion": 1,
+  "id": "dck_1cb54222",
+  "name": "Sports",
+  "description": "Legends, superstars and the moments everyone acts out. Slam dunks, hat tricks and the Gatorade shower.",
+  "author": "Deckhead",
+  "language": "en",
+  "accentColor": "#2EA8FF",
+  "emoji": "🏀",
+  "tags": [
+    "sports",
+    "athletes"
+  ],
+  "createdAt": "2026-10-07T22:00:00Z",
+  "updatedAt": "2026-10-07T22:00:00Z",
+  "cards": [
+    {
+      "id": "crd_b17b9831",
+      "text": "Slam dunk",
+      "note": null,
+      "taboo": [
+        "basketball",
+        "hoop",
+        "jump",
+        "rim"
+      ]
+    },
+    {
+      "id": "crd_746f8245",
+      "text": "LeBron James",
+      "note": null,
+      "taboo": [
+        "Lakers",
+        "Miami",
+        "Cleveland",
+        "basketball"
+      ]
+    },
+    {
+      "id": "crd_6511afd5",
+      "text": "Michael Jordan",
+      "note": null,
+      "taboo": [
+        "Bulls",
+        "23",
+        "sneakers",
+        "Space Jam"
+      ]
+    },
+    {
+      "id": "crd_b336bbcd",
+      "text": "Stephen Curry",
+      "note": null,
+      "taboo": [
+        "Warriors",
+        "three-pointers",
+        "Golden State",
+        "night night"
+      ]
+    },
+    {
+      "id": "crd_29494ddc",
+      "text": "Kobe Bryant",
+      "note": null,
+      "taboo": [
+        "Lakers",
+        "Black Mamba",
+        "24",
+        "fadeaway"
+      ]
+    },
+    {
+      "id": "crd_ca1b568f",
+      "text": "Shaquille O’Neal",
+      "note": null,
+      "taboo": [
+        "Shaq",
+        "Lakers",
+        "huge",
+        "free throws"
+      ]
+    },
+    {
+      "id": "crd_5328141f",
+      "text": "Serena Williams",
+      "note": null,
+      "taboo": [
+        "tennis",
+        "Venus",
+        "Grand Slams",
+        "GOAT"
+      ]
+    },
+    {
+      "id": "crd_b1efbf81",
+      "text": "Simone Biles",
+      "note": null,
+      "taboo": [
+        "gymnastics",
+        "Olympics",
+        "GOAT",
+        "flips"
+      ]
+    },
+    {
+      "id": "crd_3f9b0b31",
+      "text": "Usain Bolt",
+      "note": null,
+      "taboo": [
+        "fastest man",
+        "Jamaica",
+        "lightning pose",
+        "sprinter"
+      ]
+    },
+    {
+      "id": "crd_2fc7db5b",
+      "text": "Michael Phelps",
+      "note": null,
+      "taboo": [
+        "swimming",
+        "gold medals",
+        "Olympics",
+        "Baltimore"
+      ]
+    },
+    {
+      "id": "crd_e63c2d5d",
+      "text": "Tom Brady",
+      "note": null,
+      "taboo": [
+        "Patriots",
+        "quarterback",
+        "seven rings",
+        "Buccaneers"
+      ]
+    },
+    {
+      "id": "crd_59c3a825",
+      "text": "Patrick Mahomes",
+      "note": null,
+      "taboo": [
+        "Chiefs",
+        "quarterback",
+        "Kansas City",
+        "ketchup"
+      ]
+    },
+    {
+      "id": "crd_58dd489f",
+      "text": "Travis Kelce",
+      "note": null,
+      "taboo": [
+        "Chiefs",
+        "tight end",
+        "Taylor Swift",
+        "podcast"
+      ]
+    },
+    {
+      "id": "crd_23a86235",
+      "text": "Cristiano Ronaldo",
+      "note": null,
+      "taboo": [
+        "CR7",
+        "soccer",
+        "Portugal",
+        "siuuu"
+      ]
+    },
+    {
+      "id": "crd_9bab261a",
+      "text": "Lionel Messi",
+      "note": null,
+      "taboo": [
+        "Argentina",
+        "soccer",
+        "Inter Miami",
+        "Barcelona"
+      ]
+    },
+    {
+      "id": "crd_46acc6f4",
+      "text": "Kylian Mbappé",
+      "note": null,
+      "taboo": [
+        "France",
+        "soccer",
+        "Real Madrid",
+        "fast"
+      ]
+    },
+    {
+      "id": "crd_3673b3ce",
+      "text": "David Beckham",
+      "note": null,
+      "taboo": [
+        "bend it",
+        "Posh",
+        "soccer",
+        "Inter Miami"
+      ]
+    },
+    {
+      "id": "crd_1eef2b66",
+      "text": "Tiger Woods",
+      "note": null,
+      "taboo": [
+        "golf",
+        "Masters",
+        "red shirt",
+        "Nike"
+      ]
+    },
+    {
+      "id": "crd_4a97d50a",
+      "text": "Muhammad Ali",
+      "note": null,
+      "taboo": [
+        "boxing",
+        "float like a butterfly",
+        "the greatest",
+        "Louisville"
+      ]
+    },
+    {
+      "id": "crd_9974b93c",
+      "text": "Wayne Gretzky",
+      "note": null,
+      "taboo": [
+        "hockey",
+        "The Great One",
+        "99",
+        "Canada"
+      ]
+    },
+    {
+      "id": "crd_f6b166e9",
+      "text": "Caitlin Clark",
+      "note": null,
+      "taboo": [
+        "Iowa",
+        "WNBA",
+        "logo threes",
+        "Indiana Fever"
+      ]
+    },
+    {
+      "id": "crd_41b1cb4f",
+      "text": "Shohei Ohtani",
+      "note": null,
+      "taboo": [
+        "Dodgers",
+        "Japan",
+        "pitcher",
+        "two-way"
+      ]
+    },
+    {
+      "id": "crd_5c88ae9b",
+      "text": "Babe Ruth",
+      "note": null,
+      "taboo": [
+        "Yankees",
+        "home runs",
+        "Bambino",
+        "baseball"
+      ]
+    },
+    {
+      "id": "crd_78bae576",
+      "text": "Derek Jeter",
+      "note": null,
+      "taboo": [
+        "Yankees",
+        "shortstop",
+        "captain",
+        "2"
+      ]
+    },
+    {
+      "id": "crd_6a6c7662",
+      "text": "Roger Federer",
+      "note": null,
+      "taboo": [
+        "tennis",
+        "Swiss",
+        "Wimbledon",
+        "elegant"
+      ]
+    },
+    {
+      "id": "crd_330e99ec",
+      "text": "Rafael Nadal",
+      "note": null,
+      "taboo": [
+        "tennis",
+        "Spain",
+        "clay",
+        "French Open"
+      ]
+    },
+    {
+      "id": "crd_180406af",
+      "text": "Novak Djokovic",
+      "note": null,
+      "taboo": [
+        "tennis",
+        "Serbia",
+        "Grand Slams",
+        "gluten free"
+      ]
+    },
+    {
+      "id": "crd_95028234",
+      "text": "Coco Gauff",
+      "note": null,
+      "taboo": [
+        "tennis",
+        "US Open",
+        "French Open",
+        "Florida"
+      ]
+    },
+    {
+      "id": "crd_ee82a378",
+      "text": "Tony Hawk",
+      "note": null,
+      "taboo": [
+        "skateboarding",
+        "900",
+        "video game",
+        "Birdman"
+      ]
+    },
+    {
+      "id": "crd_1894aca8",
+      "text": "Shaun White",
+      "note": null,
+      "taboo": [
+        "snowboarding",
+        "Flying Tomato",
+        "halfpipe",
+        "red hair"
+      ]
+    },
+    {
+      "id": "crd_976ffb78",
+      "text": "Victor Wembanyama",
+      "note": null,
+      "taboo": [
+        "Wemby",
+        "Spurs",
+        "tall",
+        "French"
+      ]
+    },
+    {
+      "id": "crd_75ac51f6",
+      "text": "Luka Dončić",
+      "note": null,
+      "taboo": [
+        "Lakers",
+        "Slovenia",
+        "step-back",
+        "basketball"
+      ]
+    },
+    {
+      "id": "crd_53b1706c",
+      "text": "Giannis Antetokounmpo",
+      "note": null,
+      "taboo": [
+        "Greek Freak",
+        "Bucks",
+        "Milwaukee",
+        "basketball"
+      ]
+    },
+    {
+      "id": "crd_8704199e",
+      "text": "Kevin Durant",
+      "note": null,
+      "taboo": [
+        "KD",
+        "Warriors",
+        "slim reaper",
+        "Texas"
+      ]
+    },
+    {
+      "id": "crd_694f7307",
+      "text": "Magic Johnson",
+      "note": null,
+      "taboo": [
+        "Lakers",
+        "Showtime",
+        "point guard",
+        "smile"
+      ]
+    },
+    {
+      "id": "crd_74c088df",
+      "text": "Dennis Rodman",
+      "note": null,
+      "taboo": [
+        "rebounds",
+        "dyed hair",
+        "Bulls",
+        "wild"
+      ]
+    },
+    {
+      "id": "crd_373e8920",
+      "text": "Pelé",
+      "note": null,
+      "taboo": [
+        "Brazil",
+        "soccer",
+        "legend",
+        "World Cups"
+      ]
+    },
+    {
+      "id": "crd_ef9279fc",
+      "text": "Diego Maradona",
+      "note": null,
+      "taboo": [
+        "Argentina",
+        "Hand of God",
+        "soccer",
+        "10"
+      ]
+    },
+    {
+      "id": "crd_1b905e31",
+      "text": "Jackie Robinson",
+      "note": null,
+      "taboo": [
+        "Dodgers",
+        "42",
+        "baseball",
+        "barrier"
+      ]
+    },
+    {
+      "id": "crd_84364ee1",
+      "text": "Jesse Owens",
+      "note": null,
+      "taboo": [
+        "Olympics",
+        "1936",
+        "sprinter",
+        "Berlin"
+      ]
+    },
+    {
+      "id": "crd_c5dbfaf5",
+      "text": "Sha’Carri Richardson",
+      "note": null,
+      "taboo": [
+        "sprinter",
+        "orange hair",
+        "nails",
+        "Olympics"
+      ]
+    },
+    {
+      "id": "crd_78bebd4e",
+      "text": "Chloe Kim",
+      "note": null,
+      "taboo": [
+        "snowboarding",
+        "halfpipe",
+        "Olympics",
+        "gold"
+      ]
+    },
+    {
+      "id": "crd_c3491c35",
+      "text": "Peyton Manning",
+      "note": null,
+      "taboo": [
+        "Colts",
+        "Omaha",
+        "quarterback",
+        "forehead"
+      ]
+    },
+    {
+      "id": "crd_30b93e44",
+      "text": "Odell Beckham Jr.",
+      "note": null,
+      "taboo": [
+        "one-handed catch",
+        "Giants",
+        "wide receiver",
+        "OBJ"
+      ]
+    },
+    {
+      "id": "crd_ac7ac49a",
+      "text": "Megan Rapinoe",
+      "note": null,
+      "taboo": [
+        "soccer",
+        "USWNT",
+        "purple hair",
+        "pose"
+      ]
+    },
+    {
+      "id": "crd_b448814b",
+      "text": "Touchdown",
+      "note": null,
+      "taboo": [
+        "football",
+        "end zone",
+        "six points",
+        "score"
+      ]
+    },
+    {
+      "id": "crd_a0698ae6",
+      "text": "Home run",
+      "note": null,
+      "taboo": [
+        "baseball",
+        "out of the park",
+        "bases",
+        "bat"
+      ]
+    },
+    {
+      "id": "crd_50a1f8ed",
+      "text": "Hat trick",
+      "note": null,
+      "taboo": [
+        "three goals",
+        "hockey",
+        "soccer",
+        "caps"
+      ]
+    },
+    {
+      "id": "crd_1eee3ccc",
+      "text": "Hole in one",
+      "note": null,
+      "taboo": [
+        "golf",
+        "single shot",
+        "ace",
+        "tee"
+      ]
+    },
+    {
+      "id": "crd_b712ece4",
+      "text": "Buzzer beater",
+      "note": null,
+      "taboo": [
+        "last second",
+        "shot",
+        "basketball",
+        "game winner"
+      ]
+    },
+    {
+      "id": "crd_0222ffcf",
+      "text": "Hail Mary",
+      "note": null,
+      "taboo": [
+        "long pass",
+        "football",
+        "desperate",
+        "prayer"
+      ]
+    },
+    {
+      "id": "crd_58417105",
+      "text": "Penalty kick",
+      "note": null,
+      "taboo": [
+        "soccer",
+        "goalkeeper",
+        "spot",
+        "PK"
+      ]
+    },
+    {
+      "id": "crd_c9f3d075",
+      "text": "Red card",
+      "note": null,
+      "taboo": [
+        "soccer",
+        "sent off",
+        "referee",
+        "foul"
+      ]
+    },
+    {
+      "id": "crd_113d17ad",
+      "text": "Free throw",
+      "note": null,
+      "taboo": [
+        "basketball",
+        "foul line",
+        "shot",
+        "one point"
+      ]
+    },
+    {
+      "id": "crd_2248bb82",
+      "text": "Three-pointer",
+      "note": null,
+      "taboo": [
+        "basketball",
+        "arc",
+        "long shot",
+        "downtown"
+      ]
+    },
+    {
+      "id": "crd_07e7aaa4",
+      "text": "Alley-oop",
+      "note": null,
+      "taboo": [
+        "lob",
+        "dunk",
+        "pass",
+        "basketball"
+      ]
+    },
+    {
+      "id": "crd_63fb9e71",
+      "text": "Grand slam",
+      "note": null,
+      "taboo": [
+        "bases loaded",
+        "home run",
+        "baseball",
+        "tennis"
+      ]
+    },
+    {
+      "id": "crd_89ff720d",
+      "text": "Strikeout",
+      "note": null,
+      "taboo": [
+        "three strikes",
+        "pitcher",
+        "K",
+        "baseball"
+      ]
+    },
+    {
+      "id": "crd_4e82eab1",
+      "text": "Seventh-inning stretch",
+      "note": null,
+      "taboo": [
+        "baseball",
+        "Take Me Out to the Ball Game",
+        "sing",
+        "stand"
+      ]
+    },
+    {
+      "id": "crd_90bc22eb",
+      "text": "Fantasy football",
+      "note": null,
+      "taboo": [
+        "draft",
+        "league",
+        "team",
+        "Sunday"
+      ]
+    },
+    {
+      "id": "crd_29f6515a",
+      "text": "March Madness",
+      "note": null,
+      "taboo": [
+        "college basketball",
+        "bracket",
+        "tournament",
+        "NCAA"
+      ]
+    },
+    {
+      "id": "crd_826e4d2d",
+      "text": "Super Bowl",
+      "note": null,
+      "taboo": [
+        "football",
+        "halftime show",
+        "commercials",
+        "February"
+      ]
+    },
+    {
+      "id": "crd_6b9da52b",
+      "text": "World Series",
+      "note": null,
+      "taboo": [
+        "baseball",
+        "championship",
+        "October",
+        "MLB"
+      ]
+    },
+    {
+      "id": "crd_643cce9d",
+      "text": "Stanley Cup",
+      "note": null,
+      "taboo": [
+        "hockey",
+        "trophy",
+        "NHL",
+        "playoffs"
+      ]
+    },
+    {
+      "id": "crd_7bc4f2c9",
+      "text": "World Cup",
+      "note": null,
+      "taboo": [
+        "soccer",
+        "FIFA",
+        "every four years",
+        "countries"
+      ]
+    },
+    {
+      "id": "crd_6f2169cd",
+      "text": "Olympics",
+      "note": null,
+      "taboo": [
+        "rings",
+        "gold medal",
+        "torch",
+        "every four years"
+      ]
+    },
+    {
+      "id": "crd_d18fa2d3",
+      "text": "Wimbledon",
+      "note": null,
+      "taboo": [
+        "tennis",
+        "London",
+        "strawberries",
+        "grass"
+      ]
+    },
+    {
+      "id": "crd_51061c19",
+      "text": "Tour de France",
+      "note": null,
+      "taboo": [
+        "cycling",
+        "yellow jersey",
+        "Paris",
+        "bikes"
+      ]
+    },
+    {
+      "id": "crd_baa81e1d",
+      "text": "Kentucky Derby",
+      "note": null,
+      "taboo": [
+        "horse race",
+        "hats",
+        "Churchill Downs",
+        "roses"
+      ]
+    },
+    {
+      "id": "crd_cd463a25",
+      "text": "NBA draft",
+      "note": null,
+      "taboo": [
+        "picks",
+        "commissioner",
+        "hats",
+        "prospects"
+      ]
+    },
+    {
+      "id": "crd_265c123d",
+      "text": "MVP",
+      "note": null,
+      "taboo": [
+        "most valuable",
+        "award",
+        "best player",
+        "chant"
+      ]
+    },
+    {
+      "id": "crd_634578cf",
+      "text": "Mascot",
+      "note": null,
+      "taboo": [
+        "costume",
+        "team",
+        "cheer",
+        "furry"
+      ]
+    },
+    {
+      "id": "crd_14bb7507",
+      "text": "Stadium wave",
+      "note": null,
+      "taboo": [
+        "crowd",
+        "stand up",
+        "arms",
+        "ripple"
+      ]
+    },
+    {
+      "id": "crd_afac9de4",
+      "text": "Jumbotron",
+      "note": null,
+      "taboo": [
+        "big screen",
+        "stadium",
+        "kiss cam",
+        "replays"
+      ]
+    },
+    {
+      "id": "crd_aff04051",
+      "text": "Halftime show",
+      "note": null,
+      "taboo": [
+        "Super Bowl",
+        "performance",
+        "singer",
+        "break"
+      ]
+    },
+    {
+      "id": "crd_188d902d",
+      "text": "Victory lap",
+      "note": null,
+      "taboo": [
+        "run around",
+        "celebrate",
+        "track",
+        "win"
+      ]
+    },
+    {
+      "id": "crd_9aaea96f",
+      "text": "Photo finish",
+      "note": null,
+      "taboo": [
+        "close race",
+        "camera",
+        "line",
+        "tie"
+      ]
+    },
+    {
+      "id": "crd_3416575d",
+      "text": "Instant replay",
+      "note": null,
+      "taboo": [
+        "review",
+        "slow motion",
+        "referee",
+        "TV"
+      ]
+    },
+    {
+      "id": "crd_5f752096",
+      "text": "Overtime",
+      "note": null,
+      "taboo": [
+        "extra time",
+        "tied",
+        "game",
+        "OT"
+      ]
+    },
+    {
+      "id": "crd_c66d7998",
+      "text": "Zamboni",
+      "note": null,
+      "taboo": [
+        "ice",
+        "rink",
+        "hockey",
+        "smooth"
+      ]
+    },
+    {
+      "id": "crd_8dec87fd",
+      "text": "Figure skating",
+      "note": null,
+      "taboo": [
+        "ice",
+        "spins",
+        "jumps",
+        "Olympics"
+      ]
+    },
+    {
+      "id": "crd_622bc7be",
+      "text": "Surfing",
+      "note": null,
+      "taboo": [
+        "waves",
+        "board",
+        "ocean",
+        "hang ten"
+      ]
+    },
+    {
+      "id": "crd_720519e3",
+      "text": "Kickflip",
+      "note": null,
+      "taboo": [
+        "skateboard",
+        "trick",
+        "flip",
+        "ollie"
+      ]
+    },
+    {
+      "id": "crd_c4f6b405",
+      "text": "Pickleball",
+      "note": null,
+      "taboo": [
+        "paddle",
+        "court",
+        "retirees",
+        "kitchen"
+      ]
+    },
+    {
+      "id": "crd_f132545b",
+      "text": "Spikeball",
+      "note": null,
+      "taboo": [
+        "net",
+        "ball",
+        "beach",
+        "roundnet"
+      ]
+    },
+    {
+      "id": "crd_5ae7962d",
+      "text": "Cornhole",
+      "note": null,
+      "taboo": [
+        "bean bags",
+        "boards",
+        "tailgate",
+        "toss"
+      ]
+    },
+    {
+      "id": "crd_dd0341c2",
+      "text": "Dodgeball",
+      "note": null,
+      "taboo": [
+        "school gym",
+        "throw",
+        "duck",
+        "Ben Stiller"
+      ]
+    },
+    {
+      "id": "crd_ba942475",
+      "text": "Tug of war",
+      "note": null,
+      "taboo": [
+        "rope",
+        "pull",
+        "teams",
+        "mud"
+      ]
+    },
+    {
+      "id": "crd_90f2342b",
+      "text": "Marathon",
+      "note": null,
+      "taboo": [
+        "26.2 miles",
+        "run",
+        "long",
+        "Boston"
+      ]
+    },
+    {
+      "id": "crd_05f339a5",
+      "text": "Sumo",
+      "note": null,
+      "taboo": [
+        "wrestlers",
+        "Japan",
+        "ring",
+        "push"
+      ]
+    },
+    {
+      "id": "crd_9e12507f",
+      "text": "Fencing",
+      "note": null,
+      "taboo": [
+        "swords",
+        "mask",
+        "touché",
+        "lunge"
+      ]
+    },
+    {
+      "id": "crd_12d32047",
+      "text": "Archery",
+      "note": null,
+      "taboo": [
+        "bow",
+        "arrow",
+        "target",
+        "bullseye"
+      ]
+    },
+    {
+      "id": "crd_53f7b1c8",
+      "text": "Curling",
+      "note": null,
+      "taboo": [
+        "stone",
+        "ice",
+        "brooms",
+        "sweep"
+      ]
+    },
+    {
+      "id": "crd_43d3e132",
+      "text": "Bobsled",
+      "note": null,
+      "taboo": [
+        "ice track",
+        "sled",
+        "Cool Runnings",
+        "push"
+      ]
+    },
+    {
+      "id": "crd_6f18d69c",
+      "text": "Breakdancing",
+      "note": null,
+      "taboo": [
+        "b-boy",
+        "spins",
+        "headspin",
+        "Olympics"
+      ]
+    },
+    {
+      "id": "crd_90ab31ac",
+      "text": "Cheerleading",
+      "note": null,
+      "taboo": [
+        "pom-poms",
+        "pyramid",
+        "cheer",
+        "stunts"
+      ]
+    },
+    {
+      "id": "crd_99f03c13",
+      "text": "Synchronized swimming",
+      "note": null,
+      "taboo": [
+        "pool",
+        "nose clip",
+        "together",
+        "artistic"
+      ]
+    },
+    {
+      "id": "crd_67f1e47d",
+      "text": "Referee",
+      "note": null,
+      "taboo": [
+        "whistle",
+        "stripes",
+        "ref",
+        "foul"
+      ]
+    },
+    {
+      "id": "crd_0d0f532d",
+      "text": "Gatorade shower",
+      "note": null,
+      "taboo": [
+        "coach",
+        "bucket",
+        "celebration",
+        "win"
+      ]
+    },
+    {
+      "id": "crd_cce562af",
+      "text": "Underdog",
+      "note": null,
+      "taboo": [
+        "not expected",
+        "long shot",
+        "upset",
+        "win"
+      ]
+    }
+  ]
+}

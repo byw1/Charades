@@ -1,0 +1,518 @@
+{
+  "schemaVersion": 1,
+  "id": "dck_5731c307",
+  "name": "Emoji Charades",
+  "description": "Movies, songs, holidays and sayings in emoji. The room acts out the emoji, no talking; the answer sits under them for the room.",
+  "author": "Deckhead",
+  "language": "en",
+  "accentColor": "#5B5BFF",
+  "emoji": "😜",
+  "tags": [
+    "emoji",
+    "charades"
+  ],
+  "createdAt": "2026-10-07T20:00:00Z",
+  "updatedAt": "2026-10-07T22:00:00Z",
+  "cards": [
+    {
+      "id": "crd_75bafdfe",
+      "text": "🦁👑",
+      "note": "The Lion King"
+    },
+    {
+      "id": "crd_e191f4ab",
+      "text": "🕷️👨",
+      "note": "Spider-Man"
+    },
+    {
+      "id": "crd_ef722740",
+      "text": "❄️👸",
+      "note": "Frozen"
+    },
+    {
+      "id": "crd_264f7f16",
+      "text": "🦈🏖️",
+      "note": "Jaws"
+    },
+    {
+      "id": "crd_4cdb1e38",
+      "text": "🚢🧊💔",
+      "note": "Titanic"
+    },
+    {
+      "id": "crd_659bf5e1",
+      "text": "🧙‍♂️⚡👓",
+      "note": "Harry Potter"
+    },
+    {
+      "id": "crd_0301a986",
+      "text": "🦖🏝️",
+      "note": "Jurassic Park"
+    },
+    {
+      "id": "crd_d26720ee",
+      "text": "🐠🔍",
+      "note": "Finding Nemo"
+    },
+    {
+      "id": "crd_50d61a60",
+      "text": "👻🚫",
+      "note": "Ghostbusters"
+    },
+    {
+      "id": "crd_613c4457",
+      "text": "🏠🎄👦",
+      "note": "Home Alone"
+    },
+    {
+      "id": "crd_3ad8adfe",
+      "text": "🍫🏭",
+      "note": "Charlie and the Chocolate Factory"
+    },
+    {
+      "id": "crd_d0d5bc80",
+      "text": "🐭👨‍🍳",
+      "note": "Ratatouille"
+    },
+    {
+      "id": "crd_d473f143",
+      "text": "🎈🏠👴",
+      "note": "Up"
+    },
+    {
+      "id": "crd_b0e20416",
+      "text": "🤖🌱",
+      "note": "WALL-E"
+    },
+    {
+      "id": "crd_44c28224",
+      "text": "🐼🥋",
+      "note": "Kung Fu Panda"
+    },
+    {
+      "id": "crd_9723924f",
+      "text": "👽📞🏠",
+      "note": "E.T."
+    },
+    {
+      "id": "crd_4cc0e22b",
+      "text": "🍕🐢🥷",
+      "note": "Teenage Mutant Ninja Turtles"
+    },
+    {
+      "id": "crd_8553aec2",
+      "text": "🧜‍♀️🌊",
+      "note": "The Little Mermaid"
+    },
+    {
+      "id": "crd_4c9affe5",
+      "text": "🐝🎬",
+      "note": "Bee Movie"
+    },
+    {
+      "id": "crd_cdcef637",
+      "text": "🦇👨",
+      "note": "Batman"
+    },
+    {
+      "id": "crd_1e741b6c",
+      "text": "⏰🚗⚡",
+      "note": "Back to the Future"
+    },
+    {
+      "id": "crd_8e23353e",
+      "text": "🦍🏙️",
+      "note": "King Kong"
+    },
+    {
+      "id": "crd_89ef9faf",
+      "text": "💍🌋",
+      "note": "The Lord of the Rings"
+    },
+    {
+      "id": "crd_33ed943b",
+      "text": "⭐⚔️",
+      "note": "Star Wars"
+    },
+    {
+      "id": "crd_c98a0157",
+      "text": "🧸🤠🚀",
+      "note": "Toy Story"
+    },
+    {
+      "id": "crd_201e2525",
+      "text": "👗😈",
+      "note": "The Devil Wears Prada"
+    },
+    {
+      "id": "crd_c3db70e0",
+      "text": "🐍✈️",
+      "note": "Snakes on a Plane"
+    },
+    {
+      "id": "crd_9779e7be",
+      "text": "🍎👸🪞",
+      "note": "Snow White"
+    },
+    {
+      "id": "crd_73f86d91",
+      "text": "🐉🧒🔥",
+      "note": "How to Train Your Dragon"
+    },
+    {
+      "id": "crd_0f40e937",
+      "text": "🏎️💨😡",
+      "note": "Fast & Furious"
+    },
+    {
+      "id": "crd_460bac68",
+      "text": "🌪️🏠👠",
+      "note": "The Wizard of Oz"
+    },
+    {
+      "id": "crd_f3b731e8",
+      "text": "🧞🪔",
+      "note": "Aladdin"
+    },
+    {
+      "id": "crd_9d8d5055",
+      "text": "🌸⚔️",
+      "note": "Mulan"
+    },
+    {
+      "id": "crd_0ebf167e",
+      "text": "🐻🍯",
+      "note": "Winnie the Pooh"
+    },
+    {
+      "id": "crd_b5647723",
+      "text": "🍝🐶❤️",
+      "note": "Lady and the Tramp"
+    },
+    {
+      "id": "crd_eaa07e4e",
+      "text": "🌧️🐱🐶",
+      "note": "Raining cats and dogs"
+    },
+    {
+      "id": "crd_e058e259",
+      "text": "🐘🛋️",
+      "note": "The elephant in the room"
+    },
+    {
+      "id": "crd_01309b3e",
+      "text": "🍰👌",
+      "note": "Piece of cake"
+    },
+    {
+      "id": "crd_58289c4c",
+      "text": "🐱👜",
+      "note": "Let the cat out of the bag"
+    },
+    {
+      "id": "crd_ee7ba113",
+      "text": "🧠🥶",
+      "note": "Brain freeze"
+    },
+    {
+      "id": "crd_996f1290",
+      "text": "💸🌳🚫",
+      "note": "Money doesn't grow on trees"
+    },
+    {
+      "id": "crd_5b256f6a",
+      "text": "🌙🚶",
+      "note": "Moonwalk"
+    },
+    {
+      "id": "crd_7f70fc73",
+      "text": "⏰💤",
+      "note": "Snooze button"
+    },
+    {
+      "id": "crd_655b782c",
+      "text": "🐔🥚❓",
+      "note": "The chicken or the egg"
+    },
+    {
+      "id": "crd_ec5a332c",
+      "text": "🎶🧊👶",
+      "note": "Ice Ice Baby"
+    },
+    {
+      "id": "crd_5d4de85d",
+      "text": "👀🐯",
+      "note": "Eye of the Tiger"
+    },
+    {
+      "id": "crd_02df023c",
+      "text": "💃👑",
+      "note": "Dancing Queen"
+    },
+    {
+      "id": "crd_e08faec6",
+      "text": "🌮🔔",
+      "note": "Taco Bell"
+    },
+    {
+      "id": "crd_b5dd8f4d",
+      "text": "🍔👑",
+      "note": "Burger King"
+    },
+    {
+      "id": "crd_40776390",
+      "text": "🌕🐺",
+      "note": "Werewolf"
+    },
+    {
+      "id": "crd_b85d9b12",
+      "text": "⚡🔨",
+      "note": "Thor"
+    },
+    {
+      "id": "crd_2e5636f6",
+      "text": "🛡️⭐🇺🇸",
+      "note": "Captain America"
+    },
+    {
+      "id": "crd_c796e50a",
+      "text": "💚💪😡",
+      "note": "The Hulk"
+    },
+    {
+      "id": "crd_fe47b5d8",
+      "text": "🏹🔥👧",
+      "note": "The Hunger Games"
+    },
+    {
+      "id": "crd_0501fd40",
+      "text": "🦁🧙‍♀️🚪",
+      "note": "The Lion, the Witch and the Wardrobe"
+    },
+    {
+      "id": "crd_b9e716cd",
+      "text": "🎈🤡",
+      "note": "It"
+    },
+    {
+      "id": "crd_cffe63b1",
+      "text": "🔪👻📞",
+      "note": "Scream"
+    },
+    {
+      "id": "crd_9628ba28",
+      "text": "👠🎃🕛",
+      "note": "Cinderella"
+    },
+    {
+      "id": "crd_6f9a5d23",
+      "text": "🌹🏰👸",
+      "note": "Beauty and the Beast"
+    },
+    {
+      "id": "crd_f22aeded",
+      "text": "👸💤",
+      "note": "Sleeping Beauty"
+    },
+    {
+      "id": "crd_58657d6d",
+      "text": "🦈🌪️",
+      "note": "Sharknado"
+    },
+    {
+      "id": "crd_482376df",
+      "text": "🏰🐭",
+      "note": "Disneyland"
+    },
+    {
+      "id": "crd_93d45be5",
+      "text": "🐒👒",
+      "note": "Curious George"
+    },
+    {
+      "id": "crd_143b89cc",
+      "text": "🧛🦇🏰",
+      "note": "Dracula"
+    },
+    {
+      "id": "crd_611acfa5",
+      "text": "👽🛸",
+      "note": "UFO"
+    },
+    {
+      "id": "crd_d0b34827",
+      "text": "🍕🍍",
+      "note": "Pineapple pizza"
+    },
+    {
+      "id": "crd_0e96ff96",
+      "text": "🔥🚒",
+      "note": "Firefighter"
+    },
+    {
+      "id": "crd_a6c874a3",
+      "text": "💍👰🤵",
+      "note": "Wedding"
+    },
+    {
+      "id": "crd_c1a02e94",
+      "text": "🎂🕯️🎉",
+      "note": "Birthday party"
+    },
+    {
+      "id": "crd_7c5756fb",
+      "text": "🎄🎅🦌",
+      "note": "Christmas"
+    },
+    {
+      "id": "crd_28821c29",
+      "text": "🎃👻🍬",
+      "note": "Halloween"
+    },
+    {
+      "id": "crd_21e21420",
+      "text": "🦃🍂",
+      "note": "Thanksgiving"
+    },
+    {
+      "id": "crd_e547d65a",
+      "text": "🐰🥚",
+      "note": "Easter bunny"
+    },
+    {
+      "id": "crd_e2fe9ee4",
+      "text": "🎆🇺🇸",
+      "note": "Fourth of July"
+    },
+    {
+      "id": "crd_a0a37819",
+      "text": "💘👼",
+      "note": "Cupid"
+    },
+    {
+      "id": "crd_1b328059",
+      "text": "🍀🌈💰",
+      "note": "Pot of gold"
+    },
+    {
+      "id": "crd_7fc86f61",
+      "text": "🏈🏆",
+      "note": "Super Bowl"
+    },
+    {
+      "id": "crd_c1a53efa",
+      "text": "🏅🔥",
+      "note": "Olympics"
+    },
+    {
+      "id": "crd_a0477edf",
+      "text": "🎢🎡",
+      "note": "Theme park"
+    },
+    {
+      "id": "crd_f69de122",
+      "text": "🏕️🔥🌭",
+      "note": "Camping trip"
+    },
+    {
+      "id": "crd_12255dff",
+      "text": "🚗🛣️🎶",
+      "note": "Road trip"
+    },
+    {
+      "id": "crd_b14c8fb0",
+      "text": "📺🍿🛋️",
+      "note": "Binge-watching"
+    },
+    {
+      "id": "crd_983813c2",
+      "text": "🐦🐦🪨",
+      "note": "Two birds, one stone"
+    },
+    {
+      "id": "crd_9c5664d7",
+      "text": "🔵🌕",
+      "note": "Once in a blue moon"
+    },
+    {
+      "id": "crd_74a4108e",
+      "text": "🥔🛋️",
+      "note": "Couch potato"
+    },
+    {
+      "id": "crd_5ace28bf",
+      "text": "🔨🧊",
+      "note": "Break the ice"
+    },
+    {
+      "id": "crd_c19c6751",
+      "text": "🐟🏜️",
+      "note": "Fish out of water"
+    },
+    {
+      "id": "crd_12185990",
+      "text": "🙈🙉🙊",
+      "note": "See no evil"
+    },
+    {
+      "id": "crd_33b0773c",
+      "text": "🍋➡️🥤",
+      "note": "When life gives you lemons"
+    },
+    {
+      "id": "crd_2c9a5100",
+      "text": "☔👩‍🎤",
+      "note": "Umbrella"
+    },
+    {
+      "id": "crd_cba531dd",
+      "text": "🌧️💜",
+      "note": "Purple Rain"
+    },
+    {
+      "id": "crd_dc240809",
+      "text": "🐎🛣️🤠",
+      "note": "Old Town Road"
+    },
+    {
+      "id": "crd_41a64e3c",
+      "text": "🍉🍬",
+      "note": "Watermelon Sugar"
+    },
+    {
+      "id": "crd_0379a755",
+      "text": "🌊👀",
+      "note": "Ocean Eyes"
+    },
+    {
+      "id": "crd_6ecd2282",
+      "text": "🚗🪪",
+      "note": "Drivers License"
+    },
+    {
+      "id": "crd_fa4c7735",
+      "text": "🐻🐻🐻👧",
+      "note": "Goldilocks and the Three Bears"
+    },
+    {
+      "id": "crd_a8ed839f",
+      "text": "🐷🐷🐷🐺",
+      "note": "The Three Little Pigs"
+    },
+    {
+      "id": "crd_f5295915",
+      "text": "🥚🧱💥",
+      "note": "Humpty Dumpty"
+    },
+    {
+      "id": "crd_99512f7a",
+      "text": "🧽🍍",
+      "note": "SpongeBob SquarePants"
+    },
+    {
+      "id": "crd_691be32c",
+      "text": "🐛🍎🍓",
+      "note": "The Very Hungry Caterpillar"
+    }
+  ]
+}

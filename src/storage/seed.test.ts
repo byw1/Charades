@@ -11,8 +11,25 @@ import { createTestDriver, type TestDriver } from './testDriver';
  * is not trusted because it happens to live in the repo.
  */
 describe('bundled deck content', () => {
-  it('ships five decks', () => {
-    expect(bundledDeckDocuments).toHaveLength(5);
+  it('ships seventeen decks', () => {
+    expect(bundledDeckDocuments).toHaveLength(17);
+  });
+
+  /** Enough that a long night doesn't run a deck dry and start repeating. */
+  it('gives every deck at least a hundred cards', () => {
+    for (const document of bundledDeckDocuments) {
+      const result = validateDeck(document);
+      if (!result.ok) throw new Error('invalid deck');
+      expect(result.deck.cards.length).toBeGreaterThanOrEqual(100);
+    }
+  });
+
+  it('gives every deck a cover emoji', () => {
+    for (const document of bundledDeckDocuments) {
+      const result = validateDeck(document);
+      if (!result.ok) throw new Error('invalid deck');
+      expect(result.deck.emoji).toBeTruthy();
+    }
   });
 
   it.each(bundledDeckDocuments.map((d, i) => [i, d] as const))(

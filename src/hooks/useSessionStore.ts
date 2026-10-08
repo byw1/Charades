@@ -1,10 +1,14 @@
 import type { SQLiteDatabase } from 'expo-sqlite';
 import { create } from 'zustand';
-import { createPool, type PoolCard } from '@/game/cardDrawer';
+import { createPool, poolCardKey, type PoolCard, type PoolSourceDeck } from '@/game/cardDrawer';
+import { seededRandom, shuffle } from '@/game/random';
 import * as round from '@/game/round';
 import type { RoundState } from '@/game/round';
+import { withOutcome } from '@/game/scoring';
 import * as session from '@/game/session';
-import type { Outcome, RoundResult, Session, SessionSettings, Team } from '@/game/types';
+import { fillHat, hatProgress } from '@/game/threeRounds';
+import { pickTwist, roundSeconds } from '@/game/twists';
+import type { Outcome, Session, SessionSettings, Team } from '@/game/types';
 import { saveSession } from '@/storage/sessionRepo';
 
 /**
@@ -19,16 +23,17 @@ import { saveSession } from '@/storage/sessionRepo';
  * into seenCardIds, so they return to the pool with no rollback needed.
  */
 
-export type PlayableDeck = {
-  id: string;
-  name: string;
-  accentColor: string;
-  cards: readonly { id: string; text: string; note: string | null }[];
-};
+export type PlayableDeck = PoolSourceDeck & { name: string };
 
 export type SessionStore = {
   session: Session | null;
+  /** Every card the game can show. In three-round mode, the hat. */
   pool: PoolCard[];
+  /**
+   * What the current round draws from. The whole pool in a normal game; in
+   * three-round mode, the cards still in the hat for this phase, shuffled.
+   */
+  roundPool: PoolCard[];
   roundState: RoundState;
   deckNames: string[];
   /** Set once the pool has been used up, for the deckExhausted win condition. */
@@ -46,9 +51,9 @@ export type SessionStore = {
   /** Rehydrates a stored session. Decks are reloaded and the pool rebuilt. */
   resumeSession(stored: Session, decks: readonly PlayableDeck[], seed: number): void;
 
-  beginRound(roundId: string, nowIso: string): void;
+  beginRound(roundId: string, nowIso: string, seed?: number): void;
   start(now: number): void;
-  resolve(outcome: Outcome, now: number): void;
+  resolve(outcome: Outcome, now: number, extra?: { busted?: string }): void;
   pauseRound(now: number): void;
   resumeRound(now: number): void;
   endRound(now: number): void;
@@ -68,25 +73,53 @@ function poolFor(decks: readonly PlayableDeck[], settings: SessionSettings, seed
   return createPool(decks, { seed, shuffleAcrossDecks: settings.shuffleAcrossDecks });
 }
 
+/** The cards in a hat, in hat order. */
+function hatCards(pool: readonly PoolCard[], hat: readonly string[]): PoolCard[] {
+  const byKey = new Map(pool.map((card) => [poolCardKey(card), card]));
+  return hat.flatMap((key) => {
+    const card = byKey.get(key);
+    return card ? [card] : [];
+  });
+}
+
+const isThreeRounds = (s: Session) => s.settings.mode === 'threeRounds';
+
 export const useSessionStore = create<SessionStore>((set, get) => ({
   session: null,
   pool: [],
+  roundPool: [],
   roundState: emptyRound,
   deckNames: [],
   poolExhausted: false,
 
   startSession(input) {
+    const all = poolFor(input.decks, input.settings, input.seed);
+    const threeRounds = input.settings.mode === 'threeRounds';
+
+    // Three-round mode fills its hat once, here, so all three phases replay
+    // the same cards. It always ends when the hat clears for the third time.
+    const hat = threeRounds
+      ? fillHat(all.map(poolCardKey), input.settings.hatSize, seededRandom(input.seed ^ 0x5eed))
+      : undefined;
+    const settings: SessionSettings = threeRounds
+      ? { ...input.settings, winCondition: { kind: 'allPhases' }, chaos: false }
+      : input.settings;
+
     const created = session.createSession({
       id: input.id,
       deckIds: input.decks.map((d) => d.id),
       teams: input.teams,
-      settings: input.settings,
+      settings,
       now: input.now,
+      ...(hat ? { hat } : {}),
     });
+
+    const pool = hat ? hatCards(all, hat) : all;
 
     set({
       session: created,
-      pool: poolFor(input.decks, input.settings, input.seed),
+      pool,
+      roundPool: pool,
       roundState: round.createRound(input.settings.roundSeconds * 1_000, {
         seen: [],
         reshuffleCount: 0,
@@ -102,10 +135,13 @@ export const useSessionStore = create<SessionStore>((set, get) => ({
     // Any round that was open when the app died is dropped, so the team whose
     // turn was interrupted takes it again from the top.
     const clean = session.discardUnfinishedRound(stored);
+    const all = poolFor(decks, clean.settings, seed);
+    const pool = clean.hat ? hatCards(all, clean.hat) : all;
 
     set({
       session: clean,
-      pool: poolFor(decks, clean.settings, seed),
+      pool,
+      roundPool: pool,
       roundState: round.createRound(clean.settings.roundSeconds * 1_000, {
         seen: clean.seenCardIds,
         reshuffleCount: 0,
@@ -115,13 +151,41 @@ export const useSessionStore = create<SessionStore>((set, get) => ({
     });
   },
 
-  beginRound(roundId, nowIso) {
+  beginRound(roundId, nowIso, seed = Date.now() >>> 0) {
     const current = get().session;
     if (!current) return;
+    const random = seededRandom(seed);
+
+    if (isThreeRounds(current)) {
+      const progress = hatProgress(current);
+      if (progress.done) return;
+
+      // Only what is left in the hat for this phase, freshly shuffled, so the
+      // next team does not start on the card the last one passed.
+      const remaining = new Set(progress.remaining);
+      const roundPool = shuffle(
+        get().pool.filter((card) => remaining.has(poolCardKey(card))),
+        random,
+      );
+
+      set({
+        session: session.beginRound(current, roundId, nowIso, { phase: progress.phase }),
+        roundPool,
+        roundState: round.createRound(
+          current.settings.roundSeconds * 1_000,
+          { seen: [], reshuffleCount: 0 },
+          { retireCorrect: true },
+        ),
+      });
+      return;
+    }
+
+    const twist = current.settings.chaos ? pickTwist(session.previousTwist(current), random) : null;
 
     set({
-      session: session.beginRound(current, roundId, nowIso),
-      roundState: round.createRound(current.settings.roundSeconds * 1_000, {
+      session: session.beginRound(current, roundId, nowIso, { twist }),
+      roundPool: get().pool,
+      roundState: round.createRound(roundSeconds(current.settings, twist) * 1_000, {
         seen: current.seenCardIds,
         reshuffleCount: 0,
       }),
@@ -129,12 +193,14 @@ export const useSessionStore = create<SessionStore>((set, get) => ({
   },
 
   start(now) {
-    set({ roundState: round.start(get().roundState, get().pool, now) });
+    set({ roundState: round.start(get().roundState, get().roundPool, now) });
   },
 
-  resolve(outcome, now) {
-    const next = round.resolveCard(get().roundState, get().pool, outcome, now);
-    set({ roundState: next, poolExhausted: get().poolExhausted || next.reshuffled });
+  resolve(outcome, now, extra) {
+    const next = round.resolveCard(get().roundState, get().roundPool, outcome, now, extra);
+    // A three-round hat emptying is the phase ending, not the decks running out.
+    const exhausted = next.reshuffled && !next.retireCorrect;
+    set({ roundState: next, poolExhausted: get().poolExhausted || exhausted });
   },
 
   pauseRound(now) {
@@ -158,8 +224,8 @@ export const useSessionStore = create<SessionStore>((set, get) => ({
     set((current) => ({
       roundState: {
         ...current.roundState,
-        results: current.roundState.results.map(
-          (result): RoundResult => (result.cardId === cardId ? { ...result, outcome } : result),
+        results: current.roundState.results.map((result) =>
+          result.cardId === cardId ? withOutcome(result, outcome) : result,
         ),
       },
     }));
@@ -171,7 +237,8 @@ export const useSessionStore = create<SessionStore>((set, get) => ({
 
     const committed = session.completeRound(current, {
       results: roundState.results,
-      seenCardIds: [...roundState.drawer.seen],
+      // The hat has its own bookkeeping; seen cards are for normal games.
+      seenCardIds: isThreeRounds(current) ? current.seenCardIds : [...roundState.drawer.seen],
       now: nowIso,
     });
 
@@ -193,6 +260,7 @@ export const useSessionStore = create<SessionStore>((set, get) => ({
     set({
       session: null,
       pool: [],
+      roundPool: [],
       roundState: emptyRound,
       deckNames: [],
       poolExhausted: false,

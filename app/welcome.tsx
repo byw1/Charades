@@ -3,7 +3,8 @@ import { useEffect, useState } from 'react';
 import { Animated, Easing, Pressable, StyleSheet, Text as RNText, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useReducedMotion } from '@/hooks/useReducedMotion';
-import { useSettingsStore } from '@/hooks/useSettings';
+import { useLayout } from '@/ui/layout';
+import { type InputMode, useSettingsStore } from '@/hooks/useSettings';
 import { Button } from '@/ui/Button';
 import { CircleButton } from '@/ui/CircleButton';
 import { Mascot, type MascotMood } from '@/ui/Mascot';
@@ -17,6 +18,8 @@ type Story = {
   caption: string;
   detail: string;
   mood: MascotMood;
+  /** What Dex's forehead card shows. A question mark unless something better fits. */
+  glyph?: string;
   stickers?: { text: string; tint: string; tilt: number; top: string; left?: string; right?: string }[];
 };
 
@@ -38,13 +41,35 @@ const STORIES: Story[] = [
       { text: 'good boy 🐶', tint: '#FFFFFF', tilt: -4, top: '62%', left: '10%' },
     ],
   },
-  {
+];
+
+/** The intro stories, then one on controls. */
+const STORY_COUNT = STORIES.length + 1;
+
+/** The last story teaches whichever controls the phone is set to. */
+const CONTROLS: Record<InputMode, Story> = {
+  tilt: {
+    background: palette.blue,
+    caption: 'Tip it down if you got it',
+    detail: 'Tip it up to pass. Most cards before time’s up wins.',
+    mood: 'excited',
+    glyph: '👇',
+  },
+  swipe: {
+    background: palette.blue,
+    caption: 'Swipe up if you got it',
+    detail: 'Swipe down to pass, anywhere on the screen. Most cards before time’s up wins.',
+    mood: 'excited',
+    glyph: '☝️',
+  },
+  tap: {
     background: palette.blue,
     caption: 'Tap top if you got it',
     detail: 'Tap the bottom to pass. Most cards before time’s up wins.',
     mood: 'excited',
+    glyph: '👆',
   },
-];
+};
 
 const STORY_MS = 4500;
 
@@ -61,11 +86,14 @@ export default function WelcomeScreen() {
   const { replay } = useLocalSearchParams<{ replay?: string }>();
   const setSetting = useSettingsStore((s) => s.set);
   const reduced = useReducedMotion();
+  const { short } = useLayout();
   const [index, setIndex] = useState(0);
   const [progress] = useState(() => new Animated.Value(0));
+  const inputMode = useSettingsStore((s) => s.inputMode);
+  const stories = [...STORIES, CONTROLS[inputMode]];
 
-  const story = STORIES[index] ?? STORIES[0]!;
-  const last = index === STORIES.length - 1;
+  const story = stories[index] ?? stories[0]!;
+  const last = index === stories.length - 1;
 
   const finish = () => {
     setSetting('onboarded', true);
@@ -86,7 +114,7 @@ export default function WelcomeScreen() {
       useNativeDriver: false,
     });
     animation.start(({ finished }) => {
-      if (finished) setIndex((current) => Math.min(current + 1, STORIES.length - 1));
+      if (finished) setIndex((current) => Math.min(current + 1, STORY_COUNT - 1));
     });
     return () => animation.stop();
   }, [index, last, progress, reduced]);
@@ -113,7 +141,7 @@ export default function WelcomeScreen() {
 
       <SafeAreaView style={styles.safe} pointerEvents="box-none">
         <View style={styles.top} pointerEvents="box-none">
-          <StoryBar count={STORIES.length} index={index} progress={progress} />
+          <StoryBar count={stories.length} index={index} progress={progress} />
           <View style={styles.topRow} pointerEvents="box-none">
             <View style={styles.from}>
               <Mascot size={32} animated={false} />
@@ -124,35 +152,37 @@ export default function WelcomeScreen() {
           </View>
         </View>
 
-        <View style={styles.middle} pointerEvents="none" key={index}>
-          {story.stickers?.map((sticker) => (
-            <Sticker
-              key={sticker.text}
-              tint={sticker.tint}
-              tilt={sticker.tilt}
-              style={{
-                position: 'absolute',
-                top: sticker.top as `${number}%`,
-                left: sticker.left as `${number}%` | undefined,
-                right: sticker.right as `${number}%` | undefined,
-              }}
-            >
-              {sticker.text}
-            </Sticker>
-          ))}
-          <Mascot size={230} mood={story.mood} glyph={index === 2 ? '👆' : '?'} />
-        </View>
+        <View style={[styles.body, short && styles.bodySideways]} pointerEvents="box-none">
+          <View style={styles.middle} pointerEvents="none" key={index}>
+            {story.stickers?.map((sticker) => (
+              <Sticker
+                key={sticker.text}
+                tint={sticker.tint}
+                tilt={sticker.tilt}
+                style={{
+                  position: 'absolute',
+                  top: sticker.top as `${number}%`,
+                  left: sticker.left as `${number}%` | undefined,
+                  right: sticker.right as `${number}%` | undefined,
+                }}
+              >
+                {sticker.text}
+              </Sticker>
+            ))}
+            <Mascot size={short ? 170 : 230} mood={story.mood} glyph={story.glyph} />
+          </View>
 
-        <View style={styles.bottom} pointerEvents="box-none">
-          <Caption size="lg">{story.caption}</Caption>
-          <RNText style={styles.detail}>{story.detail}</RNText>
-          {last ? (
-            <View style={styles.cta}>
-              <Button label="Let’s play" variant="white" size="lg" onPress={finish} />
-            </View>
-          ) : (
-            <Text style={styles.tapHint}>Tap to continue</Text>
-          )}
+          <View style={[styles.bottom, short && styles.bottomSideways]} pointerEvents="box-none">
+            <Caption size="lg">{story.caption}</Caption>
+            <RNText style={styles.detail}>{story.detail}</RNText>
+            {last ? (
+              <View style={styles.cta}>
+                <Button label="Let’s play" variant="white" size="lg" onPress={finish} />
+              </View>
+            ) : (
+              <Text style={styles.tapHint}>Tap to continue</Text>
+            )}
+          </View>
         </View>
       </SafeAreaView>
     </View>
@@ -170,7 +200,10 @@ const styles = StyleSheet.create({
   from: { flexDirection: 'row', alignItems: 'center', gap: space.sm },
   fromName: { fontFamily: font.heavy, fontSize: 15, lineHeight: 20, color: color.bone },
   fromTime: { fontFamily: font.medium, fontSize: 13, lineHeight: 18, color: 'rgba(255,255,255,0.75)' },
-  middle: { flex: 1, alignItems: 'center', justifyContent: 'center' },
+  body: { flex: 1 },
+  bodySideways: { flexDirection: 'row', alignItems: 'center' },
+  bottomSideways: { flex: 1.2, justifyContent: 'center', paddingBottom: 0 },
+  middle: { flex: 1, alignSelf: 'stretch', alignItems: 'center', justifyContent: 'center' },
   bottom: { gap: space.md, paddingBottom: space.md, alignItems: 'center' },
   detail: {
     fontFamily: font.bold,

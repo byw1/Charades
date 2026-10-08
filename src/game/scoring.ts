@@ -1,3 +1,5 @@
+import { hatProgress } from './threeRounds';
+import { correctValue } from './twists';
 import type { Round, RoundResult, Session, Team, WinCondition } from './types';
 
 /**
@@ -27,12 +29,20 @@ export type PlayerStanding = {
   roundsPlayed: number;
 };
 
-/** Score for one round. Passes only cost anything when a penalty is set. */
-export function scoreRound(results: readonly RoundResult[], passPenalty: number): number {
+/**
+ * Score for one round. Passes only cost anything when a penalty is set, and a
+ * correct card is worth more than one only under the double points twist.
+ */
+export function scoreRound(results: readonly RoundResult[], passPenalty: number, perCorrect = 1): number {
   return results.reduce(
-    (total, result) => total + (result.outcome === 'correct' ? 1 : -passPenalty),
+    (total, result) => total + (result.outcome === 'correct' ? perCorrect : -passPenalty),
     0,
   );
+}
+
+/** Score for a round, with its twist applied. */
+export function roundScore(round: Pick<Round, 'results' | 'twist'>, passPenalty: number): number {
+  return scoreRound(round.results, passPenalty, correctValue(round.twist));
 }
 
 export function countOutcomes(results: readonly RoundResult[]): { correct: number; passed: number } {
@@ -73,7 +83,7 @@ export function standings(session: Session): Standing[] {
     const { correct, passed } = countOutcomes(round.results);
     standing.correct += correct;
     standing.passed += passed;
-    standing.score += scoreRound(round.results, session.settings.passPenalty);
+    standing.score += roundScore(round, session.settings.passPenalty);
     standing.roundsPlayed += 1;
   }
 
@@ -112,7 +122,7 @@ export function playerStandings(session: Session): PlayerStanding[] {
     const { correct, passed } = countOutcomes(round.results);
     existing.correct += correct;
     existing.passed += passed;
-    existing.score += scoreRound(round.results, session.settings.passPenalty);
+    existing.score += roundScore(round, session.settings.passPenalty);
     existing.roundsPlayed += 1;
 
     byPlayer.set(key, existing);
@@ -165,7 +175,25 @@ export function evaluateWinCondition(session: Session, poolExhausted = false): W
 
     case 'deckExhausted':
       return poolExhausted ? finish('deckExhausted') : { over: false };
+
+    case 'allPhases':
+      return hatProgress(session).done ? finish('allPhases') : { over: false };
+
+    case 'endless':
+      return { over: false };
   }
+}
+
+/**
+ * A result with a new outcome. Turning a busted card into a correct one drops
+ * the busted word, since the room has just agreed nobody said it.
+ */
+export function withOutcome(result: RoundResult, outcome: RoundResult['outcome']): RoundResult {
+  if (outcome === 'correct' && result.busted !== undefined) {
+    const { busted: _dropped, ...rest } = result;
+    return { ...rest, outcome };
+  }
+  return { ...result, outcome };
 }
 
 /** Applies a recap edit. Returns a new session; the original is untouched. */
@@ -181,9 +209,7 @@ export function editRoundResult(
       if (round.id !== roundId) return round;
       return {
         ...round,
-        results: round.results.map((result) =>
-          result.cardId === cardId ? { ...result, outcome } : result,
-        ),
+        results: round.results.map((result) => (result.cardId === cardId ? withOutcome(result, outcome) : result)),
       };
     }),
   };

@@ -107,7 +107,7 @@ describe('migrate', () => {
   });
 });
 
-describe('schema at version 1', () => {
+describe('schema at the latest version', () => {
   it('creates the decks and cards tables', async () => {
     const db = createTestDriver();
     try {
@@ -125,8 +125,12 @@ describe('schema at version 1', () => {
         'source',
         'createdAt',
         'updatedAt',
+        // The cover emoji arrived in version 4, favourites in 5, each appended.
+        'emoji',
+        'favorite',
       ]);
-      expect(db.columnNames('cards')).toEqual(['id', 'deckId', 'text', 'note', 'position']);
+      // Taboo words and photos arrived in version 3, your-card marks in 5.
+      expect(db.columnNames('cards')).toEqual(['id', 'deckId', 'text', 'note', 'position', 'taboo', 'image', 'mine', 'hidden']);
     } finally {
       db.close();
     }
@@ -243,7 +247,7 @@ describe('upgrading a device that already has data', () => {
     }
   });
 
-  it('adds the sessions table without touching deck tables', async () => {
+  it('adds the sessions table, and only ever appends to the deck table', async () => {
     const db = createTestDriver();
     try {
       await db.execAsync(`${migrations[0]!.up}; PRAGMA user_version = 1;`);
@@ -252,7 +256,27 @@ describe('upgrading a device that already has data', () => {
       await migrate(db);
 
       expect(db.tableNames()).toEqual(expect.arrayContaining(['cards', 'decks', 'sessions']));
-      expect(db.columnNames('decks')).toEqual(before);
+      expect(db.columnNames('decks').slice(0, before.length)).toEqual(before);
+    } finally {
+      db.close();
+    }
+  });
+
+  it('gives a version 2 card no Taboo words and no photo, and keeps its text', async () => {
+    const db = createTestDriver();
+    try {
+      await db.execAsync(`${migrations[0]!.up}; ${migrations[1]!.up}; PRAGMA user_version = 2;`);
+      db.raw.exec(`
+        INSERT INTO decks (id, schemaVersion, name, accentColor, source, createdAt, updatedAt)
+          VALUES ('dck_00000002', 1, 'Dorm Floor', '#FF3D6E', 'custom', '2026-01-01T00:00:00Z', '2026-01-01T00:00:00Z');
+        INSERT INTO cards (id, deckId, text, note, position)
+          VALUES ('crd_00000002', 'dck_00000002', 'Fire drill at 3am', 'Room 204', 0);
+      `);
+
+      expect(await migrate(db)).toEqual([3, 4, 5]);
+
+      const card = db.raw.prepare('SELECT * FROM cards WHERE deckId = ?').get('dck_00000002');
+      expect(card).toMatchObject({ text: 'Fire drill at 3am', note: 'Room 204', taboo: null, image: null });
     } finally {
       db.close();
     }

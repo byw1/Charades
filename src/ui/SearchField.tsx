@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { StyleSheet, TextInput, View } from 'react-native';
 import { Icon } from './Icon';
-import { color, gutter, radius, space, type as typeScale } from './tokens';
+import { color, gutter, radius, scheme, space, type as typeScale } from './tokens';
 
 export type SearchFieldProps = {
   value: string;
@@ -21,7 +21,7 @@ export function SearchField({ value, onChangeText, placeholder = 'Search decks a
         placeholder={placeholder}
         placeholderTextColor={color.textFaint}
         selectionColor={color.brand}
-        keyboardAppearance="dark"
+        keyboardAppearance={scheme}
         accessibilityLabel={placeholder}
         autoCapitalize="none"
         autoCorrect={false}

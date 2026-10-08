@@ -35,7 +35,14 @@ export type IconName =
   | 'pass'
   | 'flame'
   | 'shuffle'
-  | 'bolt';
+  | 'bolt'
+  | 'eye'
+  | 'eyeOff'
+  | 'heart'
+  | 'heartFilled'
+  | 'sort'
+  | 'sound'
+  | 'infinity';
 
 export type IconProps = {
   name: IconName;
@@ -220,5 +227,29 @@ function shape(name: IconName, s: Stroke, fill: string) {
       return <Path d="M13 3 L5 13.5 H11.5 L10.5 21 L19 10 H12.5 Z" {...s} />;
     case 'home':
       return <Path d="M4 11 L12 4 L20 11 V20 H14.5 V14.5 H9.5 V20 H4 Z" {...s} />;
+    case 'eye':
+      return (
+        <>
+          <Path d="M2.5 12 C5 7 8.5 5 12 5 C15.5 5 19 7 21.5 12 C19 17 15.5 19 12 19 C8.5 19 5 17 2.5 12 Z" {...s} />
+          <Circle cx={12} cy={12} r={3} {...s} />
+        </>
+      );
+    case 'eyeOff':
+      return (
+        <Path
+          d="M4 4 L20 20 M9.5 5.5 C10.3 5.2 11.1 5 12 5 C15.5 5 19 7 21.5 12 C20.8 13.4 20 14.6 19 15.6 M15.5 17.9 C14.4 18.6 13.2 19 12 19 C8.5 19 5 17 2.5 12 C3.6 9.8 5 8.2 6.5 7.1"
+          {...s}
+        />
+      );
+    case 'heart':
+      return <Path d="M12 20 C6 15.5 3 12.5 3 8.8 C3 6.2 5 4.3 7.4 4.3 C9.3 4.3 10.9 5.4 12 7 C13.1 5.4 14.7 4.3 16.6 4.3 C19 4.3 21 6.2 21 8.8 C21 12.5 18 15.5 12 20 Z" {...s} />;
+    case 'heartFilled':
+      return <Path d="M12 20 C6 15.5 3 12.5 3 8.8 C3 6.2 5 4.3 7.4 4.3 C9.3 4.3 10.9 5.4 12 7 C13.1 5.4 14.7 4.3 16.6 4.3 C19 4.3 21 6.2 21 8.8 C21 12.5 18 15.5 12 20 Z" {...s} fill={fill} />;
+    case 'sort':
+      return <Path d="M7 4 V20 M3.5 16.5 L7 20 L10.5 16.5 M17 20 V4 M13.5 7.5 L17 4 L20.5 7.5" {...s} />;
+    case 'sound':
+      return <Path d="M4 9.5 H7.5 L12 5.5 V18.5 L7.5 14.5 H4 Z M15.5 9 C16.5 10 16.5 14 15.5 15 M18.5 6.5 C21 9 21 15 18.5 17.5" {...s} />;
+    case 'infinity':
+      return <Path d="M12 12 C10 9 8.5 8 6.8 8 C4.6 8 3 9.8 3 12 C3 14.2 4.6 16 6.8 16 C8.5 16 10 15 12 12 C14 9 15.5 8 17.2 8 C19.4 8 21 9.8 21 12 C21 14.2 19.4 16 17.2 16 C15.5 16 14 15 12 12 Z" {...s} />;
   }
 }

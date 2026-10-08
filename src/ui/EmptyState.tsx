@@ -13,7 +13,7 @@ export type EmptyStateProps = {
 export function EmptyState({ title, body, mood = 'thinking' }: EmptyStateProps) {
   return (
     <View style={styles.container}>
-      <Mascot size={110} mood={mood} />
+      <Mascot size={110} mood={mood} poke />
       <Text variant="title" align="center">
         {title}
       </Text>

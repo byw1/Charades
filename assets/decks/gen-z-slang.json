@@ -1,0 +1,1118 @@
+{
+  "schemaVersion": 1,
+  "id": "dck_4ea33ff1",
+  "name": "Gen Z Slang",
+  "description": "Explain it without saying it. Harder than it sounds, and the older people in the room are in trouble.",
+  "author": "Deckhead",
+  "language": "en",
+  "accentColor": "#E040FB",
+  "emoji": "💅",
+  "tags": [
+    "slang",
+    "internet"
+  ],
+  "createdAt": "2026-10-07T20:00:00Z",
+  "updatedAt": "2026-10-07T22:00:00Z",
+  "cards": [
+    {
+      "id": "crd_b1c37a24",
+      "text": "Rizz",
+      "note": null,
+      "taboo": [
+        "charm",
+        "flirt",
+        "game",
+        "charisma"
+      ]
+    },
+    {
+      "id": "crd_0f61c1f2",
+      "text": "No cap",
+      "note": null,
+      "taboo": [
+        "lie",
+        "serious",
+        "truth",
+        "for real"
+      ]
+    },
+    {
+      "id": "crd_afb5cf19",
+      "text": "Bussin",
+      "note": null,
+      "taboo": [
+        "delicious",
+        "food",
+        "tasty",
+        "good"
+      ]
+    },
+    {
+      "id": "crd_620da659",
+      "text": "Slay",
+      "note": null,
+      "taboo": [
+        "queen",
+        "killed it",
+        "amazing",
+        "outfit"
+      ]
+    },
+    {
+      "id": "crd_19bb07cc",
+      "text": "It's giving",
+      "note": null,
+      "taboo": [
+        "vibe",
+        "energy",
+        "looks like",
+        "serving"
+      ]
+    },
+    {
+      "id": "crd_3cd3f225",
+      "text": "Delulu",
+      "note": null,
+      "taboo": [
+        "delusional",
+        "dream",
+        "fantasy",
+        "crazy"
+      ]
+    },
+    {
+      "id": "crd_56f3ab48",
+      "text": "Main character",
+      "note": null,
+      "taboo": [
+        "protagonist",
+        "star",
+        "movie",
+        "energy"
+      ]
+    },
+    {
+      "id": "crd_09b14d93",
+      "text": "NPC",
+      "note": null,
+      "taboo": [
+        "game",
+        "robot",
+        "background",
+        "character"
+      ]
+    },
+    {
+      "id": "crd_9e21e8ce",
+      "text": "The ick",
+      "note": null,
+      "taboo": [
+        "gross",
+        "turn-off",
+        "cringe",
+        "ew"
+      ]
+    },
+    {
+      "id": "crd_95b6230e",
+      "text": "Glow up",
+      "note": null,
+      "taboo": [
+        "transformation",
+        "better",
+        "before",
+        "after"
+      ]
+    },
+    {
+      "id": "crd_f831f2f4",
+      "text": "Touch grass",
+      "note": null,
+      "taboo": [
+        "outside",
+        "online",
+        "offline",
+        "nature"
+      ]
+    },
+    {
+      "id": "crd_d5d97226",
+      "text": "Mid",
+      "note": null,
+      "taboo": [
+        "average",
+        "okay",
+        "meh",
+        "middle"
+      ]
+    },
+    {
+      "id": "crd_7dcb4bd0",
+      "text": "Lowkey",
+      "note": null,
+      "taboo": [
+        "secretly",
+        "quiet",
+        "kind of",
+        "highkey"
+      ]
+    },
+    {
+      "id": "crd_42feb255",
+      "text": "Vibe check",
+      "note": null,
+      "taboo": [
+        "mood",
+        "energy",
+        "test",
+        "feel"
+      ]
+    },
+    {
+      "id": "crd_ce9e7204",
+      "text": "GOAT",
+      "note": null,
+      "taboo": [
+        "greatest",
+        "all time",
+        "best",
+        "animal"
+      ]
+    },
+    {
+      "id": "crd_bd5e9d84",
+      "text": "Ratio",
+      "note": null,
+      "taboo": [
+        "replies",
+        "likes",
+        "tweet",
+        "more"
+      ]
+    },
+    {
+      "id": "crd_97d7793d",
+      "text": "Stan",
+      "note": null,
+      "taboo": [
+        "fan",
+        "obsessed",
+        "Eminem",
+        "support"
+      ]
+    },
+    {
+      "id": "crd_cece38f4",
+      "text": "Sheesh",
+      "note": null,
+      "taboo": [
+        "wow",
+        "impressive",
+        "long",
+        "drip"
+      ]
+    },
+    {
+      "id": "crd_90fd15ca",
+      "text": "Bruh",
+      "note": null,
+      "taboo": [
+        "bro",
+        "really",
+        "disappointed",
+        "dude"
+      ]
+    },
+    {
+      "id": "crd_152c9796",
+      "text": "Caught in 4K",
+      "note": null,
+      "taboo": [
+        "camera",
+        "proof",
+        "busted",
+        "video"
+      ]
+    },
+    {
+      "id": "crd_e75907df",
+      "text": "Understood the assignment",
+      "note": null,
+      "taboo": [
+        "nailed it",
+        "did well",
+        "task",
+        "perfect"
+      ]
+    },
+    {
+      "id": "crd_13e6f01e",
+      "text": "Era",
+      "note": null,
+      "taboo": [
+        "phase",
+        "period",
+        "Taylor Swift",
+        "current"
+      ]
+    },
+    {
+      "id": "crd_9514b848",
+      "text": "Side-eye",
+      "note": null,
+      "taboo": [
+        "look",
+        "judging",
+        "glance",
+        "suspicious"
+      ]
+    },
+    {
+      "id": "crd_612e0917",
+      "text": "Red flag",
+      "note": null,
+      "taboo": [
+        "warning",
+        "bad sign",
+        "dating",
+        "danger"
+      ]
+    },
+    {
+      "id": "crd_875a62b8",
+      "text": "Gatekeep",
+      "note": null,
+      "taboo": [
+        "share",
+        "secret",
+        "keep",
+        "hide"
+      ]
+    },
+    {
+      "id": "crd_bdfc428b",
+      "text": "FOMO",
+      "note": null,
+      "taboo": [
+        "missing out",
+        "fear",
+        "party",
+        "left out"
+      ]
+    },
+    {
+      "id": "crd_e99df612",
+      "text": "Rent free",
+      "note": null,
+      "taboo": [
+        "head",
+        "thinking",
+        "can’t stop",
+        "live"
+      ]
+    },
+    {
+      "id": "crd_941f97fe",
+      "text": "Spill the tea",
+      "note": null,
+      "taboo": [
+        "gossip",
+        "tell",
+        "drama",
+        "news"
+      ]
+    },
+    {
+      "id": "crd_edeac9c9",
+      "text": "Shook",
+      "note": null,
+      "taboo": [
+        "shocked",
+        "surprised",
+        "stunned",
+        "scared"
+      ]
+    },
+    {
+      "id": "crd_52ecbd8d",
+      "text": "Cringe",
+      "note": null,
+      "taboo": [
+        "awkward",
+        "embarrassing",
+        "ew",
+        "uncomfortable"
+      ]
+    },
+    {
+      "id": "crd_68c814fa",
+      "text": "Aura",
+      "note": null,
+      "taboo": [
+        "points",
+        "energy",
+        "vibe",
+        "presence"
+      ]
+    },
+    {
+      "id": "crd_3abf2dfb",
+      "text": "Brainrot",
+      "note": null,
+      "taboo": [
+        "scrolling",
+        "TikTok",
+        "brain",
+        "memes"
+      ]
+    },
+    {
+      "id": "crd_e6993c03",
+      "text": "Sigma",
+      "note": null,
+      "taboo": [
+        "alpha",
+        "lone wolf",
+        "male",
+        "grindset"
+      ]
+    },
+    {
+      "id": "crd_8a8f6c3b",
+      "text": "Mewing",
+      "note": null,
+      "taboo": [
+        "jawline",
+        "tongue",
+        "face",
+        "quiet"
+      ]
+    },
+    {
+      "id": "crd_c44c8f61",
+      "text": "Fanum tax",
+      "note": null,
+      "taboo": [
+        "steal",
+        "food",
+        "bite",
+        "streamer"
+      ]
+    },
+    {
+      "id": "crd_de0a6c5f",
+      "text": "Simp",
+      "note": null,
+      "taboo": [
+        "crush",
+        "devoted",
+        "too much",
+        "nice"
+      ]
+    },
+    {
+      "id": "crd_66c1b057",
+      "text": "Ghosting",
+      "note": null,
+      "taboo": [
+        "disappear",
+        "ignore",
+        "texts",
+        "vanish"
+      ]
+    },
+    {
+      "id": "crd_e5fde41e",
+      "text": "Beige flag",
+      "note": null,
+      "taboo": [
+        "quirk",
+        "harmless",
+        "warning",
+        "weird"
+      ]
+    },
+    {
+      "id": "crd_ead03c7d",
+      "text": "Flex",
+      "note": null,
+      "taboo": [
+        "show off",
+        "brag",
+        "muscles",
+        "money"
+      ]
+    },
+    {
+      "id": "crd_009d6aad",
+      "text": "Salty",
+      "note": null,
+      "taboo": [
+        "bitter",
+        "upset",
+        "sore loser",
+        "annoyed"
+      ]
+    },
+    {
+      "id": "crd_3f389aae",
+      "text": "Yeet",
+      "note": null,
+      "taboo": [
+        "throw",
+        "toss",
+        "launch",
+        "hard"
+      ]
+    },
+    {
+      "id": "crd_e2d6680d",
+      "text": "Bet",
+      "note": null,
+      "taboo": [
+        "okay",
+        "deal",
+        "sure",
+        "agree"
+      ]
+    },
+    {
+      "id": "crd_ad32e245",
+      "text": "Periodt",
+      "note": null,
+      "taboo": [
+        "end",
+        "final",
+        "period",
+        "that’s it"
+      ]
+    },
+    {
+      "id": "crd_2a2dbdb9",
+      "text": "Iykyk",
+      "note": null,
+      "taboo": [
+        "if you know",
+        "inside joke",
+        "secret",
+        "letters"
+      ]
+    },
+    {
+      "id": "crd_6c609f1b",
+      "text": "Big yikes",
+      "note": null,
+      "taboo": [
+        "awkward",
+        "bad",
+        "oops",
+        "cringe"
+      ]
+    },
+    {
+      "id": "crd_7d947ca7",
+      "text": "Drip",
+      "note": null,
+      "taboo": [
+        "outfit",
+        "style",
+        "clothes",
+        "fresh"
+      ]
+    },
+    {
+      "id": "crd_0144cb9e",
+      "text": "Hits different",
+      "note": null,
+      "taboo": [
+        "special",
+        "better",
+        "unique",
+        "feel"
+      ]
+    },
+    {
+      "id": "crd_f97f6d72",
+      "text": "Valid",
+      "note": null,
+      "taboo": [
+        "fair",
+        "legit",
+        "true",
+        "okay"
+      ]
+    },
+    {
+      "id": "crd_aaf3fbe1",
+      "text": "Unhinged",
+      "note": null,
+      "taboo": [
+        "crazy",
+        "wild",
+        "chaotic",
+        "out of control"
+      ]
+    },
+    {
+      "id": "crd_6cc86d04",
+      "text": "Roman Empire",
+      "note": null,
+      "taboo": [
+        "thinking about",
+        "often",
+        "history",
+        "men"
+      ]
+    },
+    {
+      "id": "crd_98ba7851",
+      "text": "Bestie",
+      "note": null,
+      "taboo": [
+        "best friend",
+        "BFF",
+        "girl",
+        "babe"
+      ]
+    },
+    {
+      "id": "crd_08f2e38e",
+      "text": "Slaps",
+      "note": null,
+      "taboo": [
+        "song",
+        "banger",
+        "good",
+        "hits"
+      ]
+    },
+    {
+      "id": "crd_820868ad",
+      "text": "Goated",
+      "note": null,
+      "taboo": [
+        "greatest",
+        "best",
+        "legend",
+        "GOAT"
+      ]
+    },
+    {
+      "id": "crd_4ddf2c40",
+      "text": "Mother",
+      "note": null,
+      "taboo": [
+        "iconic",
+        "queen",
+        "slay",
+        "served"
+      ]
+    },
+    {
+      "id": "crd_76c6bec8",
+      "text": "Ate and left no crumbs",
+      "note": null,
+      "taboo": [
+        "slayed",
+        "perfect",
+        "killed it",
+        "devoured"
+      ]
+    },
+    {
+      "id": "crd_b23bd12b",
+      "text": "Snatched",
+      "note": null,
+      "taboo": [
+        "waist",
+        "looking good",
+        "fit",
+        "outfit"
+      ]
+    },
+    {
+      "id": "crd_606dce17",
+      "text": "Sus",
+      "note": null,
+      "taboo": [
+        "suspicious",
+        "Among Us",
+        "sketchy",
+        "impostor"
+      ]
+    },
+    {
+      "id": "crd_f273b5af",
+      "text": "Pookie",
+      "note": null,
+      "taboo": [
+        "cute",
+        "nickname",
+        "babe",
+        "sweetie"
+      ]
+    },
+    {
+      "id": "crd_8122c3f4",
+      "text": "Girlboss",
+      "note": null,
+      "taboo": [
+        "hustle",
+        "CEO",
+        "girl power",
+        "gaslight"
+      ]
+    },
+    {
+      "id": "crd_5e640fc8",
+      "text": "Gaslight",
+      "note": null,
+      "taboo": [
+        "lie",
+        "manipulate",
+        "crazy",
+        "gatekeep"
+      ]
+    },
+    {
+      "id": "crd_59ba2c57",
+      "text": "Soft launch",
+      "note": null,
+      "taboo": [
+        "hint",
+        "partner",
+        "Instagram",
+        "hand"
+      ]
+    },
+    {
+      "id": "crd_fa37dd64",
+      "text": "Hard launch",
+      "note": null,
+      "taboo": [
+        "relationship",
+        "official",
+        "post",
+        "couple"
+      ]
+    },
+    {
+      "id": "crd_62354d5e",
+      "text": "Talking stage",
+      "note": null,
+      "taboo": [
+        "dating",
+        "texting",
+        "not official",
+        "crush"
+      ]
+    },
+    {
+      "id": "crd_736c6ba9",
+      "text": "Pick-me",
+      "note": null,
+      "taboo": [
+        "attention",
+        "not like other girls",
+        "boys",
+        "try hard"
+      ]
+    },
+    {
+      "id": "crd_23087d15",
+      "text": "Let him cook",
+      "note": null,
+      "taboo": [
+        "wait",
+        "trust",
+        "chef",
+        "process"
+      ]
+    },
+    {
+      "id": "crd_7fc6b8ac",
+      "text": "Say less",
+      "note": null,
+      "taboo": [
+        "okay",
+        "deal",
+        "got it",
+        "done"
+      ]
+    },
+    {
+      "id": "crd_882ef128",
+      "text": "Clapback",
+      "note": null,
+      "taboo": [
+        "comeback",
+        "roast",
+        "reply",
+        "savage"
+      ]
+    },
+    {
+      "id": "crd_eef66caa",
+      "text": "Receipts",
+      "note": null,
+      "taboo": [
+        "proof",
+        "screenshots",
+        "evidence",
+        "exposed"
+      ]
+    },
+    {
+      "id": "crd_07bbdda8",
+      "text": "Glazing",
+      "note": null,
+      "taboo": [
+        "praise",
+        "suck up",
+        "overhype",
+        "donut"
+      ]
+    },
+    {
+      "id": "crd_171f0eae",
+      "text": "Yapping",
+      "note": null,
+      "taboo": [
+        "talking",
+        "too much",
+        "chatter",
+        "blah blah"
+      ]
+    },
+    {
+      "id": "crd_5c8e216a",
+      "text": "Cottagecore",
+      "note": null,
+      "taboo": [
+        "cottage",
+        "farm",
+        "aesthetic",
+        "frog"
+      ]
+    },
+    {
+      "id": "crd_72bcc820",
+      "text": "Clean girl",
+      "note": null,
+      "taboo": [
+        "slicked bun",
+        "minimal",
+        "makeup",
+        "aesthetic"
+      ]
+    },
+    {
+      "id": "crd_0a608f94",
+      "text": "Girl dinner",
+      "note": null,
+      "taboo": [
+        "snacks",
+        "plate",
+        "random food",
+        "TikTok"
+      ]
+    },
+    {
+      "id": "crd_2d743dcb",
+      "text": "Hot girl walk",
+      "note": null,
+      "taboo": [
+        "steps",
+        "podcast",
+        "exercise",
+        "TikTok"
+      ]
+    },
+    {
+      "id": "crd_62d9c91d",
+      "text": "Brat summer",
+      "note": null,
+      "taboo": [
+        "Charli xcx",
+        "green",
+        "party",
+        "album"
+      ]
+    },
+    {
+      "id": "crd_5dc8e8dd",
+      "text": "Cooked",
+      "note": null,
+      "taboo": [
+        "done",
+        "over",
+        "finished",
+        "doomed"
+      ]
+    },
+    {
+      "id": "crd_9390a226",
+      "text": "Crashout",
+      "note": null,
+      "taboo": [
+        "lose it",
+        "freak out",
+        "angry",
+        "meltdown"
+      ]
+    },
+    {
+      "id": "crd_b5741eac",
+      "text": "Rage bait",
+      "note": null,
+      "taboo": [
+        "angry",
+        "comments",
+        "engagement",
+        "trolling"
+      ]
+    },
+    {
+      "id": "crd_ff46a268",
+      "text": "Mogging",
+      "note": null,
+      "taboo": [
+        "outshine",
+        "better looking",
+        "jawline",
+        "dominate"
+      ]
+    },
+    {
+      "id": "crd_8146627c",
+      "text": "Side quest",
+      "note": null,
+      "taboo": [
+        "distraction",
+        "mission",
+        "adventure",
+        "game"
+      ]
+    },
+    {
+      "id": "crd_296fa9a3",
+      "text": "Lore",
+      "note": null,
+      "taboo": [
+        "backstory",
+        "history",
+        "story",
+        "deep"
+      ]
+    },
+    {
+      "id": "crd_2dacaaa2",
+      "text": "Canon event",
+      "note": null,
+      "taboo": [
+        "destiny",
+        "must happen",
+        "Spider-Verse",
+        "fate"
+      ]
+    },
+    {
+      "id": "crd_93cb2931",
+      "text": "Opp",
+      "note": null,
+      "taboo": [
+        "enemy",
+        "opponent",
+        "rival",
+        "hater"
+      ]
+    },
+    {
+      "id": "crd_44b99131",
+      "text": "On God",
+      "note": null,
+      "taboo": [
+        "swear",
+        "promise",
+        "for real",
+        "truth"
+      ]
+    },
+    {
+      "id": "crd_b55dbf39",
+      "text": "Deadass",
+      "note": null,
+      "taboo": [
+        "seriously",
+        "for real",
+        "honest",
+        "no joke"
+      ]
+    },
+    {
+      "id": "crd_77b484e3",
+      "text": "Slept on",
+      "note": null,
+      "taboo": [
+        "underrated",
+        "ignored",
+        "missed",
+        "overlooked"
+      ]
+    },
+    {
+      "id": "crd_d318b33d",
+      "text": "Tweaking",
+      "note": null,
+      "taboo": [
+        "acting crazy",
+        "wild",
+        "overreacting",
+        "bugging"
+      ]
+    },
+    {
+      "id": "crd_cb7b4a92",
+      "text": "Bed rotting",
+      "note": null,
+      "taboo": [
+        "blanket",
+        "lazy",
+        "phone",
+        "all day"
+      ]
+    },
+    {
+      "id": "crd_ae0c7d27",
+      "text": "Feral",
+      "note": null,
+      "taboo": [
+        "wild",
+        "unhinged",
+        "animal",
+        "chaotic"
+      ]
+    },
+    {
+      "id": "crd_0f1a529a",
+      "text": "Fit check",
+      "note": null,
+      "taboo": [
+        "outfit",
+        "show",
+        "clothes",
+        "mirror"
+      ]
+    },
+    {
+      "id": "crd_35f6c19c",
+      "text": "Purr",
+      "note": null,
+      "taboo": [
+        "yes",
+        "cat",
+        "agree",
+        "slay"
+      ]
+    },
+    {
+      "id": "crd_6170ded4",
+      "text": "No thoughts, head empty",
+      "note": null,
+      "taboo": [
+        "blank",
+        "dumb",
+        "clueless",
+        "vibing"
+      ]
+    },
+    {
+      "id": "crd_a8eb7f5e",
+      "text": "Sending me",
+      "note": null,
+      "taboo": [
+        "funny",
+        "laughing",
+        "dying",
+        "hilarious"
+      ]
+    },
+    {
+      "id": "crd_3fb0788f",
+      "text": "I’m dead",
+      "note": null,
+      "taboo": [
+        "laughing",
+        "funny",
+        "dying",
+        "LOL"
+      ]
+    },
+    {
+      "id": "crd_526db74f",
+      "text": "VSCO girl",
+      "note": null,
+      "taboo": [
+        "scrunchie",
+        "Hydro Flask",
+        "sksksk",
+        "save the turtles"
+      ]
+    },
+    {
+      "id": "crd_1d114b8e",
+      "text": "E-girl",
+      "note": null,
+      "taboo": [
+        "eyeliner",
+        "hearts",
+        "TikTok",
+        "pigtails"
+      ]
+    },
+    {
+      "id": "crd_059d34f2",
+      "text": "Mutuals",
+      "note": null,
+      "taboo": [
+        "follow each other",
+        "friends",
+        "online",
+        "followers"
+      ]
+    },
+    {
+      "id": "crd_b37d8c2a",
+      "text": "Parasocial",
+      "note": null,
+      "taboo": [
+        "one-sided",
+        "celebrity",
+        "fan",
+        "relationship"
+      ]
+    },
+    {
+      "id": "crd_d8ca53fe",
+      "text": "Aura farming",
+      "note": null,
+      "taboo": [
+        "cool",
+        "vibe",
+        "look good",
+        "points"
+      ]
+    },
+    {
+      "id": "crd_d2e009dd",
+      "text": "Six seven",
+      "note": null,
+      "taboo": [
+        "meme",
+        "kids",
+        "numbers",
+        "hand motion"
+      ]
+    }
+  ]
+}

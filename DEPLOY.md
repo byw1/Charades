@@ -9,6 +9,7 @@ builds on the last, so start at the top.
 | Time | 5 minutes | ~30 minutes the first time | An afternoon, plus Apple's review |
 | Needs a Mac? | No | No | No |
 | Works without your computer? | No | Yes | Yes |
+| Works with no Wi-Fi or signal? | Once it's open | Yes, always | Yes, always |
 
 You need [Node.js](https://nodejs.org) 22 or newer on your computer for all of
 them. Then, once, in this folder:
@@ -35,6 +36,35 @@ or hotel Wi-Fi), run `npx expo start --tunnel` instead.
 This is the fastest way to play and to see changes live, but it runs inside
 Expo Go and needs your computer running. For a real app icon on your home
 screen, keep going.
+
+### Does it need Wi-Fi?
+
+**The real app (steps 2 and 3) never needs the internet.** Every deck, every
+game mode, your stats and your decks live on the phone. Airplane mode, a cabin,
+a basement with no bars: it all works, from the very first launch. There is no
+login, no download on first open and no update check.
+
+**Expo Go is the exception, and only while you're developing.** Expo Go loads
+the game from your computer, so the phone needs your Wi-Fi to *open* it. Once
+it's open you can switch Wi-Fi off and play; you only need it back to reload
+or to see a change you just made. Your friends never deal with this: once you
+install the real app, Wi-Fi isn't part of it.
+
+### What works in Expo Go
+
+Almost everything. A few features need the real app from step 2, because Expo
+Go doesn't include the parts of iOS they use. In Expo Go they're greyed out or
+hidden, not broken.
+
+| Feature | Expo Go | Real app (step 2) |
+|---|---|---|
+| All decks, Classic, Banned and 3 Rounds, chaos, forfeits | ✅ | ✅ |
+| Friends, Wrapped, group deck builder, photo cards | ✅ | ✅ |
+| Big decks over several QR codes | ✅ | ✅ |
+| Film the room and the highlight reel | ✅ | ✅ |
+| Streak reminders | ✅ | ✅ |
+| Dream one up (AI decks) | — | ✅ on iPhone 15 Pro or newer, iOS 26, Apple Intelligence on |
+| AirDrop a deck and it opens in Deckhead | — | ✅ |
 
 ---
 
@@ -81,6 +111,37 @@ free [Expo account](https://expo.dev/signup).
    Deckhead.
 
 To update it later, run `npm run phone` again and install the new link.
+
+> **Turning the phone sideways needs a fresh build too.** The app used to be
+> portrait-only, and that is baked into the installed app. Run `npm run phone`
+> once more so it can turn with the phone.
+
+> **After the game night update you need a fresh build.** It added new native
+> parts (camera recording, speech, notifications, Apple Intelligence), and an
+> app built before them can't use them. Run `npm run phone` once more.
+
+### Seven things to check on a real iPhone
+
+Everything is tested, but these can only be checked on a phone. Each takes a
+minute.
+
+1. **No internet.** Swipe down Control Centre, turn on airplane mode (and make
+   sure Wi-Fi is off too), then force-close Deckhead and open it again. Play a
+   round: everything should work exactly the same.
+2. **Tilt.** Start a round and hold the phone sideways on your forehead. Tip
+   the screen down toward the floor for got it, up toward the ceiling to pass.
+   If you'd rather tap, switch it under Settings → How you answer.
+3. **Sound.** With the ring/silent switch on ring, play a round: a ding for got
+   it, a whoosh for a pass, beeps on the countdown, a buzzer at the end. Flip
+   the switch to silent and they stop.
+4. **Dream one up.** On an iPhone with Apple Intelligence, Decks → Dream one up
+   → type a theme. Turn on airplane mode first: it should still work.
+5. **Film the room.** Settings → Extras → Film the room. Play a round, then
+   tap "Watch the highlights" on the standings screen.
+6. **Streak reminders.** Settings → Extras → Streak reminders. With a streak
+   going, don't play the next day: a nudge should arrive at 7pm.
+7. **AirDrop.** Share a deck as a file to another iPhone with Deckhead
+   installed. It should offer to open in Deckhead and land on "Add this deck?".
 
 > **No paid account but you have a Mac?** Install Xcode, plug in your iPhone
 > and run `npx expo run:ios --device`. It installs with a free Apple ID, but

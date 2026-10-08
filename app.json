@@ -4,9 +4,9 @@
     "slug": "deckhead",
     "scheme": "deckhead",
     "version": "0.1.0",
-    "orientation": "portrait",
+    "orientation": "default",
     "icon": "./assets/icon.png",
-    "userInterfaceStyle": "dark",
+    "userInterfaceStyle": "automatic",
     "backgroundColor": "#0A0A0D",
     "assetBundlePatterns": [
       "**/*"
@@ -15,7 +15,36 @@
       "bundleIdentifier": "com.deckhead.app",
       "supportsTablet": false,
       "infoPlist": {
-        "ITSAppUsesNonExemptEncryption": false
+        "ITSAppUsesNonExemptEncryption": false,
+        "CFBundleDocumentTypes": [
+          {
+            "CFBundleTypeName": "Deckhead deck",
+            "CFBundleTypeRole": "Viewer",
+            "LSHandlerRank": "Owner",
+            "LSItemContentTypes": [
+              "com.deckhead.deck"
+            ]
+          }
+        ],
+        "UTExportedTypeDeclarations": [
+          {
+            "UTTypeIdentifier": "com.deckhead.deck",
+            "UTTypeDescription": "Deckhead deck",
+            "UTTypeConformsTo": [
+              "public.data",
+              "public.content"
+            ],
+            "UTTypeTagSpecification": {
+              "public.filename-extension": [
+                "deckhead"
+              ],
+              "public.mime-type": [
+                "application/x-deckhead"
+              ]
+            }
+          }
+        ],
+        "LSSupportsOpeningDocumentsInPlace": false
       },
       "privacyManifests": {
         "NSPrivacyTracking": false,
@@ -48,14 +77,40 @@
       [
         "expo-camera",
         {
-          "cameraPermission": "Deckhead uses the camera only to scan a deck code. No photos are taken or stored.",
-          "recordAudioAndroid": false
+          "cameraPermission": "Deckhead uses the camera to scan deck codes, take photos for your own cards, and, if you turn it on, film the room during a round. Everything stays on your phone unless you share it.",
+          "microphonePermission": "Deckhead uses the microphone only for features you turn on: sound for the round videos you choose to film, and the voice referee, which recognises speech on your iPhone itself. Nothing is sent anywhere.",
+          "recordAudioAndroid": true
         }
       ],
       [
         "expo-sensors",
         {
           "motionPermission": "Deckhead uses motion only for the optional tilt controls, to tell when you tip the phone to answer. Nothing is recorded."
+        }
+      ],
+      [
+        "expo-video",
+        {
+          "supportsBackgroundPlayback": false,
+          "supportsPictureInPicture": false
+        }
+      ],
+      [
+        "expo-speech-recognition",
+        {
+          "microphonePermission": "Deckhead uses the microphone only for features you turn on: sound for the round videos you choose to film, and the voice referee, which recognises speech on your iPhone itself. Nothing is sent anywhere.",
+          "speechRecognitionPermission": "Deckhead’s optional voice referee listens for card words during a round. Speech is recognised on your iPhone itself and never sent anywhere.",
+          "androidSpeechServicePackages": [
+            "com.google.android.as"
+          ]
+        }
+      ],
+      [
+        "expo-image-picker",
+        {
+          "photosPermission": "Deckhead lets you pick photos for your own cards. They stay on your phone, inside your decks.",
+          "cameraPermission": "Deckhead uses the camera to scan deck codes, take photos for your own cards, and, if you turn it on, film the room during a round. Everything stays on your phone unless you share it.",
+          "microphonePermission": false
         }
       ]
     ],

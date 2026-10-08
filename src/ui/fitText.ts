@@ -28,15 +28,33 @@ const FALLBACK_GLYPH = 0.7;
 const EMOJI_GLYPH = 1.15;
 
 const EMOJI = /\p{Extended_Pictographic}/u;
+/**
+ * Parts of an emoji that draw nothing on their own: the joiner in 🧙‍♂️, the
+ * selector that asks for colour, and skin tones, which merge into the emoji
+ * before them.
+ */
+const ZERO_WIDTH = /[\u200D\uFE0E\uFE0F]|\p{Emoji_Modifier}/u;
 
 /** Width of card text at size 1, using the card face's real glyph widths. */
 export function measureCard(text: string): number {
   const glyphs = [...text];
   let width = 0;
+  let drawn = 0;
+  let joined = false;
   for (const glyph of glyphs) {
+    if (ZERO_WIDTH.test(glyph)) {
+      // A joiner fuses the next emoji into this one: 🧙 + ♂ is one wizard.
+      if (glyph === '\u200D') joined = true;
+      continue;
+    }
+    if (joined) {
+      joined = false;
+      continue;
+    }
     width += CARD_GLYPH_WIDTHS[glyph] ?? (EMOJI.test(glyph) ? EMOJI_GLYPH : FALLBACK_GLYPH);
+    drawn += 1;
   }
-  return width + CARD_LETTER_SPACING * Math.max(0, glyphs.length - 1);
+  return width + CARD_LETTER_SPACING * Math.max(0, drawn - 1);
 }
 
 /** One em per character — a monospace measure, for reasoning in characters. */
