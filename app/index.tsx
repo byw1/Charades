@@ -7,7 +7,7 @@ import { planStreakReminder } from '@/game/reminders';
 import { playStats, type PlayStats } from '@/game/stats';
 import { standings } from '@/game/scoring';
 import { isJustPlay, makeJustPlayTeam } from '@/game/teams';
-import { settingsForMode, type Session } from '@/game/types';
+import { nextRoundSeconds, settingsForMode, type Session } from '@/game/types';
 import { CardPreview } from '@/home/CardPreview';
 import { DECK_SORTS, orderDecks, playCounts } from '@/home/deckOrder';
 import { DecksPage } from '@/home/DecksPage';
@@ -47,6 +47,7 @@ export default function HomeScreen() {
   const quickMode = useSettingsStore((s) => s.quickMode);
   const setSetting = useSettingsStore((s) => s.set);
   const setGameMode = useNewGameStore((s) => s.setGameMode);
+  const setDraftSeconds = useNewGameStore((s) => s.setRoundSeconds);
   const { width } = useWindowDimensions();
   const pager = useRef<ScrollView>(null);
   const bar = useBottomBarHeight();
@@ -67,6 +68,7 @@ export default function HomeScreen() {
   const [plays, setPlays] = useState<ReadonlyMap<string, number>>(() => new Map());
   const [peeking, setPeeking] = useState<Lens | null>(null);
   const deckSort = useSettingsStore((s) => s.deckSort);
+  const quickSeconds = useSettingsStore((s) => s.quickSeconds);
   // Checked once: Apple Intelligence being on or off is not something that
   // changes while the home screen is open.
   const [canDream] = useState(() => deckMakerAvailable());
@@ -149,7 +151,7 @@ export default function HomeScreen() {
   // One tap plays an endless game: keep passing the phone round until you
   // stop. Three-round mode still ends when the hat is cleared.
   const quickPlay = (lens: Lens) => {
-    const settings = settingsForMode(quickMode);
+    const settings = { ...settingsForMode(quickMode), roundSeconds: quickSeconds };
     void start({
       deckIds: lens.deckIds,
       teams: [makeJustPlayTeam()],
@@ -160,6 +162,8 @@ export default function HomeScreen() {
   const setup = (lens: Lens) => {
     resetDraft();
     setGameMode(quickMode);
+    // Setup starts from the round length already picked on Play.
+    setDraftSeconds(quickSeconds);
     for (const id of lens.deckIds) toggleDeck(id);
     router.push(lens.key === 'mix' ? '/new/decks' : '/new/teams');
   };
@@ -258,6 +262,8 @@ export default function HomeScreen() {
           }}
           sortLabel={DECK_SORTS.find((option) => option.key === deckSort)?.label ?? 'Sort'}
           onSort={chooseSort}
+          roundSeconds={quickSeconds}
+          onRoundSeconds={() => setSetting('quickSeconds', nextRoundSeconds(quickSeconds))}
         />
         <MePage
           stats={stats}

@@ -26,7 +26,7 @@ These are product decisions, not preferences. Don't design around them.
 - **expo-haptics** for feedback
 - **expo-keep-awake** so the screen never sleeps mid-round
 - **expo-brightness** to boost during a round and restore after
-- **expo-screen-orientation** to hold the round's orientation steady while it runs
+- No orientation lock anywhere: every screen, the round included, turns with the phone
 - **react-native-mmkv** for settings and small state, **expo-sqlite** for decks and session history
 - **zustand** for game state. No Redux.
 - **expo-camera** for QR scanning on deck import, and for round videos when switched on
@@ -190,7 +190,7 @@ Home
 | Import deck | Either | QR scan, file, or paste JSON |
 | New game (3 steps) | Either | Decks → teams → settings |
 | Round intro | Either | Who's up, countdown |
-| Round | Either, held | The card screen. Holds whichever way it started |
+| Round | Either | The card screen. Turns with the phone mid-round; pause button in the corner |
 | Recap | Either | Editable results |
 | Standings | Either | Cumulative, per team and per player |
 | Settings | Either | Input mode, haptics, sound, brightness, reset |
@@ -211,7 +211,7 @@ Home
 
 Sound is **off by default**. When the phone dings for "correct," the guesser knows they got it before anyone speaks, and it leaks information across the room. Make this a setting with a one-line explanation of why it's off.
 
-**During a round:** keep-awake on, brightness pushed toward max, orientation held the way the round started (portrait or landscape), notifications don't matter but incoming calls will interrupt so handle app backgrounding by pausing the timer and offering resume.
+**During a round:** keep-awake on, brightness pushed toward max, no orientation lock (the card re-lays out if the phone turns), a pause button for the room, and notifications don't matter but incoming calls will interrupt so handle app backgrounding by pausing the timer and offering resume.
 
 ---
 

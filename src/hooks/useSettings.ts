@@ -2,7 +2,7 @@ import { reloadAppAsync } from 'expo';
 import Storage from 'expo-sqlite/kv-store';
 import { create } from 'zustand';
 import { useShallow } from 'zustand/react/shallow';
-import type { GameMode } from '@/game/types';
+import { clampRoundSeconds, type GameMode } from '@/game/types';
 import { DECK_SORTS, type DeckSort } from '@/home/deckOrder';
 import type { ThemeChoice } from '@/ui/tokens';
 import { DEFAULTS_VERSION, parseDefaultsVersion, upgradeSettings } from './settingsUpgrade';
@@ -40,6 +40,8 @@ export type Settings = {
   onboarded: boolean;
   /** The mode the one-tap shutter on the Play screen starts. */
   quickMode: GameMode;
+  /** Round length for one-tap play, in seconds. */
+  quickSeconds: number;
   /** An evening nudge when a streak would otherwise end. Opt-in. */
   streakReminders: boolean;
   /**
@@ -65,6 +67,7 @@ export const defaultAppSettings: Settings = {
   boostBrightness: true,
   onboarded: false,
   quickMode: 'classic',
+  quickSeconds: 60,
   streakReminders: false,
   voiceReferee: false,
   recordRounds: false,
@@ -81,6 +84,7 @@ function sanitise(stored: Partial<Record<keyof Settings, unknown>>): Settings {
   }
   const settings = out as Settings;
   if (!['classic', 'taboo', 'threeRounds'].includes(settings.quickMode)) settings.quickMode = 'classic';
+  settings.quickSeconds = clampRoundSeconds(settings.quickSeconds);
   if (!INPUT_MODES.includes(settings.inputMode)) settings.inputMode = defaultAppSettings.inputMode;
   if (!THEMES.includes(settings.theme)) settings.theme = defaultAppSettings.theme;
   if (!DECK_SORTS.some((s) => s.key === settings.deckSort)) settings.deckSort = defaultAppSettings.deckSort;

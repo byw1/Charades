@@ -16,7 +16,9 @@ import { useSounds } from '@/hooks/useSounds';
 import { useTilt } from '@/hooks/useTilt';
 import { useVoiceReferee } from '@/hooks/useVoiceReferee';
 import { VOICE_REFEREE_LAUNCHED, voiceSupported } from '@/media/voice';
+import { Button } from '@/ui/Button';
 import { CardFace } from '@/ui/CardFace';
+import { CircleButton } from '@/ui/CircleButton';
 import { cardTextOn } from '@/ui/contrast';
 import { FlashOverlay } from '@/ui/FlashOverlay';
 import { Icon } from '@/ui/Icon';
@@ -52,6 +54,8 @@ export default function RoundPlayScreen() {
   const pauseRound = useSessionStore((s) => s.pauseRound);
   const resumeRound = useSessionStore((s) => s.resumeRound);
   const tick = useSessionStore((s) => s.tick);
+  const endRound = useSessionStore((s) => s.endRound);
+  const resetSession = useSessionStore((s) => s.reset);
   // The round plays whichever way the phone is held; only the full-screen
   // moments (paused, time's up) need to know which way that is.
   const { landscape } = useLayout();
@@ -67,8 +71,12 @@ export default function RoundPlayScreen() {
   const flashId = useRef(0);
   const warned = useRef(false);
   const endSignalled = useRef(false);
+  /** Paused with the pause button, rather than by the app going away. */
+  const pausedByHand = useRef(false);
+  /** Ended from the pause screen: straight to the recap, no buzzer. */
+  const endedByHand = useRef(false);
 
-  useRoundScreenMode({ holdOrientation: true, boostBrightness: settings.boostBrightness });
+  useRoundScreenMode({ boostBrightness: settings.boostBrightness });
 
   // Start on mount. The intro screen owns the countdown, so by the time this
   // renders the phone is already on a forehead.
@@ -91,8 +99,10 @@ export default function RoundPlayScreen() {
    */
   useEffect(() => {
     const subscription = AppState.addEventListener('change', (next) => {
-      if (next === 'active') resumeRound(Date.now());
-      else pauseRound(Date.now());
+      if (next === 'active') {
+        // A pause someone chose stays paused; only the app's own pause lifts.
+        if (!pausedByHand.current) resumeRound(Date.now());
+      } else pauseRound(Date.now());
     });
     return () => subscription.remove();
   }, [pauseRound, resumeRound]);
@@ -111,6 +121,10 @@ export default function RoundPlayScreen() {
   useEffect(() => {
     if (state.phase !== 'ended' || endSignalled.current) return;
     endSignalled.current = true;
+    if (endedByHand.current) {
+      router.replace('/round/recap');
+      return;
+    }
     haptics.timeUp();
     sound('timeup');
 
@@ -170,22 +184,50 @@ export default function RoundPlayScreen() {
   const tilting = tiltChosen && tiltAvailable;
   const swiping = settings.inputMode === 'swipe';
 
+  const pause = () => {
+    pausedByHand.current = true;
+    haptics.select();
+    pauseRound(Date.now());
+  };
+
+  const carryOn = () => {
+    pausedByHand.current = false;
+    resumeRound(Date.now());
+  };
+
+  const endNow = () => {
+    endedByHand.current = true;
+    endRound(Date.now());
+  };
+
+  const quit = () => {
+    // The game is saved after every round; this one is dropped and taken
+    // again from the top on resume.
+    resetSession();
+    router.dismissAll();
+    router.replace('/');
+  };
+
   if (state.phase === 'paused') {
     return (
       <Pressable
         style={[styles.paused, upright && styles.stacked]}
-        onPress={() => resumeRound(Date.now())}
+        onPress={carryOn}
         accessibilityRole="button"
         accessibilityLabel={`Paused. ${Math.ceil(left / 1000)} seconds left. Tap to carry on.`}
       >
-        <Mascot size={150} mood="sleepy" />
+        <Mascot size={upright ? 130 : 110} mood="sleepy" />
         <View style={[styles.pausedCopy, upright && styles.centred]}>
           <Text style={[styles.pausedTitle, upright && styles.pausedTitleUpright]} allowFontScaling={false}>
-            Paused 😴
+            Paused
           </Text>
           <Text style={[styles.pausedBody, upright && styles.textCentred]}>
             {Math.ceil(left / 1000)} seconds left. Tap anywhere to carry on.
           </Text>
+          <View style={[styles.pausedActions, upright && styles.pausedActionsUpright]}>
+            <Button label="End round" icon="flag" size="sm" onPress={endNow} />
+            <Button label="Quit game" icon="home" size="sm" onPress={quit} accessibilityHint="Saved rounds are kept" />
+          </View>
         </View>
       </Pressable>
     );
@@ -223,6 +265,14 @@ export default function RoundPlayScreen() {
           <View style={styles.blank} />
         )}
       </View>
+
+      {/* For the room: a way to stop the clock. Small and in the corner, so a
+          hand holding the phone doesn't hit it. */}
+      {state.phase === 'running' ? (
+        <View style={[styles.pauseSpot, upright ? { top: insets.top + 8 } : null]}>
+          <CircleButton icon="pause" label="Pause" tone="scrim" size={40} onPress={pause} />
+        </View>
+      ) : null}
 
       {/* For the room, not the holder: how the round is going. */}
       <View style={[styles.tally, pillTop]} pointerEvents="none" accessible={false}>
@@ -386,6 +436,9 @@ const styles = StyleSheet.create({
     paddingHorizontal: space.xl,
   },
   pausedCopy: { gap: space.xs, flexShrink: 1 },
+  pausedActions: { flexDirection: 'row', gap: space.sm, paddingTop: space.md },
+  pausedActionsUpright: { justifyContent: 'center' },
+  pauseSpot: { position: 'absolute', top: 6, left: 6, zIndex: 10 },
   stacked: { flexDirection: 'column' },
   centred: { alignItems: 'center' },
   textCentred: { textAlign: 'center' },

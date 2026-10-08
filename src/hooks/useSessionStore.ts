@@ -59,6 +59,8 @@ export type SessionStore = {
   endRound(now: number): void;
   tick(now: number): void;
   overrideResult(cardId: string, outcome: Outcome): void;
+  /** A new round length from the next round on, saved with the game. */
+  setRoundSeconds(db: SQLiteDatabase, seconds: number): Promise<void>;
 
   /** Folds the round into the session and writes it. */
   commitRound(db: SQLiteDatabase, nowIso: string): Promise<Session | null>;
@@ -218,6 +220,14 @@ export const useSessionStore = create<SessionStore>((set, get) => ({
   tick(now) {
     const next = round.tick(get().roundState, now);
     if (next !== get().roundState) set({ roundState: next });
+  },
+
+  async setRoundSeconds(db, seconds) {
+    const current = get().session;
+    if (!current) return;
+    const next = session.withRoundSeconds(current, seconds);
+    set({ session: next });
+    await saveSession(db, next);
   },
 
   overrideResult(cardId, outcome) {

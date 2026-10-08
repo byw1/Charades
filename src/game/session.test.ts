@@ -12,6 +12,7 @@ import {
   sessionWinState,
   whoseTurn,
   withDecks,
+  withRoundSeconds,
 } from './session';
 import { standings } from './scoring';
 import { makeJustPlayTeam, makeTeams } from './teams';
@@ -320,5 +321,15 @@ describe('changing decks mid-game', () => {
     expect(canChangeDecks(newSession())).toBe(true);
     expect(canChangeDecks(newSession({ settings: { ...defaultSettings, mode: 'threeRounds' } }))).toBe(false);
     expect(canChangeDecks(newSession({ completedAt: T1 }))).toBe(false);
+  });
+});
+
+describe('changing the round length mid-game', () => {
+  it('keeps the score and takes the new length, within limits', () => {
+    const played = playRound(newSession(), 'ccp');
+    expect(withRoundSeconds(played, 30).settings.roundSeconds).toBe(30);
+    expect(standings(withRoundSeconds(played, 30))).toEqual(standings(played));
+    expect(withRoundSeconds(played, 5).settings.roundSeconds).toBe(15);
+    expect(withRoundSeconds(played, 999).settings.roundSeconds).toBe(180);
   });
 });

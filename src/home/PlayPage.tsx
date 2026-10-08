@@ -67,6 +67,9 @@ export type PlayPageProps = {
   /** How the carousel is ordered, shown on the sort button. */
   sortLabel: string;
   onSort: () => void;
+  /** One-tap round length, and the button that cycles it. */
+  roundSeconds: number;
+  onRoundSeconds: () => void;
 };
 
 /** The modes, in the order a camera app lists its modes: left to right. */
@@ -109,6 +112,8 @@ export function PlayPage({
   onEdit,
   sortLabel,
   onSort,
+  roundSeconds,
+  onRoundSeconds,
 }: PlayPageProps) {
   const { width, height, short: sideways } = useLayout();
   const insets = useSafeAreaInsets();
@@ -229,25 +234,39 @@ export function PlayPage({
 
   const controls = (
     <View style={[styles.bottom, sideways && styles.bottomSideways]}>
-      <View style={styles.modes} accessibilityRole="tablist">
-        {MODES.map((item) => {
-          const active = item.mode === mode;
-          return (
-            <Tap
-              key={item.mode}
-              onPress={() => onMode(item.mode)}
-              squish={0.92}
-              accessibilityRole="tab"
-              accessibilityState={{ selected: active }}
-              accessibilityLabel={`${item.label} mode`}
-              contentStyle={[styles.mode, active && styles.modeActive]}
-            >
-              <RNText style={[styles.modeText, active && styles.modeTextActive]} allowFontScaling={false}>
-                {item.label}
-              </RNText>
-            </Tap>
-          );
-        })}
+      <View style={styles.modeRow}>
+        <View style={styles.modes} accessibilityRole="tablist">
+          {MODES.map((item) => {
+            const active = item.mode === mode;
+            return (
+              <Tap
+                key={item.mode}
+                onPress={() => onMode(item.mode)}
+                squish={0.92}
+                accessibilityRole="tab"
+                accessibilityState={{ selected: active }}
+                accessibilityLabel={`${item.label} mode`}
+                contentStyle={[styles.mode, active && styles.modeActive]}
+              >
+                <RNText style={[styles.modeText, active && styles.modeTextActive]} allowFontScaling={false}>
+                  {item.label}
+                </RNText>
+              </Tap>
+            );
+          })}
+        </View>
+        {/* One tap cycles the round length: 30, 60, 90 seconds. */}
+        <Tap
+          onPress={onRoundSeconds}
+          squish={0.92}
+          accessibilityLabel={`Round length ${roundSeconds} seconds. Tap to change.`}
+          contentStyle={styles.timer}
+        >
+          <Icon name="timer" size={15} color={color.bone} weight={3} />
+          <RNText style={styles.timerText} allowFontScaling={false}>
+            {roundSeconds}s
+          </RNText>
+        </Tap>
       </View>
 
       <Text style={[styles.hint, { color: ink }]} numberOfLines={1} adjustsFontSizeToFit>
@@ -413,6 +432,17 @@ const styles = StyleSheet.create({
   meta: { fontFamily: font.bold, fontSize: 15, lineHeight: 20, opacity: 0.85 },
   bottom: { alignItems: 'center', gap: space.md, paddingBottom: space.md },
   hint: { fontFamily: font.heavy, fontSize: 15, lineHeight: 20, paddingHorizontal: gutter },
+  modeRow: { flexDirection: 'row', alignItems: 'center', gap: space.sm },
+  timer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 5,
+    paddingHorizontal: 12,
+    height: 38,
+    borderRadius: radius.pill,
+    backgroundColor: color.scrim,
+  },
+  timerText: { fontFamily: font.heavy, fontSize: 14, lineHeight: 18, color: color.bone },
   modes: {
     flexDirection: 'row',
     gap: 4,

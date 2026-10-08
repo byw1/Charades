@@ -6,6 +6,7 @@ import { makeSessionId } from '@/game/ids';
 import { playerStandings, standings } from '@/game/scoring';
 import { canChangeDecks, rematch, sessionWinState, whoseTurn } from '@/game/session';
 import { isJustPlay } from '@/game/teams';
+import { nextRoundSeconds } from '@/game/types';
 import { hatProgress, phaseInfo } from '@/game/threeRounds';
 import { useDatabase } from '@/hooks/useDatabase';
 import { hasClips } from '@/media/reels';
@@ -63,6 +64,7 @@ export default function StandingsScreen() {
 
   useRoundScreenMode();
   const { short } = useLayout();
+  const setRoundSeconds = useSessionStore((st) => st.setRoundSeconds);
 
   const winState = useMemo(
     () => (session ? sessionWinState(session, poolExhausted) : { over: false as const }),
@@ -206,6 +208,23 @@ export default function StandingsScreen() {
             <Text variant="heading">{forfeitFor(session.id)}</Text>
           </PopIn>
         ) : null}
+
+        {/* Rounds too long or too short? Change it for the next one. */}
+        {winState.over ? null : (
+          <View style={styles.timerRow}>
+            <Button
+              label={`Next round: ${session.settings.roundSeconds}s`}
+              icon="timer"
+              size="sm"
+              onPress={() =>
+                database.status === 'ready'
+                  ? void setRoundSeconds(database.db, nextRoundSeconds(session.settings.roundSeconds))
+                  : undefined
+              }
+              accessibilityHint="Tap to cycle 30, 60 and 90 seconds"
+            />
+          </View>
+        )}
 
         {/* With one team the team row is just the total, so the per-player
             table is the interesting one and goes first. */}
@@ -384,6 +403,7 @@ const styles = StyleSheet.create({
   footerRow: { flexDirection: 'row', gap: 10 },
   totals: { flexDirection: 'row', gap: space.sm, paddingHorizontal: gutter },
   grow: { flex: 1 },
+  timerRow: { flexDirection: 'row', paddingHorizontal: gutter },
   hat: {
     flexDirection: 'row',
     alignItems: 'center',

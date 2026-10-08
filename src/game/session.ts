@@ -1,6 +1,6 @@
 import { cardKey } from './cardDrawer';
 import { evaluateWinCondition, type WinState } from './scoring';
-import type { Phase, Round, RoundResult, Session, SessionSettings, Team } from './types';
+import { clampRoundSeconds, type Phase, type Round, type RoundResult, type Session, type SessionSettings, type Team } from './types';
 
 /**
  * Session lifecycle.
@@ -188,6 +188,14 @@ export function rematch(session: Session, id: string, now: string): Session {
  */
 export function withDecks(session: Session, deckIds: readonly string[]): Session {
   return { ...session, deckIds: [...new Set(deckIds)] };
+}
+
+/**
+ * The same game with a new round length, from the next round on. A round
+ * already running keeps the clock it started with.
+ */
+export function withRoundSeconds(session: Session, seconds: number): Session {
+  return { ...session, settings: { ...session.settings, roundSeconds: clampRoundSeconds(seconds) } };
 }
 
 /** Whether a game can swap decks part way through. */
