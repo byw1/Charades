@@ -1,10 +1,8 @@
-import { Camera } from 'expo-camera';
 import Constants from 'expo-constants';
 import { useRouter } from 'expo-router';
-import { Alert, Linking, ScrollView, StyleSheet, View } from 'react-native';
+import { Alert, ScrollView, StyleSheet, View } from 'react-native';
 import { useHaptics } from '@/hooks/useHaptics';
 import { type InputMode, useSettings, useSettingsStore } from '@/hooks/useSettings';
-import { allowReminders } from '@/media/reminders';
 import { Chip } from '@/ui/Chip';
 import { Icon, type IconName } from '@/ui/Icon';
 import { Screen } from '@/ui/Screen';
@@ -12,7 +10,7 @@ import { Group, IconBadge, SectionLabel, SwitchRow } from '@/ui/Section';
 import { Tap } from '@/ui/Tap';
 import { Text } from '@/ui/Text';
 import { TopBar } from '@/ui/TopBar';
-import { color, font, gutter, palette, radius, space, type ThemeChoice } from '@/ui/tokens';
+import { color, gutter, palette, space, type ThemeChoice } from '@/ui/tokens';
 
 /**
  * App settings, as opposed to the per-game settings in the new game flow.
@@ -20,8 +18,8 @@ import { color, font, gutter, palette, radius, space, type ThemeChoice } from '@
  * These are preferences about the device and the person holding it, so they
  * persist across games rather than being chosen again every time.
  *
- * Grouped by what they change: how you answer, how the app looks, what you
- * hear and feel, and the optional extras.
+ * Grouped by what they change: how you answer, how the app looks, and what
+ * you hear and feel.
  */
 export default function SettingsScreen() {
   const router = useRouter();
@@ -31,18 +29,6 @@ export default function SettingsScreen() {
   const resetAll = useSettingsStore((s) => s.resetAll);
 
 
-  const denied = (what: string) =>
-    Alert.alert(`${what} is turned off for Deckhead`, 'You can allow it in the Settings app.', [
-      { text: 'Not now', style: 'cancel' },
-      { text: 'Open Settings', onPress: () => void Linking.openSettings() },
-    ]);
-
-  const toggleReminders = async (on: boolean) => {
-    if (!on) return set('streakReminders', false);
-    if (await allowReminders()) set('streakReminders', true);
-    else denied('Notifications');
-  };
-
   const setTheme = useSettingsStore((s) => s.setTheme);
   const switchTheme = (next: ThemeChoice) => {
     if (next === settings.theme) return;
@@ -50,14 +36,6 @@ export default function SettingsScreen() {
       { text: 'Not now', style: 'cancel' },
       { text: 'Switch', onPress: () => setTheme(next) },
     ]);
-  };
-
-  const toggleRecording = async (on: boolean) => {
-    if (!on) return set('recordRounds', false);
-    const cameraOk = (await Camera.requestCameraPermissionsAsync()).granted;
-    const micOk = cameraOk && (await Camera.requestMicrophonePermissionsAsync()).granted;
-    if (cameraOk && micOk) set('recordRounds', true);
-    else denied(cameraOk ? 'The microphone' : 'The camera');
   };
 
   const confirmReset = () => {
@@ -156,34 +134,6 @@ export default function SettingsScreen() {
         </View>
 
         <View>
-          <SectionLabel>Extras</SectionLabel>
-          <Group>
-            <SwitchRow
-              icon="camera"
-              tint={palette.pink}
-              title="Film the room"
-              detail="The front camera records each round for a highlight reel. Videos stay on this phone unless you share them."
-              value={settings.recordRounds}
-              onChange={(value) => void toggleRecording(value)}
-            />
-            <SwitchRow
-              icon="flame"
-              tint={palette.red}
-              title="Streak reminders"
-              detail="One nudge in the evening when your streak is about to end. Scheduled on this phone; no servers."
-              value={settings.streakReminders}
-              onChange={(value) => void toggleReminders(value)}
-            />
-            <SoonRow
-              icon="bolt"
-              tint={palette.blue}
-              title="Voice referee"
-              detail="Hears the answer and calls it, and catches banned words. On its way."
-            />
-          </Group>
-        </View>
-
-        <View>
           <SectionLabel>More</SectionLabel>
           <Group>
             <NavRow icon="help" tint={palette.blue} title="How to play" onPress={() => router.push('/welcome?replay=1')} />
@@ -234,24 +184,6 @@ const THEME_CHOICES: readonly { key: ThemeChoice; emoji: string; label: string }
   { key: 'system', emoji: '📱', label: 'Auto' },
 ];
 
-/** A feature that is on its way: shown so people know, but not switchable. */
-function SoonRow({ icon, tint, title, detail }: { icon: IconName; tint: string; title: string; detail: string }) {
-  return (
-    <View style={styles.row} accessible accessibilityLabel={`${title}, coming soon. ${detail}`}>
-      <IconBadge icon={icon} tint={tint} />
-      <View style={styles.rowTitle}>
-        <Text variant="heading">{title}</Text>
-        <Text variant="caption" tone="muted">
-          {detail}
-        </Text>
-      </View>
-      <View style={styles.soon}>
-        <Text style={styles.soonText}>Coming soon</Text>
-      </View>
-    </View>
-  );
-}
-
 function NavRow({
   icon,
   tint,
@@ -283,7 +215,5 @@ const styles = StyleSheet.create({
   row: { flexDirection: 'row', alignItems: 'center', gap: 12, paddingHorizontal: space.md, paddingVertical: 12 },
   rowDivider: { borderBottomWidth: StyleSheet.hairlineWidth, borderBottomColor: color.line },
   rowTitle: { flex: 1 },
-  soon: { backgroundColor: color.surfaceRaised, borderRadius: radius.pill, paddingHorizontal: 10, paddingVertical: 4 },
-  soonText: { fontFamily: font.heavy, fontSize: 11, lineHeight: 14, color: color.textMuted },
   colophon: { gap: space.xs, paddingHorizontal: space.xl, paddingTop: space.md },
 });

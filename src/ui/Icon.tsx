@@ -42,7 +42,8 @@ export type IconName =
   | 'heartFilled'
   | 'sort'
   | 'sound'
-  | 'infinity';
+  | 'infinity'
+  | 'pause';
 
 export type IconProps = {
   name: IconName;
@@ -249,6 +250,8 @@ function shape(name: IconName, s: Stroke, fill: string) {
       return <Path d="M7 4 V20 M3.5 16.5 L7 20 L10.5 16.5 M17 20 V4 M13.5 7.5 L17 4 L20.5 7.5" {...s} />;
     case 'sound':
       return <Path d="M4 9.5 H7.5 L12 5.5 V18.5 L7.5 14.5 H4 Z M15.5 9 C16.5 10 16.5 14 15.5 15 M18.5 6.5 C21 9 21 15 18.5 17.5" {...s} />;
+    case 'pause':
+      return <Path d="M9 6 V18 M15 6 V18" {...s} />;
     case 'infinity':
       return <Path d="M12 12 C10 9 8.5 8 6.8 8 C4.6 8 3 9.8 3 12 C3 14.2 4.6 16 6.8 16 C8.5 16 10 15 12 12 C14 9 15.5 8 17.2 8 C19.4 8 21 9.8 21 12 C21 14.2 19.4 16 17.2 16 C15.5 16 14 15 12 12 Z" {...s} />;
   }

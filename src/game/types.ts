@@ -101,6 +101,12 @@ export type Session = {
 };
 
 export const ROUND_SECONDS_PRESETS = [30, 60, 90] as const;
+
+/** The next preset round length, for a one-tap timer button that cycles. */
+export function nextRoundSeconds(current: number): number {
+  const next = ROUND_SECONDS_PRESETS.find((preset) => preset > current);
+  return next ?? ROUND_SECONDS_PRESETS[0];
+}
 export const MIN_ROUND_SECONDS = 15;
 export const MAX_ROUND_SECONDS = 180;
 

@@ -2,7 +2,7 @@ import { reloadAppAsync } from 'expo';
 import Storage from 'expo-sqlite/kv-store';
 import { create } from 'zustand';
 import { useShallow } from 'zustand/react/shallow';
-import type { GameMode } from '@/game/types';
+import { clampRoundSeconds, type GameMode } from '@/game/types';
 import { DECK_SORTS, type DeckSort } from '@/home/deckOrder';
 import type { ThemeChoice } from '@/ui/tokens';
 import { DEFAULTS_VERSION, parseDefaultsVersion, upgradeSettings } from './settingsUpgrade';
@@ -40,16 +40,8 @@ export type Settings = {
   onboarded: boolean;
   /** The mode the one-tap shutter on the Play screen starts. */
   quickMode: GameMode;
-  /** An evening nudge when a streak would otherwise end. Opt-in. */
-  streakReminders: boolean;
-  /**
-   * Listens during a round, on the phone only, for a Taboo word (busted) or
-   * the guesser saying the answer (got it). Opt-in: parties are loud, and a
-   * microphone is not something to switch on for anyone by default.
-   */
-  voiceReferee: boolean;
-  /** Films the room through the front camera during each round. Opt-in. */
-  recordRounds: boolean;
+  /** Round length for one-tap play, in seconds. */
+  quickSeconds: number;
 };
 
 export type InputMode = 'tilt' | 'swipe' | 'tap';
@@ -65,9 +57,7 @@ export const defaultAppSettings: Settings = {
   boostBrightness: true,
   onboarded: false,
   quickMode: 'classic',
-  streakReminders: false,
-  voiceReferee: false,
-  recordRounds: false,
+  quickSeconds: 60,
 };
 
 const SETTING_KEYS = Object.keys(defaultAppSettings) as (keyof Settings)[];
@@ -81,6 +71,7 @@ function sanitise(stored: Partial<Record<keyof Settings, unknown>>): Settings {
   }
   const settings = out as Settings;
   if (!['classic', 'taboo', 'threeRounds'].includes(settings.quickMode)) settings.quickMode = 'classic';
+  settings.quickSeconds = clampRoundSeconds(settings.quickSeconds);
   if (!INPUT_MODES.includes(settings.inputMode)) settings.inputMode = defaultAppSettings.inputMode;
   if (!THEMES.includes(settings.theme)) settings.theme = defaultAppSettings.theme;
   if (!DECK_SORTS.some((s) => s.key === settings.deckSort)) settings.deckSort = defaultAppSettings.deckSort;

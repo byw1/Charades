@@ -2,7 +2,7 @@ import { useRouter } from 'expo-router';
 import { useCallback, useEffect, useRef, useState } from 'react';
 import { AppState, Pressable, StyleSheet, Text, View } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
-import { elapsedMs, remainingMs } from '@/game/round';
+import { remainingMs } from '@/game/round';
 import { swipeOutcome } from '@/game/swipe';
 import { phaseInfo } from '@/game/threeRounds';
 import { twistById } from '@/game/twists';
@@ -14,16 +14,15 @@ import { useSessionStore } from '@/hooks/useSessionStore';
 import { useSettings } from '@/hooks/useSettings';
 import { useSounds } from '@/hooks/useSounds';
 import { useTilt } from '@/hooks/useTilt';
-import { useVoiceReferee } from '@/hooks/useVoiceReferee';
-import { VOICE_REFEREE_LAUNCHED, voiceSupported } from '@/media/voice';
+import { Button } from '@/ui/Button';
 import { CardFace } from '@/ui/CardFace';
+import { CircleButton } from '@/ui/CircleButton';
 import { cardTextOn } from '@/ui/contrast';
 import { FlashOverlay } from '@/ui/FlashOverlay';
 import { Icon } from '@/ui/Icon';
 import { useLayout } from '@/ui/layout';
 import { Mascot } from '@/ui/Mascot';
 import { PopIn } from '@/ui/motion';
-import { RoundCamera } from '@/ui/RoundCamera';
 import { TimerBar } from '@/ui/TimerBar';
 import { color, flashMs, font, radius, space } from '@/ui/tokens';
 
@@ -46,12 +45,13 @@ export default function RoundPlayScreen() {
   const mode = useSessionStore((s) => s.session?.settings.mode ?? 'classic');
   const openRound = useSessionStore((s) => s.session?.rounds.find((round) => round.endedAt === null));
   const hatLeft = useSessionStore((s) => s.roundPool.length);
-  const sessionId = useSessionStore((s) => s.session?.id);
   const begin = useSessionStore((s) => s.start);
   const resolve = useSessionStore((s) => s.resolve);
   const pauseRound = useSessionStore((s) => s.pauseRound);
   const resumeRound = useSessionStore((s) => s.resumeRound);
   const tick = useSessionStore((s) => s.tick);
+  const endRound = useSessionStore((s) => s.endRound);
+  const resetSession = useSessionStore((s) => s.reset);
   // The round plays whichever way the phone is held; only the full-screen
   // moments (paused, time's up) need to know which way that is.
   const { landscape } = useLayout();
@@ -67,8 +67,12 @@ export default function RoundPlayScreen() {
   const flashId = useRef(0);
   const warned = useRef(false);
   const endSignalled = useRef(false);
+  /** Paused with the pause button, rather than by the app going away. */
+  const pausedByHand = useRef(false);
+  /** Ended from the pause screen: straight to the recap, no buzzer. */
+  const endedByHand = useRef(false);
 
-  useRoundScreenMode({ holdOrientation: true, boostBrightness: settings.boostBrightness });
+  useRoundScreenMode({ boostBrightness: settings.boostBrightness });
 
   // Start on mount. The intro screen owns the countdown, so by the time this
   // renders the phone is already on a forehead.
@@ -91,8 +95,10 @@ export default function RoundPlayScreen() {
    */
   useEffect(() => {
     const subscription = AppState.addEventListener('change', (next) => {
-      if (next === 'active') resumeRound(Date.now());
-      else pauseRound(Date.now());
+      if (next === 'active') {
+        // A pause someone chose stays paused; only the app's own pause lifts.
+        if (!pausedByHand.current) resumeRound(Date.now());
+      } else pauseRound(Date.now());
     });
     return () => subscription.remove();
   }, [pauseRound, resumeRound]);
@@ -111,6 +117,10 @@ export default function RoundPlayScreen() {
   useEffect(() => {
     if (state.phase !== 'ended' || endSignalled.current) return;
     endSignalled.current = true;
+    if (endedByHand.current) {
+      router.replace('/round/recap');
+      return;
+    }
     haptics.timeUp();
     sound('timeup');
 
@@ -140,20 +150,6 @@ export default function RoundPlayScreen() {
   );
 
   /**
-   * The voice referee, when it is on and this phone can listen offline. It
-   * answers alongside tap or tilt rather than instead of them, so a missed
-   * word can still be scored by hand.
-   */
-  const [canListen] = useState(() => VOICE_REFEREE_LAUNCHED && settings.voiceReferee && voiceSupported());
-  useVoiceReferee({
-    enabled: canListen && state.phase === 'running',
-    card: state.card,
-    mode,
-    onCorrect: () => onResolve('correct'),
-    onBusted: (word) => onResolve('pass', word),
-  });
-
-  /**
    * Tilt replaces tap rather than joining it. The phone is pressed against skin
    * for the whole round, so leaving full-screen tap targets live underneath a
    * tilt game is a stray palm away from resolving a card nobody guessed.
@@ -170,22 +166,50 @@ export default function RoundPlayScreen() {
   const tilting = tiltChosen && tiltAvailable;
   const swiping = settings.inputMode === 'swipe';
 
+  const pause = () => {
+    pausedByHand.current = true;
+    haptics.select();
+    pauseRound(Date.now());
+  };
+
+  const carryOn = () => {
+    pausedByHand.current = false;
+    resumeRound(Date.now());
+  };
+
+  const endNow = () => {
+    endedByHand.current = true;
+    endRound(Date.now());
+  };
+
+  const quit = () => {
+    // The game is saved after every round; this one is dropped and taken
+    // again from the top on resume.
+    resetSession();
+    router.dismissAll();
+    router.replace('/');
+  };
+
   if (state.phase === 'paused') {
     return (
       <Pressable
         style={[styles.paused, upright && styles.stacked]}
-        onPress={() => resumeRound(Date.now())}
+        onPress={carryOn}
         accessibilityRole="button"
         accessibilityLabel={`Paused. ${Math.ceil(left / 1000)} seconds left. Tap to carry on.`}
       >
-        <Mascot size={150} mood="sleepy" />
+        <Mascot size={upright ? 130 : 110} mood="sleepy" />
         <View style={[styles.pausedCopy, upright && styles.centred]}>
           <Text style={[styles.pausedTitle, upright && styles.pausedTitleUpright]} allowFontScaling={false}>
-            Paused 😴
+            Paused
           </Text>
           <Text style={[styles.pausedBody, upright && styles.textCentred]}>
             {Math.ceil(left / 1000)} seconds left. Tap anywhere to carry on.
           </Text>
+          <View style={[styles.pausedActions, upright && styles.pausedActionsUpright]}>
+            <Button label="End round" icon="flag" size="sm" onPress={endNow} />
+            <Button label="Quit game" icon="home" size="sm" onPress={quit} accessibilityHint="Saved rounds are kept" />
+          </View>
         </View>
       </Pressable>
     );
@@ -205,7 +229,7 @@ export default function RoundPlayScreen() {
       ? `${twist.emoji} ${twist.title}`
       : null;
   // A microphone in use should never be a secret.
-  const badge = canListen ? [rule, '🎙️ Listening'].filter(Boolean).join(' · ') : rule;
+  const badge = rule;
 
   return (
     <View style={styles.screen}>
@@ -223,6 +247,14 @@ export default function RoundPlayScreen() {
           <View style={styles.blank} />
         )}
       </View>
+
+      {/* For the room: a way to stop the clock. Small and in the corner, so a
+          hand holding the phone doesn't hit it. */}
+      {state.phase === 'running' ? (
+        <View style={[styles.pauseSpot, upright ? { top: insets.top + 8 } : null]}>
+          <CircleButton icon="pause" label="Pause" tone="scrim" size={40} onPress={pause} />
+        </View>
+      ) : null}
 
       {/* For the room, not the holder: how the round is going. */}
       <View style={[styles.tally, pillTop]} pointerEvents="none" accessible={false}>
@@ -261,17 +293,6 @@ export default function RoundPlayScreen() {
           />
         </View>
       )}
-
-      {settings.recordRounds && sessionId && openRound ? (
-        <RoundCamera
-          active={state.phase === 'running'}
-          sessionId={sessionId}
-          roundId={openRound.id}
-          roundTimeNow={() => elapsedMs(useSessionStore.getState().roundState, Date.now())}
-          // The voice referee needs the microphone; the video goes silent.
-          mute={canListen}
-        />
-      ) : null}
 
       {flash ? <FlashOverlay key={flash.id} outcome={flash.outcome} busted={flash.busted} /> : null}
 
@@ -386,6 +407,9 @@ const styles = StyleSheet.create({
     paddingHorizontal: space.xl,
   },
   pausedCopy: { gap: space.xs, flexShrink: 1 },
+  pausedActions: { flexDirection: 'row', gap: space.sm, paddingTop: space.md },
+  pausedActionsUpright: { justifyContent: 'center' },
+  pauseSpot: { position: 'absolute', top: 6, left: 6, zIndex: 10 },
   stacked: { flexDirection: 'column' },
   centred: { alignItems: 'center' },
   textCentred: { textAlign: 'center' },

@@ -669,10 +669,8 @@ no longer locks orientation anywhere except a running round.
   card puts the photo above the word.
 - Sideways, menu screens respect the side safe areas and hold their content to
   a readable column instead of stretching edge to edge.
-- A running round holds the orientation it started in. The holder is tipping
-  the phone against their forehead, and a sideways wobble must not spin the
-  card under them. Tilt reads the screen-normal axis, so it works the same in
-  either orientation.
+- A running round used to hold the orientation it started in. That was
+  reversed (see "The core loop, simplified" below): nothing is locked.
 
 ### A loader with a personality, and a Dex that moves
 
@@ -736,3 +734,60 @@ to keep playing when one team is twenty points clear. Games can now be endless
 players — and Change decks, which swaps the decks in place: scores, turns and
 seen cards carry on. Three-round mode can't change decks, since its hat was
 filled from the old ones.
+
+## The core loop, simplified
+
+The product owner's steer: fewer features, and the basics fast and unbreakable.
+
+- **No orientation lock, anywhere.** Turning the phone mid-round re-lays the
+  card out and the clock keeps running. Tilt reads the screen-normal axis, so
+  it behaves the same upright or sideways, and tipping forward or back on a
+  forehead does not trigger iOS's rotation (that needs a sideways roll). The
+  expo-screen-orientation dependency went with the lock.
+- **A pause button** in the card's corner, for the room. Paused stays paused,
+  even across the app going to the background, until someone taps to carry on.
+  From pause: End round (straight to the recap, no buzzer) or Quit game (the
+  finished rounds are saved; the open one is replayed on resume).
+- **Round length on the Play screen** — one button cycling 30, 60 and 90
+  seconds, remembered — and **mid-game** on the standings, applying from the
+  next round.
+
+Checked in the browser preview, rotating at every step: card, pause, resume,
+end early, standings, quit and resume, and swipe across a rotation.
+
+## Tilt that works, and a smaller app
+
+### Tilt, rebuilt
+
+Tilt wasn't reliable on real foreheads, for three reasons:
+
+1. **It wanted the phone dead upright.** It only armed within about 14° of
+   vertical, and a phone resting on a forehead leans back more than that, so
+   for many people it never armed at all.
+2. **It threw away the gesture.** It read the raw accelerometer and dropped
+   any sample taken while the phone was moving fast — which is exactly what a
+   quick nod is.
+3. **Android was upside down.** expo-sensors reports the raw accelerometer
+   with the opposite sign on Android.
+
+Now it reads gravity from DeviceMotion, which the phone fuses from gyro and
+accelerometer (smooth through jerks) and expo-sensors reports the same way
+round on both platforms. It takes the angle the phone settles at on the
+forehead as resting, and counts a tip of 30° from there — down for got it, up
+to pass — held for just 70 ms, so a natural nod counts. It needs a return near
+resting before the next card, and the resting angle slowly follows the phone,
+so sinking lower over a round never becomes a pass. Phones flat on a table
+never arm. All of it is in /src/game/tilt, tested against motion traces.
+
+### Removed: round videos, voice referee, AI deck maker, streak reminders
+
+The product owner wants a simple game that runs entirely on the phone, costs
+nothing to run and doesn't eat storage. These four were the heaviest extras:
+videos filled storage; the voice referee, AI maker and reminders each pulled
+in a native module and a permission (microphone, speech, notifications) for
+something most groups never turn on. All four are gone, with their packages
+(expo-video, expo-speech-recognition, @react-native-ai/apple,
+expo-notifications). The app no longer asks for the microphone, speech or
+notifications at all, and a test keeps it that way. Any round videos already
+saved are deleted on the next launch. A streak reminder already scheduled may
+still arrive once; nothing schedules another.

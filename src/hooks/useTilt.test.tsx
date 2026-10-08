@@ -7,13 +7,13 @@ import { useTilt } from './useTilt';
  * gesture maths is covered in /src/game/tilt.
  */
 
-type Reading = { x: number; y: number; z: number };
+type Reading = { accelerationIncludingGravity: { x: number; y: number; z: number }; acceleration: null };
 let mockListener: ((reading: Reading) => void) | null = null;
 let mockAvailable: Promise<boolean> = Promise.resolve(true);
 let mockSubscribeThrows = false;
 
 jest.mock('expo-sensors', () => ({
-  Accelerometer: {
+  DeviceMotion: {
     isAvailableAsync: () => mockAvailable,
     setUpdateInterval: () => undefined,
     addListener: (fn: (reading: Reading) => void) => {
@@ -41,7 +41,7 @@ describe('useTilt', () => {
   it('stays on tilt while the sensor is reporting', async () => {
     const { result } = run();
     await act(async () => {
-      mockListener?.({ x: 0, y: 0, z: 0 });
+      mockListener?.({ accelerationIncludingGravity: { x: 0, y: -9.8, z: 0 }, acceleration: null });
       jest.advanceTimersByTime(3000);
     });
     expect(result.current.available).toBe(true);
