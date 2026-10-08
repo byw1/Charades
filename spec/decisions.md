@@ -684,3 +684,55 @@ on its forehead wobbles; sleepy Dex breathes slowly with z's drifting off.
 Where Dex isn't inside another button it can be poked for a boing and a spin
 of the card. The Play screen's stickers float and pop in on every swipe, and
 a round of five or more gets confetti. All of it is off under reduced motion.
+
+## Making it yours: themes, controls, sound, and free decks you can edit
+
+### A light theme, chosen at launch
+
+Played outside, a near-black screen is a mirror. The light theme flips the
+canvas, surfaces, text and hairlines; deck colours, the round and the accent
+stay. Every style in the app is a static StyleSheet built when its file loads,
+so the colours are picked once at launch from the saved setting (or the phone's
+appearance for "Auto") and switching reloads the app with `reloadAppAsync`.
+That keeps every component as it was instead of threading a theme through
+dozens of files, at the cost of a one-second restart on a setting people
+change rarely. Accents used as text are darkened on the light canvas until
+they read (`onCanvas`), selected chips fill with the text colour, and native
+pieces (keyboard, alerts) follow via `Appearance.setColorScheme`.
+
+### Swipe, and the voice referee parked
+
+Swipe joins tilt and tap: up anywhere for got it, down to pass. Up and down
+because the holder's hand is on a screen facing away from them, where left and
+right swap but up stays up. The rule is in /src/game/swipe and needs distance
+or a flick, mostly vertical, so a resting palm or a tap does nothing. The voice
+referee is shown as "coming soon" and switched off in rounds
+(`VOICE_REFEREE_LAUNCHED`) until it has had a proper run at real parties.
+
+### Sound effects, after all
+
+The original call was no sound: a ding tells the guesser they got it, and it
+leaks. The product owner wants the party feel, and the room already shouts
+when someone gets it, so it is on by default. Seven sounds are synthesised by
+spec/generate-sounds.js (no downloaded or licensed audio) and bundled, so they
+play offline. They mix with music and respect the silent switch.
+
+### Editing a free deck without forking it
+
+People want to drop the cards they don't like from a free deck and add their
+own, without losing app updates to it. So a free deck is edited in place: its
+own cards can be hidden (a `hidden` mark, not a delete) and cards you add are
+stored marked `mine`. Seeding rewrites only the deck's own cards, leaves yours,
+and re-applies the hidden marks by id, so an update that improves a deck keeps
+your changes on top. Your cards show a "Yours" tag. Sharing sends what you see
+— hidden cards out, marks stripped. Copy is still there for a deck that is
+entirely yours. Favourites are a column on the deck and survive reseeding too.
+
+### Endless games, starting over, changing decks
+
+Waiting in a line, nobody wants the game to end at round four, and nobody wants
+to keep playing when one team is twenty points clear. Games can now be endless
+(and one-tap play is). Standings offer Start over — scores to zero, same
+players — and Change decks, which swaps the decks in place: scores, turns and
+seen cards carry on. Three-round mode can't change decks, since its hat was
+filled from the old ones.

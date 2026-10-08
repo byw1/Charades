@@ -17,6 +17,7 @@ import { discardOtherUnfinishedSessions, saveSession } from '@/storage/sessionRe
 import { Button } from '@/ui/Button';
 import { Confetti } from '@/ui/Confetti';
 import { EmptyState } from '@/ui/EmptyState';
+import { useLayout } from '@/ui/layout';
 import { Mascot } from '@/ui/Mascot';
 import { PopIn } from '@/ui/motion';
 import { Footer, Screen } from '@/ui/Screen';
@@ -61,6 +62,7 @@ export default function StandingsScreen() {
   }, [sessionId]);
 
   useRoundScreenMode();
+  const { short } = useLayout();
 
   const winState = useMemo(
     () => (session ? sessionWinState(session, poolExhausted) : { over: false as const }),
@@ -308,12 +310,20 @@ export default function StandingsScreen() {
             />
             {/* Someone's miles ahead, or the decks are getting stale: fix it
                 without leaving the game. */}
-            <View style={styles.footerRow}>
-              <Button label="Start over" icon="reset" size="sm" onPress={confirmRestart} style={styles.grow} />
-              {canChangeDecks(session) ? (
-                <Button label="Change decks" icon="decks" size="sm" onPress={() => router.push('/new/decks?change=1')} style={styles.grow} />
-              ) : null}
-            </View>
+            {short ? (
+              // Sideways the footer is already a row, so these join it.
+              <Button label="Start over" icon="reset" onPress={confirmRestart} />
+            ) : (
+              <View style={styles.footerRow}>
+                <Button label="Start over" icon="reset" size="sm" onPress={confirmRestart} style={styles.grow} />
+                {canChangeDecks(session) ? (
+                  <Button label="Change decks" icon="decks" size="sm" onPress={() => router.push('/new/decks?change=1')} style={styles.grow} />
+                ) : null}
+              </View>
+            )}
+            {short && canChangeDecks(session) ? (
+              <Button label="Decks" icon="decks" onPress={() => router.push('/new/decks?change=1')} />
+            ) : null}
             <Button label="Finish later" onPress={goHome} accessibilityHint="Your game is saved" />
           </>
         )}

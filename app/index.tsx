@@ -168,9 +168,11 @@ export default function HomeScreen() {
     const id = lens.deckIds[0];
     if (!id || database.status !== 'ready' || !all) return;
     await setFavorite(database.db, id, !lens.favorite);
-    setAll(all.map((d) => (d.id === id ? { ...d, favorite: !lens.favorite } : d)));
-    // Keep the starred deck under the shutter as it moves to the front.
-    setLensIndex(0);
+    const next = all.map((d) => (d.id === id ? { ...d, favorite: !lens.favorite } : d));
+    setAll(next);
+    // The deck moves in the order; keep it under the shutter as it does.
+    // Mix is lens 0, so a deck's lens is its place in the order plus one.
+    setLensIndex(orderDecks(next, deckSort, plays).findIndex((d) => d.id === id) + 1);
   };
 
   const chooseSort = () =>

@@ -17,6 +17,8 @@ import { useDeckEditor } from '@/hooks/useDeckEditor';
 import { useHaptics } from '@/hooks/useHaptics';
 import { pickPhotos, takePhoto } from '@/media/photos';
 import { getDeck, upsertDeck } from '@/storage/deckRepo';
+import { fitCardText } from '@/ui/fitText';
+import { READABLE_WIDTH, useLayout } from '@/ui/layout';
 import { Loader } from '@/ui/Loader';
 import { Button } from '@/ui/Button';
 import { cardTextOn } from '@/ui/contrast';
@@ -101,6 +103,7 @@ function Editor({ initial, isNew }: { initial: Deck; isNew: boolean }) {
   const [tabooOpen, setTabooOpen] = useState<ReadonlySet<string>>(() => new Set());
   const [busyPhoto, setBusyPhoto] = useState(false);
   const [pickingEmoji, setPickingEmoji] = useState(false);
+  const { width } = useLayout();
 
   const { draft } = editor;
 
@@ -237,6 +240,11 @@ function Editor({ initial, isNew }: { initial: Deck; isNew: boolean }) {
   const count = draft.cards.length;
   const needed = Math.max(0, MIN_PLAYABLE_CARDS - count);
   const onAccent = cardTextOn(draft.accentColor);
+  // The name is sized to the room beside the sticker, so a long one gets
+  // smaller rather than cut off. Sideways the screen's content is held to a
+  // readable column, so that is the width to fit.
+  const bannerWidth = Math.min(width, READABLE_WIDTH) - gutter * 2 - space.lg * 2 - 68 - space.md;
+  const nameFit = fitCardText(draft.name.trim() || 'Your deck', bannerWidth, 84, { maxSize: 32, minSize: 16, maxLines: 3 });
 
   return (
     <Screen>
@@ -273,12 +281,13 @@ function Editor({ initial, isNew }: { initial: Deck; isNew: boolean }) {
                 <View style={styles.previewCopy}>
                   <Text
                     variant="display"
-                    style={[styles.previewName, { color: onAccent }]}
-                    numberOfLines={2}
-                    adjustsFontSizeToFit
-                    minimumFontScale={0.6}
+                    style={[
+                      styles.previewName,
+                      { color: onAccent, fontSize: nameFit.fontSize, lineHeight: nameFit.lineHeight },
+                    ]}
+                    numberOfLines={nameFit.lines.length}
                   >
-                    {draft.name.trim() || 'Your deck'}
+                    {nameFit.lines.join('\n')}
                   </Text>
                   <Text variant="label" style={{ color: onAccent, opacity: 0.9 }}>
                     {count} {count === 1 ? 'card' : 'cards'}

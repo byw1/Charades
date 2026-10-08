@@ -6,6 +6,7 @@ import { useNewGameStore } from '@/hooks/useNewGameStore';
 import { useStartGame } from '@/hooks/useStartGame';
 import { Button } from '@/ui/Button';
 import { Chip } from '@/ui/Chip';
+import { useLayout } from '@/ui/layout';
 import { Footer, Screen } from '@/ui/Screen';
 import { SectionLabel } from '@/ui/Section';
 import { StepHeader } from '@/ui/StepHeader';
@@ -30,6 +31,7 @@ const SCORE_TARGETS = [10, 15, 20, 30];
 /** Step three of three: how the game is played and how it ends. */
 export default function NewGameSettingsScreen() {
   const router = useRouter();
+  const { short } = useLayout();
   const database = useDatabase();
 
   const deckIds = useNewGameStore((s) => s.deckIds);
@@ -123,6 +125,8 @@ export default function NewGameSettingsScreen() {
                   emoji={option.emoji}
                   label={option.label}
                   detail={option.help}
+                  // Two by two upright, four across sideways.
+                  style={short ? null : styles.half}
                   selected={settings.winCondition.kind === option.value.kind}
                   onPress={() => setWinCondition(option.value)}
                 />
@@ -228,5 +232,6 @@ export default function NewGameSettingsScreen() {
 const styles = StyleSheet.create({
   body: { paddingTop: space.xs, paddingBottom: space.xl, gap: space.lg },
   row: { flexDirection: 'row', gap: space.sm + 2, paddingHorizontal: gutter, flexWrap: 'wrap' },
+  half: { minWidth: '45%' },
   sub: { paddingTop: space.sm + 4 },
 });

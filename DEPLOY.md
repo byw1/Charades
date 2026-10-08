@@ -63,7 +63,6 @@ hidden, not broken.
 | Big decks over several QR codes | ✅ | ✅ |
 | Film the room and the highlight reel | ✅ | ✅ |
 | Streak reminders | ✅ | ✅ |
-| Voice referee | — | ✅ on iPhones that recognise speech offline |
 | Dream one up (AI decks) | — | ✅ on iPhone 15 Pro or newer, iOS 26, Apple Intelligence on |
 | AirDrop a deck and it opens in Deckhead | — | ✅ |
 
@@ -132,9 +131,9 @@ minute.
 2. **Tilt.** Start a round and hold the phone sideways on your forehead. Tip
    the screen down toward the floor for got it, up toward the ceiling to pass.
    If you'd rather tap, switch it under Settings → How you answer.
-3. **Voice referee.** Settings → Extras → Voice referee. Start a Banned game and
-   say the answer: it should flash green. Say a word from the red strip: it
-   should flash "Busted!".
+3. **Sound.** With the ring/silent switch on ring, play a round: a ding for got
+   it, a whoosh for a pass, beeps on the countdown, a buzzer at the end. Flip
+   the switch to silent and they stop.
 4. **Dream one up.** On an iPhone with Apple Intelligence, Decks → Dream one up
    → type a theme. Turn on airplane mode first: it should still work.
 5. **Film the room.** Settings → Extras → Film the room. Play a round, then

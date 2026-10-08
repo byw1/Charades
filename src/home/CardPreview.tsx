@@ -86,6 +86,7 @@ export function CardPreview({ visible, title, deckIds, shuffle = false, onClose,
               data={cards}
               keyExtractor={(card, i) => `${card.id}-${i}`}
               horizontal
+              style={styles.pager}
               pagingEnabled
               showsHorizontalScrollIndicator={false}
               onMomentumScrollEnd={(event) => setIndex(Math.round(event.nativeEvent.contentOffset.x / width))}
@@ -157,6 +158,7 @@ function sample<T>(items: readonly T[], count: number): T[] {
 const styles = StyleSheet.create({
   sheet: { flex: 1, backgroundColor: color.background },
   body: { flex: 1, justifyContent: 'center', gap: space.md },
+  pager: { flexGrow: 0 },
   page: { alignItems: 'center', justifyContent: 'center' },
   card: {
     borderRadius: radius.xl,

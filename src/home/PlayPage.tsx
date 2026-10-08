@@ -118,13 +118,14 @@ export function PlayPage({
   // the phone changes it, so it is measured rather than assumed.
   const [rail, setRail] = useState(width);
 
-  // Keep the carousel on the selected lens when the page first lays out and
-  // whenever the rail changes size, which is what turning the phone does.
-  // During a swipe the carousel itself is the source of truth.
+  // Keep the carousel on the selected lens when the page first lays out,
+  // when the rail changes size (turning the phone), and when the decks are
+  // reordered (a star, a new sort). During a swipe the carousel itself is the
+  // source of truth, so a plain change of selection does not scroll it.
   useEffect(() => {
     carousel.current?.scrollTo({ x: selected * STEP, animated: false });
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [rail]);
+  }, [rail, lenses]);
 
   if (!lens) {
     return (

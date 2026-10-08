@@ -189,7 +189,7 @@ export default function DeckDetailScreen() {
                 <Action icon="share" label="Share" onPress={() => router.push(`/decks/share/${deck.id}`)} />
                 <Action
                   icon={favorite ? 'heartFilled' : 'heart'}
-                  label={favorite ? 'Favourite' : 'Favourite?'}
+                  label={favorite ? 'Favourited' : 'Favourite'}
                   tint={favorite ? color.danger : undefined}
                   onPress={() => void toggleFavorite()}
                 />

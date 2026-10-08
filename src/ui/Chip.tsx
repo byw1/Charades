@@ -1,4 +1,4 @@
-import { StyleSheet, View } from 'react-native';
+import { StyleSheet, View, type StyleProp, type ViewStyle } from 'react-native';
 import { Tap } from './Tap';
 import { Text } from './Text';
 import { color, font, minTapTarget, radius, space } from './tokens';
@@ -16,6 +16,8 @@ export type ChipProps = {
   detail?: string;
   /** Stretch to share a row equally with its siblings. */
   grow?: boolean;
+  /** Extra layout for the chip in its row, such as a minimum width. */
+  style?: StyleProp<ViewStyle>;
 };
 
 /**
@@ -31,8 +33,13 @@ export function Chip({
   emoji,
   detail,
   grow = false,
+  style,
 }: ChipProps) {
   const tall = Boolean(detail);
+  // Selected fills with the text colour: white on the dark theme, ink on the
+  // light one, so the pick stands out on either.
+  const face = selected ? color.text : color.surface;
+  const ink = selected ? color.background : color.text;
 
   return (
     <Tap
@@ -40,17 +47,17 @@ export function Chip({
       accessibilityRole={role}
       accessibilityState={role === 'radio' ? { selected } : { checked: selected }}
       accessibilityLabel={accessibilityLabel ?? label}
-      style={grow ? styles.grow : null}
+      style={[grow ? styles.grow : null, style]}
       contentStyle={[
         styles.face,
         tall ? styles.faceTall : styles.facePill,
-        { backgroundColor: selected ? color.bone : color.surface },
+        { backgroundColor: face },
         grow && styles.fill,
       ]}
     >
       <View style={styles.row}>
         {emoji ? <Text style={styles.emoji}>{emoji}</Text> : null}
-        <Text style={[styles.label, { color: selected ? color.ink : color.text }]} numberOfLines={1}>
+        <Text style={[styles.label, { color: ink }]} numberOfLines={1}>
           {label}
         </Text>
       </View>
@@ -59,7 +66,7 @@ export function Chip({
           variant="caption"
           align="center"
           numberOfLines={2}
-          style={{ color: selected ? '#4A4A55' : color.textMuted }}
+          style={{ color: selected ? ink : color.textMuted, opacity: selected ? 0.7 : 1 }}
         >
           {detail}
         </Text>

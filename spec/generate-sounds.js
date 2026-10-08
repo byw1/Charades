@@ -5,6 +5,7 @@
  * ship: a handful of tones, envelopes and a little noise. Run with
  * `node spec/generate-sounds.js` after changing anything here.
  */
+const { Buffer } = require('buffer');
 const fs = require('fs');
 const path = require('path');
 

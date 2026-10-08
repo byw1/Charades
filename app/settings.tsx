@@ -120,7 +120,7 @@ export default function SettingsScreen() {
             ))}
           </View>
           <Text variant="caption" tone="muted" style={styles.note}>
-            Light is easier to see outside in the sun. Switching restarts Deckhead for a second; nothing is lost.
+            Light is easier to see outside in the sun. Auto follows your phone. Switching restarts Deckhead for a second; nothing is lost.
           </Text>
         </View>
 
@@ -128,7 +128,7 @@ export default function SettingsScreen() {
           <SectionLabel>Sound and feel</SectionLabel>
           <Group>
             <SwitchRow
-              icon="bolt"
+              icon="sound"
               tint={palette.orange}
               title="Sound effects"
               detail="A ding for got it, a whoosh for a pass, the countdown and the buzzer."
@@ -231,7 +231,7 @@ const ANSWER_MODES: readonly { key: InputMode; emoji: string; label: string; det
 const THEME_CHOICES: readonly { key: ThemeChoice; emoji: string; label: string }[] = [
   { key: 'dark', emoji: '🌙', label: 'Dark' },
   { key: 'light', emoji: '☀️', label: 'Light' },
-  { key: 'system', emoji: '📱', label: 'Match phone' },
+  { key: 'system', emoji: '📱', label: 'Auto' },
 ];
 
 /** A feature that is on its way: shown so people know, but not switchable. */
