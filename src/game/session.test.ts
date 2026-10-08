@@ -1,5 +1,6 @@
 import {
   beginRound,
+  canChangeDecks,
   completeRound,
   completedRounds,
   completeSession,
@@ -10,6 +11,7 @@ import {
   rematch,
   sessionWinState,
   whoseTurn,
+  withDecks,
 } from './session';
 import { standings } from './scoring';
 import { makeJustPlayTeam, makeTeams } from './teams';
@@ -291,5 +293,32 @@ describe('win conditions across a whole session', () => {
 
     expect(sessionWinState(session, false).over).toBe(false);
     expect(sessionWinState(session, true).over).toBe(true);
+  });
+});
+
+describe('endless games', () => {
+  it('never ends, however many rounds are played', () => {
+    let session = newSession({ settings: { ...defaultSettings, winCondition: { kind: 'endless' } } });
+    for (let i = 0; i < 30; i++) session = playRound(session, 'ccc');
+    expect(sessionWinState(session).over).toBe(false);
+    expect(standings(session)[0]?.score).toBe(45);
+  });
+});
+
+describe('changing decks mid-game', () => {
+  it('keeps the score, the turn and what has been seen', () => {
+    const played = playRound(newSession(), 'cc', ['dck_1/crd_9']);
+    const swapped = withDecks(played, ['dck_2', 'dck_3', 'dck_2']);
+
+    expect(swapped.deckIds).toEqual(['dck_2', 'dck_3']);
+    expect(standings(swapped)).toEqual(standings(played));
+    expect(whoseTurn(swapped)).toEqual(whoseTurn(played));
+    expect(swapped.seenCardIds).toContain('dck_1/crd_9');
+  });
+
+  it('is not offered in three-round mode or once the game is over', () => {
+    expect(canChangeDecks(newSession())).toBe(true);
+    expect(canChangeDecks(newSession({ settings: { ...defaultSettings, mode: 'threeRounds' } }))).toBe(false);
+    expect(canChangeDecks(newSession({ completedAt: T1 }))).toBe(false);
   });
 });

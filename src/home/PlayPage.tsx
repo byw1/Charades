@@ -9,6 +9,7 @@ import { EmojiSticker } from '@/ui/EmojiSticker';
 import { CARD_LETTER_SPACING, fitCardText } from '@/ui/fitText';
 import { useLayout } from '@/ui/layout';
 import { Loader } from '@/ui/Loader';
+import { Icon, type IconName } from '@/ui/Icon';
 import { Mascot } from '@/ui/Mascot';
 import { Float, PopIn } from '@/ui/motion';
 import { Tap } from '@/ui/Tap';
@@ -26,6 +27,8 @@ export type Lens = {
   emoji: string;
   /** Extra emoji scattered round the viewfinder. Mix uses its decks' emoji. */
   stickers?: string[];
+  /** Starred decks come first. Mix is never starred. */
+  favorite?: boolean;
 };
 
 /**
@@ -57,6 +60,13 @@ export type PlayPageProps = {
   bottomInset: number;
   mode: GameMode;
   onMode: (mode: GameMode) => void;
+  /** Look through the deck's cards without leaving Play. */
+  onPreview: (lens: Lens) => void;
+  onFavorite: (lens: Lens) => void;
+  onEdit: (lens: Lens) => void;
+  /** How the carousel is ordered, shown on the sort button. */
+  sortLabel: string;
+  onSort: () => void;
 };
 
 /** The modes, in the order a camera app lists its modes: left to right. */
@@ -94,6 +104,11 @@ export function PlayPage({
   bottomInset,
   mode,
   onMode,
+  onPreview,
+  onFavorite,
+  onEdit,
+  sortLabel,
+  onSort,
 }: PlayPageProps) {
   const { width, height, short: sideways } = useLayout();
   const insets = useSafeAreaInsets();
@@ -139,34 +154,38 @@ export function PlayPage({
     onSelect(index);
   };
 
+  const mix = lens.key === 'mix';
+
   const viewfinder = (
-    <View style={[styles.viewfinder, sideways && styles.viewfinderSideways]} pointerEvents="none">
-      {STICKER_SPOTS.map((spot, i) => {
-        const sticker = (lens.stickers ?? [])[i % Math.max(1, lens.stickers?.length ?? 0)] ?? lens.emoji;
-        return (
-          <Float
-            key={`${lens.key}-${i}`}
-            delay={i * 370}
-            style={[
-              styles.floating,
-              {
-                top: `${spot.top * 100}%`,
-                ...('left' in spot ? { left: `${spot.left * 100}%` } : { right: `${spot.right * 100}%` }),
-              },
-            ]}
-          >
-            <PopIn delay={60 + i * 50}>
-              <RNText
-                accessible={false}
-                allowFontScaling={false}
-                style={{ fontSize: spot.size, lineHeight: spot.size * 1.2, transform: [{ rotate: spot.rotate }] }}
-              >
-                {sticker}
-              </RNText>
-            </PopIn>
-          </Float>
-        );
-      })}
+    <View style={[styles.viewfinder, sideways && styles.viewfinderSideways]} pointerEvents="box-none">
+      <View style={StyleSheet.absoluteFill} pointerEvents="none">
+        {STICKER_SPOTS.map((spot, i) => {
+          const sticker = (lens.stickers ?? [])[i % Math.max(1, lens.stickers?.length ?? 0)] ?? lens.emoji;
+          return (
+            <Float
+              key={`${lens.key}-${i}`}
+              delay={i * 370}
+              style={[
+                styles.floating,
+                {
+                  top: `${spot.top * 100}%`,
+                  ...('left' in spot ? { left: `${spot.left * 100}%` } : { right: `${spot.right * 100}%` }),
+                },
+              ]}
+            >
+              <PopIn delay={60 + i * 50}>
+                <RNText
+                  accessible={false}
+                  allowFontScaling={false}
+                  style={{ fontSize: spot.size, lineHeight: spot.size * 1.2, transform: [{ rotate: spot.rotate }] }}
+                >
+                  {sticker}
+                </RNText>
+              </PopIn>
+            </Float>
+          );
+        })}
+      </View>
       {/* Keyed by deck, so every swipe pops the new deck's sticker in. */}
       <PopIn key={lens.key} style={styles.badge}>
         <EmojiSticker emoji={lens.emoji} size={sideways ? 60 : 88} tilt={-8} />
@@ -183,9 +202,27 @@ export function PlayPage({
         {title.lines.join('\n')}
       </RNText>
       <Text style={[styles.meta, { color: ink }]}>
-        {lens.key === 'mix' ? `${lens.deckIds.length} decks · ` : ''}
+        {mix ? `${lens.deckIds.length} decks · ` : ''}
         {lens.cardCount} cards
       </Text>
+
+      {/* Things to do with this deck, without leaving Play. */}
+      <View style={styles.actions}>
+        <Pill icon="eye" label="Peek" onPress={() => onPreview(lens)} />
+        {mix ? (
+          <Pill icon="decks" label="Pick decks" onPress={() => onSetup(lens)} />
+        ) : (
+          <>
+            <Pill
+              icon={lens.favorite ? 'heartFilled' : 'heart'}
+              label={lens.favorite ? 'Faved' : 'Fave'}
+              onPress={() => onFavorite(lens)}
+              tint={lens.favorite ? palette.red : undefined}
+            />
+            <Pill icon="edit" label="Edit" onPress={() => onEdit(lens)} />
+          </>
+        )}
+      </View>
     </View>
   );
 
@@ -288,7 +325,15 @@ export function PlayPage({
             <View />
           )}
 
-          <CircleButton icon="settings" label="Teams and rules" tone="scrim" onPress={() => onSetup(lens)} />
+          <View style={styles.topRight}>
+            <Tap onPress={onSort} accessibilityLabel={`Sort decks. Now: ${sortLabel}`} contentStyle={styles.sort}>
+              <Icon name="sort" size={16} color={color.bone} weight={3} />
+              <RNText style={styles.sortText} allowFontScaling={false}>
+                {sortLabel}
+              </RNText>
+            </Tap>
+            <CircleButton icon="settings" label="Teams and rules" tone="scrim" onPress={() => onSetup(lens)} />
+          </View>
         </View>
 
         {resume ? <View style={styles.resume}>{resume}</View> : null}
@@ -299,6 +344,18 @@ export function PlayPage({
         </View>
       </View>
     </View>
+  );
+}
+
+/** A small glassy action on the viewfinder. */
+function Pill({ icon, label, onPress, tint }: { icon: IconName; label: string; onPress: () => void; tint?: string }) {
+  return (
+    <Tap onPress={onPress} squish={0.92} accessibilityLabel={label} contentStyle={styles.pill}>
+      <Icon name={icon} size={16} color={tint ?? color.bone} weight={3} />
+      <RNText style={styles.pillText} allowFontScaling={false}>
+        {label}
+      </RNText>
+    </Tap>
   );
 }
 
@@ -379,6 +436,28 @@ const styles = StyleSheet.create({
   lensEmoji: { fontSize: 28, lineHeight: 34 },
   floating: { position: 'absolute', opacity: 0.55 },
   badge: { marginBottom: space.xs },
+  actions: { flexDirection: 'row', gap: space.sm, paddingTop: space.sm },
+  pill: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 6,
+    paddingHorizontal: 12,
+    paddingVertical: 7,
+    borderRadius: radius.pill,
+    backgroundColor: color.scrim,
+  },
+  pillText: { fontFamily: font.heavy, fontSize: 13, lineHeight: 16, color: color.bone },
+  topRight: { flexDirection: 'row', alignItems: 'center', gap: space.sm },
+  sort: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 6,
+    height: 44,
+    paddingHorizontal: 14,
+    borderRadius: radius.pill,
+    backgroundColor: color.scrim,
+  },
+  sortText: { fontFamily: font.heavy, fontSize: 13, lineHeight: 16, color: color.bone },
   ring: {
     position: 'absolute',
     width: RING,

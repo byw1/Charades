@@ -29,7 +29,7 @@ export function DeckCard({ deck, onPress, style }: DeckCardProps) {
     <Tap
       onPress={onPress}
       squish={0.96}
-      accessibilityLabel={`${deck.name}, ${count}`}
+      accessibilityLabel={`${deck.name}, ${count}${deck.favorite ? ', favourite' : ''}`}
       accessibilityHint={playable ? undefined : 'Not enough cards to start a round'}
       style={style}
       contentStyle={[styles.tile, { backgroundColor: deck.accentColor }]}
@@ -39,8 +39,18 @@ export function DeckCard({ deck, onPress, style }: DeckCardProps) {
       </RNText>
 
       <View style={styles.top}>
-        <View style={[styles.pill, { backgroundColor: ink === color.bone ? 'rgba(0,0,0,0.22)' : 'rgba(255,255,255,0.35)' }]}>
-          <Text style={[styles.pillText, { color: ink }]}>{count}</Text>
+        <View style={styles.pills}>
+          <View style={[styles.pill, { backgroundColor: ink === color.bone ? 'rgba(0,0,0,0.22)' : 'rgba(255,255,255,0.35)' }]}>
+            <Text style={[styles.pillText, { color: ink }]}>
+              {deck.favorite ? '❤️ ' : ''}
+              {count}
+            </Text>
+          </View>
+          {deck.mineCount > 0 || deck.hiddenCount > 0 ? (
+            <View style={[styles.pill, { backgroundColor: color.bone }]}>
+              <Text style={[styles.pillText, { color: color.ink }]}>✏️ yours</Text>
+            </View>
+          ) : null}
         </View>
         <View style={styles.sticker}>
           <EmojiSticker emoji={emoji} size={54} />
@@ -109,6 +119,7 @@ const styles = StyleSheet.create({
     shadowOffset: { width: 0, height: 3 },
   },
   peekText: { fontFamily: font.display, fontSize: 15, lineHeight: 18, color: color.ink },
+  pills: { gap: 4, alignItems: 'flex-start', flexShrink: 1 },
   pill: { alignSelf: 'flex-start', borderRadius: radius.pill, paddingHorizontal: 9, paddingVertical: 3 },
   warn: { backgroundColor: color.bone },
   pillText: { fontFamily: font.heavy, fontSize: 12, lineHeight: 16 },

@@ -11,6 +11,7 @@ import { useHaptics } from '@/hooks/useHaptics';
 import { useRoundScreenMode } from '@/hooks/useRoundScreenMode';
 import { useSessionStore } from '@/hooks/useSessionStore';
 import { useSettings } from '@/hooks/useSettings';
+import { useSounds } from '@/hooks/useSounds';
 import { cardTextOn } from '@/ui/contrast';
 import { useLayout } from '@/ui/layout';
 import { Mascot } from '@/ui/Mascot';
@@ -35,6 +36,7 @@ export default function RoundIntroScreen() {
   const session = useSessionStore((s) => s.session);
   const beginRound = useSessionStore((s) => s.beginRound);
   const settings = useSettings();
+  const sound = useSounds();
 
   const [count, setCount] = useState(COUNT_FROM);
   // Upright, everything stacks; sideways it reads left to right.
@@ -59,21 +61,24 @@ export default function RoundIntroScreen() {
   useEffect(() => {
     if (!counting) return;
     haptics.countdownTick();
+    sound('tick');
 
     const id = setInterval(() => {
       setCount((current) => {
         if (current <= 1) {
           clearInterval(id);
+          sound('go');
           router.replace('/round/play');
           return 0;
         }
         haptics.countdownTick();
+        sound('tick');
         return current - 1;
       });
     }, TICK_MS);
 
     return () => clearInterval(id);
-  }, [counting, haptics, router]);
+  }, [counting, haptics, router, sound]);
 
   const turn = session ? whoseTurn(session) : null;
   const teams = session?.teams.length ?? 0;

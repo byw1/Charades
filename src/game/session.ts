@@ -181,6 +181,20 @@ export function rematch(session: Session, id: string, now: string): Session {
   });
 }
 
+/**
+ * The same game with different decks: scores, players and turns carry on, and
+ * the cards already seen stay seen. Not offered in three-round mode, where the
+ * hat was filled from the old decks.
+ */
+export function withDecks(session: Session, deckIds: readonly string[]): Session {
+  return { ...session, deckIds: [...new Set(deckIds)] };
+}
+
+/** Whether a game can swap decks part way through. */
+export function canChangeDecks(session: Session): boolean {
+  return !session.hat && session.settings.mode !== 'threeRounds' && session.completedAt === null;
+}
+
 /** Turns drawer keys into the session's seen list. Composite deckId/cardId. */
 export function toSeenCardIds(seen: readonly string[]): string[] {
   return [...seen];

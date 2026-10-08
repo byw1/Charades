@@ -131,14 +131,14 @@ export const themes: Record<Scheme, ColorSet> = { dark, light };
  */
 function launchScheme(): Scheme {
   try {
-    /* eslint-disable @typescript-eslint/no-require-imports -- read before any style is built */
+    // eslint-disable-next-line @typescript-eslint/no-require-imports -- must run before any style is built
     const Storage = (require('expo-sqlite/kv-store') as { default: { getItemSync(key: string): string | null } }).default;
     const raw = Storage.getItemSync('settings.v1');
     const choice = raw ? (JSON.parse(raw) as { theme?: unknown }).theme : undefined;
     if (choice === 'light' || choice === 'dark') return choice;
     if (choice !== 'system') return 'dark';
+    // eslint-disable-next-line @typescript-eslint/no-require-imports -- see above
     const { Appearance } = require('react-native') as typeof import('react-native');
-    /* eslint-enable @typescript-eslint/no-require-imports */
     return Appearance.getColorScheme() === 'light' ? 'light' : 'dark';
   } catch {
     return 'dark';

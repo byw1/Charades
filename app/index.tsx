@@ -1,13 +1,15 @@
 import { Redirect, useFocusEffect, useRouter } from 'expo-router';
 import { useCallback, useMemo, useRef, useState } from 'react';
-import { ScrollView, StyleSheet, useWindowDimensions, View } from 'react-native';
-import { DEFAULT_DECK_EMOJI, type DeckSummary } from '@/decks/types';
+import { Alert, ScrollView, StyleSheet, useWindowDimensions, View } from 'react-native';
+import { DEFAULT_DECK_EMOJI, MIN_PLAYABLE_CARDS, type DeckSummary } from '@/decks/types';
 import { friendBoard, topRivalry, type Friend, type Rivalry } from '@/game/friends';
 import { planStreakReminder } from '@/game/reminders';
 import { playStats, type PlayStats } from '@/game/stats';
 import { standings } from '@/game/scoring';
 import { isJustPlay, makeJustPlayTeam } from '@/game/teams';
 import { settingsForMode, type Session } from '@/game/types';
+import { CardPreview } from '@/home/CardPreview';
+import { DECK_SORTS, orderDecks, playCounts } from '@/home/deckOrder';
 import { DecksPage } from '@/home/DecksPage';
 import { MePage } from '@/home/MePage';
 import { mixLens, PlayPage, type Lens } from '@/home/PlayPage';
@@ -16,7 +18,7 @@ import { useNewGameStore } from '@/hooks/useNewGameStore';
 import { useSessionStore } from '@/hooks/useSessionStore';
 import { useSettingsStore } from '@/hooks/useSettings';
 import { useStartGame } from '@/hooks/useStartGame';
-import { getDeck, listDeckSummaries, searchDeckSummaries } from '@/storage/deckRepo';
+import { getDeck, listDeckSummaries, searchDeckSummaries, setFavorite } from '@/storage/deckRepo';
 import { deckMakerAvailable } from '@/media/ai';
 import { syncStreakReminder } from '@/media/reminders';
 import { getResumableSession, listSessions } from '@/storage/sessionRepo';
@@ -62,6 +64,9 @@ export default function HomeScreen() {
   const [stats, setStats] = useState<PlayStats | null>(null);
   const [friends, setFriends] = useState<{ board: Friend[]; rivalry: Rivalry | null }>({ board: [], rivalry: null });
   const [lensIndex, setLensIndex] = useState(0);
+  const [plays, setPlays] = useState<ReadonlyMap<string, number>>(() => new Map());
+  const [peeking, setPeeking] = useState<Lens | null>(null);
+  const deckSort = useSettingsStore((s) => s.deckSort);
   // Checked once: Apple Intelligence being on or off is not something that
   // changes while the home screen is open.
   const [canDream] = useState(() => deckMakerAvailable());
@@ -91,6 +96,7 @@ export default function HomeScreen() {
         // reminder on to tomorrow.
         void syncStreakReminder(planStreakReminder(current, now), useSettingsStore.getState().streakReminders);
         setFriends({ board: friendBoard(history), rivalry: topRivalry(history) });
+        setPlays(playCounts(history));
       })();
 
       return () => {
@@ -115,18 +121,23 @@ export default function HomeScreen() {
     }, [database, query]),
   );
 
+  // Favourites first, then the chosen sort, on the carousel and in the grid.
+  const ordered = useMemo(() => (all ? orderDecks(all, deckSort, plays) : null), [all, deckSort, plays]);
+  const orderedFound = useMemo(() => (found ? orderDecks(found, deckSort, plays) : null), [found, deckSort, plays]);
+
   const lenses = useMemo<Lens[]>(() => {
-    if (!all) return [];
-    const decks = all.map((d) => ({
+    if (!ordered) return [];
+    const decks = ordered.map((d) => ({
       key: d.id,
       name: d.name,
       accent: d.accentColor,
       deckIds: [d.id],
       cardCount: d.cardCount,
       emoji: d.emoji ?? DEFAULT_DECK_EMOJI,
+      favorite: d.favorite,
     }));
-    return [mixLens(all), ...decks];
-  }, [all]);
+    return [mixLens(ordered), ...decks];
+  }, [ordered]);
 
   if (!onboarded) return <Redirect href="/welcome" />;
 
@@ -135,8 +146,15 @@ export default function HomeScreen() {
     setPage(index);
   };
 
+  // One tap plays an endless game: keep passing the phone round until you
+  // stop. Three-round mode still ends when the hat is cleared.
   const quickPlay = (lens: Lens) => {
-    void start({ deckIds: lens.deckIds, teams: [makeJustPlayTeam()], settings: settingsForMode(quickMode) });
+    const settings = settingsForMode(quickMode);
+    void start({
+      deckIds: lens.deckIds,
+      teams: [makeJustPlayTeam()],
+      settings: quickMode === 'threeRounds' ? settings : { ...settings, winCondition: { kind: 'endless' } },
+    });
   };
 
   const setup = (lens: Lens) => {
@@ -145,6 +163,28 @@ export default function HomeScreen() {
     for (const id of lens.deckIds) toggleDeck(id);
     router.push(lens.key === 'mix' ? '/new/decks' : '/new/teams');
   };
+
+  const favorite = async (lens: Lens) => {
+    const id = lens.deckIds[0];
+    if (!id || database.status !== 'ready' || !all) return;
+    await setFavorite(database.db, id, !lens.favorite);
+    setAll(all.map((d) => (d.id === id ? { ...d, favorite: !lens.favorite } : d)));
+    // Keep the starred deck under the shutter as it moves to the front.
+    setLensIndex(0);
+  };
+
+  const chooseSort = () =>
+    Alert.alert(
+      'Order decks by',
+      'Favourites always come first.',
+      [
+        ...DECK_SORTS.map((option) => ({
+          text: option.key === deckSort ? `${option.label} ✓` : option.label,
+          onPress: () => setSetting('deckSort', option.key),
+        })),
+        { text: 'Cancel', style: 'cancel' as const },
+      ],
+    );
 
   const resume = async () => {
     if (!saved || database.status !== 'ready') return;
@@ -179,7 +219,7 @@ export default function HomeScreen() {
         }}
       >
         <DecksPage
-          decks={query.trim() ? found : all}
+          decks={query.trim() ? orderedFound : ordered}
           error={database.status === 'error' ? database.message : undefined}
           query={query}
           onQuery={setQuery}
@@ -208,6 +248,14 @@ export default function HomeScreen() {
           bottomInset={bar}
           mode={quickMode}
           onMode={(mode) => setSetting('quickMode', mode)}
+          onPreview={setPeeking}
+          onFavorite={(lens) => void favorite(lens)}
+          onEdit={(lens) => {
+            const id = lens.deckIds[0];
+            if (id) router.push(`/decks/edit/${id}`);
+          }}
+          sortLabel={DECK_SORTS.find((option) => option.key === deckSort)?.label ?? 'Sort'}
+          onSort={chooseSort}
         />
         <MePage
           stats={stats}
@@ -223,6 +271,32 @@ export default function HomeScreen() {
       <View style={styles.bar}>
         <BottomBar tabs={TABS} active={page} onSelect={goTo} />
       </View>
+
+      <CardPreview
+        visible={peeking !== null}
+        title={peeking?.name ?? ''}
+        deckIds={peeking?.deckIds ?? []}
+        shuffle={peeking?.key === 'mix'}
+        onClose={() => setPeeking(null)}
+        onPlay={
+          peeking && peeking.cardCount >= MIN_PLAYABLE_CARDS
+            ? () => {
+                const lens = peeking;
+                setPeeking(null);
+                quickPlay(lens);
+              }
+            : undefined
+        }
+        onEdit={
+          peeking && peeking.key !== 'mix'
+            ? () => {
+                const id = peeking.deckIds[0];
+                setPeeking(null);
+                if (id) router.push(`/decks/edit/${id}`);
+              }
+            : undefined
+        }
+      />
     </View>
   );
 }

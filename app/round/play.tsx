@@ -12,6 +12,7 @@ import { useHaptics } from '@/hooks/useHaptics';
 import { useRoundScreenMode } from '@/hooks/useRoundScreenMode';
 import { useSessionStore } from '@/hooks/useSessionStore';
 import { useSettings } from '@/hooks/useSettings';
+import { useSounds } from '@/hooks/useSounds';
 import { useTilt } from '@/hooks/useTilt';
 import { useVoiceReferee } from '@/hooks/useVoiceReferee';
 import { VOICE_REFEREE_LAUNCHED, voiceSupported } from '@/media/voice';
@@ -39,6 +40,7 @@ export default function RoundPlayScreen() {
   const router = useRouter();
   const settings = useSettings();
   const haptics = useHaptics();
+  const sound = useSounds();
 
   const state = useSessionStore((s) => s.roundState);
   const mode = useSessionStore((s) => s.session?.settings.mode ?? 'classic');
@@ -110,11 +112,12 @@ export default function RoundPlayScreen() {
     if (state.phase !== 'ended' || endSignalled.current) return;
     endSignalled.current = true;
     haptics.timeUp();
+    sound('timeup');
 
     // Long enough to read "Time's up" before the recap replaces the screen.
     const id = setTimeout(() => router.replace('/round/recap'), 1_400);
     return () => clearTimeout(id);
-  }, [haptics, router, state.phase]);
+  }, [haptics, router, sound, state.phase]);
 
   const onResolve = useCallback(
     (outcome: Outcome, busted?: string) => {
@@ -123,6 +126,7 @@ export default function RoundPlayScreen() {
       if (outcome === 'correct') haptics.correct();
       else if (busted) haptics.timeUp();
       else haptics.pass();
+      sound(outcome === 'correct' ? 'correct' : busted ? 'busted' : 'pass');
 
       resolve(outcome, Date.now(), busted ? { busted } : undefined);
 
@@ -132,7 +136,7 @@ export default function RoundPlayScreen() {
       // A bust stays up a little longer: the room needs to see who said what.
       setTimeout(() => setFlash((current) => (current?.id === id ? null : current)), busted ? flashMs * 2 : flashMs);
     },
-    [haptics, resolve, state.phase],
+    [haptics, resolve, sound, state.phase],
   );
 
   /**

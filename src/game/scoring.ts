@@ -178,6 +178,9 @@ export function evaluateWinCondition(session: Session, poolExhausted = false): W
 
     case 'allPhases':
       return hatProgress(session).done ? finish('allPhases') : { over: false };
+
+    case 'endless':
+      return { over: false };
   }
 }
 

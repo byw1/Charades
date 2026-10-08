@@ -11,7 +11,9 @@ export type WinCondition =
   | { kind: 'score'; target: number }
   | { kind: 'deckExhausted' }
   /** Three-round mode: over when the last phase clears the hat. */
-  | { kind: 'allPhases' };
+  | { kind: 'allPhases' }
+  /** Never over: keep playing as long as the line is long. */
+  | { kind: 'endless' };
 
 /**
  * How the game is played.

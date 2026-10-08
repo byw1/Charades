@@ -1,18 +1,19 @@
 import { useRouter } from 'expo-router';
 import { useEffect, useMemo, useState } from 'react';
-import { ScrollView, StyleSheet, View } from 'react-native';
+import { Alert, ScrollView, StyleSheet, View } from 'react-native';
 import { forfeitFor } from '@/game/forfeits';
 import { makeSessionId } from '@/game/ids';
 import { playerStandings, standings } from '@/game/scoring';
-import { rematch, sessionWinState, whoseTurn } from '@/game/session';
+import { canChangeDecks, rematch, sessionWinState, whoseTurn } from '@/game/session';
 import { isJustPlay } from '@/game/teams';
 import { hatProgress, phaseInfo } from '@/game/threeRounds';
 import { useDatabase } from '@/hooks/useDatabase';
 import { hasClips } from '@/media/reels';
 import { useRoundScreenMode } from '@/hooks/useRoundScreenMode';
 import { useSessionStore } from '@/hooks/useSessionStore';
+import { useSounds } from '@/hooks/useSounds';
 import { getDeck } from '@/storage/deckRepo';
-import { saveSession } from '@/storage/sessionRepo';
+import { discardOtherUnfinishedSessions, saveSession } from '@/storage/sessionRepo';
 import { Button } from '@/ui/Button';
 import { Confetti } from '@/ui/Confetti';
 import { EmptyState } from '@/ui/EmptyState';
@@ -73,6 +74,12 @@ export default function StandingsScreen() {
 
   // Stamp the session complete as soon as it is over, so quitting from here
   // does not leave a finished game offering to resume.
+  // A fanfare as the final standings land.
+  const sound = useSounds();
+  useEffect(() => {
+    if (winState.over) sound('win');
+  }, [sound, winState.over]);
+
   useEffect(() => {
     if (!winState.over || !session || session.completedAt || database.status !== 'ready') return;
     void completeSessionInStore(database.db, new Date().toISOString());
@@ -115,11 +122,19 @@ export default function StandingsScreen() {
       });
 
       await saveSession(database.db, created);
+      // Starting over mid-game leaves the old game behind for good.
+      await discardOtherUnfinishedSessions(database.db, created.id);
       router.replace('/round/intro');
     } finally {
       setBusy(false);
     }
   };
+
+  const confirmRestart = () =>
+    Alert.alert('Start over?', 'Scores go back to zero. Same players, same decks.', [
+      { text: 'Keep going', style: 'cancel' },
+      { text: 'Start over', style: 'destructive', onPress: () => void playAgain() },
+    ]);
 
   const goHome = () => {
     reset();
@@ -291,6 +306,14 @@ export default function StandingsScreen() {
               icon="play"
               onPress={() => router.replace('/round/intro')}
             />
+            {/* Someone's miles ahead, or the decks are getting stale: fix it
+                without leaving the game. */}
+            <View style={styles.footerRow}>
+              <Button label="Start over" icon="reset" size="sm" onPress={confirmRestart} style={styles.grow} />
+              {canChangeDecks(session) ? (
+                <Button label="Change decks" icon="decks" size="sm" onPress={() => router.push('/new/decks?change=1')} style={styles.grow} />
+              ) : null}
+            </View>
             <Button label="Finish later" onPress={goHome} accessibilityHint="Your game is saved" />
           </>
         )}

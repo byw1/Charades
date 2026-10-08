@@ -15,6 +15,7 @@ const WIN_CONDITIONS: { label: string; emoji: string; value: WinCondition; help:
   { label: 'Rounds', emoji: '🔁', value: { kind: 'rounds', count: 4 }, help: 'Same turns each' },
   { label: 'Score', emoji: '🎯', value: { kind: 'score', target: 20 }, help: 'First to a target' },
   { label: 'Deck out', emoji: '🃏', value: { kind: 'deckExhausted' }, help: 'Until cards run out' },
+  { label: 'Endless', emoji: '♾️', value: { kind: 'endless' }, help: 'Keep going' },
 ];
 
 const MODES: { mode: GameMode; label: string; emoji: string; help: string }[] = [

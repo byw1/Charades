@@ -48,6 +48,8 @@ function parseWinCondition(value: unknown): WinCondition | null {
       return { kind: 'deckExhausted' };
     case 'allPhases':
       return { kind: 'allPhases' };
+    case 'endless':
+      return { kind: 'endless' };
     default:
       return null;
   }
