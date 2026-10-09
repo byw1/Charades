@@ -315,7 +315,7 @@ Don't write exhaustive component tests. A smoke test that the round screen rende
 
 ## Ship config
 
-- Bundle ID: `com.charades.app` (placeholder; `npm run setup` sets your own before the first build)
+- Bundle ID: `com.bywilliaml.charades` (iPhone and Android)
 - App Store name: `Charades`
 - Subtitle: `Charades Party Game` — the brand goes in the name field, the keywords go here
 - Privacy: declare no data collection. It's true and it's a selling point.
