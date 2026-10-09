@@ -19,6 +19,18 @@ anything tries to use the network.
 - [SPEC.md](./SPEC.md) — the product spec. The source of truth.
 - [ROADMAP.md](./ROADMAP.md) — build order and what is deliberately not in v1.
 - [DEPLOY.md](./DEPLOY.md) — put it on your own iPhone, or on the App Store.
+- [bywilliaml.com/charades](https://bywilliaml.com/charades) — the landing page
+  and the [privacy policy](https://bywilliaml.com/charades/privacy).
+
+## Make decks with AI
+
+[`skill/charades-deck-maker`](./skill/charades-deck-maker) is a Claude skill:
+instructions for writing a good deck and a standard-library Python script that
+packs it into a `.charades` file, in exactly the format the app imports. Zip
+the folder and upload it in Claude's skill settings, or copy it into
+`~/.claude/skills` for Claude Code. For any other AI, the deck maker at
+[bywilliaml.com/charades/decks](https://bywilliaml.com/charades/decks) turns
+pasted JSON into a QR code and a file, in the browser.
 
 ## Running it
 
@@ -67,6 +79,7 @@ npm test            # jest
 /spec             Supporting docs. SPEC.md lives at the root.
   /decks          The bundled decks' source: one data file per deck
 /scripts          The setup script
+/skill            The Claude skill for making decks with AI
 eas.json          Cloud build profiles: preview (your phone), production (App Store)
 store.config.json The App Store listing, uploaded with `npm run store:listing`
 ```
