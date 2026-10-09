@@ -119,22 +119,26 @@ function statusBar(ink, s) {
  * is an app capture (440 x 860 pt: the iPhone screen less its status bar and
  * home-indicator strips, which are drawn here in the app's own colours).
  */
-async function phone({ src, w = 800, x = 0, y = 0, rx = 0, ry = 0, rz = 0, z = 0, depth, shadow = true, glare = true } = {}, parent) {
-  const bezel = w * 0.03;
+async function phone({ src, w = 800, x = 0, y = 0, rx = 0, ry = 0, rz = 0, z = 0, depth, shadow = true, glare = true, landscape = false } = {}, parent) {
+  // Sideways, `w` is still the width on the page: the long side.
+  const SW = landscape ? SCREEN.h : SCREEN.w;
+  const SH = landscape ? SCREEN.w : SCREEN.h;
+  const short = landscape ? (w * SCREEN.w) / SCREEN.h : w;
+  const bezel = short * 0.03;
   const sw = w - bezel * 2;
-  const s = sw / SCREEN.w;
-  const sh = SCREEN.h * s;
+  const s = sw / SW;
+  const sh = SH * s;
   const h = sh + bezel * 2;
-  const r = w * 0.155;
+  const r = short * 0.155;
   const sr = r - bezel;
-  const T = depth ?? w * 0.045;
+  const T = depth ?? short * 0.045;
   const colours = src ? await edgeColours(src) : { top: '#000', bottom: '#000', topInk: '#fff', bottomInk: '#fff' };
 
   const root = el('div', { position: 'absolute', left: `${x}px`, top: `${y}px`, width: `${w}px`, height: `${h}px`, transformStyle: 'preserve-3d', transform: `translateZ(${z}px) rotateX(${rx}deg) rotateY(${ry}deg) rotateZ(${rz}deg)` }, parent);
   root.className = 'phone';
 
   if (shadow) {
-    el('div', { position: 'absolute', left: `${w * 0.06}px`, top: `${h * 0.05}px`, width: `${w * 0.95}px`, height: `${h}px`, borderRadius: `${r}px`, background: 'rgba(0,0,0,.38)', filter: `blur(${w * 0.06}px)`, transform: `translateZ(${-T - 60}px) translate(${w * 0.07}px, ${w * 0.1}px)` }, root);
+    el('div', { position: 'absolute', left: `${w * 0.03}px`, top: `${h * 0.05}px`, width: `${w * 0.95}px`, height: `${h}px`, borderRadius: `${r}px`, background: 'rgba(0,0,0,.38)', filter: `blur(${short * 0.06}px)`, transform: `translateZ(${-T - 60}px) translate(${short * 0.07}px, ${short * 0.1}px)` }, root);
   }
   // The titanium edge: thin slices stacked back to front.
   const slices = Math.max(8, Math.round(T / 2));
@@ -144,9 +148,19 @@ async function phone({ src, w = 800, x = 0, y = 0, rx = 0, ry = 0, rz = 0, z = 0
     el('div', { position: 'absolute', inset: '0', borderRadius: `${r}px`, background: `rgb(${shade},${shade},${shade + 6})`, transform: `translateZ(${-T * k}px)` }, root);
   }
   // Front glass and bezel.
-  const face = el('div', { position: 'absolute', inset: '0', borderRadius: `${r}px`, background: '#050506', boxShadow: `inset 0 0 0 ${w * 0.004}px rgba(255,255,255,.18)` }, root);
+  const face = el('div', { position: 'absolute', inset: '0', borderRadius: `${r}px`, background: '#050506', boxShadow: `inset 0 0 0 ${short * 0.004}px rgba(255,255,255,.18)` }, root);
   const screen = el('div', { position: 'absolute', left: `${bezel}px`, top: `${bezel}px`, width: `${sw}px`, height: `${sh}px`, borderRadius: `${sr}px`, overflow: 'hidden', background: colours.top }, face);
   screen.className = 'screen';
+  if (landscape) {
+    const app = el('div', { position: 'absolute', inset: '0', backgroundSize: 'cover', backgroundPosition: 'center', backgroundImage: src ? `url("${src}")` : 'none' }, screen);
+    app.className = 'app';
+    el('div', { position: 'absolute', left: '50%', bottom: `${7 * s}px`, width: `${200 * s}px`, height: `${5 * s}px`, marginLeft: `${-100 * s}px`, borderRadius: `${3 * s}px`, background: colours.bottomInk, opacity: '.85' }, screen);
+    el('div', { position: 'absolute', top: '50%', left: `${11 * s}px`, width: `${37 * s}px`, height: `${126 * s}px`, marginTop: `${-63 * s}px`, borderRadius: `${19 * s}px`, background: '#000' }, screen);
+    if (glare) el('div', { position: 'absolute', inset: '0', borderRadius: `${sr}px`, background: 'linear-gradient(160deg, rgba(255,255,255,.16) 0%, rgba(255,255,255,.04) 30%, rgba(255,255,255,0) 45%)' }, screen);
+    root.swap = (next) => { app.style.backgroundImage = `url("${next}")`; };
+    root.app = app; root.screen = screen; root.dims = { w, h, s, sw, sh, bezel };
+    return root;
+  }
   const app = el('div', { position: 'absolute', left: '0', top: `${SCREEN.top * s}px`, width: `${sw}px`, height: `${(SCREEN.h - SCREEN.top - SCREEN.bottom) * s}px`, backgroundSize: 'cover', backgroundPosition: 'top center', backgroundImage: src ? `url("${src}")` : 'none' }, screen);
   app.className = 'app';
   const foot = el('div', { position: 'absolute', left: '0', bottom: '0', width: `${sw}px`, height: `${SCREEN.bottom * s + 1}px`, background: colours.bottom }, screen);
@@ -233,7 +247,9 @@ function stage({ w, h, bg }) {
   const root = el('div', { position: 'relative', width: `${w}px`, height: `${h}px`, overflow: 'hidden', background: bg, perspective: `${Math.max(w, h) * 1.6}px` }, document.body);
   root.id = 'stage';
   const world = el('div', { position: 'absolute', inset: '0', transformStyle: 'preserve-3d' }, root);
-  return { root, world };
+  // Flat, over everything: labels that a tilted phone must never cut through.
+  const front = el('div', { position: 'absolute', inset: '0' }, root);
+  return { root, world, front };
 }
 
 /** Soft blobs and a grain-free glow, so a flat colour has some depth. */

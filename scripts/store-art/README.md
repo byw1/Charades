@@ -21,7 +21,9 @@ None of them are app dependencies; install them somewhere outside the app.
 1. Build the web version and serve it on port 8089 (any static server; the app
    uses SQLite in a worker, so it needs the `Cross-Origin-Opener-Policy:
    same-origin` and `Cross-Origin-Embedder-Policy: require-corp` headers).
-2. `VH=860 node scripts/store-art/capture.js store/screens`: real screens.
+2. `VH=860 node scripts/store-art/capture.js store/screens` and
+   `node scripts/store-art/capture-sideways.js store/screens`: real screens,
+   upright and sideways.
 3. `node scripts/store-art/render-shots.js`: the screenshots.
 4. `node scripts/store-art/record-preview.js /tmp/preview-frames`, then
    `node scripts/store-art/make-video.js /tmp/preview-frames store/out/preview/app-preview-886x1920.mp4`.

@@ -34,16 +34,20 @@ const panels = {
     sticker({ emoji: '🎉', size: 150, x: 90, y: 1560, rot: -14, z: 420 }, world);
   },
 
-  // 2. How you answer.
+  // 2. How you answer: held sideways, the way most people play.
   async 2() {
-    const { root, world } = stage({ w: W, h: H, bg: C.ink });
-    backdrop(world, { base: C.ink, glow: 'rgba(46,232,111,.28)', blobs: [{ x: 700, y: 1500, r: 640, c: C.orange, o: 0.16 }, { x: -300, y: 1300, r: 620, c: C.green, o: 0.16 }] });
+    const { root, world, front } = stage({ w: W, h: H, bg: C.ink });
+    root.style.perspective = '2600px'; // closer camera, so the tips read as tips
+    backdrop(world, { base: C.ink, glow: 'rgba(255,255,255,.10)', blobs: [{ x: -380, y: 560, r: 560, c: C.orange, o: 0.16 }, { x: 760, y: 2060, r: 640, c: C.green, o: 0.16 }] });
     headline(world, { kicker: 'No buttons. Just tilt.', kickerColour: C.yellow, title: 'Tip down to score.<br>Tip up to skip.', colour: '#fff', top: 170, size: 128 });
-    await phone({ src: S('15-flash-2-pass'), w: 640, x: 620, y: 1050, rx: -26, ry: -18, rz: 9, z: -120 }, world);
-    await phone({ src: S('15-flash-0-got'), w: 700, x: 110, y: 1150, rx: 30, ry: 16, rz: -8, z: 80 }, world);
-    confetti({ n: 46, seed: 4, x: 0, y: 900, w: W, h: 1500, size: 40 }, world);
-    pill({ text: '+1 point', bg: C.green, fg: C.ink, size: 64, x: 120, y: 2470, rot: -6, z: 500 }, world);
-    pill({ text: 'Skip!', bg: C.orange, fg: C.ink, size: 64, x: 860, y: 1000, rot: 7, z: 500 }, world);
+    // Tip up (pass) above, the card in the middle, tip down (got it) below.
+    await phone({ src: S('side-flash-1-pass'), w: 1000, x: 160, y: 760, rx: -40, ry: 8, rz: 2, landscape: true }, world);
+    await phone({ src: S('side-card-0'), w: 1060, x: 130, y: 1350, rx: 4, ry: -6, rz: -2, landscape: true }, world);
+    await phone({ src: S('side-flash-0-got'), w: 1000, x: 160, y: 2000, rx: 40, ry: 8, rz: 2, landscape: true }, world);
+    confetti({ n: 34, seed: 4, x: 0, y: 1900, w: W, h: 800, size: 38 }, world);
+    pill({ text: '⬆ Tip up: pass', bg: C.orange, fg: C.ink, size: 58, x: 70, y: 690, rot: -5 }, front);
+    pill({ text: '⬇ Tip down: got it', bg: C.green, fg: C.ink, size: 58, x: 610, y: 2620, rot: 4 }, front);
+    pill({ text: '+1', bg: C.yellow, fg: C.ink, size: 72, x: 1060, y: 1950, rot: 10 }, front);
   },
 
   // 3. Make your own decks.
