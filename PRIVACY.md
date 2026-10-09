@@ -63,4 +63,4 @@ If this ever changes, this page will say so before the app does.
 
 ## Contact
 
-Questions: open an issue at <https://github.com/byw1/Deckhead/issues>.
+Questions: open an issue at <https://github.com/byw1/Charades/issues>.

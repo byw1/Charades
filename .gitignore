@@ -42,7 +42,9 @@ yarn-error.*
 
 # Brand assets. Not covered by the code licence — see TRADEMARK.md.
 # The exported PNGs in /assets are committed because the app will not build
-# without them. The editable sources and store artwork stay out.
+# without them. The editable sources and store artwork stay out. The README
+# pictures in /docs/images are committed so the repo can show the app; they
+# are covered by TRADEMARK.md, not the code licence.
 /brand/
 *.sketch
 *.fig

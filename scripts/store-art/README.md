@@ -12,6 +12,7 @@ The output is brand artwork, so it lives in `/store/` (git-ignored, see
 | `store/out/screenshots/01–07.png` | 1320 × 2868 (6.9" iPhone) | `render-shots.js` → `shots.html` |
 | `store/out/preview/app-preview-886x1920.mp4` | 886 × 1920, 29 s, 30 fps | `record-preview.js` + `make-video.js` |
 | `store/out/promo/charades-promo-1080x1920.mp4` | 1080 × 1920, 20 s | `record-promo.js` → `promo.html`, + `make-video.js` |
+| `docs/images/*` (committed, for the repo README) | various | `render-readme.js` → `readme.html` |
 
 ## Running it
 

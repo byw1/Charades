@@ -9,7 +9,7 @@ licence covers the code. It does not cover the brand.
 - Dex, the mascot
 - The app icon
 - The wordmark and any logo variants
-- Store screenshots and marketing artwork
+- Store screenshots and marketing artwork, including the images in `docs/images`
 
 These remain the property of the copyright holder. AGPL-3.0 grants no trademark
 rights — see section 7(e) of the licence, which permits declining to grant
@@ -24,7 +24,7 @@ must rename.
 
 - Choose a different app name, and not one confusingly similar to Charades: Make Your Own Decks
 - Replace the icon and any wordmark with their own
-- Change the bundle identifier from `com.charades.app` (and any ID this project ships under)
+- Change the bundle identifier from `com.bywilliaml.charades` (and any ID this project ships under)
 - Change the URL scheme from `charades://` and `deckhead://`
 - Not present the fork as an official release of this app
 

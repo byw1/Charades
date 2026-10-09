@@ -809,3 +809,13 @@ deck files. Links and files shared under the old name still open: the old
 scheme, extension and file type stay registered. The database file keeps its
 old name, `deckhead.db`, so nothing saved on a phone is lost. The GitHub repo
 is still byw1/Deckhead, so the privacy and support links point there.
+
+## The repo shows the app
+
+The GitHub repo is now byw1/Charades, and the support link points at its
+issues. The repo is public as a showcase: something to learn from and fork, not
+something anyone is expected to self-host. So the README leads with pictures
+(a banner, real screens, a gameplay GIF, a diagram of the tilt reader), and
+those few images are committed in `docs/images`. The rest of the store art
+stays out of git in `/store/`; all of it is made by `scripts/store-art` from
+the real app. Both are covered by TRADEMARK.md, not the code licence.
