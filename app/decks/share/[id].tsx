@@ -93,9 +93,9 @@ export default function ShareDeckScreen() {
 
       if (await Sharing.isAvailableAsync()) {
         await Sharing.shareAsync(file.uri, {
-          mimeType: 'application/x-deckhead',
+          mimeType: 'application/x-charades',
           dialogTitle: `Share ${deck.name}`,
-          UTI: 'com.deckhead.deck',
+          UTI: 'com.charades.deck',
         });
       }
     } finally {
@@ -173,13 +173,13 @@ export default function ShareDeckScreen() {
             icon="share"
             disabled={busy}
             onPress={() => void shareFile()}
-            accessibilityHint="Opens the share sheet with a .deckhead file"
+            accessibilityHint="Opens the share sheet with a .charades file"
           />
           <Button
             label={copied ? 'Copied ✓' : 'Copy link'}
             icon={copied ? 'check' : 'link'}
             onPress={() => void copyLink()}
-            accessibilityHint="Copies a link that opens this deck in Deckhead"
+            accessibilityHint="Copies a link that opens this deck in Charades"
           />
         </View>
 

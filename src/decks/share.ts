@@ -19,8 +19,13 @@ import { validateDeck, type FailureReason, type ValidationIssue } from './valida
 export const PAYLOAD_VERSION = 1;
 export const PAYLOAD_PREFIX = `D${PAYLOAD_VERSION}.`;
 
-export const DECK_FILE_EXTENSION = 'deckhead';
-export const DECK_LINK_SCHEME = 'deckhead';
+export const DECK_FILE_EXTENSION = 'charades';
+export const DECK_LINK_SCHEME = 'charades';
+/**
+ * The app was called Deckhead before it was Charades. Files and links shared
+ * under the old name still open; only new ones use the new name.
+ */
+export const LEGACY_DECK_FILE_EXTENSION = 'deckhead';
 
 /**
  * How much compressed payload goes in a QR code.
@@ -79,7 +84,7 @@ export function decodeDeck(payload: string): DecodeResult {
     return {
       ok: false,
       reason: 'corrupt',
-      message: 'This does not look like a Deckhead deck.',
+      message: 'This does not look like a Charades deck.',
     };
   }
 
@@ -88,7 +93,7 @@ export function decodeDeck(payload: string): DecodeResult {
     return {
       ok: false,
       reason: 'unsupportedPayloadVersion',
-      message: 'This deck was shared from a newer version of Deckhead. Update the app to open it.',
+      message: 'This deck was shared from a newer version of Charades. Update the app to open it.',
     };
   }
 
@@ -158,7 +163,7 @@ export function photoCount(deck: Deck): number {
   return deck.cards.filter((card) => card.image).length;
 }
 
-/** `deckhead://deck?d=<payload>`, without photos. */
+/** `charades://deck?d=<payload>`, without photos. */
 export function deckLink(deck: Deck): string {
   return `${DECK_LINK_SCHEME}://deck?d=${encodeDeck(withoutPhotos(deck))}`;
 }
@@ -181,8 +186,8 @@ export function payloadFromLink(url: string): string | null {
 /**
  * Where an incoming URL should land.
  *
- * Two things open the app from outside: a deckhead:// link, which carries a
- * deck, and a .deckhead file from AirDrop, Files, Mail or Messages, which iOS
+ * Two things open the app from outside: a charades:// link (or an older
+ * deckhead:// one), which carries a deck, and a .charades or .deckhead file from AirDrop, Files, Mail or Messages, which iOS
  * hands over as a file:// URL. Both go to the import preview — never a silent
  * install. Anything else is left to the router.
  */
@@ -191,7 +196,8 @@ export function routeForIncoming(url: string): string | null {
   if (!trimmed) return null;
 
   const isFile =
-    /^file:/i.test(trimmed) || new RegExp(`\\.${DECK_FILE_EXTENSION}$`, 'i').test(trimmed.split('?')[0] ?? '');
+    /^file:/i.test(trimmed) ||
+    new RegExp(`\\.(${DECK_FILE_EXTENSION}|${LEGACY_DECK_FILE_EXTENSION})$`, 'i').test(trimmed.split('?')[0] ?? '');
   if (isFile) return `/decks/import?file=${encodeURIComponent(trimmed)}`;
 
   const payload = payloadFromLink(trimmed);

@@ -1,4 +1,4 @@
-# Getting Deckhead onto your iPhone (and the App Store)
+# Getting Charades onto your iPhone (and the App Store)
 
 Three ways in, from "five minutes, free" to "anyone can download it". Each one
 builds on the last, so start at the top.
@@ -28,7 +28,7 @@ npm install
    npm start
    ```
 3. Point your iPhone's camera at the QR code in the terminal and tap the
-   banner. Deckhead opens inside Expo Go.
+   banner. Charades opens inside Expo Go.
 
 Your phone and computer need to be on the same Wi-Fi. If that's awkward (office
 or hotel Wi-Fi), run `npx expo start --tunnel` instead.
@@ -61,13 +61,13 @@ hidden, not broken.
 | All decks, Classic, Banned and 3 Rounds, chaos, forfeits | ✅ | ✅ |
 | Friends, Wrapped, group deck builder, photo cards | ✅ | ✅ |
 | Big decks over several QR codes | ✅ | ✅ |
-| AirDrop a deck and it opens in Deckhead | — | ✅ |
+| AirDrop a deck and it opens in Charades | — | ✅ |
 
 ---
 
 ## 2. A real app on your own iPhone
 
-This builds Deckhead in the cloud with Expo's build service (EAS) and gives
+This builds Charades in the cloud with Expo's build service (EAS) and gives
 you a link that installs it like any other app. No Mac and no Xcode needed.
 
 **You need:** an [Apple Developer Program](https://developer.apple.com/programs/)
@@ -78,7 +78,7 @@ free [Expo account](https://expo.dev/signup).
    ```sh
    npm run setup
    ```
-   Press return to accept the suggestion (like `com.yourname.deckhead`).
+   Press return to accept the suggestion (like `com.yourname.charades`).
 
 2. **Log in to Expo:**
    ```sh
@@ -105,7 +105,7 @@ free [Expo account](https://expo.dev/signup).
 
 6. **Turn on Developer Mode** the first time (iOS 16 and later): Settings →
    Privacy & Security → Developer Mode → On. Your phone restarts. Then open
-   Deckhead.
+   Charades.
 
 To update it later, run `npm run phone` again and install the new link.
 
@@ -123,7 +123,7 @@ Everything is tested, but these can only be checked on a phone. Each takes a
 minute.
 
 1. **No internet.** Swipe down Control Centre, turn on airplane mode (and make
-   sure Wi-Fi is off too), then force-close Deckhead and open it again. Play a
+   sure Wi-Fi is off too), then force-close Charades and open it again. Play a
    round: everything should work exactly the same.
 2. **Tilt.** Start a round and hold the phone on your forehead however feels
    natural, upright or sideways, leaning back a little is fine. Give it a
@@ -136,8 +136,8 @@ minute.
 4. **Turning and pausing.** Mid-round, turn the phone from upright to sideways
    and back: the card should follow and the timer keep going. Tap the pause
    button in the corner, wait, then tap to carry on.
-5. **AirDrop.** Share a deck as a file to another iPhone with Deckhead
-   installed. It should offer to open in Deckhead and land on "Add this deck?".
+5. **AirDrop.** Share a deck as a file to another iPhone with Charades
+   installed. It should offer to open in Charades and land on "Add this deck?".
 
 > **No paid account but you have a Mac?** Install Xcode, plug in your iPhone
 > and run `npx expo run:ios --device`. It installs with a free Apple ID, but
@@ -153,8 +153,10 @@ and it uploads with one command.
 
 ### Before you start
 
-- **The name.** "Deckhead" has to be free on the App Store. If someone has it,
-  change `"name"` in `app.json` and `"title"` in `store.config.json`.
+- **The name.** The store name is "Charades: Make Your Own Decks"; the first
+  upload creates the App Store Connect app with it (set in `eas.json`). If
+  Apple says it's taken, change `appName` in `eas.json` and `"title"` in
+  `store.config.json` to something like "Charades! Make Your Own Decks".
 - **The privacy policy link.** `store.config.json` points at
   [`PRIVACY.md`](./PRIVACY.md) on GitHub. That link only works if the repository
   is public. If it is private, paste `PRIVACY.md` into a free page anywhere
@@ -191,7 +193,7 @@ and it uploads with one command.
      set for the 6.9" or 6.5" iPhone size; screenshots from a recent Pro Max
      fit directly.
    - **App Privacy** → Get Started → "No, we do not collect data from this
-     app". That's true: Deckhead has no servers and no analytics.
+     app". That's true: Charades has no servers and no analytics.
    - **Pricing** → Free.
    - **App Review Information** → your name, email and phone, so Apple can
      reach you. No demo account is needed.

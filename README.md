@@ -1,4 +1,4 @@
-# Deckhead
+# Charades: Make Your Own Decks
 
 A forehead-card party game. One player holds the phone against their forehead
 showing a card they can't see. Everyone else shouts clues. The holder guesses.

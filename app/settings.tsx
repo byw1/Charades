@@ -32,7 +32,7 @@ export default function SettingsScreen() {
   const setTheme = useSettingsStore((s) => s.setTheme);
   const switchTheme = (next: ThemeChoice) => {
     if (next === settings.theme) return;
-    Alert.alert('Switch the look?', 'Deckhead restarts for a second to repaint. Your game, decks and settings are all kept.', [
+    Alert.alert('Switch the look?', 'The app restarts for a second to repaint. Your game, decks and settings are all kept.', [
       { text: 'Not now', style: 'cancel' },
       { text: 'Switch', onPress: () => setTheme(next) },
     ]);
@@ -98,7 +98,7 @@ export default function SettingsScreen() {
             ))}
           </View>
           <Text variant="caption" tone="muted" style={styles.note}>
-            Light is easier to see outside in the sun. Auto follows your phone. Switching restarts Deckhead for a second; nothing is lost.
+            Light is easier to see outside in the sun. Auto follows your phone. Switching restarts the app for a second; nothing is lost.
           </Text>
         </View>
 
@@ -143,7 +143,7 @@ export default function SettingsScreen() {
 
         <View style={styles.colophon}>
           <Text variant="label" tone="faint" align="center">
-            Deckhead {Constants.expoConfig?.version ?? ''}
+            Charades {Constants.expoConfig?.version ?? ''}
           </Text>
           <Text variant="caption" tone="faint" align="center">
             Works offline. No accounts, no ads, no tracking.{'\n'}Nothing you make leaves your phone unless you share it.

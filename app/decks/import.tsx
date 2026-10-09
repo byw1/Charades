@@ -60,7 +60,7 @@ export default function ImportDeckScreen() {
 
   /**
    * Set when arriving from outside: a deck link carries a payload, and a
-   * .deckhead file opened from AirDrop, Files or Mail carries its location.
+   * .charades file opened from AirDrop, Files or Mail carries its location.
    * Either skips straight to the preview.
    */
   const { payload, file } = useLocalSearchParams<{ payload?: string; file?: string }>();
@@ -317,7 +317,7 @@ export default function ImportDeckScreen() {
               </View>
               <View style={styles.scanHint} pointerEvents="none">
                 <Text variant="label" tone="inverse">
-                  {progress ? `Got ${progress.have} of ${progress.total} codes. Keep it there…` : 'Point at a Deckhead code'}
+                  {progress ? `Got ${progress.have} of ${progress.total} codes. Keep it there…` : 'Point at a Charades code'}
                 </Text>
               </View>
             </View>
@@ -345,7 +345,7 @@ export default function ImportDeckScreen() {
           <Field
             value={pasted}
             onChangeText={setPasted}
-            placeholder="Paste a deckhead:// link or a deck code"
+            placeholder="Paste a deck link or a deck code"
             accessibilityLabel="Deck link or code"
             multiline
             autoCapitalize="none"
@@ -360,7 +360,7 @@ export default function ImportDeckScreen() {
         <View style={[styles.area, styles.fileArea]}>
           <Mascot size={110} mood="happy" glyph="📁" />
           <Text variant="body" tone="muted" align="center">
-            Open a .deckhead file someone sent you — from Messages, Mail, Files or AirDrop.
+            Open a .charades file someone sent you — from Messages, Mail, Files or AirDrop.
           </Text>
           <Button label="Choose a file" variant="primary" icon="file" onPress={() => void pickFile()} style={styles.stretch} />
         </View>

@@ -183,7 +183,7 @@ describe('deep links', () => {
     const deck = deckOf(20);
     const link = deckLink(deck);
 
-    expect(link.startsWith('deckhead://deck?d=')).toBe(true);
+    expect(link.startsWith('charades://deck?d=')).toBe(true);
     expect(decodeDeck(payloadFromLink(link)!).ok).toBe(true);
   });
 
@@ -253,7 +253,7 @@ describe('decode failures', () => {
 
     expect(result.ok).toBe(false);
     expect(result.ok === false && result.reason).toBe('unsupportedPayloadVersion');
-    expect(result.ok === false && result.message).toMatch(/newer version of Deckhead/);
+    expect(result.ok === false && result.message).toMatch(/newer version of Charades/);
   });
 
   it('reports damage rather than crashing on truncated data', () => {
@@ -296,25 +296,25 @@ describe('decode failures', () => {
 
 describe('file names', () => {
   it('uses the deck name', () => {
-    expect(deckFileName(deckOf(1, 'Emo Bands'))).toBe('Emo Bands.deckhead');
+    expect(deckFileName(deckOf(1, 'Emo Bands'))).toBe('Emo Bands.charades');
   });
 
   it('strips characters that break a filesystem', () => {
-    expect(deckFileName(deckOf(1, 'A/B\\C:D*E?"<>|'))).toBe('ABCDE.deckhead');
+    expect(deckFileName(deckOf(1, 'A/B\\C:D*E?"<>|'))).toBe('ABCDE.charades');
   });
 
   it('keeps letters from other alphabets', () => {
-    expect(deckFileName(deckOf(1, '日本語'))).toBe('日本語.deckhead');
+    expect(deckFileName(deckOf(1, '日本語'))).toBe('日本語.charades');
   });
 
   it('falls back when the name has nothing usable in it', () => {
-    expect(deckFileName(deckOf(1, '///'))).toBe('deck.deckhead');
-    expect(deckFileName(deckOf(1, '   '))).toBe('deck.deckhead');
+    expect(deckFileName(deckOf(1, '///'))).toBe('deck.charades');
+    expect(deckFileName(deckOf(1, '   '))).toBe('deck.charades');
   });
 
   it('caps the length', () => {
     const name = deckFileName(deckOf(1, 'A'.repeat(200)));
-    expect(name.length).toBeLessThanOrEqual(40 + '.deckhead'.length);
+    expect(name.length).toBeLessThanOrEqual(40 + '.charades'.length);
   });
 });
 
@@ -425,8 +425,13 @@ describe('routeForIncoming', () => {
     expect(routeForIncoming(url)).toBe(`/decks/import?file=${encodeURIComponent(url)}`);
   });
 
-  it('recognises a .deckhead path even without a file scheme', () => {
+  it('recognises a .charades path even without a file scheme', () => {
+    expect(routeForIncoming('/var/mobile/Inbox/Deck.charades')).toMatch(/^\/decks\/import\?file=/);
+  });
+
+  it('still opens files and links shared under the old name', () => {
     expect(routeForIncoming('/var/mobile/Inbox/Deck.deckhead')).toMatch(/^\/decks\/import\?file=/);
+    expect(routeForIncoming(`deckhead://deck?d=D1.abc`)).toMatch(/^\/decks\/import\?payload=/);
   });
 
   it('sends a deck link to the import preview with its payload', () => {

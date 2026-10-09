@@ -123,7 +123,7 @@ export function validateDeck(input: unknown): ValidationResult {
       errors: [
         {
           path: 'schemaVersion',
-          message: `This deck was made with a newer version of Deckhead (deck version ${schemaVersion}, this app reads up to ${CURRENT_DECK_SCHEMA_VERSION}). Update the app to open it.`,
+          message: `This deck was made with a newer version of Charades (deck version ${schemaVersion}, this app reads up to ${CURRENT_DECK_SCHEMA_VERSION}). Update the app to open it.`,
         },
       ],
       warnings,

@@ -68,7 +68,7 @@ export function useDatabase(): DatabaseState {
           message:
             error instanceof Error
               ? error.message
-              : 'Deckhead could not open your decks. Restarting the app usually fixes it.',
+              : 'Charades could not open your decks. Restarting the app usually fixes it.',
         });
       }
     })();

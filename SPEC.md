@@ -1,4 +1,4 @@
-# Deckhead
+# Charades
 
 A forehead-card party game. One player holds the phone against their forehead showing a card they can't see. Everyone else shouts clues. The holder guesses. Repeat until the timer runs out.
 
@@ -218,13 +218,13 @@ Sound is **off by default**. When the phone dings for "correct," the guesser kno
 
 This is the feature the whole product hangs on. The incumbent technically has custom decks and almost nobody uses them because sharing is painful.
 
-- **Export:** deck JSON → gzip → base64. Share sheet with a `.deckhead` file attachment.
+- **Export:** deck JSON → gzip → base64. Share sheet with a `.charades` file attachment.
 - **QR:** if the compressed payload fits comfortably in a QR code (roughly under 1.5KB, so most decks under ~150 cards), render a full-screen QR. Otherwise fall back to the file and say so plainly.
-- **Deep link:** `deckhead://deck?d=<base64>` and a universal-link equivalent once a domain exists.
+- **Deep link:** `charades://deck?d=<base64>` and a universal-link equivalent once a domain exists.
 - **Import:** QR scan, file open, or paste. Always show a preview with deck name and card count and require a confirm tap. Never import silently.
 - **Collisions:** importing a deck whose `id` already exists prompts to replace or save as a copy. Never overwrite without asking.
 - **Big decks:** a deck too big for one code is shown as a sequence of smaller codes that the scanner collects in any order.
-- **Opening files:** `.deckhead` is a declared document type, so AirDrop, Files, Mail and Messages open it straight into the import preview.
+- **Opening files:** `.charades` (and the older `.deckhead`) is a declared document type, so AirDrop, Files, Mail and Messages open it straight into the import preview.
 
 Target: someone builds a deck of inside jokes and seven people have it in under thirty seconds.
 
@@ -307,7 +307,7 @@ Don't write exhaustive component tests. A smoke test that the round screen rende
 
 - **LICENSE:** AGPL-3.0. Public forks stay open.
 - **NOTICE:** states that the copyright holder dual-licenses, and that the App Store build ships under a separate proprietary license. This resolves the known conflict between GPL-family terms and Apple's distribution terms.
-- **TRADEMARK.md:** the name "Deckhead," the icon, and the wordmark are not covered by the code license. Forks must rename.
+- **TRADEMARK.md:** the name "Charades," the icon, and the wordmark are not covered by the code license. Forks must rename.
 - **.gitignore:** app icon source, wordmark, store screenshots, and any premium deck content stay out of the public repo.
 - No `Heads Up!` references anywhere in code, comments, decks, or docs.
 
@@ -315,8 +315,8 @@ Don't write exhaustive component tests. A smoke test that the round screen rende
 
 ## Ship config
 
-- Bundle ID: `com.deckhead.app` (placeholder, confirm before first EAS build)
-- App Store name: `Deckhead`
+- Bundle ID: `com.bywilliaml.charades` (iPhone and Android)
+- App Store name: `Charades`
 - Subtitle: `Charades Party Game` — the brand goes in the name field, the keywords go here
 - Privacy: declare no data collection. It's true and it's a selling point.
 - Orientation: every screen works upright and sideways and re-lays out when the phone turns; only a running round holds its orientation

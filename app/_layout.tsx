@@ -22,7 +22,7 @@ try {
 export default function RootLayout() {
   const fontsReady = useAppFonts();
 
-  // Deck links and .deckhead files are routed to the import preview by
+  // Deck links and .charades files are routed to the import preview by
   // app/+native-intent.tsx, so neither can install a deck silently.
 
   useEffect(() => {
