@@ -1,8 +1,11 @@
 {
   "expo": {
-    "name": "Deckhead",
-    "slug": "deckhead",
-    "scheme": "deckhead",
+    "name": "Charades",
+    "slug": "charades",
+    "scheme": [
+      "charades",
+      "deckhead"
+    ],
     "version": "0.1.0",
     "orientation": "default",
     "icon": "./assets/icon.png",
@@ -12,24 +15,41 @@
       "**/*"
     ],
     "ios": {
-      "bundleIdentifier": "com.deckhead.app",
+      "bundleIdentifier": "com.charades.app",
       "supportsTablet": false,
       "infoPlist": {
         "ITSAppUsesNonExemptEncryption": false,
         "CFBundleDocumentTypes": [
           {
-            "CFBundleTypeName": "Deckhead deck",
+            "CFBundleTypeName": "Charades deck",
             "CFBundleTypeRole": "Viewer",
             "LSHandlerRank": "Owner",
             "LSItemContentTypes": [
+              "com.charades.deck",
               "com.deckhead.deck"
             ]
           }
         ],
         "UTExportedTypeDeclarations": [
           {
+            "UTTypeIdentifier": "com.charades.deck",
+            "UTTypeDescription": "Charades deck",
+            "UTTypeConformsTo": [
+              "public.data",
+              "public.content"
+            ],
+            "UTTypeTagSpecification": {
+              "public.filename-extension": [
+                "charades"
+              ],
+              "public.mime-type": [
+                "application/x-charades"
+              ]
+            }
+          },
+          {
             "UTTypeIdentifier": "com.deckhead.deck",
-            "UTTypeDescription": "Deckhead deck",
+            "UTTypeDescription": "Charades deck (older)",
             "UTTypeConformsTo": [
               "public.data",
               "public.content"
@@ -54,7 +74,7 @@
       }
     },
     "android": {
-      "package": "com.deckhead.app",
+      "package": "com.charades.app",
       "adaptiveIcon": {
         "backgroundColor": "#0A0A0D",
         "foregroundImage": "./assets/android-icon-foreground.png",
@@ -77,7 +97,7 @@
       [
         "expo-camera",
         {
-          "cameraPermission": "Deckhead uses the camera to scan deck codes and to take photos for your own cards. Nothing leaves your phone unless you share it.",
+          "cameraPermission": "Charades uses the camera to scan deck codes and to take photos for your own cards. Nothing leaves your phone unless you share it.",
           "microphonePermission": false,
           "recordAudioAndroid": false
         }
@@ -85,14 +105,14 @@
       [
         "expo-sensors",
         {
-          "motionPermission": "Deckhead uses motion for the tilt controls: tip the phone down for got it, up to pass. Nothing is recorded."
+          "motionPermission": "Charades uses motion for the tilt controls: tip the phone down for got it, up to pass. Nothing is recorded."
         }
       ],
       [
         "expo-image-picker",
         {
-          "photosPermission": "Deckhead lets you pick photos for your own cards. They stay on your phone, inside your decks.",
-          "cameraPermission": "Deckhead uses the camera to scan deck codes and to take photos for your own cards. Nothing leaves your phone unless you share it.",
+          "photosPermission": "Charades lets you pick photos for your own cards. They stay on your phone, inside your decks.",
+          "cameraPermission": "Charades uses the camera to scan deck codes and to take photos for your own cards. Nothing leaves your phone unless you share it.",
           "microphonePermission": false
         }
       ]

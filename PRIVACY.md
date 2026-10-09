@@ -2,12 +2,12 @@
 
 _Last updated: 7 October 2026 (game night update)_
 
-Deckhead is a party game that works entirely on your phone. This policy is
+Charades is a party game that works entirely on your phone. This policy is
 short because there is very little to say.
 
 ## What we collect
 
-**Nothing.** Deckhead has no accounts, no analytics, no advertising, no
+**Nothing.** Charades has no accounts, no analytics, no advertising, no
 tracking and no servers. It never sends anything about you or your games
 anywhere.
 
@@ -28,15 +28,15 @@ only in files, never in codes or links.
 
 - **Camera** — to scan a deck's QR code and to take a photo for a card.
 - **Photos** — you pick photos for your cards with Apple's own picker, which
-  hands Deckhead only the photos you choose.
+  hands Charades only the photos you choose.
 - **Motion** — for the tilt controls, to tell when you tip the phone to
   answer. Nothing is recorded.
 
-Deckhead never asks for the microphone, notifications or your location.
+Charades never asks for the microphone, notifications or your location.
 
 ## Children
 
-Deckhead collects no data from anyone, including children.
+Charades collects no data from anyone, including children.
 
 ## Changes
 

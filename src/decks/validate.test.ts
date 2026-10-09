@@ -62,7 +62,7 @@ describe('schema version', () => {
       validateDeck(validDeck({ schemaVersion: CURRENT_DECK_SCHEMA_VERSION + 1 })),
     );
     expect(result.reason).toBe('unsupportedSchemaVersion');
-    expect(result.errors[0]?.message).toMatch(/newer version of Deckhead/);
+    expect(result.errors[0]?.message).toMatch(/newer version of Charades/);
     expect(result.errors[0]?.message).toMatch(/Update the app/);
   });
 

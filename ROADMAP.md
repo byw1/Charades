@@ -12,7 +12,7 @@ committed, with a check-in before the next one starts.
 | M5 | Sharing: export, QR, file import, deep links, preview and collision handling | Complete |
 | M6 | Polish: tilt mode, settings, accessibility, backgrounding, empty and error states | In progress |
 | M7 | Ship: EAS config, icons and splash, screenshots, privacy manifest, TestFlight | In progress |
-| Game night | Nine new decks with banned words, banned-words and three-round modes, chaos twists, forfeits, friends and rivalries, Wrapped, group deck builder, photo cards, multi-code sharing, open-in-Deckhead, round videos and highlight reel, voice referee, AI deck maker, streak reminders (videos, voice, AI decks and reminders later removed) | Complete, needs a device pass |
+| Game night | Nine new decks with banned words, banned-words and three-round modes, chaos twists, forfeits, friends and rivalries, Wrapped, group deck builder, photo cards, multi-code sharing, open-in-Charades, round videos and highlight reel, voice referee, AI deck maker, streak reminders (videos, voice, AI decks and reminders later removed) | Complete, needs a device pass |
 | Bigger decks | 100 cards in every deck, three new decks (Celebrities, Sports, Movie & TV Quotes), cover emoji and sticker-style previews, tilt as the default with a tap fallback, offline checks on the build itself | Complete, needs a device pass |
 
 ## Not in v1
@@ -48,7 +48,7 @@ them arrives.
   same function.
 - **base64url for deep links — done.** The export payload is base64url. Standard
   base64 still decodes on the way in, so a payload pasted from elsewhere works.
-- **Universal links need a domain.** The `deckhead://` scheme works now. The
+- **Universal links need a domain.** The `charades://` scheme works now. The
   https equivalent needs a domain with an apple-app-site-association file, which
   is an M7 task and the one part of sharing that is not fully offline.
 - **Custom deck empty state — done.** The browser now always shows a "Yours"
@@ -73,5 +73,5 @@ them arrives.
   submit button. DEPLOY.md walks through each.
 - **Game night needs a device pass.** Everything new is unit-tested and was
   walked through in a browser, but tilt on a real forehead, sound, and
-  opening a .deckhead file from AirDrop can only be checked on an iPhone.
+  opening a .charades file from AirDrop can only be checked on an iPhone.
   DEPLOY.md lists them.

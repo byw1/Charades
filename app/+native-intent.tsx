@@ -3,7 +3,7 @@ import { routeForIncoming } from '@/decks/share';
 /**
  * Rewrites URLs that open the app from outside.
  *
- * A deck link or a .deckhead file — from AirDrop, Files, Mail or Messages —
+ * A deck link or a .charades (or older .deckhead) file — from AirDrop, Files, Mail or Messages —
  * goes to the import preview, so a deck from someone else is always shown and
  * confirmed before it is added. Everything else passes through untouched.
  */

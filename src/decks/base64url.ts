@@ -1,7 +1,7 @@
 /**
  * base64url, not base64.
  *
- * The export payload travels in a URL — `deckhead://deck?d=<payload>` — and
+ * The export payload travels in a URL — `charades://deck?d=<payload>` — and
  * standard base64's `+` and `/` are not URL-safe. `+` decodes as a space when a
  * link is parsed as a query string, which silently corrupts the deck. `=`
  * padding is dropped for the same reason and restored on decode.

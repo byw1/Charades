@@ -10,6 +10,10 @@ import type { Sql } from './sql';
  * without a compatibility layer.
  */
 
+/**
+ * Named for the app's old name, Deckhead, and kept: renaming the file would
+ * leave everyone's decks and games behind in the old one.
+ */
 export const DATABASE_NAME = 'deckhead.db';
 
 let openPromise: Promise<SQLite.SQLiteDatabase> | null = null;

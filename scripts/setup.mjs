@@ -1,6 +1,6 @@
 #!/usr/bin/env node
 /**
- * One-time setup for putting Deckhead on your own iPhone or the App Store.
+ * One-time setup for putting Charades on your own iPhone or the App Store.
  *
  *   npm run setup
  *
@@ -13,7 +13,7 @@ import { createInterface } from 'node:readline';
 import { stdin, stdout } from 'node:process';
 
 const APP_JSON = new URL('../app.json', import.meta.url);
-const PLACEHOLDER = 'com.deckhead.app';
+const PLACEHOLDER = 'com.charades.app';
 
 const bold = (s) => `\x1b[1m${s}\x1b[0m`;
 const green = (s) => `\x1b[32m${s}\x1b[0m`;
@@ -26,14 +26,14 @@ export function isValidAppId(id) {
 
 function suggest(name) {
   const handle = (name || 'yourname').toLowerCase().replace(/[^a-z0-9]/g, '') || 'yourname';
-  return `com.${handle}.deckhead`;
+  return `com.${handle}.charades`;
 }
 
 async function main() {
   const config = JSON.parse(readFileSync(APP_JSON, 'utf8'));
   const current = config.expo.ios.bundleIdentifier;
 
-  console.log(`\n${bold('Deckhead setup')}\n`);
+  console.log(`\n${bold('Charades setup')}\n`);
   console.log('Every app on the App Store needs its own ID, written backwards like a web address.');
   console.log(`It never shows to players. ${dim(`Currently: ${current}`)}\n`);
 
@@ -56,7 +56,7 @@ async function main() {
     const answer = (await ask(`App ID ${dim(`[${fallback}]`)}: `)).trim().toLowerCase();
     id = answer || fallback;
     if (isValidAppId(id)) break;
-    console.log('  That needs to look like com.yourname.deckhead — lowercase letters, numbers, dots.');
+    console.log('  That needs to look like com.yourname.charades — lowercase letters, numbers, dots.');
   }
   rl.close();
 

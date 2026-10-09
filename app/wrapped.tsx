@@ -201,7 +201,7 @@ function Story({ wrapped, cardText, deckNames, k }: Loaded & { k: number }) {
           </RNText>
         ) : null}
         <RNText style={[styles.footer, { fontSize: 13 * k, lineHeight: 16 * k }]} allowFontScaling={false}>
-          DECKHEAD · phone on your forehead
+          CHARADES · make your own decks
         </RNText>
       </View>
     </View>

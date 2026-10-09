@@ -219,7 +219,7 @@ export function Mascot({
   );
 
   return (
-    <View style={{ width: size, height: size }} accessible accessibilityRole="image" accessibilityLabel="Dex, the Deckhead mascot">
+    <View style={{ width: size, height: size }} accessible accessibilityRole="image" accessibilityLabel="Dex, the Charades mascot">
       {poke ? (
         <Pressable onPress={onPoke} style={styles.fill} accessibilityElementsHidden importantForAccessibility="no-hide-descendants">
           {art}

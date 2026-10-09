@@ -791,3 +791,21 @@ expo-notifications). The app no longer asks for the microphone, speech or
 notifications at all, and a test keeps it that way. Any round videos already
 saved are deleted on the next launch. A streak reminder already scheduled may
 still arrive once; nothing schedules another.
+
+## Renamed: Charades: Make Your Own Decks
+
+The product owner renamed the app from Deckhead ahead of the App Store. The
+store name is "Charades: Make Your Own Decks" (29 of Apple's 30 characters),
+the subtitle "Offline party game for friends", and the home-screen name
+"Charades". "Charades" alone is a common word, so it is allowed and cannot be
+anyone's trademark; the full name has to be unique on the store, and App
+Store Connect confirms that when the app record is created. Names built on
+"head" were avoided: Heads Up!, Headbands, ForeHeads and FiveHead already
+exist.
+
+Identifiers moved with it: `com.charades.app` as the placeholder bundle ID
+(`npm run setup` still sets your own), the `charades://` scheme and `.charades`
+deck files. Links and files shared under the old name still open: the old
+scheme, extension and file type stay registered. The database file keeps its
+old name, `deckhead.db`, so nothing saved on a phone is lost. The GitHub repo
+is still byw1/Deckhead, so the privacy and support links point there.
