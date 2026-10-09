@@ -1,0 +1,58 @@
+<!doctype html>
+<html>
+<head>
+<meta charset="utf-8">
+<link rel="stylesheet" href="fonts.css">
+<script src="kit.js"></script>
+</head>
+<body>
+<script>
+// Artwork for the README: ?n=banner (1280 x 640, also the GitHub social
+// preview) or ?n=phones (1600 x 820, five real screens in a fan).
+const S = (name) => `../../store/screens/${name}.png`;
+const n = new URLSearchParams(location.search).get('n') || 'banner';
+
+const pieces = {
+  async banner() {
+    const W = 1280, H = 640;
+    const { world, front } = stage({ w: W, h: H, bg: C.ink });
+    world.parentNode.style.perspective = '1800px';
+    backdrop(world, { base: C.ink, glow: 'rgba(155,92,255,.30)', blobs: [{ x: 760, y: -260, r: 420, c: C.purple, o: 0.35 }, { x: 980, y: 380, r: 300, c: C.yellow, o: 0.18 }, { x: -200, y: 420, r: 320, c: C.pink, o: 0.16 }] });
+    dex({ mood: 'excited', size: 190, x: 64, y: 70, rot: -8 }, front);
+    const t = el('div', { position: 'absolute', left: '70px', top: '270px', color: '#fff' }, front);
+    t.innerHTML = `<div style="font:800 128px/0.9 Display;letter-spacing:-0.055em">Charades</div>
+      <div style="font:800 50px/1 Display;letter-spacing:-0.04em;color:${C.yellow};margin-top:14px">Make Your Own Decks</div>
+      <div style="font:700 25px/1.45 Text;opacity:.82;margin-top:26px;max-width:600px">The forehead party game for iPhone.<br>Fully offline. No accounts, no ads. Open source.</div>`;
+    await phone({ src: S('side-card-0'), w: 560, x: 670, y: 200, rx: 12, ry: -20, rz: -7, landscape: true }, world);
+    card3d({ text: 'Rizz', bg: C.yellow, w: 200, x: 700, y: 70, rx: 10, ry: 26, rz: -12, z: 160 }, world);
+    card3d({ text: 'Capybara', bg: C.green, w: 210, x: 1020, y: 470, rx: -8, ry: -24, rz: 9, z: 180 }, world);
+    confetti({ n: 26, seed: 5, x: 640, y: 20, w: 620, h: 600, size: 18 }, world);
+    return { W, H };
+  },
+
+  async phones() {
+    const W = 1600, H = 820;
+    const { world } = stage({ w: W, h: H, bg: '#F4F3EF' });
+    world.parentNode.style.perspective = '2600px';
+    backdrop(world, { base: `linear-gradient(135deg, ${C.purple}, ${C.pink})`, glow: 'rgba(255,255,255,.25)', blobs: [{ x: 1200, y: 420, r: 380, c: C.yellow, o: 0.25 }, { x: -120, y: -200, r: 360, c: C.blue, o: 0.25 }] });
+    const screens = ['01-play', '07-deck-saved', '14-card-0', '11-rules', '17-recap'];
+    const w = 300;
+    for (const [i, s] of screens.entries()) {
+      const mid = i - 2;
+      await phone({ src: S(s), w, x: 800 - w / 2 + mid * 290, y: 95 + Math.abs(mid) * 24, rx: 4, ry: -mid * 12, rz: mid * 3, z: -Math.abs(mid) * 70 }, world);
+    }
+    return { W, H };
+  },
+};
+
+(async () => {
+  await document.fonts.ready;
+  const size = await pieces[n]();
+  document.getElementById('stage').dataset.size = JSON.stringify(size);
+  await document.fonts.ready;
+  await new Promise((r) => setTimeout(r, 300));
+  document.title = 'ready';
+})();
+</script>
+</body>
+</html>

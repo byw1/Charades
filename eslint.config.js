@@ -33,7 +33,7 @@ const networkSyntax = ['downloadAsync', 'uploadAsync', 'createDownloadResumable'
 module.exports = defineConfig([
   expoConfig,
   {
-    ignores: ['dist/*', 'node_modules/*', '.expo/*'],
+    ignores: ['dist/*', 'node_modules/*', '.expo/*', 'scripts/store-art/*'],
   },
   {
     // Build-time scripts run under Node, not in the app bundle.
