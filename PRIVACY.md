@@ -1,6 +1,9 @@
 # Privacy Policy
 
-_Last updated: 7 October 2026 (game night update)_
+_Last updated: 9 October 2026_
+
+The published copy lives at <https://bywilliaml.com/charades/privacy>; keep
+the two in step.
 
 Charades is a party game that works entirely on your phone. This policy is
 short because there is very little to say.
@@ -9,13 +12,14 @@ short because there is very little to say.
 
 **Nothing.** Charades has no accounts, no analytics, no advertising, no
 tracking and no servers. It never sends anything about you or your games
-anywhere.
+anywhere. The app does not use the internet at all, and its code includes a
+test that fails the build if anything tries to.
 
 ## What stays on your phone
 
 The decks you make (including any photos you add to cards), your games, your
-round videos and your settings are stored on your device only. Deleting the app
-deletes them.
+scores and streak, and your settings are stored on your device only. Nobody
+else, including us, can see them. Deleting the app deletes them.
 
 ## Sharing a deck
 
@@ -32,11 +36,26 @@ only in files, never in codes or links.
 - **Motion** — for the tilt controls, to tell when you tip the phone to
   answer. Nothing is recorded.
 
-Charades never asks for the microphone, notifications or your location.
+Charades never asks for the microphone, notifications, contacts or your
+location.
+
+## Third parties
+
+Charades contains no third-party analytics, advertising or tracking SDKs, and
+shares no data with anyone, because it has none to share. Apple handles App
+Store downloads and purchases under its own privacy policy.
 
 ## Children
 
 Charades collects no data from anyone, including children.
+
+## The website and the deck maker
+
+The deck maker at <https://bywilliaml.com/charades/decks> runs entirely in
+your browser: the cards you paste are turned into a code on your own device
+and are not uploaded. Like any website, the server hosting those pages may
+keep standard request logs. The optional Claude skill runs inside your own
+Claude account, under Anthropic's terms; nothing from it reaches us.
 
 ## Changes
 
