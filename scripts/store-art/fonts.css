@@ -1,0 +1,6 @@
+@font-face { font-family: Display; font-weight: 800; src: url('../../node_modules/@expo-google-fonts/bricolage-grotesque/800ExtraBold/BricolageGrotesque_800ExtraBold.ttf'); }
+@font-face { font-family: Text; font-weight: 600; src: url('../../node_modules/@expo-google-fonts/plus-jakarta-sans/600SemiBold/PlusJakartaSans_600SemiBold.ttf'); }
+@font-face { font-family: Text; font-weight: 700; src: url('../../node_modules/@expo-google-fonts/plus-jakarta-sans/700Bold/PlusJakartaSans_700Bold.ttf'); }
+@font-face { font-family: Text; font-weight: 800; src: url('../../node_modules/@expo-google-fonts/plus-jakarta-sans/800ExtraBold/PlusJakartaSans_800ExtraBold.ttf'); }
+@font-face { font-family: Emoji; src: local('Noto Color Emoji'), local('Apple Color Emoji'); }
+* { -webkit-font-smoothing: antialiased; }

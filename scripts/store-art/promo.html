@@ -1,0 +1,174 @@
+<!doctype html>
+<html>
+<head>
+<meta charset="utf-8">
+<link rel="stylesheet" href="fonts.css">
+<script src="kit.js"></script>
+</head>
+<body>
+<script>
+// The 3D promo: 1080 x 1920, 20 s, for TikTok, Reels, Shorts and the website.
+// render(t) draws the frame at t seconds; record-promo.js steps through it.
+const W = 1080, H = 1920, DURATION = 20;
+const S = (name) => `../../store/screens/${name}.png`;
+const CUES = [
+  { name: 'go', at: 0.9 }, { name: 'tick', at: 1.3 }, { name: 'tick', at: 1.7 },
+  { name: 'correct', at: 3.9 }, { name: 'pass', at: 6.9 },
+  { name: 'pass', at: 9.3 },
+  { name: 'tick', at: 10.2 }, { name: 'tick', at: 10.6 }, { name: 'tick', at: 11.0 }, { name: 'tick', at: 11.4 },
+  { name: 'go', at: 13.6 }, { name: 'win', at: 16.7 },
+];
+
+const clamp = (v, a = 0, b = 1) => Math.max(a, Math.min(b, v));
+const seg = (t, a, b) => clamp((t - a) / (b - a));
+const eo = (k) => 1 - (1 - k) ** 3;
+const eio = (k) => (k < 0.5 ? 4 * k ** 3 : 1 - (-2 * k + 2) ** 3 / 2);
+const eb = (k) => { const c = 2.2; return k === 0 ? 0 : 1 + (c + 1) * (k - 1) ** 3 + c * (k - 1) ** 2; };
+const mix = (a, b, k) => a + (b - a) * k;
+const hex = (h) => [1, 3, 5].map((i) => parseInt(h.slice(i, i + 2), 16));
+const mixColour = (a, b, k) => { const x = hex(a), y = hex(b); return `rgb(${x.map((v, i) => Math.round(mix(v, y[i], k))).join(',')})`; };
+
+// Background colour over time: [time, colour], blended over 0.35 s.
+const BG = [[0, C.yellow], [3.9, C.green], [6.9, C.orange], [9.3, C.purple], [13.6, C.pink], [16.6, C.ink]];
+function bgAt(t) {
+  let c = BG[0][1];
+  for (let i = 1; i < BG.length; i++) {
+    const [at, next] = BG[i];
+    if (t >= at) c = next;
+    else { const k = seg(t, at - 0.35, at); if (k > 0) return mixColour(c, next, eio(k)); break; }
+  }
+  return c;
+}
+const inkFor = (t) => (t < 9.3 ? C.ink : '#fff');
+
+let root, world, bg, front;
+function setup() {
+  document.body.style.margin = '0';
+  root = el('div', { position: 'relative', width: `${W}px`, height: `${H}px`, overflow: 'hidden', perspective: '2400px' }, document.body);
+  root.id = 'stage';
+  bg = el('div', { position: 'absolute', inset: '0' }, root);
+  el('div', { position: 'absolute', inset: '0', background: 'radial-gradient(110% 60% at 50% 0%, rgba(255,255,255,.3), transparent 60%)' }, root);
+  world = el('div', { position: 'absolute', inset: '0', transformStyle: 'preserve-3d' }, root);
+  // Flat, always on top: words that must never be cut by something flying past.
+  front = el('div', { position: 'absolute', inset: '0' }, root);
+}
+
+/** Big words that slam in, one line at a time. */
+function slam(lines, t, start, { top = 150, size = 150, colour, out, z = 200, onTop = false } = {}) {
+  lines.forEach((line, i) => {
+    const k = seg(t, start + i * 0.22, start + i * 0.22 + 0.4);
+    if (k <= 0) return;
+    const gone = out ? seg(t, out, out + 0.25) : 0;
+    const n = el('div', { position: 'absolute', left: '0', width: `${W}px`, top: `${top + i * size * 0.98}px`, textAlign: 'center', font: `800 ${size}px/1 Display`, letterSpacing: '-0.05em', color: colour, transform: `translateZ(${z}px) scale(${eb(k) * (1 - gone)}) rotate(${(1 - k) * (i % 2 ? 8 : -8)}deg)`, opacity: String(clamp(k * 3) * (1 - gone)), textShadow: colour === '#fff' ? '0 6px 0 rgba(0,0,0,.18)' : '0 6px 0 rgba(255,255,255,.25)' }, onTop ? front : world);
+    n.textContent = line;
+  });
+}
+
+/** Confetti flung from a point, falling under gravity. */
+function burst(t, start, { x, y, n = 70, seed = 3, speed = 1500 } = {}) {
+  const dt = t - start;
+  if (dt < 0 || dt > 2.2) return;
+  const r = rng(seed);
+  const colours = [C.yellow, C.pink, C.blue, C.purple, C.orange, '#fff', C.green];
+  for (let i = 0; i < n; i++) {
+    const a = r() * Math.PI * 2; const v = speed * (0.35 + r() * 0.75);
+    const px = x + Math.cos(a) * v * dt; const py = y + Math.sin(a) * v * dt * 0.8 + 1600 * dt * dt;
+    const s = 22 + r() * 22;
+    el('div', { position: 'absolute', left: `${px}px`, top: `${py}px`, width: `${s}px`, height: `${s * 0.45}px`, borderRadius: '4px', background: colours[i % colours.length], opacity: String(1 - seg(dt, 1.6, 2.2)), transform: `translateZ(${300 + r() * 200}px) rotate(${r() * 360 + dt * 700}deg) rotateX(${dt * 600 + r() * 360}deg)` }, world);
+  }
+}
+
+async function render(t) {
+  world.innerHTML = '';
+  front.innerHTML = '';
+  bg.style.background = bgAt(t);
+  const ink = inkFor(t);
+  const bob = Math.sin(t * 2.2) * 10;
+
+  // --- 0 to 9.3: one phone, on a forehead's worth of tilt.
+  if (t < 9.9) {
+    const enter = eo(seg(t, 0, 1.3));
+    let rx = 0, screen = '14-card-0';
+    // Tip down for got it.
+    rx += 38 * eio(seg(t, 3.5, 3.9)) - 38 * eio(seg(t, 4.9, 5.3));
+    if (t >= 3.85 && t < 5.15) screen = '15-flash-0-got';
+    else if (t >= 5.15) screen = '14-card-2';
+    // Tip up for pass.
+    rx -= 38 * eio(seg(t, 6.5, 6.9)) - 38 * eio(seg(t, 7.9, 8.3));
+    if (t >= 6.85 && t < 8.15) screen = '15-flash-2-pass';
+    else if (t >= 8.15) screen = '14-card-4';
+    // Spin away into the editor.
+    const spin = eio(seg(t, 9.2, 9.9));
+    const w = 600;
+    await phone({ src: S(screen), w, x: (W - w) / 2 + spin * 900, y: mix(2300, 660, enter) + bob, rx, ry: mix(540, -10, enter) + spin * 160, rz: mix(-20, -4, enter) }, world);
+  }
+  slam(['PUT IT', 'ON YOUR', 'HEAD.'], t, 0.9, { colour: ink, size: 150, top: 120, out: 3.4 });
+  slam(['TIP DOWN', 'GOT IT!'], t, 3.6, { colour: C.ink, size: 160, top: 150, out: 6.4 });
+  burst(t, 3.9, { x: W / 2, y: 1150 });
+  if (t > 3.95 && t < 6.4) pill({ text: '+1', bg: C.yellow, fg: C.ink, size: 110 * eb(seg(t, 3.95, 4.3)), x: 760, y: 1500, rot: -8, z: 400 }, world);
+  slam(['TIP UP', 'PASS'], t, 6.6, { colour: C.ink, size: 160, top: 150, out: 9.2 });
+
+  // --- 9.3 to 13.6: make your own decks.
+  if (t >= 9.3 && t < 14.2) {
+    const into = eo(seg(t, 9.3, 9.9));
+    const away = eio(seg(t, 13.6, 14.2));
+    await phone({ src: S('07-deck-saved'), w: 560, x: mix(-700, 260, into), y: 720 + bob + away * 1600, rx: 4, ry: mix(-200, 14, into), rz: 3 + away * 30 }, world);
+    slam(['MAKE YOUR', 'OWN DECKS'], t, 9.5, { colour: '#fff', size: 140, top: 130, out: 13.5 });
+    const cards = [
+      { text: 'Roomba named Kevin', bg: C.yellow, fg: C.ink, x: 80, y: 760, rz: -10 },
+      { text: 'The 3am fire alarm', bg: C.pink, fg: '#fff', x: 570, y: 980, rz: 9 },
+      { text: 'Our landlord Steve', bg: C.blue, fg: C.ink, x: 60, y: 1380, rz: 7 },
+      { text: 'Taco Tuesday', bg: C.green, fg: C.ink, x: 560, y: 1560, rz: -8 },
+    ];
+    cards.forEach((c, i) => {
+      const k = seg(t, 10.2 + i * 0.4, 10.8 + i * 0.4);
+      if (k <= 0) return;
+      const e = eb(k);
+      const float = Math.sin(t * 2 + i) * 12;
+      card3d({ text: c.text, bg: c.bg, fg: c.fg, w: 420, x: mix(530, c.x, e), y: mix(1150, c.y, e) + float + away * 1700, rx: (1 - k) * 80 + 10, ry: (1 - k) * 360 + (i % 2 ? -18 : 18), rz: c.rz, z: mix(-200, 380, e) }, world);
+    });
+  }
+
+  // --- 13.6 to 16.6: it rains cards.
+  if (t >= 13.6 && t < 17.2) {
+    slam(['1,700', 'CARDS', 'BUILT IN'], t, 13.75, { colour: '#fff', size: 170, top: 560, out: 16.5, onTop: true });
+    const words = ['Capybara', 'Rizz', 'No cap', 'Delulu', 'Fidget spinner', 'Air fryer', 'Group project', 'All-nighter', 'Pancakes', 'Sushi', 'Slam dunk', 'Juggling', 'Being tickled', 'Penguin', 'Sloth', 'Planking', 'Floss dance', 'Ramen noodles', 'Garlic bread', 'Doorbell', 'Selfie stick', 'Hoverboard', 'Sneezing', 'Kettle'];
+    const colours = [[C.yellow, C.ink], ['#fff', C.ink], [C.blue, C.ink], [C.green, C.ink], [C.purple, '#fff'], [C.orange, C.ink]];
+    const r = rng(21);
+    words.forEach((word, i) => {
+      const start = 13.6 + r() * 2.4; const x = r() * (W - 300) - 40; const z = -300 + r() * 600; const spin = (r() - 0.5) * 400; const speed = 900 + r() * 700;
+      const dt = t - start;
+      if (dt < 0) return;
+      const [b, f] = colours[i % colours.length];
+      card3d({ text: word, bg: b, fg: f, w: 330, x, y: -400 + dt * speed, rx: 20 + dt * spin * 0.5, ry: dt * spin, rz: (r() - 0.5) * 30, z }, world);
+    });
+  }
+
+  // --- 16.6 to 20: the name, and Dex.
+  if (t >= 16.6) {
+    const k = seg(t, 16.6, 17.2);
+    const pieces = confetti({ n: 70, seed: 9, x: 0, y: -400, w: W, h: 1600, size: 30 }, world);
+    pieces.at(t - 16.6, 260);
+    const hop = Math.abs(Math.sin((t - 16.6) * 4.2)) * 60;
+    const d = dex({ mood: 'excited', size: 520 * eb(k), x: W / 2 - 260 * eb(k), y: 330 - hop * eb(k), rot: Math.sin(t * 3.4) * 7, z: 200 }, world);
+    const title = el('div', { position: 'absolute', left: '0', width: `${W}px`, top: '960px', textAlign: 'center', color: '#fff', transform: `translateZ(200px) scale(${eb(seg(t, 16.9, 17.4))})` }, world);
+    title.innerHTML = `<div style="font:800 190px/0.9 Display;letter-spacing:-0.055em">Charades</div><div style="font:800 76px/1 Display;letter-spacing:-0.04em;color:${C.yellow};margin-top:22px">Make Your Own Decks</div>`;
+    const sub = el('div', { position: 'absolute', left: '0', width: `${W}px`, top: '1290px', textAlign: 'center', color: '#fff', font: '700 46px/1.3 Text', opacity: String(seg(t, 17.5, 17.9)) }, world);
+    sub.textContent = 'The forehead party game. Plays fully offline.';
+    if (t > 17.9) pill({ text: 'Free decks · Your decks · No Wi-Fi needed', bg: C.yellow, fg: C.ink, size: 40 * eb(seg(t, 17.9, 18.3)), x: 120, y: 1480, rot: -2, z: 250 }, world);
+  }
+}
+
+window.CUES = CUES;
+window.DURATION = DURATION;
+window.render = render;
+(async () => {
+  setup();
+  await document.fonts.load('800 100px Display');
+  await document.fonts.load('700 40px Text');
+  await document.fonts.ready;
+  document.title = 'ready';
+})();
+</script>
+</body>
+</html>
