@@ -153,8 +153,10 @@ and it uploads with one command.
 
 ### Before you start
 
-- **The name.** "Charades" has to be free on the App Store. If someone has it,
-  change `"name"` in `app.json` and `"title"` in `store.config.json`.
+- **The name.** The store name is "Charades: Make Your Own Decks"; the first
+  upload creates the App Store Connect app with it (set in `eas.json`). If
+  Apple says it's taken, change `appName` in `eas.json` and `"title"` in
+  `store.config.json` to something like "Charades! Make Your Own Decks".
 - **The privacy policy link.** `store.config.json` points at
   [`PRIVACY.md`](./PRIVACY.md) on GitHub. That link only works if the repository
   is public. If it is private, paste `PRIVACY.md` into a free page anywhere
