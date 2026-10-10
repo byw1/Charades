@@ -55,7 +55,7 @@ export default function RoundRecapScreen() {
   const twist = twistById(openRound?.twist);
   const score = useMemo(() => roundScore({ results, twist: twist?.id }, penalty), [results, twist, penalty]);
 
-  // The round is still open, so whoseTurn points at whoever just played.
+  // The round is still open, so whoseTurn names whoever just played it.
   const turn = session ? whoseTurn(session) : null;
   const showTeam = (session?.teams.length ?? 0) > 1;
   const who = [showTeam ? turn?.team.name : null, turn?.playerName].filter(Boolean).join(' · ');

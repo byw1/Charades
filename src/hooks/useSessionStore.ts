@@ -155,7 +155,8 @@ export const useSessionStore = create<SessionStore>((set, get) => ({
 
   beginRound(roundId, nowIso, seed = Date.now() >>> 0) {
     const current = get().session;
-    if (!current) return;
+    // Already open (the intro screen mounting twice): keep the round going.
+    if (!current || session.hasUnfinishedRound(current)) return;
     const random = seededRandom(seed);
 
     if (isThreeRounds(current)) {
