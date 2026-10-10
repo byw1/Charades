@@ -38,14 +38,23 @@ export function createSession(input: NewSessionInput): Session {
 /**
  * The team and player whose turn it is.
  *
- * Rotation is derived from how many rounds have been played rather than stored
- * as a pointer, so it cannot drift out of step with the round list — the same
- * reason score is derived.
+ * While a round is open, that is whoever is playing it, so the countdown and
+ * the recap name the team the points go to. Otherwise rotation is derived from
+ * how many rounds have been completed rather than stored as a pointer, so it
+ * cannot drift out of step with the round list — the same reason score is
+ * derived.
  */
 export function whoseTurn(session: Session): { team: Team; playerName: string | null } | null {
   if (session.teams.length === 0) return null;
 
-  const team = session.teams[session.rounds.length % session.teams.length]!;
+  const open = session.rounds.find((round) => round.endedAt === null);
+  if (open) {
+    const playing = session.teams.find((team) => team.id === open.teamId);
+    if (playing) return { team: playing, playerName: open.playerName };
+  }
+
+  const played = session.rounds.filter((round) => round.endedAt !== null).length;
+  const team = session.teams[played % session.teams.length]!;
   const playerName =
     team.playerNames.length > 0
       ? (team.playerNames[team.nextPlayerIndex % team.playerNames.length] ?? null)
@@ -66,6 +75,9 @@ export function beginRound(
   now: string,
   extras: { twist?: string | null; phase?: Phase } = {},
 ): Session {
+  // One round at a time: opening again would hand the turn to the next team.
+  if (hasUnfinishedRound(session)) return session;
+
   const turn = whoseTurn(session);
   if (!turn) return session;
 

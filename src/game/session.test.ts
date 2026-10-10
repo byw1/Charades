@@ -110,6 +110,25 @@ describe('rotation', () => {
     expect(whoseTurn(newSession({ teams: [] }))).toBeNull();
   });
 
+  /** The countdown and the recap read this while the round is still open. */
+  it('names the team playing an open round, not the next one', () => {
+    const teams = [
+      { ...makeTeams(2)[0]!, playerNames: ['Sam', 'Jo'] },
+      { ...makeTeams(2)[1]!, playerNames: ['Alex', 'Kim'] },
+    ];
+    let session = playRound(newSession({ teams }), 'c');
+    session = beginRound(session, 'rnd_2', T0);
+
+    expect(whoseTurn(session)?.team.name).toBe('Blues');
+    expect(whoseTurn(session)?.playerName).toBe('Alex');
+    expect(session.rounds[1]?.teamId).toBe(whoseTurn(session)?.team.id);
+  });
+
+  it('does not open a second round while one is open', () => {
+    const opened = beginRound(newSession(), 'rnd_1', T0);
+    expect(beginRound(opened, 'rnd_2', T0)).toBe(opened);
+  });
+
   /** Derived from the round list rather than stored, so it cannot drift. */
   it('survives a session rebuilt from its rounds', () => {
     let session = newSession();
