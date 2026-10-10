@@ -122,6 +122,12 @@
     },
     "web": {
       "favicon": "./assets/favicon.png"
-    }
+    },
+    "extra": {
+      "eas": {
+        "projectId": "cf5c109b-e1b3-4baf-98e1-78bcbe31d287"
+      }
+    },
+    "owner": "byw1"
   }
 }
