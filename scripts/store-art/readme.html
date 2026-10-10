@@ -46,6 +46,7 @@ const pieces = {
 };
 
 (async () => {
+  await requireEmojiFont();
   await document.fonts.ready;
   const size = await pieces[n]();
   document.getElementById('stage').dataset.size = JSON.stringify(size);

@@ -16,8 +16,10 @@ The output is brand artwork, so it lives in `/store/` (git-ignored, see
 
 ## Running it
 
-Needs `playwright-core`, a Chromium (`CHROME=`), and `ffmpeg` (`FFMPEG=`).
-None of them are app dependencies; install them somewhere outside the app.
+Needs `playwright-core`, a Chromium (`CHROME=`), `ffmpeg` (`FFMPEG=`) and the
+Noto Color Emoji font. None of them are app dependencies; install them
+somewhere outside the app. The pages refuse to render without Noto Color Emoji:
+Apple Color Emoji is licensed for Apple devices, not for marketing artwork.
 
 1. Build the web version and serve it on port 8089 (any static server; the app
    uses SQLite in a worker, so it needs the `Cross-Origin-Opener-Policy:
