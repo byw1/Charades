@@ -270,4 +270,14 @@ function headline(parent, { kicker, title, sub, colour = C.ink, kickerColour, to
   return box;
 }
 
-Object.assign(window, { C, el, rng, dex, dexSvg, phone, card3d, sticker, pill, confetti, stage, backdrop, headline, shade, SCREEN });
+// Store art is marketing, and Apple licenses its emoji for its own devices
+// only. Fail rather than let the system fall back to Apple Color Emoji.
+async function requireEmojiFont() {
+  const faces = await document.fonts.load('40px Emoji', '\u{1F602}').catch(() => []);
+  if (!faces.length) {
+    document.title = 'error: Noto Color Emoji is not installed';
+    throw new Error('Noto Color Emoji is not installed. Install it before rendering store art (see README.md).');
+  }
+}
+
+Object.assign(window, { C, el, requireEmojiFont, rng, dex, dexSvg, phone, card3d, sticker, pill, confetti, stage, backdrop, headline, shade, SCREEN });
